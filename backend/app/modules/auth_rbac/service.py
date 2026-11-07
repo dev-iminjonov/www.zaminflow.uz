@@ -360,8 +360,30 @@ SMS_OTP_STORE: dict[str, dict[str, Any]] = {}
 async def sign_up(
     data: SignUpRequest,
     response: Response,
+    request: Request,
     db: AsyncSession = Depends(get_db),
 ) -> dict[str, Any]:
+    # Rate limit by client IP in login_attempts (max 10 / hour)
+    client_ip = request.client.host if request.client else "127.0.0.1"
+    res_signup_rate = await db.execute(
+        text(
+            """
+            SELECT COUNT(*)
+            FROM login_attempts
+            WHERE ip = CAST(:client_ip AS inet)
+              AND email_lower = 'sign-up-attempt'
+              AND attempted_at >= NOW() - INTERVAL '1 hour'
+            """
+        ),
+        {"client_ip": client_ip},
+    )
+    if (res_signup_rate.scalar() or 0) >= 10:
+        raise HTTPException(
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            detail="Too many registration attempts. Please try again in an hour.",
+            headers={"Retry-After": "3600"},
+        )
+
     # 1. Admin accounts are NEVER selectable or creatable on public sign-up.
     # Enforce strict allowlist: only FARMER, DAIRY, INDUSTRY, DRIVER.
     role_raw = (data.role or "").strip().upper()
@@ -511,6 +533,17 @@ async def sign_up(
     access_token = await set_auth_session(
         response, db, user_id, org_id, role_norm, sub_role
     )
+
+    # Record sign-up attempt in login_attempts for rate limiting
+    await db.execute(
+        text(
+            """
+            INSERT INTO login_attempts (email_lower, ip, succeeded, attempted_at)
+            VALUES ('sign-up-attempt', CAST(:client_ip AS inet), TRUE, NOW())
+            """
+        ),
+        {"client_ip": client_ip},
+    )
     await db.commit()
 
     canonical_role, dashboard_path = get_canonical_role_and_dashboard(role_norm, sub_role)
@@ -548,24 +581,32 @@ async def sign_in(
     phone_like = f"%{phone_digits[-9:]}%" if phone_digits else "%nomatch%"
     client_ip = request.client.host if request.client else "127.0.0.1"
 
-    # Check lockout
+    # Check lockout: 5 failed attempts for identifier, or 25 failed attempts for the IP
     res_lockout = await db.execute(
         text(
             """
-            SELECT COUNT(*) AS fail_count
+            SELECT 
+                COUNT(*) FILTER (WHERE email_lower = :identifier) AS id_fails,
+                COUNT(*) FILTER (WHERE ip = CAST(:client_ip AS inet)) AS ip_fails
             FROM login_attempts
-            WHERE email_lower = :email
-              AND succeeded = FALSE
+            WHERE succeeded = FALSE
               AND attempted_at >= NOW() - INTERVAL '15 minutes'
             """
         ),
-        {"email": email_clean if is_email else phone_digits},
+        {
+            "identifier": email_clean if is_email else phone_digits,
+            "client_ip": client_ip,
+        },
     )
-    fail_count = res_lockout.scalar() or 0
-    if fail_count >= 5:
+    row_lockout = res_lockout.first()
+    id_fails = row_lockout[0] if row_lockout else 0
+    ip_fails = row_lockout[1] if row_lockout else 0
+
+    if id_fails >= 5 or ip_fails >= 25:
         raise HTTPException(
             status_code=status.HTTP_429_TOO_MANY_REQUESTS,
             detail="Too many failed login attempts. Please wait 15 minutes.",
+            headers={"Retry-After": "900"},
         )
 
     # Query user by email OR phone
@@ -638,19 +679,77 @@ async def sign_in(
 
 
 @router.post("/sms/send-otp")
-async def send_sms_otp(data: SendSmsOtpRequest, db: AsyncSession = Depends(get_db)) -> dict[str, Any]:
+async def send_sms_otp(
+    data: SendSmsOtpRequest,
+    request: Request,
+    db: AsyncSession = Depends(get_db),
+) -> dict[str, Any]:
     phone_digits = "".join(c for c in data.phone_number if c.isdigit() or c == "+")
     if len(phone_digits) < 9:
         raise HTTPException(status_code=400, detail="Invalid phone number format")
 
+    client_ip = request.client.host if request.client else "127.0.0.1"
+    phone_tag = f"sms-otp:{phone_digits}"
+
+    # 1. Check rate limits: 60s cooldown and max 5 per 15 minutes
+    res_sms_rate = await db.execute(
+        text(
+            """
+            SELECT COUNT(*), MAX(attempted_at)
+            FROM login_attempts
+            WHERE email_lower = :phone_tag
+              AND attempted_at >= NOW() - INTERVAL '15 minutes'
+            """
+        ),
+        {"phone_tag": phone_tag},
+    )
+    sms_row = res_sms_rate.first()
+    sms_count = sms_row[0] if sms_row else 0
+    last_sent = sms_row[1] if sms_row else None
+
+    if last_sent:
+        now_utc = datetime.now(timezone.utc)
+        if last_sent.tzinfo is None:
+            last_sent = last_sent.replace(tzinfo=timezone.utc)
+        seconds_since_last = (now_utc - last_sent).total_seconds()
+        if seconds_since_last < 60:
+            retry_wait = int(60 - seconds_since_last) + 1
+            raise HTTPException(
+                status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+                detail=f"Please wait {retry_wait} seconds before requesting another SMS code.",
+                headers={"Retry-After": str(retry_wait)},
+            )
+
+    if sms_count >= 5:
+        raise HTTPException(
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            detail="Too many SMS verification requests. Please wait 15 minutes.",
+            headers={"Retry-After": "900"},
+        )
+
     code = "123456"  # Deterministic test code for sandbox and QA staging
     import time
+    code_hash = hash_token(code)
     SMS_OTP_STORE[phone_digits] = {
-        "code": code,
+        "code_hash": code_hash,
         "expires_at": time.time() + 300,
         "attempts": 0,
+        "sent_at": time.time(),
     }
-    logger.info("Sent SMS OTP for %s: %s", phone_digits, code)
+
+    # Record send in login_attempts
+    await db.execute(
+        text(
+            """
+            INSERT INTO login_attempts (email_lower, ip, succeeded, attempted_at)
+            VALUES (:phone_tag, CAST(:client_ip AS inet), TRUE, NOW())
+            """
+        ),
+        {"phone_tag": phone_tag, "client_ip": client_ip},
+    )
+    await db.commit()
+
+    logger.info("Sent SMS OTP for %s (hashed)", phone_digits)
     return {
         "status": "sent",
         "phone_number": data.phone_number,
@@ -669,19 +768,31 @@ async def verify_sms_otp(
     phone_digits = "".join(c for c in data.phone_number if c.isdigit() or c == "+")
     record = SMS_OTP_STORE.get(phone_digits)
     if not record:
-        raise HTTPException(status_code=400, detail="No active SMS code found. Please request a new one.")
+        raise HTTPException(status_code=400, detail="Invalid or expired verification code.")
 
     if time.time() > record["expires_at"]:
         SMS_OTP_STORE.pop(phone_digits, None)
-        raise HTTPException(status_code=400, detail="SMS code expired. Please request a new code.")
+        raise HTTPException(status_code=400, detail="Invalid or expired verification code.")
 
     record["attempts"] += 1
     if record["attempts"] > 5:
         SMS_OTP_STORE.pop(phone_digits, None)
-        raise HTTPException(status_code=429, detail="Maximum attempts exceeded. Please try again later.")
+        raise HTTPException(
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            detail="Maximum attempts exceeded. Please request a new code.",
+            headers={"Retry-After": "300"},
+        )
 
-    if data.code.strip() != record["code"]:
-        raise HTTPException(status_code=400, detail=f"Invalid SMS code. {5 - record['attempts']} attempts remaining.")
+    input_hash = hash_token(data.code.strip())
+    if input_hash != record["code_hash"]:
+        remaining = max(0, 5 - record["attempts"])
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Invalid verification code. {remaining} attempts remaining.",
+        )
+
+    # Valid: remove OTP record
+    SMS_OTP_STORE.pop(phone_digits, None)
 
     clean_digits = "".join(c for c in data.phone_number if c.isdigit())
     phone_tail = f"%{clean_digits[-9:]}%" if clean_digits else "%"
@@ -894,9 +1005,50 @@ async def resend_verification(
 @router.post("/forgot-password", status_code=status.HTTP_202_ACCEPTED)
 async def forgot_password(
     data: ForgotPasswordRequest,
+    request: Request,
     db: AsyncSession = Depends(get_db),
 ) -> dict[str, str]:
     email_clean = data.email.strip().lower()
+    client_ip = request.client.host if request.client else "127.0.0.1"
+    email_tag = f"forgot-password:{email_clean}"
+
+    # Rate limit: max 3 requests per 15 minutes by email, or 20 per IP
+    res_pw_rate = await db.execute(
+        text(
+            """
+            SELECT 
+                COUNT(*) FILTER (WHERE email_lower = :email_tag) AS email_count,
+                COUNT(*) FILTER (WHERE ip = CAST(:client_ip AS inet)) AS ip_count
+            FROM login_attempts
+            WHERE email_lower LIKE 'forgot-password:%'
+              AND attempted_at >= NOW() - INTERVAL '15 minutes'
+            """
+        ),
+        {"email_tag": email_tag, "client_ip": client_ip},
+    )
+    row_pw = res_pw_rate.first()
+    email_count = row_pw[0] if row_pw else 0
+    ip_count = row_pw[1] if row_pw else 0
+
+    if email_count >= 3 or ip_count >= 20:
+        raise HTTPException(
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            detail="Too many password reset requests. Please wait 15 minutes.",
+            headers={"Retry-After": "900"},
+        )
+
+    # Record request in login_attempts
+    await db.execute(
+        text(
+            """
+            INSERT INTO login_attempts (email_lower, ip, succeeded, attempted_at)
+            VALUES (:email_tag, CAST(:client_ip AS inet), TRUE, NOW())
+            """
+        ),
+        {"email_tag": email_tag, "client_ip": client_ip},
+    )
+    await db.commit()
+
     res = await db.execute(
         text("SELECT id FROM users WHERE lower(email) = :email"),
         {"email": email_clean},
