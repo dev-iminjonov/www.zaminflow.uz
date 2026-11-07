@@ -16,10 +16,19 @@ const NAV_ITEMS = [
 ];
 
 export default function LandingPage() {
-  const [themeMode, setThemeMode] = useState<"light" | "dark">("light");
+  const [themeMode, setThemeMode] = useState<"light" | "dark">("dark");
   const [activeSection, setActiveSection] = useState<string>("company");
 
   const isDark = themeMode === "dark";
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (isDark) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  }, [isDark]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;

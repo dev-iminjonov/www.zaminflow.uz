@@ -12,7 +12,7 @@ export default function RootLayout({
   const [queryClient] = useState(() => new QueryClient());
 
   return (
-    <html lang="en">
+    <html lang="en" className="dark">
       <head>
         <title>ZaminFlow v2.0 — B2B Dairy Supply Chain & FinTech Escrow</title>
         <meta
