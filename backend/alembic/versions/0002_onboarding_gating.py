@@ -172,6 +172,53 @@ CREATE TABLE IF NOT EXISTS audit_logs (
 """
 
 
+DOWNGRADE_DDL_SQL = """
+-- Drop tables created in 0002 in reverse order of creation
+DROP TABLE IF EXISTS audit_logs CASCADE;
+DROP TABLE IF EXISTS notifications CASCADE;
+DROP TABLE IF EXISTS login_attempts CASCADE;
+DROP TABLE IF EXISTS refresh_tokens CASCADE;
+DROP TABLE IF EXISTS email_tokens CASCADE;
+DROP TABLE IF EXISTS kyb_documents CASCADE;
+DROP TABLE IF EXISTS bank_profiles CASCADE;
+DROP TABLE IF EXISTS industry_profiles CASCADE;
+DROP TABLE IF EXISTS farm_profiles CASCADE;
+
+-- Drop foreign keys and constraints added in 0002
+ALTER TABLE organizations DROP CONSTRAINT IF EXISTS fk_org_reviewer;
+ALTER TABLE organizations DROP CONSTRAINT IF EXISTS chk_verified_complete;
+
+-- Revert organizations columns added in 0002
+ALTER TABLE organizations DROP COLUMN IF EXISTS contact_phone;
+ALTER TABLE organizations DROP COLUMN IF EXISTS kyb_review_note;
+ALTER TABLE organizations DROP COLUMN IF EXISTS kyb_reviewed_by;
+ALTER TABLE organizations DROP COLUMN IF EXISTS kyb_reviewed_at;
+ALTER TABLE organizations DROP COLUMN IF EXISTS kyb_submitted_at;
+
+-- Revert organizations kyb_status check (map v3.0 INCOMPLETE/REJECTED back to v1.0 PENDING)
+ALTER TABLE organizations DROP CONSTRAINT IF EXISTS organizations_kyb_status_check;
+UPDATE organizations SET kyb_status = 'PENDING' WHERE kyb_status NOT IN ('VERIFIED', 'SUSPENDED');
+ALTER TABLE organizations ALTER COLUMN kyb_status SET DEFAULT 'PENDING';
+ALTER TABLE organizations ADD CONSTRAINT organizations_kyb_status_check 
+    CHECK (kyb_status IN ('PENDING', 'VERIFIED', 'SUSPENDED'));
+
+-- Revert users table modifications
+DROP INDEX IF EXISTS uq_users_email_lower;
+ALTER TABLE users DROP CONSTRAINT IF EXISTS users_sub_role_check;
+ALTER TABLE users ADD CONSTRAINT users_sub_role_check 
+    CHECK (sub_role IN ('OWNER', 'DRIVER', 'LAB_TECH', 'BANK_OFFICER', 'SUPERADMIN'));
+
+ALTER TABLE users DROP COLUMN IF EXISTS last_sign_in_at;
+ALTER TABLE users DROP COLUMN IF EXISTS email_verified_at;
+ALTER TABLE users DROP COLUMN IF EXISTS email;
+
+-- NOTE ON IRREVERSIBLE CHANGE:
+-- The column 'legacy_user_id' was dropped in upgrade() and cannot be restored
+-- automatically. If historical legacy_user_id values are needed upon rollback,
+-- the database must be restored from the pre-migration snapshot at backups/dairy_platform_pre_phase5a.dump.
+"""
+
+
 def upgrade() -> None:
     conn = op.get_bind()
     # Split multiple statements to prevent asyncpg "cannot insert multiple commands into a prepared statement"
@@ -182,7 +229,11 @@ def upgrade() -> None:
 
 
 def downgrade() -> None:
-    pass
+    conn = op.get_bind()
+    for statement in DOWNGRADE_DDL_SQL.split(";"):
+        stmt_clean = statement.strip()
+        if stmt_clean:
+            conn.execute(sa_text(stmt_clean))
 
 
 from sqlalchemy import text as sa_text
