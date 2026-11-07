@@ -92,9 +92,6 @@ export default function FarmerBatchDetailPage() {
         {/* Header Row */}
         <header className="flex flex-wrap items-end justify-between gap-5 pt-4">
           <div>
-            <div className="flex items-center gap-2 text-xs font-bold tracking-[0.08em] text-[#087a3c] uppercase mb-1">
-              <span>IoT Telemetry & Quality Assurance • Gap #5 Built</span>
-            </div>
             <h1 className="m-0 text-4xl sm:text-5xl font-extrabold tracking-[-0.03em] leading-[1.05] text-[#17352c]">
               Batch <span className="font-[family-name:var(--font-jetbrains-mono,monospace)] text-[#087a3c]">{batch.batchNumber}</span> Telemetry
             </h1>

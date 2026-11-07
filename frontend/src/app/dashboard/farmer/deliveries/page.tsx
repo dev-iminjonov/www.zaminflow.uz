@@ -69,9 +69,6 @@ export default function DeliveriesPage() {
         {/* Header Row */}
         <header className="flex flex-wrap items-end justify-between gap-5 pt-4">
           <div>
-            <div className="text-xs font-bold tracking-[0.08em] text-[#087a3c] uppercase mb-1">
-              Logistics & Cold Chain • Gap #2 Built
-            </div>
             <h1 className="m-0 text-4xl sm:text-5xl font-extrabold tracking-[-0.03em] leading-[1.05] text-[#17352c]">
               Deliveries & <span className="text-[#087a3c]">Transit Tracking</span>
             </h1>

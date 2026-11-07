@@ -69,9 +69,6 @@ export default function ReportIssuePage() {
         {/* Header Row */}
         <header className="flex flex-wrap items-end justify-between gap-5 pt-4">
           <div>
-            <div className="text-xs font-bold tracking-[0.08em] text-[#b45309] uppercase mb-1">
-              Transit Exception Reporting • Gap #18 Built
-            </div>
             <h1 className="m-0 text-4xl sm:text-5xl font-extrabold tracking-[-0.03em] leading-[1.05] text-[#17352c]">
               Report Incident / <span className="text-[#b45309]">Transit Delay</span>
             </h1>
