@@ -202,6 +202,7 @@ export default function SignInCard() {
           <span className="text-[#087a3c] dark:text-[#22d36b]">
             {t.signIn.headingBrand}
           </span>
+          {t.signIn.headingEnd}
         </h1>
 
         {/* Server Error Alert */}
