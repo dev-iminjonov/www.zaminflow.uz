@@ -73,13 +73,19 @@ test("QA-002: Rejects external URLs for admin and redirects to /dashboard/admin"
   assert.equal(sanitizeNextRedirect("https://evil.com", "admin"), "/dashboard/admin");
   assert.equal(sanitizeNextRedirect("http://evil.com", "admin"), "/dashboard/admin");
   assert.equal(sanitizeNextRedirect("//evil.com", "admin"), "/dashboard/admin");
+  assert.equal(sanitizeNextRedirect("///evil.com", "admin"), "/dashboard/admin");
   assert.equal(sanitizeNextRedirect("javascript:alert(1)", "admin"), "/dashboard/admin");
+  assert.equal(sanitizeNextRedirect("data:text/html,<script>alert(1)</script>", "admin"), "/dashboard/admin");
+  assert.equal(sanitizeNextRedirect("vbscript:msgbox(1)", "admin"), "/dashboard/admin");
 });
 
-test("QA-002: Rejects backslashes and encoded slashes", () => {
+test("QA-002: Rejects backslashes, control characters, and encoded slashes", () => {
   assert.equal(sanitizeNextRedirect("/\\evil.com", "admin"), "/dashboard/admin");
   assert.equal(sanitizeNextRedirect("/%2fevil.com", "admin"), "/dashboard/admin");
   assert.equal(sanitizeNextRedirect("/%5cevil.com", "admin"), "/dashboard/admin");
+  assert.equal(sanitizeNextRedirect("/dashboard\x00/admin", "admin"), "/dashboard/admin");
+  assert.equal(sanitizeNextRedirect("/dashboard\x1b/admin", "admin"), "/dashboard/admin");
+  assert.equal(sanitizeNextRedirect("/dashboard\x7f/admin", "admin"), "/dashboard/admin");
 });
 
 test("QA-002: Restricts cross-role access", () => {
