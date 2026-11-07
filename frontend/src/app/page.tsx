@@ -316,7 +316,6 @@ export default function LandingPage() {
         <div className="max-w-[1200px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
             <ZaminFlowLogo mode={themeMode} size="sm" />
-            <span className="opacity-60">&bull; {t.footer.republic}</span>
           </div>
 
           <div className="text-[11px] font-mono opacity-80">
