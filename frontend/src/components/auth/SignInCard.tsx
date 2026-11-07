@@ -7,6 +7,7 @@ import { signIn, sendSmsOtp, verifySmsOtp } from "@/lib/auth";
 import { isPathAllowedForRole, sanitizeNextRedirect } from "@/lib/roles";
 import { Locale } from "@/messages/auth";
 import { useLanguage } from "@/context/LanguageContext";
+import ZaminFlowLogo from "@/components/ZaminFlowLogo";
 
 export default function SignInCard() {
   const router = useRouter();
@@ -183,6 +184,13 @@ export default function SignInCard() {
       {/* Main Glass Card (Max-width 560px) */}
       <div className="w-full max-w-[560px] rounded-[32px] p-8 sm:p-11 bg-white/76 dark:bg-[#13293D]/80 backdrop-blur-md border border-white dark:border-white/10 shadow-[0_10px_40px_rgba(20,80,60,0.08)] transition-all">
         
+        {/* Brand Logo */}
+        <div className="flex justify-center mb-6">
+          <Link href="/" className="inline-flex transition-transform hover:scale-105">
+            <ZaminFlowLogo size="md" />
+          </Link>
+        </div>
+
         {/* Eyebrow */}
         <div className="text-center text-xs font-bold tracking-[0.14em] text-[#087a3c] dark:text-[#22d36b] uppercase mb-2">
           {t.signIn.eyebrow}

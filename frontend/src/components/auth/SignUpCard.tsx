@@ -7,6 +7,7 @@ import { RoleKey, PUBLIC_SIGNUP_ROLES, ROLES } from "@/lib/roles";
 import { signUp } from "@/lib/auth";
 import { Locale } from "@/messages/auth";
 import { useLanguage } from "@/context/LanguageContext";
+import ZaminFlowLogo from "@/components/ZaminFlowLogo";
 
 export default function SignUpCard() {
   const router = useRouter();
@@ -193,6 +194,13 @@ export default function SignUpCard() {
       {/* Main Glass Card (Max-width 760px) */}
       <div className="w-full max-w-[760px] rounded-[32px] p-8 sm:p-11 bg-white/76 dark:bg-[#13293D]/80 backdrop-blur-md border border-white dark:border-white/10 shadow-[0_10px_40px_rgba(20,80,60,0.08)] transition-all">
         
+        {/* Brand Logo */}
+        <div className="flex justify-center mb-6">
+          <Link href="/" className="inline-flex transition-transform hover:scale-105">
+            <ZaminFlowLogo size="md" />
+          </Link>
+        </div>
+
         {/* Eyebrow */}
         <div className="text-center text-xs font-bold tracking-[0.14em] text-[#087a3c] dark:text-[#22d36b] uppercase mb-2">
           {t.signUp.eyebrow}

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import React, { useState } from "react";
 import Button from "@/components/ui/Button";
+import ZaminFlowLogo from "@/components/ZaminFlowLogo";
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
@@ -32,11 +33,8 @@ export default function ForgotPasswordPage() {
       <div className="bg-[#070B14] p-8 lg:p-14 text-white flex flex-col justify-between relative overflow-hidden select-none">
         <div className="absolute top-1/3 left-1/4 w-96 h-96 bg-emerald-500/10 blur-[100px] rounded-full pointer-events-none animate-breathing-glow" />
         <div className="relative z-10">
-          <Link href="/" className="inline-flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-500 to-teal-700 flex items-center justify-center text-white font-black text-sm shadow-sm">
-              Z
-            </div>
-            <span className="font-extrabold tracking-tight text-lg text-white">ZaminFlow</span>
+          <Link href="/" className="inline-flex items-center">
+            <ZaminFlowLogo mode="dark" size="md" />
           </Link>
         </div>
         <div className="relative z-10 my-8 lg:my-auto max-w-md space-y-4">

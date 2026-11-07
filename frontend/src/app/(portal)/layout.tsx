@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import NotificationBell from "@/components/NotificationBell";
+import ZaminFlowLogo from "@/components/ZaminFlowLogo";
 
 export default function PortalLayout({
   children,
@@ -73,13 +74,8 @@ export default function PortalLayout({
         <div>
           {/* Brand Header */}
           <div className="h-14 flex items-center px-4 border-b border-slate-800">
-            <Link href="/" className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-emerald-500 to-teal-700 flex items-center justify-center text-white font-black text-xs shadow-sm">
-                Z
-              </div>
-              <span className="font-extrabold tracking-tight text-sm text-white">
-                ZaminFlow
-              </span>
+            <Link href="/" className="flex items-center">
+              <ZaminFlowLogo mode="dark" size="sm" />
             </Link>
           </div>
 

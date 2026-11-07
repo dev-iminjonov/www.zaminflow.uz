@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import NotificationBell from "@/components/NotificationBell";
+import ZaminFlowLogo from "@/components/ZaminFlowLogo";
 
 export default function FieldLayout({
   children,
@@ -63,18 +64,11 @@ export default function FieldLayout({
       <div className="w-full max-w-[560px] mx-auto min-h-screen flex flex-col justify-between bg-[#F8FAFC] shadow-xl relative border-x border-slate-200/80">
         {/* 56px Top Bar (Section 10) */}
         <header className="sticky top-0 z-40 bg-white border-b border-slate-200 px-4 h-14 flex items-center justify-between shadow-xs">
-          <Link href="/" className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-emerald-600 to-teal-700 flex items-center justify-center text-white font-black text-xs shadow-sm">
-              Z
-            </div>
-            <div className="flex flex-col">
-              <span className="font-extrabold tracking-tight text-xs text-slate-900 leading-tight">
-                ZaminFlow
-              </span>
-              <span className="text-[10px] text-teal-700 font-mono leading-tight">
-                {workspaceName}
-              </span>
-            </div>
+          <Link href="/" className="flex items-center gap-2.5">
+            <ZaminFlowLogo mode="light" size="sm" />
+            <span className="text-[10px] text-teal-700 font-mono font-semibold bg-teal-50 px-2 py-0.5 rounded-full border border-teal-200">
+              {workspaceName}
+            </span>
           </Link>
 
           <div className="flex items-center gap-2 relative">

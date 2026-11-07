@@ -8,6 +8,7 @@ import { getStoredSession, signOut, AuthSession } from "@/lib/auth";
 import { getDashboardDataForRole, DashboardKpiCard } from "@/lib/dashboardData";
 import { Locale } from "@/messages/auth";
 import { useLanguage } from "@/context/LanguageContext";
+import ZaminFlowLogo from "@/components/ZaminFlowLogo";
 
 interface DashboardShellProps {
   role: RoleKey;
@@ -46,10 +47,8 @@ export default function DashboardShell({ role }: DashboardShellProps) {
         <div className="max-w-[1180px] mx-auto flex items-center justify-between">
           
           {/* Brand */}
-          <Link href="/" className="flex items-center gap-2 group cursor-pointer">
-            <span className="font-extrabold text-2xl tracking-tight text-[#17352c] dark:text-white">
-              zamin<span className="text-[#087a3c] dark:text-[#22d36b]">flow</span>
-            </span>
+          <Link href="/" className="flex items-center gap-3 group cursor-pointer">
+            <ZaminFlowLogo size="md" />
             <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-[#e6ecea] dark:bg-white/10 text-[#087a3c] dark:text-[#22d36b]">
               B2B Dairy
             </span>

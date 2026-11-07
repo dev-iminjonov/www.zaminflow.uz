@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
+import ZaminFlowLogo from "@/components/ZaminFlowLogo";
 import { useSearchParams, useRouter } from "next/navigation";
 import { signOut } from "@/lib/auth";
 import { getDairyShipments, submitGateLabTest, DairyShipment } from "@/lib/dairyStore";
@@ -59,8 +60,8 @@ function ReceiveBatchContent() {
         
         {/* Floating Top Pill Nav */}
         <nav className="bg-white rounded-[40px] px-8 py-3.5 flex flex-wrap items-center justify-between gap-4 shadow-[0_10px_40px_rgba(20,80,60,0.08)]">
-          <Link href="/dashboard/dairy" className="text-[26px] font-extrabold tracking-[-0.02em] text-[#12303a]">
-            zamin<span className="text-[#0f9d8a]">flow</span>
+          <Link href="/dashboard/dairy" className="flex items-center shrink-0">
+            <ZaminFlowLogo mode="light" size="md" />
           </Link>
           <div className="flex flex-wrap items-center gap-7 text-[15px] font-semibold">
             <Link href="/dashboard/dairy" className="text-[#17352c] hover:text-[#087a3c] transition pb-0.5">
