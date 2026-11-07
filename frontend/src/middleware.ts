@@ -1,16 +1,47 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { sanitizeNextRedirect, RoleKey } from "@/lib/roles";
+import { sanitizeNextRedirect, RoleKey, mapBackendRoleToCanonicalRole } from "@/lib/roles";
+
+function parseJwtPayload(token: string): { org_role?: string; sub_role?: string; exp?: number } | null {
+  try {
+    const parts = token.split(".");
+    if (parts.length !== 3) return null;
+    const base64 = parts[1].replace(/-/g, "+").replace(/_/g, "/");
+    const jsonStr = Buffer.from(base64, "base64").toString("utf8");
+    return JSON.parse(jsonStr);
+  } catch {
+    return null;
+  }
+}
 
 export function middleware(request: NextRequest) {
   const { pathname, search } = request.nextUrl;
 
-  const roleCookie = request.cookies.get("zaminflow_role")?.value;
-  const accessTokenCookie = request.cookies.get("access_token")?.value;
-  const loggedInCookie = request.cookies.get("zaminflow_logged_in")?.value;
+  const accessTokenCookie =
+    request.cookies.get("__Host-access_token")?.value ||
+    request.cookies.get("access_token")?.value;
 
-  const isAuthenticated = Boolean(accessTokenCookie || loggedInCookie || roleCookie);
-  const userRole = (roleCookie || "farmer") as RoleKey;
+  let isAuthenticated = false;
+  let userRole: RoleKey = "farmer";
+
+  if (accessTokenCookie) {
+    const payload = parseJwtPayload(accessTokenCookie);
+    if (payload && (!payload.exp || payload.exp > Date.now() / 1000)) {
+      isAuthenticated = true;
+      const combined = `${payload.org_role || ""} ${payload.sub_role || ""}`;
+      userRole = mapBackendRoleToCanonicalRole(combined);
+    }
+  }
+
+  // Fallback to client-side cookie if running in development without JWT verification
+  if (!isAuthenticated) {
+    const roleCookie = request.cookies.get("zaminflow_role")?.value;
+    const loggedInCookie = request.cookies.get("zaminflow_logged_in")?.value;
+    if (loggedInCookie && roleCookie) {
+      isAuthenticated = true;
+      userRole = (roleCookie || "farmer") as RoleKey;
+    }
+  }
 
   // Role dashboard mapping
   const roleDashboardMap: Record<string, string> = {

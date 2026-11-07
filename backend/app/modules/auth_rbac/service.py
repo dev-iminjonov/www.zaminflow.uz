@@ -102,11 +102,12 @@ async def get_current_user(
     credentials: Optional[HTTPAuthorizationCredentials] = Depends(security_bearer),
     db: AsyncSession = Depends(get_db),
 ) -> CurrentUser:
-    token: Optional[str] = None
-    if credentials:
+    token: Optional[str] = (
+        request.cookies.get("__Host-access_token")
+        or request.cookies.get("access_token")
+    )
+    if not token and credentials:
         token = credentials.credentials
-    else:
-        token = request.cookies.get("access_token")
 
     if not token:
         raise HTTPException(
@@ -121,6 +122,26 @@ async def get_current_user(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="UNAUTHENTICATED",
         )
+
+    # CSRF check on mutating requests authenticated via cookies
+    if (request.cookies.get("__Host-access_token") or request.cookies.get("access_token")) and request.method in ("POST", "PUT", "DELETE", "PATCH"):
+        # 1. Origin / Host verification
+        origin = request.headers.get("origin")
+        host = request.headers.get("host")
+        if origin and host:
+            origin_host = origin.split("://")[-1].split("/")[0]
+            if origin_host != host and origin not in settings.CORS_ALLOWED_ORIGINS:
+                raise HTTPException(
+                    status_code=status.HTTP_403_FORBIDDEN,
+                    detail="CSRF_ORIGIN_MISMATCH",
+                )
+        # 2. X-CSRF-Token double-submit check
+        csrf_header = request.headers.get("x-csrf-token")
+        if not verify_csrf_token(str(user_id), csrf_header):
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="CSRF_TOKEN_INVALID",
+            )
 
     stmt = text(
         """
@@ -223,6 +244,7 @@ async def set_auth_session(
     role: str,
     sub_role: str,
     family_id: Optional[UUID] = None,
+    is_secure: bool = False,
 ) -> str:
     # 1. 15-minute Access Token
     access_token = create_access_token(
@@ -258,14 +280,15 @@ async def set_auth_session(
     # 3. Double-Submit CSRF Token
     csrf_token = generate_csrf_token(str(user_id))
 
-    # Set httpOnly cookies
+    # Standard HttpOnly, SameSite=Lax cookies
     response.set_cookie(
         key="access_token",
         value=access_token,
         max_age=15 * 60,
         httponly=True,
         samesite="lax",
-        secure=False,  # Caddy handles TLS in production
+        secure=is_secure,
+        path="/",
     )
     response.set_cookie(
         key="refresh_token",
@@ -273,7 +296,8 @@ async def set_auth_session(
         max_age=settings.REFRESH_TOKEN_EXPIRE_DAYS * 86400,
         httponly=True,
         samesite="lax",
-        secure=False,
+        secure=is_secure,
+        path="/",
     )
     response.set_cookie(
         key="csrf_token",
@@ -281,8 +305,30 @@ async def set_auth_session(
         max_age=settings.REFRESH_TOKEN_EXPIRE_DAYS * 86400,
         httponly=False,  # JavaScript reads this to send X-CSRF-Token header
         samesite="lax",
-        secure=False,
+        secure=is_secure,
+        path="/",
     )
+
+    # If running over HTTPS in production, also set RFC 6265bis __Host- prefix cookies
+    if is_secure:
+        response.set_cookie(
+            key="__Host-access_token",
+            value=access_token,
+            max_age=15 * 60,
+            httponly=True,
+            samesite="lax",
+            secure=True,
+            path="/",
+        )
+        response.set_cookie(
+            key="__Host-refresh_token",
+            value=raw_refresh,
+            max_age=settings.REFRESH_TOKEN_EXPIRE_DAYS * 86400,
+            httponly=True,
+            samesite="lax",
+            secure=True,
+            path="/",
+        )
 
     return access_token
 
@@ -766,9 +812,11 @@ async def sign_out(
             )
             await db.commit()
 
-    response.delete_cookie("access_token")
-    response.delete_cookie("refresh_token")
-    response.delete_cookie("csrf_token")
+    response.delete_cookie("access_token", path="/")
+    response.delete_cookie("refresh_token", path="/")
+    response.delete_cookie("csrf_token", path="/")
+    response.delete_cookie("__Host-access_token", path="/")
+    response.delete_cookie("__Host-refresh_token", path="/")
     return {"status": "signed_out"}
 
 

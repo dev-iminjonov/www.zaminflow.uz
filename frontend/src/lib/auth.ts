@@ -36,7 +36,6 @@ export interface AuthSession {
 }
 
 const STORAGE_KEY = "zaminflow_session";
-const TOKEN_KEY = "zaminflow_jwt";
 const ROLE_COOKIE_KEY = "zaminflow_role";
 
 export function getStoredSession(): AuthSession | null {
@@ -52,11 +51,11 @@ export function getStoredSession(): AuthSession | null {
 export function saveSession(session: AuthSession, keepSignedIn: boolean = true) {
   if (typeof window === "undefined") return;
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(session));
-    if (session.accessToken) {
-      localStorage.setItem(TOKEN_KEY, session.accessToken);
-    }
-    // Also set a client-accessible cookie for Next.js middleware guards
+    // Only safe display metadata is stored client-side (NEVER store access or refresh tokens)
+    const { accessToken, ...safeSession } = session;
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(safeSession));
+
+    // Also set a client-accessible role cookie for Next.js middleware guards
     const maxAge = keepSignedIn ? 7 * 86400 : 86400;
     document.cookie = `${ROLE_COOKIE_KEY}=${session.canonicalRole}; path=/; max-age=${maxAge}; SameSite=Lax`;
     document.cookie = `zaminflow_logged_in=true; path=/; max-age=${maxAge}; SameSite=Lax`;
@@ -69,13 +68,15 @@ export function clearSession() {
   if (typeof window === "undefined") return;
   try {
     localStorage.removeItem(STORAGE_KEY);
-    localStorage.removeItem(TOKEN_KEY);
     document.cookie = `${ROLE_COOKIE_KEY}=; path=/; max-age=0; SameSite=Lax`;
     document.cookie = `zaminflow_logged_in=; path=/; max-age=0; SameSite=Lax`;
     document.cookie = `access_token=; path=/; max-age=0; SameSite=Lax`;
+    document.cookie = `__Host-access_token=; path=/; max-age=0; SameSite=Lax; Secure`;
+    document.cookie = `csrf_token=; path=/; max-age=0; SameSite=Lax`;
   } catch (e) {
     console.error("Failed to clear auth session", e);
   }
+}
 }
 
 /**
@@ -282,21 +283,12 @@ export async function refreshAccessToken(): Promise<string | null> {
   try {
     const res = await fetch("/api/v1/auth/refresh", {
       method: "POST",
+      credentials: "include",
       headers: { "Content-Type": "application/json" },
     });
     if (!res.ok) return null;
     const data = await res.json();
-    if (data.access_token) {
-      if (typeof window !== "undefined") {
-        localStorage.setItem(TOKEN_KEY, data.access_token);
-        const session = getStoredSession();
-        if (session) {
-          session.accessToken = data.access_token;
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(session));
-        }
-      }
-      return data.access_token;
-    }
+    return data.access_token || null;
   } catch (err) {
     console.warn("Silent token refresh failed", err);
   }
@@ -307,21 +299,14 @@ export async function refreshAccessToken(): Promise<string | null> {
  * Authenticated Fetch with Silent Auto-Refresh Interceptor
  */
 export async function authenticatedFetch(input: RequestInfo | URL, init: RequestInit = {}): Promise<Response> {
-  const session = getStoredSession();
   const headers = new Headers(init.headers || {});
-
-  if (session?.accessToken && !headers.has("Authorization")) {
-    headers.set("Authorization", `Bearer ${session.accessToken}`);
-  }
-
-  const response = await fetch(input, { ...init, headers });
+  const response = await fetch(input, { ...init, credentials: "include", headers });
 
   // If 401 Unauthorized, attempt a silent token refresh and retry once
   if (response.status === 401 && typeof window !== "undefined") {
     const newAccessToken = await refreshAccessToken();
     if (newAccessToken) {
-      headers.set("Authorization", `Bearer ${newAccessToken}`);
-      return await fetch(input, { ...init, headers });
+      return await fetch(input, { ...init, credentials: "include", headers });
     } else {
       // Refresh expired, clear session
       clearSession();
@@ -336,7 +321,7 @@ export async function authenticatedFetch(input: RequestInfo | URL, init: Request
  */
 export async function signOut(): Promise<void> {
   try {
-    await fetch("/api/v1/auth/sign-out", { method: "POST" });
+    await fetch("/api/v1/auth/sign-out", { method: "POST", credentials: "include" });
   } catch {}
   clearSession();
 }

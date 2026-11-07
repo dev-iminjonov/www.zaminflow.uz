@@ -8,6 +8,7 @@ from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
+from app.modules.auth_rbac.service import CurrentUser, get_current_user
 
 router = APIRouter(prefix="/notifications", tags=["Notifications"])
 
@@ -58,35 +59,37 @@ async def notify(
 async def list_notifications(
     limit: int = 50,
     offset: int = 0,
+    current_user: CurrentUser = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
-    # auth dependency injected
 ) -> Any:
-    # Query all notifications for user
+    # Query notifications scoped to current user
     stmt = text(
         """
         SELECT id, user_id, type, title, body, link_path, read_at, created_at
         FROM notifications
+        WHERE user_id = :user_id
         ORDER BY created_at DESC
         LIMIT :limit OFFSET :offset
         """
     )
-    res = await db.execute(stmt, {"limit": limit, "offset": offset})
+    res = await db.execute(stmt, {"user_id": current_user.id, "limit": limit, "offset": offset})
     rows = res.mappings().all()
     return [NotificationResponse(**dict(r)) for r in rows]
 
 
 @router.get("/unread-count")
 async def get_unread_count(
+    current_user: CurrentUser = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ) -> dict[str, int]:
     stmt = text(
         """
         SELECT COUNT(*) AS count
         FROM notifications
-        WHERE read_at IS NULL
+        WHERE user_id = :user_id AND read_at IS NULL
         """
     )
-    res = await db.execute(stmt)
+    res = await db.execute(stmt, {"user_id": current_user.id})
     count = res.scalar() or 0
     return {"unread_count": count}
 
@@ -94,31 +97,33 @@ async def get_unread_count(
 @router.post("/{notification_id}/read")
 async def mark_as_read(
     notification_id: UUID,
+    current_user: CurrentUser = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ) -> dict[str, str]:
     stmt = text(
         """
         UPDATE notifications
         SET read_at = NOW()
-        WHERE id = :id AND read_at IS NULL
+        WHERE id = :id AND user_id = :user_id AND read_at IS NULL
         """
     )
-    res = await db.execute(stmt, {"id": notification_id})
+    res = await db.execute(stmt, {"id": notification_id, "user_id": current_user.id})
     await db.commit()
     return {"status": "ok"}
 
 
 @router.post("/read-all")
 async def mark_all_read(
+    current_user: CurrentUser = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ) -> dict[str, str]:
     stmt = text(
         """
         UPDATE notifications
         SET read_at = NOW()
-        WHERE read_at IS NULL
+        WHERE user_id = :user_id AND read_at IS NULL
         """
     )
-    await db.execute(stmt)
+    await db.execute(stmt, {"user_id": current_user.id})
     await db.commit()
     return {"status": "ok"}
