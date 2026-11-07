@@ -6,6 +6,7 @@ import ZaminFlowLogo from "@/components/ZaminFlowLogo";
 import HeroEcosystemVisual from "@/components/HeroEcosystemVisual";
 import OurTeamCarousel from "@/components/OurTeamCarousel";
 import ActiveTradeMetrics from "@/components/ActiveTradeMetrics";
+import ContactUsSection from "@/components/ContactUsSection";
 
 const NAV_ITEMS = [
   { id: "company", label: "Our Company" },
@@ -288,9 +289,11 @@ export default function LandingPage() {
       {/* 6. ACTIVE TRADE METRICS (LIVE STATISTICS) */}
       <ActiveTradeMetrics isDark={isDark} />
 
-      {/* 7. MINIMAL CLEAN FOOTER */}
+      {/* 7. CONTACT US SECTION (Artboard Glassmorphism Card & Direct Dispatch Channels) */}
+      <ContactUsSection isDark={isDark} />
+
+      {/* 8. MINIMAL CLEAN FOOTER */}
       <footer
-        id="contact"
         className={`relative z-10 border-t py-6 px-6 text-center text-xs transition-colors ${
           isDark
             ? "border-[#247BA0]/30 bg-[#0B1A24]/60 backdrop-blur-md text-[#E8F1F2]/60"
