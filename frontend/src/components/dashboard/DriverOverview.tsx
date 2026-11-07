@@ -8,7 +8,7 @@ import {
   DriverDashboardData,
   fetchDriverDashboardData,
 } from "@/lib/roleDashboardService";
-import { dashboardTranslations, DashboardLocale } from "@/messages/dashboard";
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function DriverOverview() {
   const router = useRouter();
@@ -17,8 +17,7 @@ export default function DriverOverview() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isSigningOut, setIsSigningOut] = useState(false);
-  const [locale, setLocale] = useState<DashboardLocale>("en");
-  const t = dashboardTranslations[locale];
+  const { locale, setLocale, dashT: t } = useLanguage();
 
   useEffect(() => {
     setSession(getStoredSession());
@@ -105,7 +104,7 @@ export default function DriverOverview() {
           <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
             {/* Locale Picker */}
             <div className="flex rounded-full p-0.5 border border-[#17352c]/10 bg-black/5 text-[11px] font-bold">
-              {(["en", "ru", "uz"] as DashboardLocale[]).map((loc) => (
+              {(["uz", "ru", "en"] as const).map((loc) => (
                 <button
                   key={loc}
                   type="button"

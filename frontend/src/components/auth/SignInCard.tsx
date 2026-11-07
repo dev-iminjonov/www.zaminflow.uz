@@ -5,15 +5,15 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { signIn, sendSmsOtp, verifySmsOtp } from "@/lib/auth";
 import { isPathAllowedForRole, sanitizeNextRedirect } from "@/lib/roles";
-import { authTranslations, Locale } from "@/messages/auth";
+import { Locale } from "@/messages/auth";
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function SignInCard() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const nextParam = searchParams.get("next");
 
-  const [locale, setLocale] = useState<Locale>("en");
-  const t = authTranslations[locale];
+  const { locale, setLocale, authT: t } = useLanguage();
 
   // Form State
   const [identifier, setIdentifier] = useState("");

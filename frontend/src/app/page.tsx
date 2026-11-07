@@ -7,19 +7,22 @@ import HeroEcosystemVisual from "@/components/HeroEcosystemVisual";
 import OurTeamCarousel from "@/components/OurTeamCarousel";
 import ActiveTradeMetrics from "@/components/ActiveTradeMetrics";
 import ContactUsSection from "@/components/ContactUsSection";
-
-const NAV_ITEMS = [
-  { id: "company", label: "Our Company" },
-  { id: "team", label: "Our Team" },
-  { id: "stats", label: "Live statistics" },
-  { id: "contact", label: "Contact us" },
-];
+import LanguageSwitcher from "@/components/LanguageSwitcher";
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function LandingPage() {
+  const { t } = useLanguage();
   const [themeMode, setThemeMode] = useState<"light" | "dark">("dark");
   const [activeSection, setActiveSection] = useState<string>("company");
 
   const isDark = themeMode === "dark";
+
+  const navItems = [
+    { id: "company", label: t.nav.company },
+    { id: "team", label: t.nav.team },
+    { id: "stats", label: t.nav.stats },
+    { id: "contact", label: t.nav.contact },
+  ];
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -35,14 +38,14 @@ export default function LandingPage() {
 
     // 1. Initial hash detection
     const initialHash = window.location.hash.replace("#", "");
-    if (NAV_ITEMS.some((item) => item.id === initialHash)) {
+    if (["company", "team", "stats", "contact"].includes(initialHash)) {
       setActiveSection(initialHash);
     }
 
     // 2. Hash and History event listeners
     const handleHash = () => {
       const hash = window.location.hash.replace("#", "");
-      if (NAV_ITEMS.some((item) => item.id === hash)) {
+      if (["company", "team", "stats", "contact"].includes(hash)) {
         setActiveSection(hash);
       }
     };
@@ -65,7 +68,7 @@ export default function LandingPage() {
       }
     );
 
-    NAV_ITEMS.forEach(({ id }) => {
+    ["company", "team", "stats", "contact"].forEach((id) => {
       const el = document.getElementById(id);
       if (el) observer.observe(el);
     });
@@ -148,20 +151,20 @@ export default function LandingPage() {
       {/* 3. FLOATING PILL-SHAPED TOP NAVIGATION BAR */}
       <header className="sticky top-4 inset-x-0 z-50 flex justify-center px-4 w-full">
         <nav
-          className={`w-[90%] max-w-[1200px] h-16 rounded-full px-5 sm:px-7 flex items-center justify-between transition-all duration-300 ${
+          className={`w-[92%] max-w-[1240px] h-16 rounded-full px-4 sm:px-7 flex items-center justify-between transition-all duration-300 ${
             isDark
               ? "bg-[#13293D]/80 backdrop-blur-xl border border-[#247BA0]/40 shadow-[0_8px_32px_rgba(0,0,0,0.35)] text-[#E8F1F2]"
               : "bg-white/80 backdrop-blur-xl border border-white/60 shadow-[0_8px_32px_rgba(16,42,56,0.06)] text-[#1A362D]"
           }`}
         >
           {/* Logo "Zaminflow" (Exact Official Assets) */}
-          <Link href="/" className="flex items-center">
+          <Link href="/" className="flex items-center shrink-0">
             <ZaminFlowLogo mode={themeMode} size="md" />
           </Link>
 
           {/* Center Navigation Links (Dynamic Scroll-Spy) */}
-          <div className="hidden md:flex items-center gap-8 text-xs font-bold tracking-tight">
-            {NAV_ITEMS.map((item) => {
+          <div className="hidden md:flex items-center gap-7 text-xs font-bold tracking-tight">
+            {navItems.map((item) => {
               const isActive = activeSection === item.id;
               return (
                 <a
@@ -183,8 +186,11 @@ export default function LandingPage() {
             })}
           </div>
 
-          {/* Right Actions: Dark Mode Toggle + Dark Navy Blue "Sign up" Button */}
-          <div className="flex items-center gap-3">
+          {/* Right Actions: Language Switcher + Dark Mode Toggle + Sign up Button */}
+          <div className="flex items-center gap-2 sm:gap-3">
+            {/* Language Switcher */}
+            <LanguageSwitcher isDark={isDark} />
+
             {/* Dark Mode Toggle */}
             <button
               type="button"
@@ -202,13 +208,13 @@ export default function LandingPage() {
             {/* Dark Navy Blue "Sign up" Button */}
             <Link
               href="/sign-up"
-              className={`px-5 sm:px-6 py-2.5 rounded-full font-bold text-xs sm:text-sm transition-all duration-200 shadow-md active:scale-95 flex items-center gap-1.5 ${
+              className={`px-4 sm:px-6 py-2 sm:py-2.5 rounded-full font-bold text-xs sm:text-sm transition-all duration-200 shadow-md active:scale-95 flex items-center gap-1.5 shrink-0 ${
                 isDark
                   ? "bg-[#1B98E0] text-[#13293D] hover:bg-white"
                   : "bg-[#102A38] text-white hover:bg-[#184E77]"
               }`}
             >
-              <span>Sign up</span>
+              <span>{t.nav.signUp}</span>
               <span className="text-xs">&rarr;</span>
             </Link>
           </div>
@@ -224,10 +230,10 @@ export default function LandingPage() {
             {/* Massive, Bold Sans-Serif Headline */}
             <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight leading-[1.08] select-none">
               <span className={isDark ? "text-[#E8F1F2]" : "text-[#1A362D]"}>
-                Connecting smallholder farmers with{" "}
+                {t.hero.headlineStart}
               </span>
               <span className="bg-gradient-to-r from-[#00C853] via-[#4ADE80] to-[#64DD17] bg-clip-text text-transparent inline-block drop-shadow-xs">
-                commercial buyers
+                {t.hero.headlineAccent}
               </span>
             </h1>
 
@@ -237,9 +243,7 @@ export default function LandingPage() {
                 isDark ? "text-[#E8F1F2]/75" : "text-[#4A5D56]"
               }`}
             >
-              Empowering Uzbekistan&apos;s dairy industry through digital ordering, logistics
-              optimization, dynamic quality-based milk pricing, and secure escrow &amp; factoring
-              payment workflows.
+              {t.hero.subheadline}
             </p>
 
             {/* Two Horizontal Buttons */}
@@ -253,7 +257,7 @@ export default function LandingPage() {
                     : "bg-[#1A362D] text-white hover:bg-[#12251F]"
                 }`}
               >
-                <span>Join Us</span>
+                <span>{t.hero.joinUs}</span>
                 <span className="text-base font-extrabold">&rarr;</span>
               </Link>
 
@@ -279,7 +283,7 @@ export default function LandingPage() {
                   <path d="M3 3v18h18" />
                   <path d="M18 9l-5 5-4-4-4 4" />
                 </svg>
-                <span>Explore Live Stats</span>
+                <span>{t.hero.exploreStats}</span>
               </a>
             </div>
           </div>
@@ -312,11 +316,11 @@ export default function LandingPage() {
         <div className="max-w-[1200px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
             <ZaminFlowLogo mode={themeMode} size="sm" />
-            <span className="opacity-60">&bull; Republic of Uzbekistan</span>
+            <span className="opacity-60">&bull; {t.footer.republic}</span>
           </div>
 
           <div className="text-[11px] font-mono opacity-80">
-            &copy; 2026 ZaminFlow Technologies. All Rights Reserved.
+            {t.footer.rights}
           </div>
         </div>
       </footer>

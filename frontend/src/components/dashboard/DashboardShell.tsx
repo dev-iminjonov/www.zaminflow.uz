@@ -6,7 +6,8 @@ import { useRouter } from "next/navigation";
 import { RoleKey, ROLES } from "@/lib/roles";
 import { getStoredSession, signOut, AuthSession } from "@/lib/auth";
 import { getDashboardDataForRole, DashboardKpiCard } from "@/lib/dashboardData";
-import { authTranslations, Locale } from "@/messages/auth";
+import { Locale } from "@/messages/auth";
+import { useLanguage } from "@/context/LanguageContext";
 
 interface DashboardShellProps {
   role: RoleKey;
@@ -15,7 +16,7 @@ interface DashboardShellProps {
 export default function DashboardShell({ role }: DashboardShellProps) {
   const router = useRouter();
   const [session, setSession] = useState<AuthSession | null>(null);
-  const [locale, setLocale] = useState<Locale>("en");
+  const { locale, setLocale, authT: t } = useLanguage();
   const [isSigningOut, setIsSigningOut] = useState(false);
 
   useEffect(() => {
@@ -25,7 +26,6 @@ export default function DashboardShell({ role }: DashboardShellProps) {
 
   const roleConfig = ROLES[role];
   const dashboardData = getDashboardDataForRole(role);
-  const t = authTranslations[locale];
 
   const handleSignOut = async () => {
     setIsSigningOut(true);

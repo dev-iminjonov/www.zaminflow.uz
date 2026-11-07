@@ -5,13 +5,13 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { RoleKey, PUBLIC_SIGNUP_ROLES, ROLES } from "@/lib/roles";
 import { signUp } from "@/lib/auth";
-import { authTranslations, Locale } from "@/messages/auth";
+import { Locale } from "@/messages/auth";
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function SignUpCard() {
   const router = useRouter();
 
-  const [locale, setLocale] = useState<Locale>("en");
-  const t = authTranslations[locale];
+  const { locale, setLocale, authT: t } = useLanguage();
 
   // Selected Role (default: farmer). Admin is strictly omitted from PUBLIC_SIGNUP_ROLES
   const [selectedRole, setSelectedRole] = useState<RoleKey>("farmer");

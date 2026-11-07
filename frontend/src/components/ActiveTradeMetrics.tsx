@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef, useId } from "react";
+import { useLanguage } from "@/context/LanguageContext";
 import {
   TimeRange,
   RegionId,
@@ -22,7 +23,6 @@ function useAnimatedNumber(targetValue: number, duration: number = 800): number 
   const startTimeRef = useRef<number | null>(null);
 
   useEffect(() => {
-    // Respect user's motion preference
     if (typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       setDisplayValue(targetValue);
       return;
@@ -37,7 +37,6 @@ function useAnimatedNumber(targetValue: number, duration: number = 800): number 
       const elapsed = timestamp - startTimeRef.current;
       const progress = Math.min(1, elapsed / duration);
 
-      // Ease-out cubic formula
       const easeProgress = 1 - Math.pow(1 - progress, 3);
       const current = Math.round(
         startValueRef.current + (targetValue - startValueRef.current) * easeProgress
@@ -60,6 +59,7 @@ function useAnimatedNumber(targetValue: number, duration: number = 800): number 
 }
 
 export default function ActiveTradeMetrics({ isDark = false }: ActiveTradeMetricsProps) {
+  const { t } = useLanguage();
   const [range, setRange] = useState<TimeRange>("30D");
   const [region, setRegion] = useState<RegionId>("all");
   const [data, setData] = useState<ActiveTradeMetricsPayload | null>(null);
@@ -71,6 +71,25 @@ export default function ActiveTradeMetrics({ isDark = false }: ActiveTradeMetric
   const [connStatus, setConnStatus] = useState<"connected" | "connecting" | "disconnected">("connecting");
   const [tickerFlash, setTickerFlash] = useState<RecentTradeEvent | null>(null);
   const gradientId = useId();
+
+  const timeRanges: { id: TimeRange; label: string }[] = [
+    { id: "Today", label: t.stats.ranges.today },
+    { id: "7D", label: t.stats.ranges.d7 },
+    { id: "30D", label: t.stats.ranges.d30 },
+    { id: "12M", label: t.stats.ranges.m12 },
+  ];
+
+  const regionsList: { id: RegionId; label: string }[] = [
+    { id: "all", label: t.regions.all },
+    { id: "andijan", label: t.regions.andijan },
+    { id: "samarqand", label: t.regions.samarqand },
+    { id: "fergana", label: t.regions.fergana },
+    { id: "namangan", label: t.regions.namangan },
+    { id: "qashqadaryo", label: t.regions.qashqadaryo },
+    { id: "tashkent", label: t.regions.tashkent },
+    { id: "syrdarya", label: t.regions.syrdarya },
+    { id: "surxondaryo", label: t.regions.surxondaryo },
+  ];
 
   // Manual refresh fallback
   const handleRefresh = async () => {
@@ -87,7 +106,7 @@ export default function ActiveTradeMetrics({ isDark = false }: ActiveTradeMetric
     }
   };
 
-  // Sub-second streaming subscription (WebSocket with SSE / Polling fallback)
+  // Sub-second streaming subscription
   useEffect(() => {
     setLoading(true);
     setError(null);
@@ -150,7 +169,7 @@ export default function ActiveTradeMetrics({ isDark = false }: ActiveTradeMetric
   return (
     <section
       id="stats"
-      aria-label="Active Trade Metrics"
+      aria-label={t.stats.titleStart + " " + t.stats.titleAccent}
       className="relative w-full py-16 sm:py-24 transition-colors duration-500 scroll-mt-20"
       style={{
         background: isDark
@@ -168,12 +187,12 @@ export default function ActiveTradeMetrics({ isDark = false }: ActiveTradeMetric
         {/* 1. DATA DELAYED BANNER (Shown only if data > 60s old) */}
         {isDelayed && (
           <div className="w-full bg-[#fdf0d2] text-[#7a4b00] border border-[#f5d898] rounded-xl px-4 py-2 text-xs font-medium flex items-center justify-between shadow-xs">
-            <span>Notice: Real-time telemetry feed is delayed. Showing cached trade data.</span>
+            <span>{t.stats.delayedNotice}</span>
             <button
               onClick={handleRefresh}
               className="font-bold underline hover:no-underline ml-4 cursor-pointer"
             >
-              Refresh now
+              {t.stats.refreshNow}
             </button>
           </div>
         )}
@@ -190,7 +209,7 @@ export default function ActiveTradeMetrics({ isDark = false }: ActiveTradeMetric
                 <strong>{tickerFlash.title}:</strong> {tickerFlash.description}
               </span>
             </div>
-            <span className="font-mono text-xs opacity-75 shrink-0">Sub-second Ticker</span>
+            <span className="font-mono text-xs opacity-75 shrink-0">{t.stats.subsecondTicker}</span>
           </div>
         )}
 
@@ -198,9 +217,9 @@ export default function ActiveTradeMetrics({ isDark = false }: ActiveTradeMetric
         <header className="flex flex-wrap items-end justify-between gap-6 pt-4">
           <div className="flex-1 min-w-[300px]">
             <h2 className="text-4xl sm:text-[56px] leading-[1.05] font-extrabold tracking-[-0.03em] select-none text-left">
-              <span className="text-[#087a3c]">Active</span>{" "}
+              <span className="text-[#087a3c]">{t.stats.titleStart}</span>{" "}
               <span className={isDark ? "text-white" : "text-[#17352c]"}>
-                Trade Metrics
+                {t.stats.titleAccent}
               </span>
             </h2>
           </div>
@@ -210,20 +229,20 @@ export default function ActiveTradeMetrics({ isDark = false }: ActiveTradeMetric
             {/* Segmented Range Control */}
             <div
               role="radiogroup"
-              aria-label="Filter time range"
+              aria-label={t.stats.filterRange}
               className={`flex rounded-full p-1 shadow-[0_4px_20px_rgba(20,80,60,0.06)] border ${
                 isDark ? "bg-[#102433] border-[#247BA0]/30" : "bg-white border-white/60"
               }`}
             >
-              {(["Today", "7D", "30D", "12M"] as TimeRange[]).map((r) => {
-                const isActive = range === r;
+              {timeRanges.map((r) => {
+                const isActive = range === r.id;
                 return (
                   <button
-                    key={r}
+                    key={r.id}
                     type="button"
                     role="radio"
                     aria-checked={isActive}
-                    onClick={() => setRange(r)}
+                    onClick={() => setRange(r.id)}
                     className={`font-semibold text-sm rounded-full px-4 sm:px-4.5 py-2 min-h-[44px] transition-all duration-200 cursor-pointer ${
                       isActive
                         ? isDark
@@ -234,7 +253,7 @@ export default function ActiveTradeMetrics({ isDark = false }: ActiveTradeMetric
                         : "text-[#17352c] hover:text-[#087a3c]"
                     }`}
                   >
-                    {r}
+                    {r.label}
                   </button>
                 );
               })}
@@ -243,7 +262,7 @@ export default function ActiveTradeMetrics({ isDark = false }: ActiveTradeMetric
             {/* Accessible Region Select Dropdown */}
             <div className="relative">
               <label htmlFor="region-select" className="sr-only">
-                Filter by Region
+                {t.stats.allRegions}
               </label>
               <select
                 id="region-select"
@@ -255,15 +274,11 @@ export default function ActiveTradeMetrics({ isDark = false }: ActiveTradeMetric
                     : "bg-white border-[#17352c]/12 text-[#17352c] hover:border-[#087a3c]"
                 }`}
               >
-                <option value="all">All regions</option>
-                <option value="andijan">Andijan</option>
-                <option value="samarqand">Samarqand</option>
-                <option value="fergana">Fergana</option>
-                <option value="namangan">Namangan</option>
-                <option value="qashqadaryo">Qashqadaryo</option>
-                <option value="tashkent">Tashkent</option>
-                <option value="syrdarya">Syrdarya</option>
-                <option value="surxondaryo">Surxondaryo (Empty state)</option>
+                {regionsList.map((reg) => (
+                  <option key={reg.id} value={reg.id}>
+                    {reg.label}
+                  </option>
+                ))}
               </select>
               <div className="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-xs opacity-70">
                 ▾
@@ -274,13 +289,13 @@ export default function ActiveTradeMetrics({ isDark = false }: ActiveTradeMetric
 
         {/* 3. ERROR STATE (If fetch fails) */}
         {error && (
-          <div className="g p-6 bg-red-50/80 dark:bg-red-950/40 border border-red-200 dark:border-red-800 rounded-3xl text-center flex flex-col items-center justify-center gap-3">
+          <div className="p-6 bg-red-50/80 dark:bg-red-950/40 border border-red-200 dark:border-red-800 rounded-3xl text-center flex flex-col items-center justify-center gap-3">
             <p className="text-sm font-bold text-red-700 dark:text-red-400">{error}</p>
             <button
               onClick={handleRefresh}
               className="px-6 py-2 rounded-full bg-[#12303a] text-white text-xs font-bold hover:bg-[#1A362D] cursor-pointer"
             >
-              Retry
+              {t.stats.retry}
             </button>
           </div>
         )}
@@ -297,7 +312,7 @@ export default function ActiveTradeMetrics({ isDark = false }: ActiveTradeMetric
             }`}
           >
             <div className="text-xs font-bold tracking-[0.08em] text-[#087a3c] uppercase">
-              Avg. milk price
+              {t.stats.avgPrice}
             </div>
             {loading ? (
               <div className="h-10 w-32 bg-slate-200 dark:bg-white/10 rounded-lg animate-pulse my-3" />
@@ -307,7 +322,7 @@ export default function ActiveTradeMetrics({ isDark = false }: ActiveTradeMetric
                   {formatNumber(animAvgPrice)}
                 </span>
                 <span className="font-mono text-[13px] text-[#4d6a60] dark:text-[#E8F1F2]/60">
-                  UZS / L
+                  {t.stats.currencyUnit} / {t.stats.litersUnit}
                 </span>
                 {data?.kpis.avgPrice.delta && (
                   <span className="text-xs font-bold bg-[#d9f7e5] text-[#087a3c] rounded-lg px-2 py-1 whitespace-nowrap">
@@ -327,7 +342,7 @@ export default function ActiveTradeMetrics({ isDark = false }: ActiveTradeMetric
             }`}
           >
             <div className="text-xs font-bold tracking-[0.08em] text-[#087a3c] uppercase">
-              Volume traded today
+              {t.stats.volumeToday}
             </div>
             {loading ? (
               <div className="h-10 w-36 bg-slate-200 dark:bg-white/10 rounded-lg animate-pulse my-3" />
@@ -337,7 +352,7 @@ export default function ActiveTradeMetrics({ isDark = false }: ActiveTradeMetric
                   {formatNumber(animVolume)}
                 </span>
                 <span className="font-mono text-[13px] text-[#4d6a60] dark:text-[#E8F1F2]/60">
-                  L
+                  {t.stats.litersUnit}
                 </span>
                 {data?.kpis.volumeToday.delta && (
                   <span className="text-xs font-bold bg-[#d9f7e5] text-[#087a3c] rounded-lg px-2 py-1 whitespace-nowrap">
@@ -357,7 +372,7 @@ export default function ActiveTradeMetrics({ isDark = false }: ActiveTradeMetric
             }`}
           >
             <div className="text-xs font-bold tracking-[0.08em] text-[#087a3c] uppercase">
-              Active shipments
+              {t.stats.activeShipments}
             </div>
             {loading ? (
               <div className="h-10 w-24 bg-slate-200 dark:bg-white/10 rounded-lg animate-pulse my-3" />
@@ -367,7 +382,7 @@ export default function ActiveTradeMetrics({ isDark = false }: ActiveTradeMetric
                   {formatNumber(animShipments)}
                 </span>
                 <span className="font-mono text-[13px] text-[#4d6a60] dark:text-[#E8F1F2]/60">
-                  trucks
+                  {t.stats.trucksUnit}
                 </span>
                 {data?.kpis.activeShipments.delta && (
                   <span className="text-xs font-bold bg-[#d9f7e5] text-[#087a3c] rounded-lg px-2 py-1 whitespace-nowrap">
@@ -387,7 +402,7 @@ export default function ActiveTradeMetrics({ isDark = false }: ActiveTradeMetric
             }`}
           >
             <div className="text-xs font-bold tracking-[0.08em] text-[#087a3c] uppercase">
-              Secured escrow
+              {t.stats.securedEscrow}
             </div>
             {loading ? (
               <div className="h-10 w-40 bg-slate-200 dark:bg-white/10 rounded-lg animate-pulse my-3" />
@@ -397,7 +412,7 @@ export default function ActiveTradeMetrics({ isDark = false }: ActiveTradeMetric
                   {formatNumber(animEscrow)}
                 </span>
                 <span className="font-mono text-[13px] text-[#4d6a60] dark:text-[#E8F1F2]/60">
-                  UZS
+                  {t.stats.currencyUnit}
                 </span>
               </div>
             )}
@@ -405,7 +420,7 @@ export default function ActiveTradeMetrics({ isDark = false }: ActiveTradeMetric
 
         </div>
 
-        {/* 5. CHART ROW (Price Chart Card [flex 2 1 560px] + Quality Grades Card [flex 1 1 320px]) */}
+        {/* 5. CHART ROW (Price Chart Card + Quality Grades Card) */}
         <div className="flex flex-wrap gap-5">
           
           {/* Price Chart Card */}
@@ -419,22 +434,22 @@ export default function ActiveTradeMetrics({ isDark = false }: ActiveTradeMetric
             <div className="flex flex-wrap justify-between items-baseline gap-3 mb-2">
               <div>
                 <div className="text-xs font-bold tracking-[0.08em] text-[#087a3c] uppercase">
-                  Milk price index
+                  {t.stats.priceTrendTitle}
                 </div>
                 <div className="text-[22px] font-bold mt-1 text-[#17352c] dark:text-white">
-                  {data?.priceSeries.title || "Average farm-gate price, last 30 days"}
+                  {data?.priceSeries.title || t.stats.priceTrendTitle}
                 </div>
               </div>
 
               <div className="flex gap-5 text-[13px] text-[#4d6a60] dark:text-[#E8F1F2]/70 font-medium">
                 <span>
-                  Low{" "}
+                  {t.stats.low}{" "}
                   <b className="font-mono font-bold text-[#17352c] dark:text-white">
                     {formatNumber(data?.priceSeries.low || 3890)}
                   </b>
                 </span>
                 <span>
-                  High{" "}
+                  {t.stats.high}{" "}
                   <b className="font-mono font-bold text-[#17352c] dark:text-white">
                     {formatNumber(data?.priceSeries.high || 4420)}
                   </b>
@@ -447,7 +462,7 @@ export default function ActiveTradeMetrics({ isDark = false }: ActiveTradeMetric
               <svg
                 viewBox="0 0 660 230"
                 role="img"
-                aria-label={data?.priceSeries.trendSummary || "Average milk price index chart"}
+                aria-label={data?.priceSeries.trendSummary || t.stats.priceTrendTitle}
                 className="w-full h-auto overflow-visible select-none"
               >
                 <defs>
@@ -458,66 +473,60 @@ export default function ActiveTradeMetrics({ isDark = false }: ActiveTradeMetric
                 </defs>
 
                 {/* 4 Faint Horizontal Gridlines */}
-                <g stroke={isDark ? "rgba(255,255,255,0.1)" : "#17352c"} strokeOpacity={isDark ? 1 : 0.1}>
-                  <line x1="44" y1="30" x2="660" y2="30" />
-                  <line x1="44" y1="85" x2="660" y2="85" />
-                  <line x1="44" y1="140" x2="660" y2="140" />
-                  <line x1="44" y1="195" x2="660" y2="195" />
-                </g>
-
-                {/* Y-Axis Labels & X-Axis Labels */}
-                <g
-                  fontSize="11"
-                  fill={isDark ? "rgba(232,241,242,0.6)" : "#4d6a60"}
-                  fontFamily="'JetBrains Mono', monospace"
-                >
-                  <text x="0" y="34">4,400</text>
-                  <text x="0" y="89">4,200</text>
-                  <text x="0" y="144">4,000</text>
-                  <text x="0" y="199">3,800</text>
-                  <text x="44" y="222">{data?.priceSeries.xAxisLabels.start || "Oct 8"}</text>
-                  <text x="270" y="222">{data?.priceSeries.xAxisLabels.middle || "Oct 23"}</text>
-                  <text x="600" y="222">{data?.priceSeries.xAxisLabels.end || "Nov 7"}</text>
-                </g>
+                {[45, 95, 145, 195].map((y) => (
+                  <line
+                    key={y}
+                    x1="20"
+                    y1={y}
+                    x2="640"
+                    y2={y}
+                    stroke={isDark ? "rgba(255,255,255,0.08)" : "#e2ebe7"}
+                    strokeDasharray="4 4"
+                    strokeWidth="1"
+                  />
+                ))}
 
                 {/* Area Gradient Fill */}
                 {areaPath && (
-                  <path d={areaPath} fill={`url(#chartGradient-${gradientId})`} />
+                  <path
+                    d={areaPath}
+                    fill={`url(#chartGradient-${gradientId})`}
+                    className="transition-all duration-500 ease-out"
+                  />
                 )}
 
-                {/* 3px Line Stroke */}
+                {/* Stroke Line */}
                 {linePath && (
                   <path
                     d={linePath}
                     fill="none"
-                    stroke="#12a150"
-                    strokeWidth="3"
-                    strokeLinejoin="round"
+                    stroke="#22d36b"
+                    strokeWidth="3.5"
                     strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="transition-all duration-500 ease-out"
                   />
                 )}
 
-                {/* Interactive Points on Line */}
-                {points.map((pt, i) => {
-                  const isLast = i === points.length - 1;
-                  const isHovered = activeTooltip?.date === pt.date;
+                {/* Interactive Data Points with invisible 32px touch targets */}
+                {points.map((pt, index) => {
+                  const isHovered = activeTooltip?.x === pt.x && activeTooltip?.y === pt.y;
+                  const isLast = index === points.length - 1;
+
                   return (
-                    <g key={i}>
-                      {/* Invisible hover hitbox */}
+                    <g key={index}>
                       <circle
                         cx={pt.x}
                         cy={pt.y}
-                        r="14"
+                        r="16"
                         fill="transparent"
                         className="cursor-pointer"
-                        onMouseEnter={() => setActiveTooltip(pt)}
+                        onMouseEnter={() => {
+                          setActiveTooltip(pt);
+                          setAnnouncement(`${pt.date}: ${formatNumber(pt.price)} UZS/L`);
+                        }}
                         onMouseLeave={() => setActiveTooltip(null)}
-                        onTouchStart={() => setActiveTooltip(pt)}
-                        tabIndex={0}
-                        aria-label={`${pt.date}: ${formatNumber(pt.price)} UZS`}
                       />
-
-                      {/* Visible dot on hover or latest */}
                       {(isLast || isHovered) && (
                         <circle
                           cx={pt.x}
@@ -586,10 +595,10 @@ export default function ActiveTradeMetrics({ isDark = false }: ActiveTradeMetric
           >
             <div>
               <div className="text-xs font-bold tracking-[0.08em] text-[#087a3c] uppercase">
-                Quality grades
+                {t.stats.qualityGrades}
               </div>
               <div className="text-[22px] font-bold mt-1 text-[#17352c] dark:text-white">
-                Today&apos;s deliveries
+                {t.stats.todaysDeliveries}
               </div>
             </div>
 
@@ -611,7 +620,6 @@ export default function ActiveTradeMetrics({ isDark = false }: ActiveTradeMetric
                         {grade.percentage}%
                       </span>
                     </div>
-                    {/* 10px rounded bar (navy fill on #e3efe9 track) */}
                     <div
                       className={`h-2.5 rounded-full overflow-hidden ${
                         isDark ? "bg-white/10" : "bg-[#e3efe9]"
@@ -633,7 +641,7 @@ export default function ActiveTradeMetrics({ isDark = false }: ActiveTradeMetric
 
         </div>
 
-        {/* 6. BOTTOM ROW (Regional Prices Card [flex 1 1 420px] + Live Shipments Card [flex 1.4 1 520px]) */}
+        {/* 6. BOTTOM ROW (Regional Prices Card + Live Shipments Card) */}
         <div className="flex flex-wrap gap-5">
           
           {/* Regional Prices Card */}
@@ -646,10 +654,10 @@ export default function ActiveTradeMetrics({ isDark = false }: ActiveTradeMetric
           >
             <div>
               <div className="text-xs font-bold tracking-[0.08em] text-[#087a3c] uppercase">
-                By region
+                {t.stats.byRegion}
               </div>
               <div className="text-[22px] font-bold mt-1 text-[#17352c] dark:text-white">
-                Price per litre, UZS
+                {t.stats.pricePerLiter}
               </div>
             </div>
 
@@ -661,7 +669,7 @@ export default function ActiveTradeMetrics({ isDark = false }: ActiveTradeMetric
               </div>
             ) : data?.regionPrices.length === 0 ? (
               <div className="py-8 text-center text-sm opacity-60">
-                No regional breakdown available for this selection.
+                {t.stats.noRegionalData}
               </div>
             ) : (
               <div className="flex flex-col gap-3.5 pt-1">
@@ -674,7 +682,6 @@ export default function ActiveTradeMetrics({ isDark = false }: ActiveTradeMetric
                     >
                       {rp.region}
                     </span>
-                    {/* Navy 8px bar on track */}
                     <div
                       className={`flex-1 h-2 rounded-full overflow-hidden ${
                         isDark ? "bg-white/10" : "bg-[#e3efe9]"
@@ -708,17 +715,17 @@ export default function ActiveTradeMetrics({ isDark = false }: ActiveTradeMetric
             <div className="flex justify-between items-start mb-2">
               <div>
                 <div className="text-xs font-bold tracking-[0.08em] text-[#087a3c] uppercase">
-                  Logistics
+                  {t.hero.cards.logistics}
                 </div>
                 <div className="text-[22px] font-bold mt-1 text-[#17352c] dark:text-white">
-                  Live shipments
+                  {t.stats.liveShipments}
                 </div>
               </div>
               <a
                 href="#stats"
                 className="text-sm font-semibold text-[#087a3c] hover:underline flex items-center gap-1 cursor-pointer"
               >
-                View all &rarr;
+                {t.stats.viewAll} &rarr;
               </a>
             </div>
 
@@ -730,7 +737,7 @@ export default function ActiveTradeMetrics({ isDark = false }: ActiveTradeMetric
               </div>
             ) : data?.shipments.length === 0 ? (
               <div className="py-8 text-center text-sm opacity-60">
-                No active shipments currently reporting telemetry.
+                {t.stats.noShipmentsData}
               </div>
             ) : (
               <div className="flex flex-col">
@@ -758,7 +765,6 @@ export default function ActiveTradeMetrics({ isDark = false }: ActiveTradeMetric
                       {sh.eta}
                     </span>
 
-                    {/* Status Chip combining icon/dot and text */}
                     <div>
                       {sh.status === "in_transit" && (
                         <span className="text-xs font-bold bg-[#d9f7e5] text-[#087a3c] rounded-lg px-2.5 py-1 whitespace-nowrap inline-flex items-center gap-1">
@@ -771,7 +777,7 @@ export default function ActiveTradeMetrics({ isDark = false }: ActiveTradeMetric
                         </span>
                       )}
                       {sh.status === "escrow_released" && (
-                        <span className="text-xs font-bold bg-[#e6ecea] text-[#33473f] rounded-lg px-2.5 py-1 whitespace-nowrap inline-flex items-center gap-1">
+                        <span className="text-xs font-bold bg-[#e6ecea] text-[#4d6a60] rounded-lg px-2.5 py-1 whitespace-nowrap inline-flex items-center gap-1">
                           {sh.statusText}
                         </span>
                       )}

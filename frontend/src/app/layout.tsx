@@ -2,6 +2,7 @@
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import React, { useState } from "react";
+import { LanguageProvider } from "@/context/LanguageContext";
 import "./globals.css";
 
 export default function RootLayout({
@@ -21,9 +22,11 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-screen antialiased">
-        <QueryClientProvider client={queryClient}>
-          {children}
-        </QueryClientProvider>
+        <LanguageProvider>
+          <QueryClientProvider client={queryClient}>
+            {children}
+          </QueryClientProvider>
+        </LanguageProvider>
       </body>
     </html>
   );

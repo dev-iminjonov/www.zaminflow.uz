@@ -2,12 +2,14 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import { useLanguage } from "@/context/LanguageContext";
 
 interface ContactUsSectionProps {
   isDark?: boolean;
 }
 
 export default function ContactUsSection({ isDark = false }: ContactUsSectionProps) {
+  const { t } = useLanguage();
   const [formData, setFormData] = useState({
     fullName: "",
     contactInfo: "",
@@ -24,12 +26,12 @@ export default function ContactUsSection({ isDark = false }: ContactUsSectionPro
     setErrorMessage(null);
 
     if (!formData.fullName.trim() || !formData.contactInfo.trim() || !formData.message.trim()) {
-      setErrorMessage("Please complete all required fields before sending.");
+      setErrorMessage(t.contact.requiredError);
       return;
     }
 
     if (!formData.agreed) {
-      setErrorMessage("Please confirm your consent to the Privacy Policy.");
+      setErrorMessage(t.contact.consentError);
       return;
     }
 
@@ -63,15 +65,17 @@ export default function ContactUsSection({ isDark = false }: ContactUsSectionPro
         {/* 1. SECTION HEADER (Centered Overline + Title) */}
         <header className="text-center mb-10 sm:mb-14">
           <div className="text-[12px] font-bold tracking-[0.08em] uppercase text-[#087a3c] dark:text-[#4be08a]">
-            Contact us
+            {t.contact.badge}
           </div>
           <h2
             className={`mt-3 text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight leading-[1.08] ${
               isDark ? "text-white" : "text-[#17352c]"
             }`}
           >
-            Let&apos;s talk about your{" "}
-            <span className="text-[#087a3c] dark:text-[#4be08a]">dairy supply chain</span>
+            {t.contact.titleStart}
+            <span className="text-[#087a3c] dark:text-[#4be08a]">
+              {t.contact.titleAccent}
+            </span>
           </h2>
         </header>
 
@@ -88,20 +92,22 @@ export default function ContactUsSection({ isDark = false }: ContactUsSectionPro
               <div className="w-16 h-16 rounded-full bg-[#087a3c]/15 text-[#087a3c] dark:text-[#4be08a] flex items-center justify-center text-2xl font-bold">
                 ✓
               </div>
-              <h3 className="text-2xl font-bold tracking-tight">Message Sent Successfully</h3>
+              <h3 className="text-2xl font-bold tracking-tight">
+                {t.contact.successTitle}
+              </h3>
               <p
                 className={`max-w-md text-sm sm:text-base leading-relaxed ${
                   isDark ? "text-white/70" : "text-[#17352c]/80"
                 }`}
               >
-                Thank you, <strong>{formData.fullName}</strong>. Your inquiry has been routed to our regional supply team. A specialist will follow up shortly.
+                {t.contact.successDesc}
               </p>
               <button
                 type="button"
                 onClick={handleReset}
                 className="mt-6 px-6 py-2.5 rounded-full text-sm font-semibold bg-[#12303a] text-white hover:bg-[#0c2027] transition-colors cursor-pointer"
               >
-                Send another message
+                {t.contact.sendAnother}
               </button>
             </div>
           ) : (
@@ -119,7 +125,7 @@ export default function ContactUsSection({ isDark = false }: ContactUsSectionPro
                     htmlFor="cn"
                     className="text-sm font-semibold select-none cursor-pointer"
                   >
-                    Full name
+                    {t.contact.fullName}
                   </label>
                   <input
                     id="cn"
@@ -127,7 +133,7 @@ export default function ContactUsSection({ isDark = false }: ContactUsSectionPro
                     required
                     value={formData.fullName}
                     onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                    placeholder="Your full name"
+                    placeholder={t.contact.fullNamePlaceholder}
                     className={`h-[52px] w-full px-4 rounded-[14px] text-base transition-all focus:outline-none focus:ring-2 focus:ring-[#22d36b] ${
                       isDark
                         ? "bg-[#0A1926] border border-white/20 text-white placeholder-white/40"
@@ -141,7 +147,7 @@ export default function ContactUsSection({ isDark = false }: ContactUsSectionPro
                     htmlFor="cp"
                     className="text-sm font-semibold select-none cursor-pointer"
                   >
-                    Phone or email
+                    {t.contact.phoneOrEmail}
                   </label>
                   <input
                     id="cp"
@@ -149,7 +155,7 @@ export default function ContactUsSection({ isDark = false }: ContactUsSectionPro
                     required
                     value={formData.contactInfo}
                     onChange={(e) => setFormData({ ...formData, contactInfo: e.target.value })}
-                    placeholder="+998 90 123 45 67"
+                    placeholder={t.contact.phoneOrEmailPlaceholder}
                     className={`h-[52px] w-full px-4 rounded-[14px] text-base transition-all focus:outline-none focus:ring-2 focus:ring-[#22d36b] ${
                       isDark
                         ? "bg-[#0A1926] border border-white/20 text-white placeholder-white/40"
@@ -165,7 +171,7 @@ export default function ContactUsSection({ isDark = false }: ContactUsSectionPro
                   htmlFor="cr"
                   className="text-sm font-semibold select-none cursor-pointer"
                 >
-                  I am a…
+                  {t.contact.roleLabel}
                 </label>
                 <select
                   id="cr"
@@ -177,10 +183,10 @@ export default function ContactUsSection({ isDark = false }: ContactUsSectionPro
                       : "bg-white border border-[#6f8a7f] text-[#17352c]"
                   }`}
                 >
-                  <option value="Farmer">Farmer</option>
-                  <option value="Dairy Industry">Dairy Industry</option>
-                  <option value="Driver">Driver</option>
-                  <option value="Other">Other</option>
+                  <option value="Farmer">{t.contact.roles.farmer}</option>
+                  <option value="Dairy Industry">{t.contact.roles.dairy}</option>
+                  <option value="Driver">{t.contact.roles.driver}</option>
+                  <option value="Other">{t.contact.roles.other}</option>
                 </select>
               </div>
 
@@ -190,7 +196,7 @@ export default function ContactUsSection({ isDark = false }: ContactUsSectionPro
                   htmlFor="cm"
                   className="text-sm font-semibold select-none cursor-pointer"
                 >
-                  Message
+                  {t.contact.message}
                 </label>
                 <textarea
                   id="cm"
@@ -198,7 +204,7 @@ export default function ContactUsSection({ isDark = false }: ContactUsSectionPro
                   rows={4}
                   value={formData.message}
                   onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                  placeholder="How can we help?"
+                  placeholder={t.contact.messagePlaceholder}
                   className={`min-h-[130px] p-4 rounded-[14px] text-base resize-y transition-all focus:outline-none focus:ring-2 focus:ring-[#22d36b] ${
                     isDark
                       ? "bg-[#0A1926] border border-white/20 text-white placeholder-white/40"
@@ -217,12 +223,12 @@ export default function ContactUsSection({ isDark = false }: ContactUsSectionPro
                   className="w-5 h-5 rounded mt-0.5 accent-[#12303a] dark:accent-[#087a3c] cursor-pointer flex-shrink-0"
                 />
                 <span>
-                  I agree to the processing of my personal data in line with the{" "}
+                  {t.contact.consent}
                   <Link
                     href="#privacy"
                     className="font-bold text-[#087a3c] dark:text-[#4be08a] hover:underline"
                   >
-                    Privacy Policy
+                    {t.contact.privacyPolicy}
                   </Link>
                 </span>
               </label>
@@ -236,10 +242,10 @@ export default function ContactUsSection({ isDark = false }: ContactUsSectionPro
                 {isSubmitting ? (
                   <>
                     <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                    <span>Sending inquiry...</span>
+                    <span>{t.contact.submitting}</span>
                   </>
                 ) : (
-                  <span>Send message &rarr;</span>
+                  <span>{t.contact.submitBtn}</span>
                 )}
               </button>
             </form>

@@ -1,12 +1,15 @@
 "use client";
 
 import React from "react";
+import { useLanguage } from "@/context/LanguageContext";
 
 interface HeroEcosystemVisualProps {
   isDark: boolean;
 }
 
 export default function HeroEcosystemVisual({ isDark }: HeroEcosystemVisualProps) {
+  const { t } = useLanguage();
+
   return (
     <div className="relative w-full max-w-[620px] lg:max-w-none mx-auto select-none p-4 sm:p-6 lg:p-8">
       {/* 1. SOFT GLOWING EMERALD AURA ILLUMINATING THE SCENE */}
@@ -45,7 +48,7 @@ export default function HeroEcosystemVisual({ isDark }: HeroEcosystemVisualProps
           <div className="flex items-center gap-1.5">
             <span className="w-2 h-2 rounded-full bg-[#00C853] animate-ping" />
             <span className="text-[10px] sm:text-[11px] font-black uppercase tracking-wider text-[#087a3c] dark:text-[#22d36b]">
-              Live Pricing
+              {t.hero.cards.livePricing}
             </span>
           </div>
           <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-[#087a3c]/10 dark:bg-[#00C853]/15 text-[#087a3c] dark:text-[#22d36b] font-bold">
@@ -87,8 +90,8 @@ export default function HeroEcosystemVisual({ isDark }: HeroEcosystemVisualProps
         </div>
 
         <div className="mt-1 flex items-center justify-between text-[10px] text-[#4A5D56] dark:text-[#E8F1F2]/60 font-medium">
-          <span>Fat 4.1%</span>
-          <span>SNF 8.7% (Grade A+)</span>
+          <span>{t.hero.cards.fat} 4.1%</span>
+          <span>{t.hero.cards.snf} 8.7% ({t.hero.cards.grade})</span>
         </div>
       </div>
 
@@ -107,20 +110,20 @@ export default function HeroEcosystemVisual({ isDark }: HeroEcosystemVisualProps
               <circle cx="12" cy="9" r="2.5" />
             </svg>
             <span className="text-[10px] sm:text-[11px] font-black uppercase tracking-wider text-[#087a3c] dark:text-[#22d36b]">
-              Logistics
+              {t.hero.cards.logistics}
             </span>
           </div>
           <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#087a3c]/10 dark:bg-[#00C853]/15 text-[#087a3c] dark:text-[#22d36b]">
-            +3.2°C Cold
+            +3.2°C {t.hero.cards.cold}
           </span>
         </div>
 
         <div className="text-xs font-bold truncate mb-1 text-[#102A38] dark:text-white">
-          Sayxunobod &rarr; Tashkent
+          Sayxunobod &rarr; Toshkent
         </div>
         <div className="text-[11px] text-[#4A5D56] dark:text-[#E8F1F2]/70 mb-2 flex items-center gap-1.5 font-medium">
           <span className="w-1.5 h-1.5 rounded-full bg-[#00C853]" />
-          <span>GPS 250m Lock • 28 min ETA</span>
+          <span>{t.hero.cards.lockEta}</span>
         </div>
 
         {/* Minimalist Route Progress Line */}
@@ -147,10 +150,10 @@ export default function HeroEcosystemVisual({ isDark }: HeroEcosystemVisualProps
           </div>
           <div>
             <div className="text-[11px] font-black uppercase tracking-wider text-[#087a3c] dark:text-[#22d36b]">
-              Secured Escrow
+              {t.hero.cards.securedEscrow}
             </div>
             <div className="text-[10px] text-[#4A5D56] dark:text-[#E8F1F2]/60 font-semibold">
-              Bank Vault Locked
+              {t.hero.cards.bankLocked}
             </div>
           </div>
         </div>
@@ -164,7 +167,7 @@ export default function HeroEcosystemVisual({ isDark }: HeroEcosystemVisualProps
           <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
             <polyline points="20 6 9 17 4 12" />
           </svg>
-          <span>Auto-release upon titration</span>
+          <span>{t.hero.cards.autoRelease}</span>
         </div>
       </div>
     </div>
