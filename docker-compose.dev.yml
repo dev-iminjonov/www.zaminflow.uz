@@ -1,0 +1,28 @@
+services:
+  db:
+    extends:
+      file: docker-compose.yml
+      service: db
+
+  backend:
+    extends:
+      file: docker-compose.yml
+      service: backend
+
+  frontend:
+    extends:
+      file: docker-compose.yml
+      service: frontend
+    command: npm run dev
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+      - /app/.next
+    environment:
+      - WATCHPACK_POLLING=true
+      - NEXT_PUBLIC_API_URL=http://localhost:8000/api/v1
+
+  caddy:
+    extends:
+      file: docker-compose.yml
+      service: caddy

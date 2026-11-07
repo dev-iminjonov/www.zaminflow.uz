@@ -1,0 +1,13 @@
+ID,Lens,Title,Severity,Effort,Risk,ChangeClass,Status,FileRef
+FND-SEC-001,Security,Insecure JWT storage in localStorage exposed to XSS,High,M,Low,RED,Open,frontend/src/lib/api.ts:18
+FND-SEC-002,Security,Caddy direct proxy bypasses Next.js edge rate limiting,High,S,Low,YELLOW,Ready,Caddyfile:9
+FND-DB-001,Database,Alembic migration 0002 has empty downgrade,High,S,Very Low,GREEN,Ready,backend/alembic/versions/0002_onboarding_gating.py:184
+FND-COMP-001,Compliance,Uzbek Law ZRU-547 data residency sign-off pending,Blocker,M,High,RED,Open,docs/questions.md:Question 3
+FND-REL-001,Reliability,Missing transactional outbox for partner bank webhooks,Medium,M,Med,YELLOW,Ready,backend/app/main.py:29
+FND-DOM-001,Domain,Decimal & UZS integer precision verification across ledger,High,S,Low,RED,Open,backend/app/modules/escrow_ledger/service.py:120
+FND-OPS-001,Operations,Missing automated backup restore drill and WAL shipping,Medium,M,Med,YELLOW,Ready,docker-compose.yml:12
+FND-ARCH-001,Architecture,Unused legacy prototype routes in field and portal,Low,S,Very Low,GREEN,Ready,frontend/src/middleware.ts:70
+FND-A11Y-001,Accessibility,Live statistics charts missing text table alternative,Medium,S,Very Low,GREEN,Ready,frontend/src/components/ActiveTradeMetrics.tsx:1
+FND-DSGN-001,Design,One-off hard-coded color values in dashboard subviews,Low,S,Very Low,GREEN,Ready,frontend/src/app/dashboard/farmer/page.tsx:40
+FND-LOC-001,Localization,Hard-coded English strings across role dashboards,Medium,L,Med,YELLOW,Ready,docs/questions.md:Question 9
+FND-GIS-001,Database,GPS driver location pings lack table partitioning,Medium,M,Med,RED,Open,backend/alembic/versions/0001_initial_schema.py:47

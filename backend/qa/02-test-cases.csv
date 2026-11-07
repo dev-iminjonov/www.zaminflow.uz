@@ -1,0 +1,23 @@
+ID,Area,Requirement/Design Ref,Preconditions,Steps,Expected Result,Priority,Automated
+TC-AUTH-001,Auth,SRS Sec 2.1 Sign In,Seed farmer provisioned,1. Navigate to /signin. 2. Enter farmer@zaminflow.uz and ZaminFlowFarmer2026!. 3. Click Sign in.,Redirects to /dashboard/farmer with active session and cookies,P0,Y
+TC-AUTH-002,Auth,SRS Sec 2.1 Sign In,Seed dairy provisioned,1. Navigate to /signin. 2. Enter dairy@zaminflow.uz and ZaminFlowDairy2026!. 3. Click Sign in.,Redirects to /dashboard/dairy with active session,P0,Y
+TC-AUTH-003,Auth,SRS Sec 2.1 Sign In,Seed driver provisioned,1. Navigate to /signin. 2. Enter driver@zaminflow.uz and ZaminFlowDriver2026!. 3. Click Sign in.,Redirects to /dashboard/driver with active session,P0,Y
+TC-AUTH-004,Auth,SRS Sec 2.1 Sign In,Seed admin provisioned,1. Navigate to /signin. 2. Enter admin@zaminflow.uz and ZaminFlowSuperAdmin2026!. 3. Click Sign in.,Redirects to /dashboard/admin with active session,P0,Y
+TC-AUTH-005,Auth,SRS Sec 2.3 Sign Up,Unauthenticated,1. Navigate to /signup. 2. Select Farmer. 3. Fill valid details. 4. Submit.,Creates account with FARMER role and immediately redirects to /dashboard/farmer,P0,Y
+TC-AUTH-006,Auth,SRS Sec 2.3 Sign Up,Unauthenticated,1. Navigate to /signup. 2. Select Dairy Industry. 3. Fill details. 4. Submit.,Creates account with INDUSTRY role and redirects to /dashboard/dairy,P0,Y
+TC-AUTH-007,Auth,SRS Sec 2.3 Sign Up,Unauthenticated,1. Navigate to /signup. 2. Select Driver. 3. Fill details with plate number. 4. Submit.,Creates account with DRIVER sub-role and redirects to /dashboard/driver,P0,Y
+TC-SEC-001,Security,SRS Sec 2.2 RBAC Gating,Unauthenticated,Attempt POST /api/v1/auth/sign-up with payload {"role": "ADMIN", ...},Server rejects with HTTP 403 Forbidden. No admin account created.,P0,Y
+TC-SEC-002,Security,OWASP ASVS A01,Unauthenticated,1. Attempt direct navigation to /dashboard/farmer,Redirected to /signin?next=/dashboard/farmer,P0,Y
+TC-SEC-003,Security,OWASP ASVS A01,Authenticated as Farmer,1. Navigate to /dashboard/admin,Middleware intercepts and redirects to /dashboard/farmer,P0,Y
+TC-SEC-004,Security,OWASP ASVS A01,Authenticated as Dairy,1. Navigate to /dashboard/driver,Middleware intercepts and redirects to /dashboard/dairy,P0,Y
+TC-SEC-005,Security,OWASP ASVS A01 Open Redirect,Unauthenticated,1. Navigate to /signin?next=https://malicious-phishing.com. 2. Sign in as Admin.,Redirect to external domain strictly blocked; user lands on internal dashboard,P1,Y
+TC-SEC-006,Security,OWASP ASVS A04 Brute Force,Unauthenticated,1. Submit invalid password 6 times consecutively for same user.,Account locked for 15 minutes with HTTP 429 Too Many Requests,P1,Y
+TC-SEC-007,Security,OWASP ASVS Sec Headers,Any,1. Inspect HTTP response headers of GET http://localhost:3000/,Includes X-Frame-Options, X-Content-Type-Options, CSP, and hides X-Powered-By,P2,Y
+TC-DATA-001,Data Correctness,SRS Sec 4.1 Payout Formula,Farmer listing supply,1. Calculate payout for 1200L Grade A+ at 4380 UZS/L.,Total displayed is exactly 5,256,000 UZS (1200 x 4380),P0,Y
+TC-DATA-002,Data Correctness,Admin Dashboard Telemetry,Admin workspace,1. Sum user counts across Farmers, Dairy, Drivers, Admins.,Sum exactly equals the displayed Active users KPI metric (2140),P1,Y
+TC-A11Y-001,Accessibility,WCAG 2.2 SC 1.3.1 Heading Order,Landing page loaded,1. Inspect DOM headings on /,Exactly one <h1> element exists on the page representing the main title,P1,Y
+TC-A11Y-002,Accessibility,WCAG 2.2 SC 1.4.3 Contrast,Landing page loaded,1. Measure contrast of emerald text (#00C853, #22d36b, #12a150) on white glass.,All text satisfies at least 4.5:1 for normal text and 3:1 for large text,P1,Y
+TC-A11Y-003,Accessibility,WCAG 2.2 SC 2.5.8 Target Size,Team carousel loaded,1. Measure interactive bounding box of LinkedIn, GitHub, Instagram links.,Tap target is at least 24x24 CSS pixels,P2,Y
+TC-RESP-001,Responsive,Mobile Viewport 390px,Driver Dashboard,1. Emulate iPhone 12/13/14 (390x844px). 2. View /dashboard/driver.,Navigation links and floating header adapt cleanly without horizontal overflow or jagged wrapping,P1,Y
+TC-I18N-001,Localization,SRS Sec 12.1 Language Switch,Dashboard loaded,1. Click UZ in language pill on Farmer overview.,All navigation items, headings, and KPI titles switch to correct Uzbek Latin strings,P2,Y
+TC-I18N-002,Localization,SRS Sec 12.1 Language Switch,Dashboard loaded,1. Click RU in language pill on Dairy overview.,All navigation items and headings switch to grammatical Russian strings,P2,Y
