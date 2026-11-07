@@ -16,11 +16,11 @@ export default function ZaminFlowLogo({
 }: ZaminFlowLogoProps) {
   const isDark = mode === "dark";
 
-  // Height mappings matching the exact aspect ratio of the uploaded logo (approx 4:1)
+  // Aspect ratio matching the brand logo (590x140 ~ 4.21:1)
   const dimensions = {
-    sm: { width: 120, height: 30 },
-    md: { width: 146, height: 37 },
-    lg: { width: 180, height: 46 },
+    sm: { width: 118, height: 28 },
+    md: { width: 152, height: 36 },
+    lg: { width: 185, height: 44 },
   };
 
   const { width, height } = dimensions[size];
