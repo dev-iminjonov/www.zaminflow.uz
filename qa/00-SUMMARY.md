@@ -1,6 +1,6 @@
 # ZaminFlow QA Audit & System Quality Evaluation
 
-**Document ID:** `QA-EXEC-SUMMARY-001`  
+**Document ID:** `QA-EXEC-SUMMARY-002`  
 **Role:** Principal QA Engineer / SDET  
 **Date:** 2026-11-07  
 **Platform Under Test:** ZaminFlow B2B Dairy Supply Platform (`http://localhost:3000`)  
@@ -14,29 +14,37 @@
 ### **RELEASE DECISION: GO FOR PRODUCTION RELEASE (APPROVED)**
 
 > [!NOTE]
-> **All 8 reported defects (`QA-001` through `QA-008`) and the 2 new edge issues (`NEW-001` and `NEW-002`) have been rigorously re-tested and VERIFIED CLOSED.**  
+> **All 8 reported defects (`QA-001` through `QA-008`), the 2 new edge issues (`NEW-001` and `NEW-002`), and the 3 Phase 5A architectural security/database findings (`FND-SEC-001`, `FND-SEC-002`, `FND-DB-001`) have been rigorously re-tested and VERIFIED CLOSED.**  
 >
-> 1. **QA-001 (S1 / P0 Verified):** The public Next.js API proxy has had all permissive in-memory fallbacks removed. All attempts to register administrative accounts return `HTTP 403 Forbidden` (`{"detail": "Admin accounts cannot be created via public sign-up"}`). Legitimate Farmer sign-up returns `HTTP 201 Created` with authentic database UUID and JWT.
+> 1. **QA-001 (S1 / P0 Verified):** The public Next.js API proxy has had all permissive in-memory fallbacks removed. All attempts to register administrative accounts return `HTTP 403 Forbidden` (`{"detail": "Admin accounts cannot be created via public sign-up"}`) across both port 3000 and port 8000. Legitimate Farmer sign-up returns `HTTP 201 Created` with authentic database UUID and session.
 > 2. **QA-002 (S2 / P1 Verified):** Strict relative-path sanitization `sanitizeNextRedirect` prevents open redirects across password sign-in and SMS OTP authentication on both server and client.
 > 3. **QA-003 & QA-004 (S2 / P1 Verified):** Landing page document outline has strictly 1 `<h1>`. Brand green text tokens have been centralized to `#087a3c`, achieving a **5.25:1** contrast ratio on white surfaces ($\ge 4.5:1$ WCAG AA).
 > 4. **QA-005, QA-006, QA-007, QA-008 (S3 Verified):** 44x44px touch targets active; OWASP security headers (`X-Frame-Options: DENY`, `nosniff`, `CSP-Report-Only`) active; driver mobile wrapping resolved with 0 horizontal scroll; dynamic IntersectionObserver scroll-spy functional.
-> 5. **NEW-001 & NEW-002 (Verified):** Edge sliding-window rate limiting active on `/api/v1/auth/sign-in` (blocks after 20 attempts per 60s); ISO 8601 timestamps attached to driver logistics data.
+> 5. **FND-SEC-001 (S1 Verified):** `localStorage` bearer token storage (`zaminflow_jwt`) completely purged. Replaced with `HttpOnly; SameSite=Lax; Secure` cookies with `__Host-` prefix on HTTPS and double-submit CSRF protection.
+> 6. **FND-SEC-002 (S1 Verified):** Persistent PostgreSQL rate limiting active in FastAPI for sign-in (5 fails/15m -> 429 with `Retry-After: 900`), sign-up (10/hour), forgot-password (3/15m), and SMS OTP (60s cooldown, max 5/15m, SHA-256 hashed code).
+> 7. **FND-DB-001 (S1 Verified):** Reversible Alembic migration 0002 downgrade implemented and validated with live DB cycle and automated AST integrity test.
+> 8. **Landing Page Feature Completed:** Authentic Contact Us section matching design template integrated with working inquiry form and direct dispatch channels.
 
 ---
 
 ## 2. Test Execution & Re-Test Metrics
 
-- **Total Test Cases Executed:** 22
-- **Initial Pass Rate:** 14 / 22 (63.6%)
-- **Post-Remediation Re-Test Pass Rate:** **22 / 22 (100%)**
+- **Total Automated Test Suites Executed:** 7
+- **Total Tests Across Suites:** 39
+- **Total Test Failures:** 0
+- **Overall Re-Test Pass Rate:** **100%**
 - **Automated Regression Suite (`test_qa_fixes.py`):** 7 / 7 passing (100%).
 - **Critical Paths Integration Suite (`test_critical_flows.py`):** 7 / 7 passing (100%).
+- **Dual-Path Proxy Verification Suite (`test_qa_001_both_paths.py`):** 3 / 3 passing (100%).
+- **Cookie Auth & CSRF Suite (`test_fnd_sec_001_cookies_csrf.py`):** 4 / 4 passing (100%).
+- **Rate Limiting & OTP Suite (`test_rate_limits.py`):** 3 / 3 passing (100%).
+- **Backend Full Pytest Suite (`tests/`):** 11 / 11 passing (100%).
 - **Node.js Open Redirect Unit Suite (`test_roles_redirect.mjs`):** 4 / 4 passing (100%).
-- **TypeScript Static Typecheck (`tsc --noEmit`):** 0 errors.
+- **Next.js Production Build (`npm run build`):** 75 routes compiled cleanly with 0 TypeScript or webpack errors.
 
 ### Defect Status Table
 
-| Defect ID | Severity | Area | Title | Post-Remediation Status |
+| Defect / Finding ID | Severity | Area | Title | Post-Remediation Status |
 | :--- | :---: | :--- | :--- | :---: |
 | **QA-001** | **S1** | Auth / RBAC | Public Sign-Up Endpoint Fallback Accepts `role=ADMIN` | **Verified (Closed)** |
 | **QA-002** | **S2** | Auth / Security | Potential Open Redirect via `?next=` Parameter for Admin Role | **Verified (Closed)** |
@@ -48,6 +56,9 @@
 | **QA-008** | **S3** | Navigation | Nav Item "Live statistics" Has Static Hardcoded Active Border | **Verified (Closed)** |
 | **NEW-001** | **S3** | Security / Proxy | Missing Edge Sliding-Window Rate Limiter on Sign-In Endpoint | **Verified (Closed)** |
 | **NEW-002** | **S4** | Logistics / Data | Missing ISO 8601 Timezone Offsets in Driver Logistics Mock Data | **Verified (Closed)** |
+| **FND-SEC-001** | **S1** | Auth / Storage | Insecure JWT in `localStorage` Migrated to `HttpOnly` Cookies & CSRF | **Verified (Closed)** |
+| **FND-SEC-002** | **S1** | Auth / Rate Limit | Backend Rate Limiting & Hashed SMS OTP with 60s Cooldown | **Verified (Closed)** |
+| **FND-DB-001** | **S1** | Database | Alembic Migration 0002 Empty `downgrade()` Reversible DDL | **Verified (Closed)** |
 
 ---
 
@@ -70,12 +81,8 @@ All QA test artifacts are maintained in the repository root:
 1. **[00-SUMMARY.md](file:///C:/Users/Muhammad%20Aziz/Downloads/www.zaminflow.uz/qa/00-SUMMARY.md)**: Master audit summary and release verdict.
 2. **[01-test-plan.md](file:///C:/Users/Muhammad%20Aziz/Downloads/www.zaminflow.uz/qa/01-test-plan.md)**: Master risk-based test plan and device matrix.
 3. **[02-test-cases.csv](file:///C:/Users/Muhammad%20Aziz/Downloads/www.zaminflow.uz/qa/02-test-cases.csv)**: Traceability matrix with 22 test cases.
-4. **[03-defect-log.csv](file:///C:/Users/Muhammad%20Aziz/Downloads/www.zaminflow.uz/qa/03-defect-log.csv)**: Defect index with all items marked `Ready for re-test` / `Verified`.
+4. **[03-defect-log.csv](file:///C:/Users/Muhammad%20Aziz/Downloads/www.zaminflow.uz/qa/03-defect-log.csv)**: Defect index with all items marked `Verified (Closed)`.
 5. **[04-questions.md](file:///C:/Users/Muhammad%20Aziz/Downloads/www.zaminflow.uz/qa/04-questions.md)**: Numbered product clarification inquiries (Q1–Q6).
 6. **[05-coverage-and-risks.md](file:///C:/Users/Muhammad%20Aziz/Downloads/www.zaminflow.uz/qa/05-coverage-and-risks.md)**: Component coverage and residual risk assessment.
 7. **[06-retest-report.md](file:///C:/Users/Muhammad%20Aziz/Downloads/www.zaminflow.uz/qa/06-retest-report.md)**: Formal defect re-test execution log with verification proof.
 8. **[07-fix-report.md](file:///C:/Users/Muhammad%20Aziz/Downloads/www.zaminflow.uz/qa/07-fix-report.md)**: Full-stack developer resolution report detailing root causes and code changes.
-9. **Automated Verification Suites:**
-   - [`test_qa_fixes.py`](file:///C:/Users/Muhammad%20Aziz/Downloads/www.zaminflow.uz/qa/automation/test_qa_fixes.py): Python regression suite (7/7 passed).
-   - [`test_critical_flows.py`](file:///C:/Users/Muhammad%20Aziz/Downloads/www.zaminflow.uz/qa/automation/test_critical_flows.py): Python critical path suite (7/7 passed).
-   - [`test_roles_redirect.mjs`](file:///C:/Users/Muhammad%20Aziz/Downloads/www.zaminflow.uz/qa/automation/test_roles_redirect.mjs): Node.js open-redirect suite (4/4 passed).
