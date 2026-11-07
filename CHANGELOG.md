@@ -4,6 +4,19 @@ All notable changes, architectural reviews, security hardening, and defect fixes
 
 ---
 
+## [v2.0.0-rc2] - Phase 5A Implementation - 2026-11-07
+
+### Security Hardening & Session Protection
+- `fix(QA-001)`: Removed permissive proxy fallback in `frontend/src/app/api/[...path]/route.ts`. The proxy now strictly forwards upstream response status and body unchanged, returning 502/503 when backend is unreachable without generating synthetic sessions. Enforced strict allowlist on backend sign-up (`FARMER`, `INDUSTRY`, `DRIVER`) rejecting admin attempts with 403 Forbidden.
+- `fix(QA-002)`: Implemented strict client and server validation for `?next=` parameter rejecting backslashes, control characters, external schemes/hosts, and cross-role destinations.
+- `fix(FND-SEC-001)`: Migrated authentication from `localStorage` (`zaminflow_jwt`) to `HttpOnly; SameSite=Lax; Secure` cookies with `__Host-` prefix on HTTPS. Implemented double-submit CSRF protection with Origin/Host checks and `X-CSRF-Token` headers. Added server-side JWT claim decoding in Next.js middleware for role-based dashboard protection.
+- `fix(FND-SEC-002)`: Implemented backend rate limiting backed by PostgreSQL `login_attempts` table in FastAPI: 5 failures/15m on sign-in (returns 429 with `Retry-After: 900`), 10 registrations/hour on sign-up, 3 resets/15m on forgot-password, and 60-second cooldown with max 5 requests/15m on SMS OTP. Hashed SMS OTP storage using SHA-256 with 5-minute expiry and attempt lockout.
+
+### Database Reliability
+- `fix(FND-DB-001)`: Implemented real reversible `downgrade()` for Alembic migration `0002_onboarding_gating.py` and added automated AST integrity test `test_migration_downgrade_integrity.py`. Fully validated upgrade/downgrade/upgrade cycle against test database.
+
+---
+
 ## [v2.0.0-rc1] - 2026-11-07
 
 ### Architecture & Design Review (ARB Review)

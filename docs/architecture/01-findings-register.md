@@ -9,9 +9,9 @@
 ### Findings Summary Matrix
 | ID | Lens | Title | Severity | Effort | Risk | Change Class | Status |
 | :--- | :--- | :--- | :--- | :---: | :---: | :---: | :--- |
-| **FND-SEC-001** | Security | Insecure JWT storage in `localStorage` exposed to XSS | **High** | M | Low | **RED** | Open (Pending Approval) |
-| **FND-SEC-002** | Security | Caddy direct proxy bypasses Next.js edge rate limiting | **High** | S | Low | **YELLOW** | Ready for Implementation |
-| **FND-DB-001** | Database | Alembic migration 0002 has empty `downgrade()` | **High** | S | Very Low | **GREEN** | Ready for Implementation |
+| **FND-SEC-001** | Security | Insecure JWT storage in `localStorage` exposed to XSS | **High** | M | Low | **RED** | Ready for re-test |
+| **FND-SEC-002** | Security | Caddy direct proxy bypasses Next.js edge rate limiting | **High** | S | Low | **YELLOW** | Ready for re-test |
+| **FND-DB-001** | Database | Alembic migration 0002 has empty `downgrade()` | **High** | S | Very Low | **GREEN** | Ready for re-test |
 | **FND-COMP-001** | Compliance | Uzbek Law ZRU-547 data residency sign-off pending | **Blocker** | M | High | **RED** | Open (Awaiting Legal Decision) |
 | **FND-REL-001** | Reliability | Missing transactional outbox for partner bank webhooks | **Medium** | M | Med | **YELLOW** | Ready for Implementation |
 | **FND-DOM-001** | Domain | Decimal & UZS integer precision verification across ledger | **High** | S | Low | **RED** | Open (Pending Approval) |

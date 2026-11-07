@@ -1,7 +1,7 @@
 ID,Lens,Title,Severity,Effort,Risk,ChangeClass,Status,FileRef
-FND-SEC-001,Security,Insecure JWT storage in localStorage exposed to XSS,High,M,Low,RED,Open,frontend/src/lib/api.ts:18
-FND-SEC-002,Security,Caddy direct proxy bypasses Next.js edge rate limiting,High,S,Low,YELLOW,Ready,Caddyfile:9
-FND-DB-001,Database,Alembic migration 0002 has empty downgrade,High,S,Very Low,GREEN,Ready,backend/alembic/versions/0002_onboarding_gating.py:184
+FND-SEC-001,Security,Insecure JWT storage in localStorage exposed to XSS,High,M,Low,RED,Ready for re-test,frontend/src/lib/api.ts:18
+FND-SEC-002,Security,Caddy direct proxy bypasses Next.js edge rate limiting,High,S,Low,YELLOW,Ready for re-test,Caddyfile:9
+FND-DB-001,Database,Alembic migration 0002 has empty downgrade,High,S,Very Low,GREEN,Ready for re-test,backend/alembic/versions/0002_onboarding_gating.py:184
 FND-COMP-001,Compliance,Uzbek Law ZRU-547 data residency sign-off pending,Blocker,M,High,RED,Open,docs/questions.md:Question 3
 FND-REL-001,Reliability,Missing transactional outbox for partner bank webhooks,Medium,M,Med,YELLOW,Ready,backend/app/main.py:29
 FND-DOM-001,Domain,Decimal & UZS integer precision verification across ledger,High,S,Low,RED,Open,backend/app/modules/escrow_ledger/service.py:120
