@@ -77,7 +77,6 @@ export function clearSession() {
     console.error("Failed to clear auth session", e);
   }
 }
-}
 
 /**
  * Sign In with Phone or Email + Password
