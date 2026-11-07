@@ -92,7 +92,7 @@ export const ROLE_DASHBOARDS: Record<RoleKey, RoleDashboardData> = {
       {
         label: "Active Shipments",
         value: "6",
-        unit: "trucks",
+        unit: "",
         delta: "+3.2°C Cold Chain",
         deltaType: "positive",
         caption: "In-transit GPS telemetry locked",

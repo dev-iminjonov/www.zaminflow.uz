@@ -190,9 +190,6 @@ export default function DairyOverview() {
                   <span className="font-[family-name:var(--font-jetbrains-mono,monospace)] text-[34px] font-bold text-[#17352c]">
                     {data?.openOrders.value}
                   </span>
-                  <span className="font-[family-name:var(--font-jetbrains-mono,monospace)] text-[13px] font-medium text-[#4d6a60]">
-                    {data?.openOrders.unit}
-                  </span>
                 </div>
               </div>
 
@@ -222,9 +219,6 @@ export default function DairyOverview() {
                 <div className="flex items-baseline flex-wrap gap-2 mt-3">
                   <span className="font-[family-name:var(--font-jetbrains-mono,monospace)] text-[34px] font-bold text-[#17352c]">
                     {data?.activeShipments.value}
-                  </span>
-                  <span className="font-[family-name:var(--font-jetbrains-mono,monospace)] text-[13px] font-medium text-[#4d6a60]">
-                    {data?.activeShipments.unit}
                   </span>
                   <span className="text-xs font-bold bg-[#d9f7e5] text-[#087a3c] rounded-lg px-2 py-1 whitespace-nowrap">
                     {data?.activeShipments.coldStatus}

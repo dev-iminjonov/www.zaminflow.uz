@@ -83,9 +83,6 @@ export default function DairyShipmentsPage() {
               <span className="font-[family-name:var(--font-jetbrains-mono,monospace)] text-[34px] font-bold text-[#17352c]">
                 47
               </span>
-              <span className="font-[family-name:var(--font-jetbrains-mono,monospace)] text-[13px] font-medium text-[#4d6a60]">
-                trucks
-              </span>
               <span className="text-xs font-bold bg-[#d9f7e5] text-[#087a3c] rounded-lg px-2 py-1">
                 +3.2°C cold
               </span>

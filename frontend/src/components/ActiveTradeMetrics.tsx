@@ -381,9 +381,6 @@ export default function ActiveTradeMetrics({ isDark = false }: ActiveTradeMetric
                 <span className="font-mono text-4xl font-bold tracking-tight text-[#17352c] dark:text-white">
                   {formatNumber(animShipments)}
                 </span>
-                <span className="font-mono text-[13px] text-[#4d6a60] dark:text-[#E8F1F2]/60">
-                  {t.stats.trucksUnit}
-                </span>
                 {data?.kpis.activeShipments.delta && (
                   <span className="text-xs font-bold bg-[#d9f7e5] text-[#087a3c] rounded-lg px-2 py-1 whitespace-nowrap">
                     {data.kpis.activeShipments.delta}

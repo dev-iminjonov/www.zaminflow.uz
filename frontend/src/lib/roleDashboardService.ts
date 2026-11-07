@@ -155,9 +155,9 @@ export const MOCK_FARMER_DATA: FarmerDashboardData = {
 };
 
 export const MOCK_DAIRY_DATA: DairyDashboardData = {
-  openOrders: { value: "12", unit: "orders" },
+  openOrders: { value: "12", unit: "" },
   receivedToday: { value: "186,400", unit: "L", delta: "+3.8%" },
-  activeShipments: { value: "47", unit: "trucks", coldStatus: "+3.2°C cold" },
+  activeShipments: { value: "47", unit: "", coldStatus: "+3.2°C cold" },
   escrowBalance: { value: "48,500,000", unit: "UZS" },
   incomingShipments: [
     {

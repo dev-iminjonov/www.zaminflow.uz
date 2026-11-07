@@ -127,7 +127,7 @@ export function generateDynamicFallback(range: TimeRange, region: RegionId): Act
       kpis: {
         avgPrice: { value: 0, unit: "UZS / L" },
         volumeToday: { value: 0, unit: "L" },
-        activeShipments: { value: 0, unit: "trucks" },
+        activeShipments: { value: 0, unit: "" },
         securedEscrow: { value: 0, unit: "UZS" },
       },
       priceSeries: {
@@ -318,7 +318,7 @@ export function generateDynamicFallback(range: TimeRange, region: RegionId): Act
     kpis: {
       avgPrice: { value: basePrice, unit: "UZS / L", delta: deltaPrice },
       volumeToday: { value: volume, unit: "L", delta: "+3.8%" },
-      activeShipments: { value: activeTrucks, unit: "trucks", delta: "+3.2°C cold" },
+      activeShipments: { value: activeTrucks, unit: "", delta: "+3.2°C cold" },
       securedEscrow: { value: escrowAmount, unit: "UZS" },
     },
     priceSeries: {
