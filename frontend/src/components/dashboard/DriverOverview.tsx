@@ -8,6 +8,10 @@ import {
   DriverDashboardData,
   fetchDriverDashboardData,
 } from "@/lib/roleDashboardService";
+import {
+  flushDriverOfflineQueue,
+  getQueuedDriverEvents,
+} from "@/lib/offlineDriverQueue";
 import { useLanguage } from "@/context/LanguageContext";
 import ZaminFlowLogo from "@/components/ZaminFlowLogo";
 
@@ -19,10 +23,32 @@ export default function DriverOverview() {
   const [error, setError] = useState<string | null>(null);
   const [isSigningOut, setIsSigningOut] = useState(false);
   const [timeRange, setTimeRange] = useState<"7d" | "30d">("7d");
+  const [queuedOfflineCount, setQueuedOfflineCount] = useState<number>(0);
+  const [isOnline, setIsOnline] = useState<boolean>(true);
   const { locale, setLocale, dashT: t } = useLanguage();
 
   useEffect(() => {
     setSession(getStoredSession());
+    if (typeof window !== "undefined") {
+      setIsOnline(navigator.onLine);
+      setQueuedOfflineCount(getQueuedDriverEvents().length);
+      const handleOnline = async () => {
+        setIsOnline(true);
+        const res = await flushDriverOfflineQueue();
+        setQueuedOfflineCount(res.remainingCount);
+      };
+      const handleOffline = () => {
+        setIsOnline(false);
+        setQueuedOfflineCount(getQueuedDriverEvents().length);
+      };
+      window.addEventListener("online", handleOnline);
+      window.addEventListener("offline", handleOffline);
+      flushDriverOfflineQueue().then((r) => setQueuedOfflineCount(r.remainingCount));
+      return () => {
+        window.removeEventListener("online", handleOnline);
+        window.removeEventListener("offline", handleOffline);
+      };
+    }
   }, []);
 
   useEffect(() => {
@@ -210,11 +236,34 @@ export default function DriverOverview() {
           </div>
 
           <div className="flex items-center gap-3">
-            {/* Date Range Filter */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-2 rounded-full bg-slate-50 dark:bg-white/5 border border-slate-200/80 dark:border-white/10 text-xs font-semibold text-slate-700 dark:text-slate-200">
-              <span>📅 Today, 7 Nov 2026</span>
-              <span className="text-[10px] text-slate-400">⌄</span>
+            {/* Offline Sync Status Pill (ADR-007) */}
+            <div
+              className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full border text-xs font-bold ${
+                isOnline
+                  ? "bg-emerald-50 dark:bg-emerald-950/40 border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-300"
+                  : "bg-amber-50 dark:bg-amber-950/40 border-amber-300 text-amber-800 dark:text-amber-300"
+              }`}
+            >
+              <span className={`w-2 h-2 rounded-full ${isOnline ? "bg-emerald-500" : "bg-amber-500 animate-pulse"}`} />
+              <span>
+                {isOnline
+                  ? queuedOfflineCount > 0
+                    ? `Syncing (${queuedOfflineCount})`
+                    : "Telemetry Online"
+                  : `Offline Queue (${queuedOfflineCount})`}
+              </span>
             </div>
+
+            {/* Yandex / Google Maps Deep-Link (UX-SPEC-DRI-001) */}
+            <a
+              href="https://yandex.com/maps/?rtext=40.7821,68.7242~41.2995,69.2401&rtt=auto"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold text-xs shadow-xs hover:opacity-90 transition"
+            >
+              <span>🧭</span>
+              <span>Yandex Navigator</span>
+            </a>
 
             {/* Primary Action Button */}
             <Link

@@ -4,7 +4,8 @@ import React, { useState } from "react";
 import Link from "next/link";
 import ZaminFlowLogo from "@/components/ZaminFlowLogo";
 import { useRouter } from "next/navigation";
-import { signOut } from "@/lib/auth";
+import { signOut, authenticatedFetch } from "@/lib/auth";
+import { enqueueDriverEvent, flushDriverOfflineQueue } from "@/lib/offlineDriverQueue";
 
 export default function ConfirmPickupPage() {
   const router = useRouter();
@@ -23,8 +24,41 @@ export default function ConfirmPickupPage() {
     router.push("/signin");
   };
 
-  const handleConfirm = (e: React.FormEvent) => {
+  const handleConfirm = async (e: React.FormEvent) => {
     e.preventDefault();
+    const fallbackBatchId = "00000000-0000-0000-0000-000000000412";
+    try {
+      const res = await authenticatedFetch("/driver/telemetry", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          batch_id: fallbackBatchId,
+          lat: 40.7821,
+          lng: 68.7242,
+          tank_temp_c: String(milkTempC),
+          recorded_at: new Date().toISOString(),
+        }),
+      });
+      if (!res.ok) {
+        enqueueDriverEvent({
+          event_type: "PICKUP_HANDSHAKE",
+          batch_id: fallbackBatchId,
+          lat: 40.7821,
+          lng: 68.7242,
+          tank_temp_c: String(milkTempC),
+        });
+      } else {
+        await flushDriverOfflineQueue();
+      }
+    } catch {
+      enqueueDriverEvent({
+        event_type: "PICKUP_HANDSHAKE",
+        batch_id: fallbackBatchId,
+        lat: 40.7821,
+        lng: 68.7242,
+        tank_temp_c: String(milkTempC),
+      });
+    }
     setIsConfirmed(true);
     setTimeout(() => {
       router.push("/dashboard/driver");

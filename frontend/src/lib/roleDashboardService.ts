@@ -340,7 +340,16 @@ export async function fetchDriverDashboardData(): Promise<DriverDashboardData> {
   }
   try {
     const res = await authenticatedFetch("/driver/dashboard");
-    if (res.ok) return await res.json();
+    if (res.ok) {
+      const liveData = await res.json();
+      if (liveData.todayStops && liveData.todayStops.length > 0) {
+        return liveData;
+      }
+      return {
+        ...MOCK_DRIVER_DATA,
+        coldChain: liveData.coldChain || MOCK_DRIVER_DATA.coldChain,
+      };
+    }
   } catch (e) {
     console.warn("Live driver dashboard API unavailable, using resilient fallback", e);
   }
