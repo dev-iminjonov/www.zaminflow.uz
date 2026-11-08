@@ -9,6 +9,7 @@ import {
   fetchFarmerDashboardData,
 } from "@/lib/roleDashboardService";
 import { useLanguage } from "@/context/LanguageContext";
+import { ThemeToggleButton } from "@/context/ThemeContext";
 import ZaminFlowLogo from "@/components/ZaminFlowLogo";
 import { resolveUserAvatar } from "@/lib/userAvatar";
 
@@ -168,6 +169,9 @@ export default function FarmerOverview() {
                 </button>
               ))}
             </div>
+
+            {/* Theme Mode Toggle */}
+            <ThemeToggleButton size="sm" />
 
             {/* User Profile Pill */}
             <Link

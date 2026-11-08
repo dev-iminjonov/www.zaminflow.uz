@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import React, { useEffect, useState, Suspense } from "react";
 import Button from "@/components/ui/Button";
 import ZaminFlowLogo from "@/components/ZaminFlowLogo";
+import { ThemeToggleButton } from "@/context/ThemeContext";
 
 function VerifyEmailContent() {
   const searchParams = useSearchParams();
@@ -67,7 +68,10 @@ function VerifyEmailContent() {
       </div>
 
       {/* Right Content Panel */}
-      <div className="flex items-center justify-center p-6 sm:p-10 lg:p-12 bg-white">
+      <div className="flex items-center justify-center p-6 sm:p-10 lg:p-12 bg-white dark:bg-[#101E27] relative transition-colors">
+        <div className="absolute top-6 right-6 z-20">
+          <ThemeToggleButton />
+        </div>
         <div className="w-full max-w-[400px] space-y-6 text-center">
           {status === "VERIFYING" && (
             <div className="space-y-4 py-8">

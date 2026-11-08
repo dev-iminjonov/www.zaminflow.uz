@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import ZaminFlowLogo from "@/components/ZaminFlowLogo";
 import { useLanguage } from "@/context/LanguageContext";
+import { ThemeToggleButton } from "@/context/ThemeContext";
 import { AuthSession, getStoredSession, signOut } from "@/lib/auth";
 import { resolveUserAvatar } from "@/lib/userAvatar";
 
@@ -378,6 +379,9 @@ export default function RoleDashboardShell({
                 </button>
               ))}
             </div>
+
+            {/* Theme Mode Toggle */}
+            <ThemeToggleButton size="sm" />
 
             {/* User Profile Pill */}
             <Link

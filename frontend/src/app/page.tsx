@@ -9,13 +9,12 @@ import LandingLiveStatistics from "@/components/LandingLiveStatistics";
 import ContactUsSection from "@/components/ContactUsSection";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { useLanguage } from "@/context/LanguageContext";
+import { useTheme } from "@/context/ThemeContext";
 
 export default function LandingPage() {
   const { t } = useLanguage();
-  const [themeMode, setThemeMode] = useState<"light" | "dark">("dark");
+  const { themeMode, setThemeMode, isDark } = useTheme();
   const [activeSection, setActiveSection] = useState<string>("company");
-
-  const isDark = themeMode === "dark";
 
   const navItems = [
     { id: "company", label: t.nav.company },
@@ -23,15 +22,6 @@ export default function LandingPage() {
     { id: "stats", label: t.nav.stats },
     { id: "contact", label: t.nav.contact },
   ];
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    if (isDark) {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
-  }, [isDark]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;

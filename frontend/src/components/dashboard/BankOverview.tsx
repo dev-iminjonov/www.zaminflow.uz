@@ -14,6 +14,7 @@ import {
   fetchBankDashboardData,
 } from "@/lib/roleDashboardService";
 import { useLanguage } from "@/context/LanguageContext";
+import { ThemeToggleButton } from "@/context/ThemeContext";
 import ZaminFlowLogo from "@/components/ZaminFlowLogo";
 
 const BANK_I18N = {
@@ -166,6 +167,8 @@ export default function BankOverview() {
                 </button>
               ))}
             </div>
+
+            <ThemeToggleButton size="sm" />
 
             <span className="text-xs font-bold bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 rounded-full px-3 py-1">
               Partner Bank Officer

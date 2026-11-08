@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import React, { useState, Suspense } from "react";
 import Button from "@/components/ui/Button";
 import ZaminFlowLogo from "@/components/ZaminFlowLogo";
+import { ThemeToggleButton } from "@/context/ThemeContext";
 
 function ResetPasswordContent() {
   const router = useRouter();
@@ -86,13 +87,16 @@ function ResetPasswordContent() {
       </div>
 
       {/* Right Form Panel */}
-      <div className="flex items-center justify-center p-6 sm:p-10 lg:p-12 bg-white">
+      <div className="flex items-center justify-center p-6 sm:p-10 lg:p-12 bg-white dark:bg-[#101E27] relative transition-colors">
+        <div className="absolute top-6 right-6 z-20">
+          <ThemeToggleButton />
+        </div>
         <div className="w-full max-w-[400px] space-y-6">
           <div>
-            <h1 className="text-2xl font-black text-slate-900 tracking-tight">
+            <h1 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
               Create new password
             </h1>
-            <p className="text-xs text-slate-500 mt-1">
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
               Your new password will replace existing session credentials across all devices.
             </p>
           </div>

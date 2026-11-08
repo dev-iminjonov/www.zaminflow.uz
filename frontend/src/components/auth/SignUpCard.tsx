@@ -7,6 +7,7 @@ import { RoleKey, PUBLIC_SIGNUP_ROLES, ROLES } from "@/lib/roles";
 import { signUp } from "@/lib/auth";
 import { Locale } from "@/messages/auth";
 import { useLanguage } from "@/context/LanguageContext";
+import { ThemeToggleButton } from "@/context/ThemeContext";
 import ZaminFlowLogo from "@/components/ZaminFlowLogo";
 
 export default function SignUpCard() {
@@ -199,22 +200,25 @@ export default function SignUpCard() {
           </span>
         </Link>
 
-        {/* Top-Right Locale Picker */}
-        <div className="pointer-events-auto flex rounded-full p-1 border border-[#b7e4c7] dark:border-white/10 bg-white/85 dark:bg-[#101E27]/80 backdrop-blur-md text-xs font-semibold shadow-xs">
-          {(["en", "ru", "uz"] as Locale[]).map((loc) => (
-            <button
-              key={loc}
-              type="button"
-              onClick={() => setLocale(loc)}
-              className={`px-2.5 py-1 rounded-full uppercase transition cursor-pointer ${
-                locale === loc
-                  ? "bg-[#1b4332] text-white dark:bg-[#1B98E0] dark:text-[#13293D]"
-                  : "text-[#2d6a4f] dark:text-[#E8F1F2]/70 hover:text-[#081c15] dark:hover:text-white"
-              }`}
-            >
-              {loc}
-            </button>
-          ))}
+        {/* Top-Right Locale Picker + Theme Mode Toggle */}
+        <div className="pointer-events-auto flex items-center gap-2">
+          <div className="flex rounded-full p-1 border border-[#b7e4c7] dark:border-white/10 bg-white/85 dark:bg-[#101E27]/80 backdrop-blur-md text-xs font-semibold shadow-xs">
+            {(["en", "ru", "uz"] as Locale[]).map((loc) => (
+              <button
+                key={loc}
+                type="button"
+                onClick={() => setLocale(loc)}
+                className={`px-2.5 py-1 rounded-full uppercase transition cursor-pointer ${
+                  locale === loc
+                    ? "bg-[#1b4332] text-white dark:bg-[#1B98E0] dark:text-[#13293D]"
+                    : "text-[#2d6a4f] dark:text-[#E8F1F2]/70 hover:text-[#081c15] dark:hover:text-white"
+                }`}
+              >
+                {loc}
+              </button>
+            ))}
+          </div>
+          <ThemeToggleButton />
         </div>
       </header>
 

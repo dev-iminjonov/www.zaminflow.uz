@@ -7,6 +7,7 @@ import { RoleKey, ROLES } from "@/lib/roles";
 import { getStoredSession, AuthSession } from "@/lib/auth";
 import ZaminFlowLogo from "@/components/ZaminFlowLogo";
 import { useLanguage } from "@/context/LanguageContext";
+import { ThemeToggleButton } from "@/context/ThemeContext";
 import { getDisplayInitials, resolveUserAvatar } from "@/lib/userAvatar";
 
 export interface UserProfileData {
@@ -363,7 +364,7 @@ export default function UserProfileView({
             </Link>
           </nav>
 
-          {/* Right Action: Locale & Back */}
+          {/* Right Action: Locale, Theme Mode Toggle & Role Badge */}
           <div className="flex items-center gap-3">
             <div className="flex rounded-full p-0.5 border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-[11px] font-bold">
               {(["uz", "ru", "en"] as const).map((loc) => (
@@ -381,6 +382,8 @@ export default function UserProfileView({
                 </button>
               ))}
             </div>
+
+            <ThemeToggleButton size="sm" />
 
             <span className="text-xs font-bold bg-[#d9f7e5] text-[#087a3c] rounded-lg px-2.5 py-1 whitespace-nowrap">
               {roleConfig.label}
