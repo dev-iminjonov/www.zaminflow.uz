@@ -11,7 +11,7 @@ import httpx
 import pytest
 from sqlalchemy import text
 
-from app.core.database import AsyncSessionLocal
+from app.core.database import AsyncSessionLocal, engine
 from app.core.security import create_access_token
 from app.modules.auth_rbac.service import get_canonical_role_and_dashboard
 
@@ -51,6 +51,7 @@ async def test_role_isolation_and_cross_tenant_abac():
     user_ids = []
     contract_id = None
 
+    await engine.dispose()
     async with AsyncSessionLocal() as db:
         try:
             # Ensure a Partner Bank exists
@@ -351,3 +352,4 @@ async def test_role_isolation_and_cross_tenant_abac():
                     {"oids": org_ids},
                 )
             await db.commit()
+    await engine.dispose()

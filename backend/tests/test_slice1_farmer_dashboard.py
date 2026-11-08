@@ -9,7 +9,7 @@ import httpx
 import pytest
 from sqlalchemy import text
 
-from app.core.database import AsyncSessionLocal
+from app.core.database import AsyncSessionLocal, engine
 from app.core.security import create_access_token
 
 BASE_URL = "http://127.0.0.1:8000/api/v1"
@@ -26,6 +26,7 @@ async def test_slice1_farmer_dashboard_and_actions():
     contract_id = None
     batch_id = None
 
+    await engine.dispose()
     async with AsyncSessionLocal() as db:
         try:
             # Create Farmer A, Farmer B, Buyer A, Bank
