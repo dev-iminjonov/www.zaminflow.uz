@@ -10,6 +10,7 @@ import {
 } from "@/lib/roleDashboardService";
 import { useLanguage } from "@/context/LanguageContext";
 import ZaminFlowLogo from "@/components/ZaminFlowLogo";
+import { resolveUserAvatar } from "@/lib/userAvatar";
 
 export default function FarmerOverview() {
   const router = useRouter();
@@ -174,9 +175,25 @@ export default function FarmerOverview() {
               title="View Farm Trading Profile"
               className="flex items-center gap-2 pl-2 hover:opacity-85 transition group"
             >
-              <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-emerald-600 to-teal-500 text-white font-bold text-xs flex items-center justify-center shadow-xs group-hover:ring-2 ring-emerald-500/50">
-                {firstName.charAt(0)}
-              </div>
+              {(() => {
+                const avatar = resolveUserAvatar(
+                  session?.user?.fullName || firstName,
+                  session?.user?.email
+                );
+                return (
+                  <div className="w-8 h-8 rounded-full overflow-hidden bg-gradient-to-tr from-emerald-600 to-teal-500 text-white font-bold text-xs flex items-center justify-center shadow-xs group-hover:ring-2 ring-emerald-500/50">
+                    {avatar ? (
+                      <img
+                        src={avatar}
+                        alt={firstName}
+                        className="w-full h-full object-cover object-[center_18%]"
+                      />
+                    ) : (
+                      <span>{firstName.charAt(0)}</span>
+                    )}
+                  </div>
+                );
+              })()}
               <div className="hidden md:flex flex-col text-left">
                 <span className="text-xs font-bold text-slate-800 dark:text-white leading-tight group-hover:text-emerald-700 dark:group-hover:text-emerald-400">
                   {firstName}

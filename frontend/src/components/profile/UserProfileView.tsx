@@ -7,6 +7,7 @@ import { RoleKey, ROLES } from "@/lib/roles";
 import { getStoredSession, AuthSession } from "@/lib/auth";
 import ZaminFlowLogo from "@/components/ZaminFlowLogo";
 import { useLanguage } from "@/context/LanguageContext";
+import { getDisplayInitials, resolveUserAvatar } from "@/lib/userAvatar";
 
 export interface UserProfileData {
   userId: string;
@@ -60,6 +61,8 @@ export default function UserProfileView({
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
+  const [avatarLoadError, setAvatarLoadError] = useState(false);
+  const [failedTeamImages, setFailedTeamImages] = useState<Record<number, boolean>>({});
 
   useEffect(() => {
     setSession(getStoredSession());
@@ -68,16 +71,22 @@ export default function UserProfileView({
   // Determine current active profile role
   const role: RoleKey = initialRole;
 
+  const farmerFullName = session?.user?.fullName || "Iminjonov Muhammadaziz";
+  const dairyFullName = session?.user?.fullName || "Malika Karimova";
+  const driverFullName = session?.user?.fullName || "Bobur Alimov";
+  const bankFullName = session?.user?.fullName || "Rustam Karimov";
+  const adminFullName = session?.user?.fullName || "Iminjonov Muhammadaziz";
+
   // Base mock profiles tailored for each role
   const roleProfiles: Record<RoleKey, UserProfileData> = {
     farmer: {
       userId: "usr-farmer-01",
       role: "farmer",
-      fullName: session?.user?.fullName || "Muhammadaziz Iminjonov",
+      fullName: farmerFullName,
       title: "Lead Farm Operator & Milk Producer",
       organizationName: session?.organization?.legalName || "Sayxunobod Agro-Dairy Farm LLC",
       location: "Sayxunobod District, Sirdaryo Region, Uzbekistan",
-      avatarUrl: "/images/team-muhammadaziz.jpg",
+      avatarUrl: resolveUserAvatar(farmerFullName, session?.user?.email) || "",
       bannerUrl: "/images/hero-ecosystem-3d.jpg",
       email: session?.user?.email || "farmer@zaminflow.uz",
       phone: "+998 90 333 44 55",
@@ -105,9 +114,9 @@ export default function UserProfileView({
         { label: "Settlement Speed", value: "< 2.5 hrs", sublabel: "Direct bank escrow" },
       ],
       team: [
-        { name: "Muhammadaziz Iminjonov", role: "Owner & Lead Operator", avatarUrl: "/images/team-muhammadaziz.jpg" },
-        { name: "Akrom Aliyev", role: "Herd & Logistics Manager", avatarUrl: "/images/team-akrom.jpg" },
-        { name: "Sevinchoy Karimova", role: "Quality Titration Officer", avatarUrl: "/images/team-sevinchoy.jpg" },
+        { name: "Iminjonov Muhammadaziz", role: "Founder & Lead Operator", avatarUrl: "/images/team-muhammadaziz.jpg" },
+        { name: "Abdumanov Akrom", role: "Lead Systems & IoT Engineer", avatarUrl: "/images/team-akrom.jpg" },
+        { name: "Sevinchoy Soporboyeva", role: "Co-Founder & Quality Operations", avatarUrl: "/images/team-sevinchoy.jpg" },
       ],
       tradingSpecs: [
         { label: "Minimum Daily Order", value: "1,000 Liters" },
@@ -120,11 +129,11 @@ export default function UserProfileView({
     dairy: {
       userId: "usr-dairy-01",
       role: "dairy",
-      fullName: session?.user?.fullName || "Malika Karimova",
+      fullName: dairyFullName,
       title: "Chief Procurement Officer & Plant Technologist",
       organizationName: session?.organization?.legalName || "Toshkent Dairy Processing JSC",
       location: "Bektemir Industrial Zone, Tashkent, Uzbekistan",
-      avatarUrl: "/images/team-sevinchoy.jpg",
+      avatarUrl: resolveUserAvatar(dairyFullName, session?.user?.email) || "",
       bannerUrl: "/images/hero-ecosystem-3d.jpg",
       email: session?.user?.email || "dairy@zaminflow.uz",
       phone: "+998 71 200 45 67",
@@ -152,9 +161,9 @@ export default function UserProfileView({
         { label: "Trust Score", value: "99 / 100", sublabel: "Tier 1 Enterprise" },
       ],
       team: [
-        { name: "Malika Karimova", role: "VP Procurement & Supply", avatarUrl: "/images/team-sevinchoy.jpg" },
-        { name: "Shohjahon Rahimov", role: "Plant Operations Director", avatarUrl: "/images/team-shohjahon.jpg" },
-        { name: "Akrom Aliyev", role: "Gate Quality Lab Supervisor", avatarUrl: "/images/team-akrom.jpg" },
+        { name: "Sevinchoy Soporboyeva", role: "Co-Founder & Dairy Partner Liaison", avatarUrl: "/images/team-sevinchoy.jpg" },
+        { name: "Shokhjakhon Abdufattohov", role: "Strategic Adviser & Operations", avatarUrl: "/images/team-shohjahon.jpg" },
+        { name: "Abdumanov Akrom", role: "Gate Quality Telemetry Lead", avatarUrl: "/images/team-akrom.jpg" },
       ],
       tradingSpecs: [
         { label: "Required Grade", value: "Grade A or Grade B (Titrated)" },
@@ -167,11 +176,11 @@ export default function UserProfileView({
     driver: {
       userId: "usr-driver-01",
       role: "driver",
-      fullName: session?.user?.fullName || "Bobur Alimov",
+      fullName: driverFullName,
       title: "Certified Cold-Chain Tanker Operator",
       organizationName: session?.organization?.legalName || "ZaminFlow Logistics Fleet #04",
       location: "Tashkent - Sayxunobod Transit Corridor, Uzbekistan",
-      avatarUrl: "/images/team-akrom.jpg",
+      avatarUrl: resolveUserAvatar(driverFullName, session?.user?.email) || "",
       bannerUrl: "/images/hero-ecosystem-3d.jpg",
       email: session?.user?.email || "driver@zaminflow.uz",
       phone: "+998 90 999 88 77",
@@ -197,8 +206,8 @@ export default function UserProfileView({
         { label: "Safety Rating", value: "5.0 ★", sublabel: "Certified driver" },
       ],
       team: [
-        { name: "Bobur Alimov", role: "Fleet Driver & Logistics Partner", avatarUrl: "/images/team-akrom.jpg" },
-        { name: "Shohjahon Rahimov", role: "Central Dispatch Coordinator", avatarUrl: "/images/team-shohjahon.jpg" },
+        { name: "Abdumanov Akrom", role: "Fleet Telemetry & IoT Lead", avatarUrl: "/images/team-akrom.jpg" },
+        { name: "Shokhjakhon Abdufattohov", role: "Logistics Dispatch Adviser", avatarUrl: "/images/team-shohjahon.jpg" },
       ],
       tradingSpecs: [
         { label: "Vehicle Model", value: "MAN TGS 26.440 Stainless Tanker" },
@@ -210,11 +219,11 @@ export default function UserProfileView({
     bank: {
       userId: "usr-bank-01",
       role: "bank",
-      fullName: session?.user?.fullName || "Rustam Karimov",
+      fullName: bankFullName,
       title: "Chief Escrow Compliance Officer",
       organizationName: session?.organization?.legalName || "Agrobank ATB (Escrow Custodian)",
       location: "Muqimiy Street 43, Tashkent, 100096, Uzbekistan",
-      avatarUrl: "/images/team-akrom.jpg",
+      avatarUrl: resolveUserAvatar(bankFullName, session?.user?.email) || "",
       bannerUrl: "/images/hero-ecosystem-3d.jpg",
       email: session?.user?.email || "bank@zaminflow.uz",
       phone: "+998 71 203 88 88",
@@ -239,7 +248,8 @@ export default function UserProfileView({
         { label: "Audit Integrity", value: "Verified", sublabel: "Append-only ledger" },
       ],
       team: [
-        { name: "Escrow Operations Desk", role: "Settlement & Clearing", avatarUrl: "/images/team-akrom.jpg" },
+        { name: "Iminjonov Muhammadaziz", role: "Founder & Escrow Governance", avatarUrl: "/images/team-muhammadaziz.jpg" },
+        { name: "Shokhjakhon Abdufattohov", role: "Financial Compliance Adviser", avatarUrl: "/images/team-shohjahon.jpg" },
       ],
       tradingSpecs: [
         { label: "CBU Banking License", value: "Central Bank License № 14" },
@@ -249,13 +259,17 @@ export default function UserProfileView({
     admin: {
       userId: "usr-admin-01",
       role: "admin",
-      fullName: session?.user?.fullName || "Platform Operator",
-      title: "Chief Regulatory Officer & Platform Arbiter",
+      fullName: adminFullName,
+      title: "Founder & Chief Regulatory Officer",
       organizationName: "ZaminFlow National Infrastructure Bureau",
       location: "Navoi Avenue 14, Tashkent, 100011, Uzbekistan",
-      avatarUrl: "/images/team-shohjahon.jpg",
+      avatarUrl:
+        resolveUserAvatar(
+          adminFullName,
+          session?.user?.email || "iminjonovmuhammadaziz626@gmail.com"
+        ) || "/images/team-muhammadaziz.jpg",
       bannerUrl: "/images/hero-ecosystem-3d.jpg",
-      email: session?.user?.email || "admin@zaminflow.uz",
+      email: session?.user?.email || "iminjonovmuhammadaziz626@gmail.com",
       phone: "+998 71 200 45 67",
       trustScore: 100,
       kybVerified: true,
@@ -278,7 +292,10 @@ export default function UserProfileView({
         { label: "Compliance Rate", value: "100%", sublabel: "Strict legal audit" },
       ],
       team: [
-        { name: "Platform Governance Team", role: "Central Administration", avatarUrl: "/images/team-shohjahon.jpg" },
+        { name: "Iminjonov Muhammadaziz", role: "Founder & Super Admin", avatarUrl: "/images/team-muhammadaziz.jpg" },
+        { name: "Sevinchoy Soporboyeva", role: "Co-Founder & Operations", avatarUrl: "/images/team-sevinchoy.jpg" },
+        { name: "Abdumanov Akrom", role: "Lead Platform Architect", avatarUrl: "/images/team-akrom.jpg" },
+        { name: "Shokhjakhon Abdufattohov", role: "Strategic Adviser", avatarUrl: "/images/team-shohjahon.jpg" },
       ],
       tradingSpecs: [
         { label: "Jurisdiction", value: "Republic of Uzbekistan (14 Regions)" },
@@ -405,18 +422,19 @@ export default function UserProfileView({
               {/* Left: Avatar + Identity */}
               <div className="flex flex-col sm:flex-row sm:items-end gap-5">
                 <div className="relative inline-block">
-                  <div className="w-28 sm:w-32 h-28 sm:h-32 rounded-full border-4 border-white dark:border-slate-900 shadow-xl overflow-hidden bg-emerald-100 flex items-center justify-center">
-                    <img
-                      src={profile.avatarUrl}
-                      alt={profile.fullName}
-                      className="w-full h-full object-cover"
-                      onError={(e) => {
-                        (e.target as HTMLElement).style.display = "none";
-                      }}
-                    />
-                    <span className="text-3xl font-extrabold text-emerald-800">
-                      {profile.fullName.charAt(0)}
-                    </span>
+                  <div className="w-28 sm:w-32 h-28 sm:h-32 rounded-full border-4 border-white dark:border-slate-900 shadow-xl overflow-hidden bg-gradient-to-tr from-emerald-700 to-teal-500 flex items-center justify-center">
+                    {profile.avatarUrl && !avatarLoadError ? (
+                      <img
+                        src={profile.avatarUrl}
+                        alt={profile.fullName}
+                        className="w-full h-full object-cover object-[center_18%]"
+                        onError={() => setAvatarLoadError(true)}
+                      />
+                    ) : (
+                      <span className="text-3xl font-extrabold text-white tracking-wider">
+                        {getDisplayInitials(profile.fullName)}
+                      </span>
+                    )}
                   </div>
                   {/* Verified check badge */}
                   <div className="absolute bottom-1 right-1 w-7 h-7 rounded-full bg-emerald-600 text-white flex items-center justify-center border-2 border-white dark:border-slate-900 shadow-xs" title="Certified KYB Partner">
@@ -659,18 +677,21 @@ export default function UserProfileView({
                     key={idx}
                     className="flex items-center gap-3 p-2.5 rounded-2xl bg-white dark:bg-slate-900/60 border border-slate-200/60 dark:border-white/10 transition hover:border-emerald-300"
                   >
-                    <div className="w-10 h-10 rounded-full overflow-hidden bg-emerald-100 flex items-center justify-center shrink-0">
-                      <img
-                        src={member.avatarUrl}
-                        alt={member.name}
-                        className="w-full h-full object-cover"
-                        onError={(e) => {
-                          (e.target as HTMLElement).style.display = "none";
-                        }}
-                      />
-                      <span className="text-xs font-bold text-emerald-800">
-                        {member.name.charAt(0)}
-                      </span>
+                    <div className="w-10 h-10 rounded-full overflow-hidden bg-gradient-to-tr from-emerald-700 to-teal-500 flex items-center justify-center shrink-0">
+                      {member.avatarUrl && !failedTeamImages[idx] ? (
+                        <img
+                          src={member.avatarUrl}
+                          alt={member.name}
+                          className="w-full h-full object-cover object-[center_18%]"
+                          onError={() =>
+                            setFailedTeamImages((prev) => ({ ...prev, [idx]: true }))
+                          }
+                        />
+                      ) : (
+                        <span className="text-xs font-bold text-white">
+                          {getDisplayInitials(member.name)}
+                        </span>
+                      )}
                     </div>
                     <div>
                       <h4 className="text-xs font-bold text-slate-900 dark:text-white">
