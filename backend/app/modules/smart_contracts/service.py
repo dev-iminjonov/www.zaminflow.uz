@@ -312,19 +312,6 @@ async def countersign_contract(
     )
     await db.commit()
 
-    if next_status == "AWAITING_BANK_LOCK":
-        try:
-            from app.modules.metrics.service import broadcast_contract_signed
-            broadcast_contract_signed(
-                title="Commercial Contract Signed",
-                description=f"{updated['daily_volume_liters']} L/day contract signed between {updated['farmer_name']} & {updated['industry_name']}",
-                region="Samarqand",
-                volume=int(updated["daily_volume_liters"]),
-                price=int(updated["base_price_per_liter"]),
-            )
-        except Exception:
-            pass
-
     return updated
 
 

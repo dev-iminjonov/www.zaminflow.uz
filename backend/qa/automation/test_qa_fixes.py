@@ -99,8 +99,8 @@ class ZaminFlowQAFixesTest(unittest.TestCase):
         h1_matches = re.findall(r"<h1[^>]*>(.*?)</h1>", html, re.DOTALL | re.IGNORECASE)
         self.assertEqual(len(h1_matches), 1, f"Expected exactly 1 <h1>, found {len(h1_matches)}: {h1_matches}")
         
-        # Verify Active Trade Metrics is an <h2>
-        self.assertTrue(re.search(r"<h2[^>]*>.*?Active.*?Trade Metrics.*?</h2>", html, re.DOTALL | re.IGNORECASE))
+        # Verify Live Statistics section uses an <h2>
+        self.assertTrue(re.search(r"<h2[^>]*>.*?(?:Real deals|Haqiqiy bitimlar|Live statistics).*?</h2>", html, re.DOTALL | re.IGNORECASE))
 
     def test_qa_004_contrast_brand_token_usage(self):
         """QA-004: Verify #087a3c accessible brand green is present in HTML markup for text labels."""

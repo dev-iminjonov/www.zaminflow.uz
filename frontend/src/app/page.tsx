@@ -6,7 +6,6 @@ import ZaminFlowLogo from "@/components/ZaminFlowLogo";
 import HeroEcosystemVisual from "@/components/HeroEcosystemVisual";
 import OurTeamCarousel from "@/components/OurTeamCarousel";
 import LandingLiveStatistics from "@/components/LandingLiveStatistics";
-import ActiveTradeMetrics from "@/components/ActiveTradeMetrics";
 import ContactUsSection from "@/components/ContactUsSection";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { useLanguage } from "@/context/LanguageContext";
@@ -302,9 +301,6 @@ export default function LandingPage() {
 
       {/* 6. LIVE PLATFORM STATISTICS (ARTBOARD: "Real deals, real milk, real prices") */}
       <LandingLiveStatistics isDark={isDark} />
-
-      {/* 6B. DETAILED ACTIVE TRADE METRICS TELEMETRY */}
-      <ActiveTradeMetrics isDark={isDark} />
 
       {/* 7. CONTACT US SECTION (Artboard Glassmorphism Card & Direct Dispatch Channels) */}
       <ContactUsSection isDark={isDark} />

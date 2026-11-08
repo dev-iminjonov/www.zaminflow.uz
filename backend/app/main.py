@@ -16,7 +16,6 @@ from app.modules.escrow_ledger.service import (
 )
 from app.modules.geo_matching.service import router as matching_router
 from app.modules.notifications.service import router as notifications_router
-from app.modules.metrics.service import router as metrics_router
 from app.modules.profiles_kyb.service import router as profiles_router
 from app.modules.public_stats.service import router as public_stats_router
 from app.modules.qr_logistics.service import router as batches_router
@@ -75,7 +74,6 @@ app.include_router(bank_router, prefix=settings.API_V1_STR)
 app.include_router(batches_router, prefix=settings.API_V1_STR)
 app.include_router(trust_router, prefix=settings.API_V1_STR)
 app.include_router(disputes_router, prefix=settings.API_V1_STR)
-app.include_router(metrics_router, prefix=settings.API_V1_STR)
 app.include_router(public_stats_router, prefix=settings.API_V1_STR)
 app.include_router(public_stats_router, prefix="/api")
 app.include_router(public_stats_router)

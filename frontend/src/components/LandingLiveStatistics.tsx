@@ -279,7 +279,7 @@ export default function LandingLiveStatistics({
 
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
             <Link
-              href="/stats"
+              href="#stats"
               className="inline-flex items-center justify-center bg-[#12303a] hover:bg-[#1a4250] dark:bg-[#1B98E0] dark:hover:bg-white text-white dark:text-[#13293D] rounded-full px-7 min-h-[52px] font-bold text-base transition-all duration-200 shadow-md active:scale-95 focus-visible:outline-2 focus-visible:outline-[#22d36b] focus-visible:outline-offset-2"
             >
               <span>{t.liveStats.cta}</span>
