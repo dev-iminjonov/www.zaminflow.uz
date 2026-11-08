@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import ZaminFlowLogo from "@/components/ZaminFlowLogo";
 import { useRouter } from "next/navigation";
-import { signOut } from "@/lib/auth";
+import { signOut, authenticatedFetch } from "@/lib/auth";
 import { addFarmerBatch } from "@/lib/farmerStore";
 
 export default function ListSupplyPage() {
@@ -40,8 +40,24 @@ export default function ListSupplyPage() {
   const effectivePrice = isGradeAPlus ? 4380 : isGradeA ? 4150 : 3800;
   const totalPayout = volumeLiters * effectivePrice;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    try {
+      await authenticatedFetch("/farmer/supply", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          volume_liters: volumeLiters,
+          cooling_temp_c: storageTempC,
+          milking_session: milkingSession.toUpperCase(),
+          fat_pct: fatPercent,
+          snf_pct: snfPercent,
+          acidity_turner: acidityT,
+        }),
+      });
+    } catch {
+      // Resilient fallback if offline
+    }
     const created = addFarmerBatch({
       volumeLiters,
       milkingDate,

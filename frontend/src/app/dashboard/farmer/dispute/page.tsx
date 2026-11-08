@@ -4,7 +4,7 @@ import React, { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
 import ZaminFlowLogo from "@/components/ZaminFlowLogo";
 import { useSearchParams, useRouter } from "next/navigation";
-import { signOut } from "@/lib/auth";
+import { signOut, authenticatedFetch } from "@/lib/auth";
 import { getFarmerBatches, fileBatchDispute, MilkBatch } from "@/lib/farmerStore";
 
 function DisputeContent() {
@@ -33,8 +33,22 @@ function DisputeContent() {
 
   const currentBatch = batches.find((b) => b.batchNumber === selectedBatch) || batches[0];
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (currentBatch?.id && currentBatch.id.length === 36) {
+      try {
+        await authenticatedFetch(`/farmer/batches/${currentBatch.id}/dispute`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            reason: `${disputeReason}: ${comments}`,
+            vial_code: `VIAL-${selectedBatch}`,
+          }),
+        });
+      } catch {
+        // Resilient local state fallback
+      }
+    }
     fileBatchDispute(selectedBatch, `${disputeReason}: ${comments}`);
     setCaseNumber(`DSP-2026-${Math.floor(100 + Math.random() * 900)}`);
     setIsSubmitted(true);

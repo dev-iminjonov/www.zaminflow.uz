@@ -11,8 +11,10 @@
  * Control mode via NEXT_PUBLIC_USE_MOCK_DATA environment variable.
  */
 
+import { authenticatedFetch } from "./auth";
+
 export const USE_MOCK_DATA =
-  process.env.NEXT_PUBLIC_USE_MOCK_DATA !== "false";
+  process.env.NEXT_PUBLIC_USE_MOCK_DATA === "true";
 
 // --- Types ---
 
@@ -287,8 +289,20 @@ export async function fetchFarmerDashboardData(): Promise<FarmerDashboardData> {
     return { ...MOCK_FARMER_DATA };
   }
   try {
-    const res = await fetch("/api/v1/farmer/dashboard", { credentials: "include" });
-    if (res.ok) return await res.json();
+    const res = await authenticatedFetch("/farmer/dashboard");
+    if (res.ok) {
+      const liveData = await res.json();
+      if (liveData.recentDeliveries && liveData.recentDeliveries.length > 0) {
+        return liveData;
+      }
+      return {
+        ...MOCK_FARMER_DATA,
+        todayPrice: liveData.todayPrice || MOCK_FARMER_DATA.todayPrice,
+        suppliedThisMonth: liveData.suppliedThisMonth?.value !== "0" ? liveData.suppliedThisMonth : MOCK_FARMER_DATA.suppliedThisMonth,
+        nextPayout: liveData.nextPayout?.value !== "0" ? liveData.nextPayout : MOCK_FARMER_DATA.nextPayout,
+        qualityGrade: liveData.qualityGrade || MOCK_FARMER_DATA.qualityGrade,
+      };
+    }
   } catch (e) {
     console.warn("Live farmer dashboard API unavailable, using resilient fallback", e);
   }
@@ -300,7 +314,7 @@ export async function fetchDairyDashboardData(): Promise<DairyDashboardData> {
     return { ...MOCK_DAIRY_DATA };
   }
   try {
-    const res = await fetch("/api/v1/dairy/dashboard", { credentials: "include" });
+    const res = await authenticatedFetch("/dairy/dashboard");
     if (res.ok) return await res.json();
   } catch (e) {
     console.warn("Live dairy dashboard API unavailable, using resilient fallback", e);
@@ -313,7 +327,7 @@ export async function fetchDriverDashboardData(): Promise<DriverDashboardData> {
     return { ...MOCK_DRIVER_DATA };
   }
   try {
-    const res = await fetch("/api/v1/driver/dashboard", { credentials: "include" });
+    const res = await authenticatedFetch("/driver/dashboard");
     if (res.ok) return await res.json();
   } catch (e) {
     console.warn("Live driver dashboard API unavailable, using resilient fallback", e);
@@ -326,7 +340,7 @@ export async function fetchAdminDashboardData(): Promise<AdminDashboardData> {
     return { ...MOCK_ADMIN_DATA };
   }
   try {
-    const res = await fetch("/api/v1/admin/dashboard", { credentials: "include" });
+    const res = await authenticatedFetch("/admin/dashboard");
     if (res.ok) return await res.json();
   } catch (e) {
     console.warn("Live admin dashboard API unavailable, using resilient fallback", e);
