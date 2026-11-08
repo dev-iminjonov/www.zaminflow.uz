@@ -10,6 +10,7 @@ from app.core.config import settings
 from app.core.database import AsyncSessionLocal
 from app.modules.auth_rbac.service import router as auth_router
 from app.modules.disputes.service import router as disputes_router
+from app.modules.inquiries.service import router as inquiries_router
 from app.modules.escrow_ledger.service import (
     get_bank_dashboard_kpis,
     router as bank_router,
@@ -74,6 +75,7 @@ app.include_router(bank_router, prefix=settings.API_V1_STR)
 app.include_router(batches_router, prefix=settings.API_V1_STR)
 app.include_router(trust_router, prefix=settings.API_V1_STR)
 app.include_router(disputes_router, prefix=settings.API_V1_STR)
+app.include_router(inquiries_router, prefix=settings.API_V1_STR)
 app.include_router(public_stats_router, prefix=settings.API_V1_STR)
 app.include_router(public_stats_router, prefix="/api")
 app.include_router(public_stats_router)

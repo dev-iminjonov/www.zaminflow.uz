@@ -21,7 +21,7 @@ export default function ContactUsSection({ isDark = false }: ContactUsSectionPro
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage(null);
 
@@ -37,11 +37,30 @@ export default function ContactUsSection({ isDark = false }: ContactUsSectionPro
 
     setIsSubmitting(true);
 
-    // Simulate reliable dispatch
-    setTimeout(() => {
-      setIsSubmitting(false);
+    try {
+      const res = await fetch("/api/v1/inquiries", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          full_name: formData.fullName,
+          contact_info: formData.contactInfo,
+          role: formData.role,
+          message: formData.message,
+          consent: formData.agreed,
+        }),
+      });
+
+      if (!res.ok) {
+        const errData = await res.json().catch(() => null);
+        throw new Error(errData?.detail || "Failed to submit inquiry");
+      }
+
       setIsSubmitted(true);
-    }, 600);
+    } catch (err: any) {
+      setErrorMessage(err.message || "Failed to submit message. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleReset = () => {
@@ -225,7 +244,7 @@ export default function ContactUsSection({ isDark = false }: ContactUsSectionPro
                 <span>
                   {t.contact.consent}
                   <Link
-                    href="#privacy"
+                    href="/privacy"
                     className="font-bold text-[#087a3c] dark:text-[#4be08a] hover:underline"
                   >
                     {t.contact.privacyPolicy}
