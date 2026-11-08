@@ -81,21 +81,11 @@ export default function ContactUsSection({ isDark = false }: ContactUsSectionPro
       className="relative w-full py-20 sm:py-28 overflow-hidden select-none transition-colors duration-500"
     >
       <div className="max-w-[760px] mx-auto px-4 sm:px-6 lg:px-8">
-        {/* 1. SECTION HEADER (Centered Overline + Title) */}
-        <header className="text-center mb-10 sm:mb-14">
-          <div className="text-[12px] font-bold tracking-[0.08em] uppercase text-[#2d6a4f] dark:text-[#4be08a]">
+        {/* 1. SECTION HEADER (Centered Overline) */}
+        <header className="text-center mb-6 sm:mb-8">
+          <div className="text-sm sm:text-base font-bold tracking-[0.08em] uppercase text-[#2d6a4f] dark:text-[#4be08a]">
             {t.contact.badge}
           </div>
-          <h2
-            className={`mt-3 text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight leading-[1.16] pb-1 ${
-              isDark ? "text-white" : "text-[#081c15]"
-            }`}
-          >
-            {t.contact.titleStart}
-            <span className="text-[#087a3c] dark:text-[#4be08a]">
-              {t.contact.titleAccent}
-            </span>
-          </h2>
         </header>
 
         {/* 2. INQUIRY FORM (.g Glassmorphism Card matching Design Template) */}
