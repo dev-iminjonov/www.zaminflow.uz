@@ -12,7 +12,7 @@ import { useLanguage } from "@/context/LanguageContext";
 import { useTheme } from "@/context/ThemeContext";
 
 export default function LandingPage() {
-  const { t } = useLanguage();
+  const { t, locale } = useLanguage();
   const { themeMode, setThemeMode, isDark } = useTheme();
   const [activeSection, setActiveSection] = useState<string>("company");
 
@@ -234,16 +234,22 @@ export default function LandingPage() {
 
       {/* 4. OUR COMPANY / HERO SECTION (ASYMMETRICAL SPLIT LAYOUT 1fr 1fr) */}
       <main id="company" className="relative z-10 w-full max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8 pt-8 sm:pt-12 pb-16 sm:pb-24 flex-1 flex items-center">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-8 items-center w-full">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-10 xl:gap-12 items-center w-full">
           
           {/* LEFT SIDE: TYPOGRAPHY & CTAs */}
-          <div className="flex flex-col items-center lg:items-start text-center lg:text-left max-w-xl mx-auto lg:mx-0">
+          <div className="flex flex-col items-center lg:items-start text-center lg:text-left max-w-xl mx-auto lg:mx-0 min-w-0 w-full lg:pr-4">
             {/* Massive, Bold Sans-Serif Headline */}
-            <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight leading-[1.08] select-none">
+            <h1
+              className={`font-black tracking-tight select-none break-words max-w-full ${
+                locale === "ru"
+                  ? "text-3xl sm:text-5xl lg:text-[2.6rem] xl:text-[3.1rem] leading-[1.12]"
+                  : "text-4xl sm:text-5xl lg:text-5xl xl:text-6xl leading-[1.08]"
+              }`}
+            >
               <span className={isDark ? "text-[#E8F1F2]" : "text-[#081c15]"}>
                 {t.hero.headlineStart}
               </span>
-              <span className="bg-gradient-to-r from-[#52b788] via-[#40916c] to-[#2d6a4f] dark:from-[#00C853] dark:via-[#4ADE80] dark:to-[#64DD17] bg-clip-text text-transparent inline-block drop-shadow-xs">
+              <span className="bg-gradient-to-r from-[#52b788] via-[#40916c] to-[#2d6a4f] dark:from-[#00C853] dark:via-[#4ADE80] dark:to-[#64DD17] bg-clip-text text-transparent drop-shadow-xs">
                 {t.hero.headlineAccent}
               </span>
             </h1>
@@ -300,7 +306,7 @@ export default function LandingPage() {
           </div>
 
           {/* RIGHT SIDE: 3D HERO VISUALS & FLOATING BENTO UI CARDS */}
-          <div className="w-full flex justify-center lg:justify-end">
+          <div className="w-full min-w-0 flex justify-center lg:justify-end">
             <HeroEcosystemVisual isDark={isDark} />
           </div>
 

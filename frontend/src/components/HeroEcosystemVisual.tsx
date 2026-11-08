@@ -62,26 +62,26 @@ export default function HeroEcosystemVisual({ isDark }: HeroEcosystemVisualProps
 
       {/* CARD 1: TOP-LEFT "LIVE PRICING" WITH VIBRANT GREEN SPARKLINE */}
       <div
-        className={`absolute -top-3 sm:-top-5 -left-1 sm:-left-4 z-20 w-[190px] sm:w-[220px] rounded-2xl p-3.5 sm:p-4 backdrop-blur-xl border transition-all duration-300 animate-float-1 ${
+        className={`absolute -top-3 sm:-top-5 left-1 sm:left-2 z-20 w-[195px] sm:w-[225px] rounded-2xl p-3.5 sm:p-4 backdrop-blur-xl border transition-all duration-300 animate-float-1 ${
           isDark
             ? "bg-[#13293D]/90 border-[#247BA0]/50 text-[#E8F1F2] shadow-[0_16px_36px_rgba(0,0,0,0.4)]"
             : "bg-white/95 border-[#b7e4c7] text-[#081c15] shadow-[0_16px_36px_rgba(8,28,21,0.08)]"
         }`}
       >
-        <div className="flex items-center justify-between mb-2">
-          <div className="flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-[#52b788] animate-ping" />
-            <span className="text-[10px] sm:text-[11px] font-black uppercase tracking-wider text-[#087a3c] dark:text-[#22d36b]">
+        <div className="flex items-center justify-between gap-1.5 mb-2">
+          <div className="flex items-center gap-1.5 min-w-0">
+            <span className="w-2 h-2 rounded-full bg-[#52b788] animate-ping shrink-0" />
+            <span className="text-[10px] sm:text-[11px] font-black uppercase tracking-wider text-[#087a3c] dark:text-[#22d36b] truncate">
               {t.hero.cards.livePricing}
             </span>
           </div>
-          <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-[#087a3c]/10 dark:bg-[#00C853]/15 text-[#087a3c] dark:text-[#22d36b] font-bold">
+          <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-[#087a3c]/10 dark:bg-[#00C853]/15 text-[#087a3c] dark:text-[#22d36b] font-bold shrink-0">
             +12.4%
           </span>
         </div>
 
         <div className="flex items-baseline gap-1 mb-2">
-          <span className="text-xl sm:text-2xl font-black font-mono tracking-tight text-[#081c15] dark:white">
+          <span className="text-xl sm:text-2xl font-black font-mono tracking-tight text-[#081c15] dark:text-white">
             {displayPrice}
           </span>
           <span className="text-[11px] text-[#2d6a4f] dark:text-[#E8F1F2]/70 font-bold">
@@ -121,23 +121,23 @@ export default function HeroEcosystemVisual({ isDark }: HeroEcosystemVisualProps
 
       {/* CARD 2: BOTTOM-LEFT "LOGISTICS" WITH MINIMALIST DIGITAL ROUTE */}
       <div
-        className={`absolute -bottom-3 sm:-bottom-5 -left-1 sm:-left-3 z-20 w-[210px] sm:w-[240px] rounded-2xl p-3.5 sm:p-4 backdrop-blur-xl border transition-all duration-300 animate-float-2 ${
+        className={`absolute -bottom-3 sm:-bottom-5 left-1 sm:left-2 z-20 w-[225px] sm:w-[255px] rounded-2xl p-3.5 sm:p-4 backdrop-blur-xl border transition-all duration-300 animate-float-2 ${
           isDark
             ? "bg-[#13293D]/90 border-[#247BA0]/50 text-[#E8F1F2] shadow-[0_16px_36px_rgba(0,0,0,0.4)]"
             : "bg-white/95 border-[#b7e4c7] text-[#081c15] shadow-[0_16px_36px_rgba(8,28,21,0.08)]"
         }`}
       >
-        <div className="flex items-center justify-between mb-2">
-          <div className="flex items-center gap-1.5">
-            <svg className="w-3.5 h-3.5 text-[#087a3c] dark:text-[#22d36b]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+        <div className="flex items-center justify-between gap-1.5 mb-2">
+          <div className="flex items-center gap-1.5 min-w-0">
+            <svg className="w-3.5 h-3.5 text-[#087a3c] dark:text-[#22d36b] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
               <path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7z" />
               <circle cx="12" cy="9" r="2.5" />
             </svg>
-            <span className="text-[10px] sm:text-[11px] font-black uppercase tracking-wider text-[#087a3c] dark:text-[#22d36b]">
+            <span className="text-[10px] sm:text-[11px] font-black uppercase tracking-wider text-[#087a3c] dark:text-[#22d36b] truncate">
               {t.hero.cards.logistics}
             </span>
           </div>
-          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#087a3c]/10 dark:bg-[#00C853]/15 text-[#087a3c] dark:text-[#22d36b]">
+          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#087a3c]/10 dark:bg-[#00C853]/15 text-[#087a3c] dark:text-[#22d36b] whitespace-nowrap shrink-0">
             +3.2°C {t.hero.cards.cold}
           </span>
         </div>
@@ -158,7 +158,7 @@ export default function HeroEcosystemVisual({ isDark }: HeroEcosystemVisualProps
 
       {/* CARD 3: BOTTOM-RIGHT "SECURED ESCROW" WITH 3D PADLOCK & VERIFIED CHECK */}
       <div
-        className={`absolute -bottom-3 sm:-bottom-5 -right-1 sm:-right-3 z-20 w-[205px] sm:w-[235px] rounded-2xl p-3.5 sm:p-4 backdrop-blur-xl border transition-all duration-300 animate-float-3 ${
+        className={`absolute -bottom-3 sm:-bottom-5 right-1 sm:right-2 z-20 w-[215px] sm:w-[245px] rounded-2xl p-3.5 sm:p-4 backdrop-blur-xl border transition-all duration-300 animate-float-3 ${
           isDark
             ? "bg-[#13293D]/90 border-[#247BA0]/50 text-[#E8F1F2] shadow-[0_16px_36px_rgba(0,0,0,0.4)]"
             : "bg-white/95 border-[#b7e4c7] text-[#081c15] shadow-[0_16px_36px_rgba(8,28,21,0.08)]"
