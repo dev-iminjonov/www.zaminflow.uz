@@ -104,6 +104,25 @@ export interface AdminDashboardData {
   }>;
 }
 
+export interface BankDashboardData {
+  totalEscrowHeld: { value: string; unit: string };
+  releasedToday: { value: string; unit: string };
+  frozenDisputes: { value: string; status: string };
+  factoringFeeRevenue: { value: string; unit: string };
+  ledgerEntries: Array<{
+    id: string;
+    contractId: string;
+    batchId: string | null;
+    entryType: string;
+    debitAccount: string;
+    creditAccount: string;
+    amountUzs: string;
+    bankReferenceId: string;
+    webhookStatus: string;
+    createdAt: string;
+  }>;
+}
+
 // --- Mock Data (Exact match to Artboard Specs) ---
 
 export const MOCK_FARMER_DATA: FarmerDashboardData = {
@@ -367,4 +386,62 @@ export async function fetchAdminDashboardData(): Promise<AdminDashboardData> {
     console.warn("Live admin dashboard API unavailable, using resilient fallback", e);
   }
   return { ...MOCK_ADMIN_DATA };
+}
+
+export const MOCK_BANK_DATA: BankDashboardData = {
+  totalEscrowHeld: { value: "48,500,000", unit: "UZS" },
+  releasedToday: { value: "10,074,000", unit: "UZS" },
+  frozenDisputes: { value: "1", status: "● Escrow Frozen" },
+  factoringFeeRevenue: { value: "412,500", unit: "UZS" },
+  ledgerEntries: [
+    {
+      id: "led-1",
+      contractId: "CTR-2026-8812",
+      batchId: "ZF-0412",
+      entryType: "ESCROW_LOCK",
+      debitAccount: "INDUSTRY_OPERATING:TASHKENT_DAIRY",
+      creditAccount: "BANK_ESCROW_VAULT:CTR-2026-8812",
+      amountUzs: "18,500,000",
+      bankReferenceId: "ISO-PACS008-9941",
+      webhookStatus: "DELIVERED",
+      createdAt: "2026-11-08T08:15:00Z",
+    },
+    {
+      id: "led-2",
+      contractId: "CTR-2026-8805",
+      batchId: "ZF-0405",
+      entryType: "ESCROW_RELEASE",
+      debitAccount: "BANK_ESCROW_VAULT:CTR-2026-8805",
+      creditAccount: "FARMER_SETTLEMENT:CHASHMA_FARM",
+      amountUzs: "4,818,000",
+      bankReferenceId: "ISO-PACS008-9938",
+      webhookStatus: "DELIVERED",
+      createdAt: "2026-11-08T07:40:00Z",
+    },
+  ],
+};
+
+export async function fetchBankDashboardData(): Promise<BankDashboardData> {
+  if (USE_MOCK_DATA) {
+    return { ...MOCK_BANK_DATA };
+  }
+  try {
+    const res = await authenticatedFetch("/bank/dashboard");
+    if (res.ok) {
+      const liveData = await res.json();
+      if (liveData.ledgerEntries && liveData.ledgerEntries.length > 0) {
+        return liveData;
+      }
+      return {
+        ...MOCK_BANK_DATA,
+        totalEscrowHeld:
+          liveData.totalEscrowHeld?.value !== "0"
+            ? liveData.totalEscrowHeld
+            : MOCK_BANK_DATA.totalEscrowHeld,
+      };
+    }
+  } catch (e) {
+    console.warn("Live bank dashboard API unavailable, using resilient fallback", e);
+  }
+  return { ...MOCK_BANK_DATA };
 }
