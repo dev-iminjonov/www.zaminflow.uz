@@ -115,9 +115,9 @@ export default function UserProfileView({
         { label: "Settlement Speed", value: "< 2.5 hrs", sublabel: "Direct bank escrow" },
       ],
       team: [
-        { name: "Iminjonov Muhammadaziz", role: "Founder & Lead Operator", avatarUrl: "/images/team-muhammadaziz.jpg" },
-        { name: "Abdumanov Akrom", role: "Lead Systems & IoT Engineer", avatarUrl: "/images/team-akrom.jpg" },
-        { name: "Sevinchoy Soporboyeva", role: "Co-Founder & Quality Operations", avatarUrl: "/images/team-sevinchoy.jpg" },
+        { name: "Iminjonov Muhammadaziz", role: "Founder & Lead Operator", avatarUrl: "/images/team-muhammadaziz.webp" },
+        { name: "Abdumanov Akrom", role: "Lead Systems & IoT Engineer", avatarUrl: "/images/team-akrom.webp" },
+        { name: "Sevinchoy Soporboyeva", role: "Co-Founder & Quality Operations", avatarUrl: "/images/team-sevinchoy.webp" },
       ],
       tradingSpecs: [
         { label: "Minimum Daily Order", value: "1,000 Liters" },
@@ -162,9 +162,9 @@ export default function UserProfileView({
         { label: "Trust Score", value: "99 / 100", sublabel: "Tier 1 Enterprise" },
       ],
       team: [
-        { name: "Sevinchoy Soporboyeva", role: "Co-Founder & Dairy Partner Liaison", avatarUrl: "/images/team-sevinchoy.jpg" },
-        { name: "Shokhjakhon Abdufattohov", role: "Strategic Adviser & Operations", avatarUrl: "/images/team-shohjahon.jpg" },
-        { name: "Abdumanov Akrom", role: "Gate Quality Telemetry Lead", avatarUrl: "/images/team-akrom.jpg" },
+        { name: "Sevinchoy Soporboyeva", role: "Co-Founder & Dairy Partner Liaison", avatarUrl: "/images/team-sevinchoy.webp" },
+        { name: "Shokhjakhon Abdufattohov", role: "Strategic Adviser & Operations", avatarUrl: "/images/team-shohjahon.webp" },
+        { name: "Abdumanov Akrom", role: "Gate Quality Telemetry Lead", avatarUrl: "/images/team-akrom.webp" },
       ],
       tradingSpecs: [
         { label: "Required Grade", value: "Grade A or Grade B (Titrated)" },
@@ -207,8 +207,8 @@ export default function UserProfileView({
         { label: "Safety Rating", value: "5.0 ★", sublabel: "Certified driver" },
       ],
       team: [
-        { name: "Abdumanov Akrom", role: "Fleet Telemetry & IoT Lead", avatarUrl: "/images/team-akrom.jpg" },
-        { name: "Shokhjakhon Abdufattohov", role: "Logistics Dispatch Adviser", avatarUrl: "/images/team-shohjahon.jpg" },
+        { name: "Abdumanov Akrom", role: "Fleet Telemetry & IoT Lead", avatarUrl: "/images/team-akrom.webp" },
+        { name: "Shokhjakhon Abdufattohov", role: "Logistics Dispatch Adviser", avatarUrl: "/images/team-shohjahon.webp" },
       ],
       tradingSpecs: [
         { label: "Vehicle Model", value: "MAN TGS 26.440 Stainless Tanker" },
@@ -249,8 +249,8 @@ export default function UserProfileView({
         { label: "Audit Integrity", value: "Verified", sublabel: "Append-only ledger" },
       ],
       team: [
-        { name: "Iminjonov Muhammadaziz", role: "Founder & Escrow Governance", avatarUrl: "/images/team-muhammadaziz.jpg" },
-        { name: "Shokhjakhon Abdufattohov", role: "Financial Compliance Adviser", avatarUrl: "/images/team-shohjahon.jpg" },
+        { name: "Iminjonov Muhammadaziz", role: "Founder & Escrow Governance", avatarUrl: "/images/team-muhammadaziz.webp" },
+        { name: "Shokhjakhon Abdufattohov", role: "Financial Compliance Adviser", avatarUrl: "/images/team-shohjahon.webp" },
       ],
       tradingSpecs: [
         { label: "CBU Banking License", value: "Central Bank License № 14" },
@@ -268,7 +268,7 @@ export default function UserProfileView({
         resolveUserAvatar(
           adminFullName,
           session?.user?.email || "iminjonovmuhammadaziz626@gmail.com"
-        ) || "/images/team-muhammadaziz.jpg",
+        ) || "/images/team-muhammadaziz.webp",
       bannerUrl: "/images/hero-ecosystem-3d.jpg",
       email: session?.user?.email || "iminjonovmuhammadaziz626@gmail.com",
       phone: "+998 71 200 45 67",
@@ -293,10 +293,10 @@ export default function UserProfileView({
         { label: "Compliance Rate", value: "100%", sublabel: "Strict legal audit" },
       ],
       team: [
-        { name: "Iminjonov Muhammadaziz", role: "Founder & Super Admin", avatarUrl: "/images/team-muhammadaziz.jpg" },
-        { name: "Sevinchoy Soporboyeva", role: "Co-Founder & Operations", avatarUrl: "/images/team-sevinchoy.jpg" },
-        { name: "Abdumanov Akrom", role: "Lead Platform Architect", avatarUrl: "/images/team-akrom.jpg" },
-        { name: "Shokhjakhon Abdufattohov", role: "Strategic Adviser", avatarUrl: "/images/team-shohjahon.jpg" },
+        { name: "Iminjonov Muhammadaziz", role: "Founder & Super Admin", avatarUrl: "/images/team-muhammadaziz.webp" },
+        { name: "Sevinchoy Soporboyeva", role: "Co-Founder & Operations", avatarUrl: "/images/team-sevinchoy.webp" },
+        { name: "Abdumanov Akrom", role: "Lead Platform Architect", avatarUrl: "/images/team-akrom.webp" },
+        { name: "Shokhjakhon Abdufattohov", role: "Strategic Adviser", avatarUrl: "/images/team-shohjahon.webp" },
       ],
       tradingSpecs: [
         { label: "Jurisdiction", value: "Republic of Uzbekistan (14 Regions)" },

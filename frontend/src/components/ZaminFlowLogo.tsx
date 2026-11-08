@@ -29,7 +29,7 @@ export default function ZaminFlowLogo({
     return (
       <div className={`inline-flex items-center select-none ${className}`}>
         <img
-          src="/images/zaminflow-icon.png"
+          src="/icon.png"
           alt="ZaminFlow Icon"
           width={dim.iconSize}
           height={dim.iconSize}

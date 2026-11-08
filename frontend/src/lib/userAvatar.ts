@@ -15,15 +15,15 @@ export function resolveUserAvatar(
     haystack.includes("iminjonov") ||
     haystack.includes("admin@zaminflow.uz")
   ) {
-    return "/images/team-muhammadaziz.jpg";
+    return "/images/team-muhammadaziz.webp";
   }
 
   if (haystack.includes("sevinchoy") || haystack.includes("soporboyeva")) {
-    return "/images/team-sevinchoy.jpg";
+    return "/images/team-sevinchoy.webp";
   }
 
   if (haystack.includes("akrom") || haystack.includes("abdumanov")) {
-    return "/images/team-akrom.jpg";
+    return "/images/team-akrom.webp";
   }
 
   if (
@@ -31,7 +31,7 @@ export function resolveUserAvatar(
     haystack.includes("shokhjakhon") ||
     haystack.includes("abdufattohov")
   ) {
-    return "/images/team-shohjahon.jpg";
+    return "/images/team-shohjahon.webp";
   }
 
   return null;
