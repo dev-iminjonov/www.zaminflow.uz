@@ -25,6 +25,7 @@ export const authTranslations = {
       smsButton: "Sign in with SMS code",
       newToZaminflow: "New to ZaminFlow?",
       signUpLink: "Sign up",
+      backToHome: "Home",
     },
     signUp: {
       eyebrow: "JOIN ZAMINFLOW",
@@ -50,6 +51,7 @@ export const authTranslations = {
       submitting: "Creating account...",
       alreadyHaveAccount: "Already have an account?",
       signInLink: "Sign in",
+      backToHome: "Home",
     },
     smsModal: {
       title: "Sign in with SMS Code",
@@ -130,6 +132,7 @@ export const authTranslations = {
       smsButton: "Войти по SMS коду",
       newToZaminflow: "Впервые в ZaminFlow?",
       signUpLink: "Зарегистрироваться",
+      backToHome: "Главная",
     },
     signUp: {
       eyebrow: "ПРИСОЕДИНЯЙТЕСЬ К ZAMINFLOW",
@@ -155,6 +158,7 @@ export const authTranslations = {
       submitting: "Регистрация...",
       alreadyHaveAccount: "Уже есть аккаунт?",
       signInLink: "Войти",
+      backToHome: "Главная",
     },
     smsModal: {
       title: "Вход по SMS-коду",
@@ -235,6 +239,7 @@ export const authTranslations = {
       smsButton: "SMS kodi orqali kirish",
       newToZaminflow: "ZaminFlow'da yangimisiz?",
       signUpLink: "Ro'yxatdan o'tish",
+      backToHome: "Bosh sahifa",
     },
     signUp: {
       eyebrow: "ZAMINFLOW'GA QO'SHILING",
@@ -260,6 +265,7 @@ export const authTranslations = {
       submitting: "Yaratilmoqda...",
       alreadyHaveAccount: "Hisobingiz bormi?",
       signInLink: "Kirish",
+      backToHome: "Bosh sahifa",
     },
     smsModal: {
       title: "SMS kod orqali kirish",

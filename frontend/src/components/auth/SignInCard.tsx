@@ -159,11 +159,38 @@ export default function SignInCard() {
   };
 
   return (
-    <div className="min-h-screen w-full flex flex-col justify-center items-center py-10 px-4 bg-[linear-gradient(160deg,#f6f9f8_0%,#e4f6ec_100%)] dark:bg-[linear-gradient(160deg,#13293D_0%,#006494_100%)] text-[#17352c] dark:text-[#E8F1F2] transition-colors duration-300">
+    <div className="min-h-screen w-full flex flex-col justify-center items-center pt-20 sm:pt-24 pb-12 px-4 bg-[linear-gradient(160deg,#f6f9f8_0%,#e4f6ec_100%)] dark:bg-[linear-gradient(160deg,#13293D_0%,#006494_100%)] text-[#17352c] dark:text-[#E8F1F2] transition-colors duration-300 relative">
       
-      {/* Top Locale Picker */}
-      <div className="w-full max-w-[560px] flex justify-end mb-3">
-        <div className="flex rounded-full p-1 border border-white/60 dark:border-white/10 bg-white/70 dark:bg-black/20 text-xs font-semibold shadow-xs">
+      {/* Top Navigation Bar: Home Icon (Top-Left) & Locale Picker (Top-Right) */}
+      <header className="fixed top-4 left-4 right-4 sm:top-6 sm:left-8 sm:right-8 flex items-center justify-between z-30 pointer-events-none">
+        {/* Home Button (Top-Left) */}
+        <Link
+          href="/"
+          aria-label={t.signIn.backToHome || "Home"}
+          title={t.signIn.backToHome || "Home"}
+          className="pointer-events-auto group inline-flex items-center gap-2 px-3.5 py-2 rounded-full border border-white/60 dark:border-white/10 bg-white/80 dark:bg-[#101E27]/80 backdrop-blur-md shadow-xs hover:shadow-md hover:border-emerald-500/40 text-slate-700 dark:text-slate-200 hover:text-emerald-700 dark:hover:text-emerald-400 transition-all cursor-pointer"
+        >
+          <svg
+            className="w-4 h-4 text-emerald-600 dark:text-emerald-400 transition-transform group-hover:-translate-x-0.5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+            />
+          </svg>
+          <span className="text-xs font-bold tracking-tight">
+            {t.signIn.backToHome || "Home"}
+          </span>
+        </Link>
+
+        {/* Top-Right Locale Picker */}
+        <div className="pointer-events-auto flex rounded-full p-1 border border-white/60 dark:border-white/10 bg-white/80 dark:bg-[#101E27]/80 backdrop-blur-md text-xs font-semibold shadow-xs">
           {(["en", "ru", "uz"] as Locale[]).map((loc) => (
             <button
               key={loc}
@@ -179,7 +206,7 @@ export default function SignInCard() {
             </button>
           ))}
         </div>
-      </div>
+      </header>
 
       {/* Main Glass Card (Max-width 560px) */}
       <div className="w-full max-w-[560px] rounded-[32px] p-8 sm:p-11 bg-white/76 dark:bg-[#13293D]/80 backdrop-blur-md border border-white dark:border-white/10 shadow-[0_10px_40px_rgba(20,80,60,0.08)] transition-all">
