@@ -18,13 +18,13 @@ export default function HeroEcosystemVisual({ isDark }: HeroEcosystemVisualProps
           className={`w-[480px] h-[480px] sm:w-[600px] sm:h-[600px] rounded-full blur-[120px] ${
             isDark
               ? "bg-gradient-to-tr from-[#1B98E0]/20 via-[#006494]/30 to-[#00C853]/20"
-              : "bg-gradient-to-tr from-[#00C853]/25 via-[#52B69A]/20 to-[#64DD17]/25"
+              : "bg-gradient-to-tr from-[#52b788]/25 via-[#74c69d]/20 to-[#95d5b2]/25"
           }`}
         />
       </div>
 
       {/* 2. 3D ISOMETRIC ECOSYSTEM RENDER CONTAINER */}
-      <div className="relative rounded-3xl overflow-hidden shadow-[0_25px_60px_-15px_rgba(0,0,0,0.15)] border border-white/80 dark:border-white/10 bg-white/40 dark:bg-[#13293D]/40 backdrop-blur-md">
+      <div className="relative rounded-3xl overflow-hidden shadow-[0_25px_60px_-15px_rgba(8,28,21,0.12)] border border-white/80 dark:border-white/10 bg-white/40 dark:bg-[#13293D]/40 backdrop-blur-md">
         <img
           src="/images/hero-ecosystem-3d.jpg"
           alt="ZaminFlow Connected 3D Agricultural Ecosystem"
@@ -41,12 +41,12 @@ export default function HeroEcosystemVisual({ isDark }: HeroEcosystemVisualProps
         className={`absolute -top-3 sm:-top-5 -left-1 sm:-left-4 z-20 w-[190px] sm:w-[220px] rounded-2xl p-3.5 sm:p-4 backdrop-blur-xl border transition-all duration-300 animate-float-1 ${
           isDark
             ? "bg-[#13293D]/90 border-[#247BA0]/50 text-[#E8F1F2] shadow-[0_16px_36px_rgba(0,0,0,0.4)]"
-            : "bg-white/92 border-white text-[#102A38] shadow-[0_16px_36px_rgba(16,42,56,0.12)]"
+            : "bg-white/95 border-[#b7e4c7] text-[#081c15] shadow-[0_16px_36px_rgba(8,28,21,0.08)]"
         }`}
       >
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-[#00C853] animate-ping" />
+            <span className="w-2 h-2 rounded-full bg-[#52b788] animate-ping" />
             <span className="text-[10px] sm:text-[11px] font-black uppercase tracking-wider text-[#087a3c] dark:text-[#22d36b]">
               {t.hero.cards.livePricing}
             </span>
@@ -57,10 +57,10 @@ export default function HeroEcosystemVisual({ isDark }: HeroEcosystemVisualProps
         </div>
 
         <div className="flex items-baseline gap-1 mb-2">
-          <span className="text-xl sm:text-2xl font-black font-mono tracking-tight text-[#102A38] dark:text-white">
+          <span className="text-xl sm:text-2xl font-black font-mono tracking-tight text-[#081c15] dark:white">
             4,380
           </span>
-          <span className="text-[11px] text-[#4A5D56] dark:text-[#E8F1F2]/70 font-bold">
+          <span className="text-[11px] text-[#2d6a4f] dark:text-[#E8F1F2]/70 font-bold">
             UZS / L
           </span>
         </div>
@@ -70,8 +70,8 @@ export default function HeroEcosystemVisual({ isDark }: HeroEcosystemVisualProps
           <svg viewBox="0 0 100 36" className="w-full h-full overflow-visible">
             <defs>
               <linearGradient id="heroSparklineGrad" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#00C853" stopOpacity="0.45" />
-                <stop offset="100%" stopColor="#00C853" stopOpacity="0.0" />
+                <stop offset="0%" stopColor="#52b788" stopOpacity="0.45" />
+                <stop offset="100%" stopColor="#52b788" stopOpacity="0.0" />
               </linearGradient>
             </defs>
             <path
@@ -81,15 +81,15 @@ export default function HeroEcosystemVisual({ isDark }: HeroEcosystemVisualProps
             <path
               d="M0 30 Q 15 28, 25 22 T 50 18 T 75 12 T 100 6"
               fill="none"
-              stroke="#00C853"
+              stroke="#40916c"
               strokeWidth="2.5"
               strokeLinecap="round"
             />
-            <circle cx="100" cy="6" r="3.5" fill="#00C853" className="animate-pulse" />
+            <circle cx="100" cy="6" r="3.5" fill="#40916c" className="animate-pulse" />
           </svg>
         </div>
 
-        <div className="mt-1 flex items-center justify-between text-[10px] text-[#4A5D56] dark:text-[#E8F1F2]/60 font-medium">
+        <div className="mt-1 flex items-center justify-between text-[10px] text-[#2d6a4f] dark:text-[#E8F1F2]/60 font-medium">
           <span>{t.hero.cards.fat} 4.1%</span>
           <span>{t.hero.cards.snf} 8.7% ({t.hero.cards.grade})</span>
         </div>
@@ -100,7 +100,7 @@ export default function HeroEcosystemVisual({ isDark }: HeroEcosystemVisualProps
         className={`absolute -bottom-3 sm:-bottom-5 -left-1 sm:-left-3 z-20 w-[210px] sm:w-[240px] rounded-2xl p-3.5 sm:p-4 backdrop-blur-xl border transition-all duration-300 animate-float-2 ${
           isDark
             ? "bg-[#13293D]/90 border-[#247BA0]/50 text-[#E8F1F2] shadow-[0_16px_36px_rgba(0,0,0,0.4)]"
-            : "bg-white/92 border-white text-[#102A38] shadow-[0_16px_36px_rgba(16,42,56,0.12)]"
+            : "bg-white/95 border-[#b7e4c7] text-[#081c15] shadow-[0_16px_36px_rgba(8,28,21,0.08)]"
         }`}
       >
         <div className="flex items-center justify-between mb-2">
@@ -118,17 +118,17 @@ export default function HeroEcosystemVisual({ isDark }: HeroEcosystemVisualProps
           </span>
         </div>
 
-        <div className="text-xs font-bold truncate mb-1 text-[#102A38] dark:text-white">
+        <div className="text-xs font-bold truncate mb-1 text-[#081c15] dark:text-white">
           Sayxunobod &rarr; Toshkent
         </div>
-        <div className="text-[11px] text-[#4A5D56] dark:text-[#E8F1F2]/70 mb-2 flex items-center gap-1.5 font-medium">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#00C853]" />
+        <div className="text-[11px] text-[#2d6a4f] dark:text-[#E8F1F2]/70 mb-2 flex items-center gap-1.5 font-medium">
+          <span className="w-1.5 h-1.5 rounded-full bg-[#52b788]" />
           <span>{t.hero.cards.lockEta}</span>
         </div>
 
         {/* Minimalist Route Progress Line */}
-        <div className="w-full bg-[#E2E8F0] dark:bg-white/10 h-1.5 rounded-full overflow-hidden relative">
-          <div className="h-full bg-gradient-to-r from-[#52B69A] to-[#00C853] w-[75%] rounded-full" />
+        <div className="w-full bg-[#b7e4c7]/50 dark:bg-white/10 h-1.5 rounded-full overflow-hidden relative">
+          <div className="h-full bg-gradient-to-r from-[#74c69d] to-[#40916c] w-[75%] rounded-full" />
         </div>
       </div>
 
@@ -137,12 +137,12 @@ export default function HeroEcosystemVisual({ isDark }: HeroEcosystemVisualProps
         className={`absolute -bottom-3 sm:-bottom-5 -right-1 sm:-right-3 z-20 w-[205px] sm:w-[235px] rounded-2xl p-3.5 sm:p-4 backdrop-blur-xl border transition-all duration-300 animate-float-3 ${
           isDark
             ? "bg-[#13293D]/90 border-[#247BA0]/50 text-[#E8F1F2] shadow-[0_16px_36px_rgba(0,0,0,0.4)]"
-            : "bg-white/92 border-white text-[#102A38] shadow-[0_16px_36px_rgba(16,42,56,0.12)]"
+            : "bg-white/95 border-[#b7e4c7] text-[#081c15] shadow-[0_16px_36px_rgba(8,28,21,0.08)]"
         }`}
       >
         <div className="flex items-center gap-2 mb-2">
           {/* Glowing 3D-styled Padlock Icon */}
-          <div className="w-7 h-7 rounded-xl bg-gradient-to-br from-[#00C853] to-[#1A362D] flex items-center justify-center text-white shadow-md">
+          <div className="w-7 h-7 rounded-xl bg-gradient-to-br from-[#52b788] to-[#1b4332] flex items-center justify-center text-white shadow-md">
             <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
               <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
               <path d="M7 11V7a5 5 0 0 1 10 0v4" />
@@ -152,15 +152,15 @@ export default function HeroEcosystemVisual({ isDark }: HeroEcosystemVisualProps
             <div className="text-[11px] font-black uppercase tracking-wider text-[#087a3c] dark:text-[#22d36b]">
               {t.hero.cards.securedEscrow}
             </div>
-            <div className="text-[10px] text-[#4A5D56] dark:text-[#E8F1F2]/60 font-semibold">
+            <div className="text-[10px] text-[#2d6a4f] dark:text-[#E8F1F2]/60 font-semibold">
               {t.hero.cards.bankLocked}
             </div>
           </div>
         </div>
 
         {/* High contrast bold currency value */}
-        <div className="text-base sm:text-lg font-black font-mono tracking-tight text-[#102A38] dark:text-white my-1">
-          48,500,000 <span className="text-[11px] font-sans font-semibold text-[#4A5D56] dark:text-[#E8F1F2]/70">UZS</span>
+        <div className="text-base sm:text-lg font-black font-mono tracking-tight text-[#081c15] dark:text-white my-1">
+          48,500,000 <span className="text-[11px] font-sans font-semibold text-[#2d6a4f] dark:text-[#E8F1F2]/70">UZS</span>
         </div>
 
         <div className="mt-1 flex items-center gap-1.5 text-[10px] text-[#087a3c] dark:text-[#22d36b] font-bold">

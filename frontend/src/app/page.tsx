@@ -82,13 +82,13 @@ export default function LandingPage() {
 
   return (
     <div
-      className={`min-h-screen font-sans selection:bg-[#00C853]/25 overflow-x-hidden relative transition-colors duration-500 scroll-smooth flex flex-col justify-between ${
-        isDark ? "text-[#E8F1F2]" : "text-[#1A362D]"
+      className={`min-h-screen font-sans selection:bg-[#52b788]/25 overflow-x-hidden relative transition-colors duration-500 scroll-smooth flex flex-col justify-between ${
+        isDark ? "text-[#E8F1F2]" : "text-[#081c15]"
       }`}
       style={{
         background: isDark
           ? "radial-gradient(circle at 75% 50%, #13293D 0%, #0A1926 70%)"
-          : "radial-gradient(circle at 75% 50%, #e0f2eb 0%, #f7f9f8 60%)",
+          : "radial-gradient(circle at 75% 50%, #d8f3dc 0%, #f6fbf8 60%)",
       }}
     >
       {/* 1. TOPOGRAPHIC CONTOUR LINES TEXTURE (SVG Overlay with subtle opacity) */}
@@ -143,7 +143,7 @@ export default function LandingPage() {
           className={`w-full h-full rounded-full blur-[140px] opacity-70 ${
             isDark
               ? "bg-gradient-to-br from-[#00C853]/15 via-[#1B98E0]/15 to-transparent"
-              : "bg-gradient-to-br from-[#00C853]/20 via-[#52B69A]/20 to-transparent"
+              : "bg-gradient-to-br from-[#52b788]/25 via-[#74c69d]/20 to-transparent"
           }`}
         />
       </div>
@@ -154,7 +154,7 @@ export default function LandingPage() {
           className={`w-[92%] max-w-[1240px] h-16 rounded-full px-4 sm:px-7 flex items-center justify-between transition-all duration-300 ${
             isDark
               ? "bg-[#13293D]/80 backdrop-blur-xl border border-[#247BA0]/40 shadow-[0_8px_32px_rgba(0,0,0,0.35)] text-[#E8F1F2]"
-              : "bg-white/80 backdrop-blur-xl border border-white/60 shadow-[0_8px_32px_rgba(16,42,56,0.06)] text-[#1A362D]"
+              : "bg-white/85 backdrop-blur-xl border border-[#b7e4c7] shadow-[0_8px_32px_rgba(8,28,21,0.06)] text-[#081c15]"
           }`}
         >
           {/* Logo "Zaminflow" (Exact Official Assets) */}
@@ -172,11 +172,11 @@ export default function LandingPage() {
                   href={`#${item.id}`}
                   className={`transition pb-0.5 ${
                     isActive
-                      ? "text-[#087a3c] dark:text-[#22d36b] border-b-2 border-[#087a3c] dark:border-[#22d36b] font-bold"
+                      ? "text-[#2d6a4f] dark:text-[#22d36b] border-b-2 border-[#2d6a4f] dark:border-[#22d36b] font-bold"
                       : `${
                           isDark
                             ? "text-[#E8F1F2]/80 hover:text-white"
-                            : "text-[#1A362D]/85 hover:text-[#087a3c]"
+                            : "text-[#1b4332]/85 hover:text-[#2d6a4f]"
                         } hover:underline underline-offset-4 font-semibold`
                   }`}
                 >
@@ -199,7 +199,7 @@ export default function LandingPage() {
               className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold transition border ${
                 isDark
                   ? "bg-[#006494]/50 border-[#247BA0] text-[#1B98E0] hover:bg-[#247BA0]/40"
-                  : "bg-white/90 border-[#E2E8F0] text-[#1A362D] hover:bg-white shadow-xs"
+                  : "bg-white/90 border-[#b7e4c7] text-[#081c15] hover:bg-[#d8f3dc] shadow-xs"
               }`}
             >
               {isDark ? "☀️" : "🌙"}
@@ -211,7 +211,7 @@ export default function LandingPage() {
               className={`px-4 sm:px-6 py-2 sm:py-2.5 rounded-full font-bold text-xs sm:text-sm transition-all duration-200 shadow-md active:scale-95 flex items-center gap-1.5 shrink-0 ${
                 isDark
                   ? "bg-[#1B98E0] text-[#13293D] hover:bg-white"
-                  : "bg-[#102A38] text-white hover:bg-[#184E77]"
+                  : "bg-[#1b4332] text-white hover:bg-[#2d6a4f]"
               }`}
             >
               <span>{t.nav.signUp}</span>
@@ -229,10 +229,10 @@ export default function LandingPage() {
           <div className="flex flex-col items-center lg:items-start text-center lg:text-left max-w-xl mx-auto lg:mx-0">
             {/* Massive, Bold Sans-Serif Headline */}
             <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight leading-[1.08] select-none">
-              <span className={isDark ? "text-[#E8F1F2]" : "text-[#1A362D]"}>
+              <span className={isDark ? "text-[#E8F1F2]" : "text-[#081c15]"}>
                 {t.hero.headlineStart}
               </span>
-              <span className="bg-gradient-to-r from-[#00C853] via-[#4ADE80] to-[#64DD17] bg-clip-text text-transparent inline-block drop-shadow-xs">
+              <span className="bg-gradient-to-r from-[#52b788] via-[#40916c] to-[#2d6a4f] dark:from-[#00C853] dark:via-[#4ADE80] dark:to-[#64DD17] bg-clip-text text-transparent inline-block drop-shadow-xs">
                 {t.hero.headlineAccent}
               </span>
             </h1>
@@ -240,7 +240,7 @@ export default function LandingPage() {
             {/* Dark Grey Subheadline */}
             <p
               className={`mt-6 text-sm sm:text-base lg:text-lg leading-relaxed font-normal ${
-                isDark ? "text-[#E8F1F2]/75" : "text-[#4A5D56]"
+                isDark ? "text-[#E8F1F2]/75" : "text-[#2d6a4f]"
               }`}
             >
               {t.hero.subheadline}
@@ -254,7 +254,7 @@ export default function LandingPage() {
                 className={`px-8 py-3.5 rounded-full text-sm sm:text-base font-bold transition-all duration-200 shadow-lg hover:shadow-xl active:scale-95 flex items-center gap-2 ${
                   isDark
                     ? "bg-[#1B98E0] text-[#13293D] hover:bg-white"
-                    : "bg-[#1A362D] text-white hover:bg-[#12251F]"
+                    : "bg-[#1b4332] text-white hover:bg-[#2d6a4f]"
                 }`}
               >
                 <span>{t.hero.joinUs}</span>
@@ -267,12 +267,12 @@ export default function LandingPage() {
                 className={`px-7 py-3.5 rounded-full text-sm sm:text-base font-semibold transition-all duration-200 flex items-center gap-2.5 backdrop-blur-md shadow-sm hover:shadow active:scale-95 border ${
                   isDark
                     ? "bg-[#006494]/30 border-[#247BA0]/40 text-[#E8F1F2] hover:bg-[#006494]/50"
-                    : "bg-white/80 border-[#1A362D]/15 text-[#1A362D] hover:bg-white hover:border-[#00C853]"
+                    : "bg-white/90 border-[#b7e4c7] text-[#081c15] hover:bg-[#d8f3dc] hover:border-[#74c69d]"
                 }`}
               >
                 {/* Line Chart Icon */}
                 <svg
-                  className={`w-4 h-4 ${isDark ? "text-[#1B98E0]" : "text-[#00C853]"}`}
+                  className={`w-4 h-4 ${isDark ? "text-[#1B98E0]" : "text-[#40916c]"}`}
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
@@ -310,7 +310,7 @@ export default function LandingPage() {
         className={`relative z-10 border-t py-6 px-6 text-center text-xs transition-colors ${
           isDark
             ? "border-[#247BA0]/30 bg-[#0B1A24]/60 backdrop-blur-md text-[#E8F1F2]/60"
-            : "border-[#1A362D]/10 bg-white/60 backdrop-blur-md text-[#1A362D]/70"
+            : "border-[#b7e4c7] bg-white/75 backdrop-blur-md text-[#1b4332]/80"
         }`}
       >
         <div className="max-w-[1200px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">

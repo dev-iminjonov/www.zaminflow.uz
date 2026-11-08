@@ -43,7 +43,7 @@ export default function GapPlaceholder({
   const roleConfig = ROLES[role];
 
   return (
-    <div className="min-h-screen bg-[linear-gradient(160deg,#f6f9f8_0%,#e4f6ec_100%)] text-[#17352c] font-[family-name:var(--font-inter,sans-serif)]">
+    <div className="min-h-screen bg-[linear-gradient(160deg,#d8f3dc_0%,#b7e4c7_100%)] text-[#081c15] font-[family-name:var(--font-inter,sans-serif)]">
       <div className="max-w-[1180px] mx-auto px-6 py-6 pb-14 flex flex-col gap-7">
         
         {/* Floating Top Pill Nav */}

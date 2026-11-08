@@ -40,16 +40,16 @@ export default function DashboardShell({ role }: DashboardShellProps) {
   const isPendingVerification = session?.organization?.kybStatus !== "VERIFIED";
 
   return (
-    <div className="min-h-screen bg-[linear-gradient(160deg,#f6f9f8_0%,#e4f6ec_100%)] dark:bg-[linear-gradient(160deg,#13293D_0%,#006494_100%)] text-[#17352c] dark:text-[#E8F1F2] transition-colors duration-300">
+    <div className="min-h-screen bg-[linear-gradient(160deg,#d8f3dc_0%,#b7e4c7_100%)] dark:bg-[linear-gradient(160deg,#13293D_0%,#006494_100%)] text-[#081c15] dark:text-[#E8F1F2] transition-colors duration-300">
       
       {/* 1. TOP HEADER / APP BAR */}
-      <header className="sticky top-0 z-40 backdrop-blur-md bg-white/70 dark:bg-[#13293D]/80 border-b border-[#17352c]/10 dark:border-white/10 px-6 py-4">
+      <header className="sticky top-0 z-40 backdrop-blur-md bg-white/80 dark:bg-[#13293D]/80 border-b border-[#b7e4c7] dark:border-white/10 px-6 py-4">
         <div className="max-w-[1180px] mx-auto flex items-center justify-between">
           
           {/* Brand */}
           <Link href="/" className="flex items-center gap-3 group cursor-pointer">
             <ZaminFlowLogo size="md" />
-            <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-[#e6ecea] dark:bg-white/10 text-[#087a3c] dark:text-[#22d36b]">
+            <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-[#d8f3dc] dark:bg-white/10 text-[#1b4332] dark:text-[#22d36b]">
               B2B Dairy
             </span>
           </Link>
@@ -57,15 +57,15 @@ export default function DashboardShell({ role }: DashboardShellProps) {
           {/* Right Header Actions */}
           <div className="flex items-center gap-4">
             {/* Locale selector */}
-            <div className="flex rounded-full p-0.5 border border-[#17352c]/15 dark:border-white/15 bg-white/60 dark:bg-black/20 text-xs font-semibold">
+            <div className="flex rounded-full p-0.5 border border-[#b7e4c7] dark:border-white/15 bg-white/70 dark:bg-black/20 text-xs font-semibold">
               {(["en", "ru", "uz"] as Locale[]).map((loc) => (
                 <button
                   key={loc}
                   onClick={() => setLocale(loc)}
                   className={`px-2.5 py-1 rounded-full uppercase transition cursor-pointer ${
                     locale === loc
-                      ? "bg-[#12303a] text-white dark:bg-[#1B98E0] dark:text-[#13293D]"
-                      : "text-[#4d6a60] dark:text-[#E8F1F2]/70 hover:text-black dark:hover:text-white"
+                      ? "bg-[#1b4332] text-white dark:bg-[#1B98E0] dark:text-[#13293D]"
+                      : "text-[#2d6a4f] dark:text-[#E8F1F2]/70 hover:text-black dark:hover:text-white"
                   }`}
                 >
                   {loc}
@@ -74,7 +74,7 @@ export default function DashboardShell({ role }: DashboardShellProps) {
             </div>
 
             {/* Role Chip */}
-            <div className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-[#12303a] text-white dark:bg-[#1B98E0] dark:text-[#13293D]">
+            <div className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-[#1b4332] text-white dark:bg-[#1B98E0] dark:text-[#13293D]">
               <span className="w-2 h-2 rounded-full bg-[#22d36b]" />
               <span>{roleConfig.label}</span>
             </div>
@@ -83,7 +83,7 @@ export default function DashboardShell({ role }: DashboardShellProps) {
             <button
               onClick={handleSignOut}
               disabled={isSigningOut}
-              className="text-xs font-bold text-[#17352c] dark:text-white hover:text-red-600 dark:hover:text-red-400 px-3.5 py-1.5 rounded-full border border-[#17352c]/15 dark:border-white/15 hover:border-red-300 transition cursor-pointer"
+              className="text-xs font-bold text-[#081c15] dark:text-white hover:text-red-600 dark:hover:text-red-400 px-3.5 py-1.5 rounded-full border border-[#b7e4c7] dark:border-white/15 hover:border-red-300 transition cursor-pointer"
             >
               {isSigningOut ? "..." : t.dashboard.signOut}
             </button>

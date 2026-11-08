@@ -151,7 +151,7 @@ export default function SignInCard() {
   };
 
   return (
-    <div className="min-h-screen w-full flex flex-col justify-center items-center pt-20 sm:pt-24 pb-12 px-4 bg-[linear-gradient(160deg,#f6f9f8_0%,#e4f6ec_100%)] dark:bg-[linear-gradient(160deg,#13293D_0%,#006494_100%)] text-[#17352c] dark:text-[#E8F1F2] transition-colors duration-300 relative">
+    <div className="min-h-screen w-full flex flex-col justify-center items-center pt-20 sm:pt-24 pb-12 px-4 bg-[linear-gradient(160deg,#d8f3dc_0%,#b7e4c7_100%)] dark:bg-[linear-gradient(160deg,#13293D_0%,#006494_100%)] text-[#081c15] dark:text-[#E8F1F2] transition-colors duration-300 relative">
       
       {/* Top Navigation Bar: Home Icon (Top-Left) & Locale Picker (Top-Right) */}
       <header className="fixed top-4 left-4 right-4 sm:top-6 sm:left-8 sm:right-8 flex items-center justify-between z-30 pointer-events-none">
@@ -160,10 +160,10 @@ export default function SignInCard() {
           href="/"
           aria-label={t.signIn.backToHome || "Home"}
           title={t.signIn.backToHome || "Home"}
-          className="pointer-events-auto group inline-flex items-center gap-2 px-3.5 py-2 rounded-full border border-white/60 dark:border-white/10 bg-white/80 dark:bg-[#101E27]/80 backdrop-blur-md shadow-xs hover:shadow-md hover:border-emerald-500/40 text-slate-700 dark:text-slate-200 hover:text-emerald-700 dark:hover:text-emerald-400 transition-all cursor-pointer"
+          className="pointer-events-auto group inline-flex items-center gap-2 px-3.5 py-2 rounded-full border border-[#b7e4c7] dark:border-white/10 bg-white/85 dark:bg-[#101E27]/80 backdrop-blur-md shadow-xs hover:shadow-md hover:border-[#52b788] text-[#1b4332] dark:text-slate-200 hover:text-[#081c15] dark:hover:text-emerald-400 transition-all cursor-pointer"
         >
           <svg
-            className="w-4 h-4 text-emerald-600 dark:text-emerald-400 transition-transform group-hover:-translate-x-0.5"
+            className="w-4 h-4 text-[#40916c] dark:text-emerald-400 transition-transform group-hover:-translate-x-0.5"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -182,7 +182,7 @@ export default function SignInCard() {
         </Link>
 
         {/* Top-Right Locale Picker */}
-        <div className="pointer-events-auto flex rounded-full p-1 border border-white/60 dark:border-white/10 bg-white/80 dark:bg-[#101E27]/80 backdrop-blur-md text-xs font-semibold shadow-xs">
+        <div className="pointer-events-auto flex rounded-full p-1 border border-[#b7e4c7] dark:border-white/10 bg-white/85 dark:bg-[#101E27]/80 backdrop-blur-md text-xs font-semibold shadow-xs">
           {(["en", "ru", "uz"] as Locale[]).map((loc) => (
             <button
               key={loc}
@@ -190,8 +190,8 @@ export default function SignInCard() {
               onClick={() => setLocale(loc)}
               className={`px-2.5 py-1 rounded-full uppercase transition cursor-pointer ${
                 locale === loc
-                  ? "bg-[#12303a] text-white dark:bg-[#1B98E0] dark:text-[#13293D]"
-                  : "text-[#4d6a60] dark:text-[#E8F1F2]/70 hover:text-black dark:hover:text-white"
+                  ? "bg-[#1b4332] text-white dark:bg-[#1B98E0] dark:text-[#13293D]"
+                  : "text-[#2d6a4f] dark:text-[#E8F1F2]/70 hover:text-[#081c15] dark:hover:text-white"
               }`}
             >
               {loc}
@@ -201,7 +201,7 @@ export default function SignInCard() {
       </header>
 
       {/* Main Glass Card (Max-width 560px) */}
-      <div className="w-full max-w-[560px] rounded-[32px] p-8 sm:p-11 bg-white/76 dark:bg-[#13293D]/80 backdrop-blur-md border border-white dark:border-white/10 shadow-[0_10px_40px_rgba(20,80,60,0.08)] transition-all">
+      <div className="w-full max-w-[560px] rounded-[32px] p-8 sm:p-11 bg-white/85 dark:bg-[#13293D]/80 backdrop-blur-md border border-[#b7e4c7] dark:border-white/10 shadow-[0_10px_40px_rgba(8,28,21,0.06)] transition-all">
         
         {/* Brand Logo */}
         <div className="flex justify-center mb-6">
@@ -243,7 +243,7 @@ export default function SignInCard() {
           <div className="flex flex-col gap-1.5">
             <label
               htmlFor="identifier"
-              className="text-sm font-semibold text-left text-[#17352c] dark:text-white"
+              className="text-sm font-semibold text-left text-[#081c15] dark:text-white"
             >
               {t.signIn.phoneOrEmailLabel}
             </label>
@@ -264,7 +264,7 @@ export default function SignInCard() {
               className={`h-[52px] rounded-[14px] px-4 text-base font-medium outline-none transition border ${
                 fieldErrors.identifier
                   ? "border-red-500 focus:ring-2 focus:ring-red-400 bg-red-50/20"
-                  : "border-[#6f8a7f]/60 dark:border-white/20 focus:border-[#22d36b] focus:ring-2 focus:ring-[#22d36b]/40 bg-white/90 dark:bg-white/5"
+                  : "border-[#95d5b2] dark:border-white/20 focus:border-[#40916c] focus:ring-2 focus:ring-[#52b788]/40 bg-white dark:bg-white/5 text-[#081c15] dark:text-white placeholder-[#40916c]/60"
               }`}
             />
             {fieldErrors.identifier && (
@@ -278,7 +278,7 @@ export default function SignInCard() {
           <div className="flex flex-col gap-1.5">
             <label
               htmlFor="password"
-              className="text-sm font-semibold text-left text-[#17352c] dark:text-white"
+              className="text-sm font-semibold text-left text-[#081c15] dark:text-white"
             >
               {t.signIn.passwordLabel}
             </label>
@@ -300,14 +300,14 @@ export default function SignInCard() {
                 className={`w-full h-[52px] rounded-[14px] pl-4 pr-16 text-base font-medium outline-none transition border ${
                   fieldErrors.password
                     ? "border-red-500 focus:ring-2 focus:ring-red-400 bg-red-50/20"
-                    : "border-[#6f8a7f]/60 dark:border-white/20 focus:border-[#22d36b] focus:ring-2 focus:ring-[#22d36b]/40 bg-white/90 dark:bg-white/5"
+                    : "border-[#95d5b2] dark:border-white/20 focus:border-[#40916c] focus:ring-2 focus:ring-[#52b788]/40 bg-white dark:bg-white/5 text-[#081c15] dark:text-white placeholder-[#40916c]/60"
                 }`}
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
                 aria-label={showPassword ? t.signIn.hidePassword : t.signIn.showPassword}
-                className="absolute right-2 top-1/2 -translate-y-1/2 min-w-[44px] min-h-[44px] flex items-center justify-center text-xs font-bold text-[#4d6a60] dark:text-[#E8F1F2]/70 hover:text-[#087a3c] transition cursor-pointer select-none"
+                className="absolute right-2 top-1/2 -translate-y-1/2 min-w-[44px] min-h-[44px] flex items-center justify-center text-xs font-bold text-[#2d6a4f] dark:text-[#E8F1F2]/70 hover:text-[#087a3c] transition cursor-pointer select-none"
               >
                 {showPassword ? "Hide" : "Show"}
               </button>
@@ -336,11 +336,11 @@ export default function SignInCard() {
               type="checkbox"
               checked={keepSignedIn}
               onChange={(e) => setKeepSignedIn(e.target.checked)}
-              className="w-4 h-4 rounded border-[#6f8a7f] text-[#12303a] focus:ring-[#22d36b] cursor-pointer"
+              className="w-4 h-4 rounded border-[#95d5b2] text-[#1b4332] focus:ring-[#52b788] cursor-pointer"
             />
             <label
               htmlFor="keepSignedIn"
-              className="text-sm font-medium text-[#4d6a60] dark:text-[#E8F1F2]/80 cursor-pointer select-none"
+              className="text-sm font-medium text-[#2d6a4f] dark:text-[#E8F1F2]/80 cursor-pointer select-none"
             >
               {t.signIn.keepSignedIn}
             </label>
@@ -350,7 +350,7 @@ export default function SignInCard() {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full min-h-[54px] rounded-full font-bold text-base bg-[#12303a] hover:bg-[#1A362D] dark:bg-[#1B98E0] dark:hover:bg-[#247BA0] dark:text-[#13293D] text-white shadow-md transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60"
+            className="w-full min-h-[54px] rounded-full font-bold text-base bg-[#1b4332] hover:bg-[#2d6a4f] dark:bg-[#1B98E0] dark:hover:bg-[#247BA0] dark:text-[#13293D] text-white shadow-md transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60"
           >
             {isLoading ? (
               <span className="inline-block w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -362,8 +362,8 @@ export default function SignInCard() {
 
         {/* Divider with 'or' */}
         <div className="relative my-6 flex items-center justify-center">
-          <div className="border-t border-[#17352c]/15 dark:border-white/15 w-full" />
-          <span className="bg-white/80 dark:bg-[#13293D] px-3 text-xs font-semibold uppercase text-[#4d6a60] dark:text-[#E8F1F2]/60 absolute">
+          <div className="border-t border-[#b7e4c7] dark:border-white/15 w-full" />
+          <span className="bg-white/90 dark:bg-[#13293D] px-3 text-xs font-semibold uppercase text-[#2d6a4f] dark:text-[#E8F1F2]/60 absolute">
             {t.signIn.orDivider}
           </span>
         </div>
@@ -372,13 +372,13 @@ export default function SignInCard() {
         <button
           type="button"
           onClick={handleOpenSms}
-          className="w-full min-h-[52px] rounded-full font-bold text-sm border border-[#12303a] dark:border-[#1B98E0] text-[#12303a] dark:text-[#1B98E0] hover:bg-[#12303a]/5 dark:hover:bg-[#1B98E0]/10 transition cursor-pointer"
+          className="w-full min-h-[52px] rounded-full font-bold text-sm border border-[#1b4332] dark:border-[#1B98E0] text-[#1b4332] dark:text-[#1B98E0] hover:bg-[#d8f3dc] dark:hover:bg-[#1B98E0]/10 transition cursor-pointer"
         >
           {t.signIn.smsButton}
         </button>
 
         {/* Footer: New to ZaminFlow? Sign up */}
-        <div className="text-center text-sm font-medium text-[#4d6a60] dark:text-[#E8F1F2]/70 mt-6">
+        <div className="text-center text-sm font-medium text-[#2d6a4f] dark:text-[#E8F1F2]/70 mt-6">
           {t.signIn.newToZaminflow}{" "}
           <Link
             href="/signup"

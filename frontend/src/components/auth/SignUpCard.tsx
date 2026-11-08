@@ -169,7 +169,7 @@ export default function SignUpCard() {
   };
 
   return (
-    <div className="min-h-screen w-full flex flex-col justify-center items-center pt-20 sm:pt-24 pb-12 px-4 bg-[linear-gradient(160deg,#f6f9f8_0%,#e4f6ec_100%)] dark:bg-[linear-gradient(160deg,#13293D_0%,#006494_100%)] text-[#17352c] dark:text-[#E8F1F2] transition-colors duration-300 relative">
+    <div className="min-h-screen w-full flex flex-col justify-center items-center pt-20 sm:pt-24 pb-12 px-4 bg-[linear-gradient(160deg,#d8f3dc_0%,#b7e4c7_100%)] dark:bg-[linear-gradient(160deg,#13293D_0%,#006494_100%)] text-[#081c15] dark:text-[#E8F1F2] transition-colors duration-300 relative">
       
       {/* Top Navigation Bar: Home Icon (Top-Left) & Locale Picker (Top-Right) */}
       <header className="fixed top-4 left-4 right-4 sm:top-6 sm:left-8 sm:right-8 flex items-center justify-between z-30 pointer-events-none">
@@ -178,10 +178,10 @@ export default function SignUpCard() {
           href="/"
           aria-label={t.signUp.backToHome || "Home"}
           title={t.signUp.backToHome || "Home"}
-          className="pointer-events-auto group inline-flex items-center gap-2 px-3.5 py-2 rounded-full border border-white/60 dark:border-white/10 bg-white/80 dark:bg-[#101E27]/80 backdrop-blur-md shadow-xs hover:shadow-md hover:border-emerald-500/40 text-slate-700 dark:text-slate-200 hover:text-emerald-700 dark:hover:text-emerald-400 transition-all cursor-pointer"
+          className="pointer-events-auto group inline-flex items-center gap-2 px-3.5 py-2 rounded-full border border-[#b7e4c7] dark:border-white/10 bg-white/85 dark:bg-[#101E27]/80 backdrop-blur-md shadow-xs hover:shadow-md hover:border-[#52b788] text-[#1b4332] dark:text-slate-200 hover:text-[#081c15] dark:hover:text-emerald-400 transition-all cursor-pointer"
         >
           <svg
-            className="w-4 h-4 text-emerald-600 dark:text-emerald-400 transition-transform group-hover:-translate-x-0.5"
+            className="w-4 h-4 text-[#40916c] dark:text-emerald-400 transition-transform group-hover:-translate-x-0.5"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -200,7 +200,7 @@ export default function SignUpCard() {
         </Link>
 
         {/* Top-Right Locale Picker */}
-        <div className="pointer-events-auto flex rounded-full p-1 border border-white/60 dark:border-white/10 bg-white/80 dark:bg-[#101E27]/80 backdrop-blur-md text-xs font-semibold shadow-xs">
+        <div className="pointer-events-auto flex rounded-full p-1 border border-[#b7e4c7] dark:border-white/10 bg-white/85 dark:bg-[#101E27]/80 backdrop-blur-md text-xs font-semibold shadow-xs">
           {(["en", "ru", "uz"] as Locale[]).map((loc) => (
             <button
               key={loc}
@@ -208,8 +208,8 @@ export default function SignUpCard() {
               onClick={() => setLocale(loc)}
               className={`px-2.5 py-1 rounded-full uppercase transition cursor-pointer ${
                 locale === loc
-                  ? "bg-[#12303a] text-white dark:bg-[#1B98E0] dark:text-[#13293D]"
-                  : "text-[#4d6a60] dark:text-[#E8F1F2]/70 hover:text-black dark:hover:text-white"
+                  ? "bg-[#1b4332] text-white dark:bg-[#1B98E0] dark:text-[#13293D]"
+                  : "text-[#2d6a4f] dark:text-[#E8F1F2]/70 hover:text-[#081c15] dark:hover:text-white"
               }`}
             >
               {loc}
@@ -219,7 +219,7 @@ export default function SignUpCard() {
       </header>
 
       {/* Main Glass Card (Max-width 760px) */}
-      <div className="w-full max-w-[760px] rounded-[32px] p-8 sm:p-11 bg-white/76 dark:bg-[#13293D]/80 backdrop-blur-md border border-white dark:border-white/10 shadow-[0_10px_40px_rgba(20,80,60,0.08)] transition-all">
+      <div className="w-full max-w-[760px] rounded-[32px] p-8 sm:p-11 bg-white/85 dark:bg-[#13293D]/80 backdrop-blur-md border border-[#b7e4c7] dark:border-white/10 shadow-[0_10px_40px_rgba(8,28,21,0.06)] transition-all">
         
         {/* Brand Logo */}
         <div className="flex justify-center mb-6">
@@ -257,7 +257,7 @@ export default function SignUpCard() {
           
           {/* ROLE SELECTOR: "I am a…" */}
           <div className="flex flex-col gap-3">
-            <label id="role-radiogroup-label" className="text-[22px] font-semibold text-left text-[#17352c] dark:text-white">
+            <label id="role-radiogroup-label" className="text-[22px] font-semibold text-left text-[#081c15] dark:text-white">
               {t.signUp.roleSelectLabel}
             </label>
 
@@ -283,8 +283,8 @@ export default function SignUpCard() {
                     onKeyDown={(e) => handleRoleKeyDown(e, idx)}
                     className={`min-h-[50px] rounded-full px-5 py-2.5 font-bold text-sm transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer border ${
                       isSelected
-                        ? "bg-[#12303a] text-white border-[#12303a] shadow-sm dark:bg-[#1B98E0] dark:text-[#13293D] dark:border-[#1B98E0]"
-                        : "bg-white/90 dark:bg-white/5 text-[#12303a] dark:text-[#E8F1F2] border-[#12303a]/30 dark:border-white/20 hover:border-[#12303a] dark:hover:border-[#1B98E0]"
+                        ? "bg-[#1b4332] text-white border-[#1b4332] shadow-sm dark:bg-[#1B98E0] dark:text-[#13293D] dark:border-[#1B98E0]"
+                        : "bg-white/90 dark:bg-white/5 text-[#1b4332] dark:text-[#E8F1F2] border-[#95d5b2] dark:border-white/20 hover:border-[#1b4332] dark:hover:border-[#1B98E0]"
                     }`}
                   >
                     {isSelected && (
@@ -302,7 +302,7 @@ export default function SignUpCard() {
             
             {/* Field 1: Full name */}
             <div className="flex flex-col gap-1.5">
-              <label htmlFor="fullName" className="text-sm font-semibold text-left">
+              <label htmlFor="fullName" className="text-sm font-semibold text-left text-[#081c15] dark:text-white">
                 {t.signUp.fullNameLabel}
               </label>
               <input
@@ -320,7 +320,7 @@ export default function SignUpCard() {
                 className={`h-[52px] rounded-[14px] px-4 text-base font-medium outline-none transition border ${
                   fieldErrors.fullName
                     ? "border-red-500 focus:ring-2 focus:ring-red-400 bg-red-50/20"
-                    : "border-[#6f8a7f]/60 dark:border-white/20 focus:border-[#22d36b] focus:ring-2 focus:ring-[#22d36b]/40 bg-white/90 dark:bg-white/5"
+                    : "border-[#95d5b2] dark:border-white/20 focus:border-[#40916c] focus:ring-2 focus:ring-[#52b788]/40 bg-white dark:bg-white/5 text-[#081c15] dark:text-white placeholder-[#40916c]/60"
                 }`}
               />
               {fieldErrors.fullName && (
@@ -332,7 +332,7 @@ export default function SignUpCard() {
 
             {/* Field 2: Role-dependent second field */}
             <div className="flex flex-col gap-1.5">
-              <label htmlFor="roleField" className="text-sm font-semibold text-left">
+              <label htmlFor="roleField" className="text-sm font-semibold text-left text-[#081c15] dark:text-white">
                 {activeRoleConfig.roleFieldLabel}
               </label>
               <input
@@ -350,7 +350,7 @@ export default function SignUpCard() {
                 className={`h-[52px] rounded-[14px] px-4 text-base font-medium outline-none transition border ${
                   fieldErrors.roleSpecificField
                     ? "border-red-500 focus:ring-2 focus:ring-red-400 bg-red-50/20"
-                    : "border-[#6f8a7f]/60 dark:border-white/20 focus:border-[#22d36b] focus:ring-2 focus:ring-[#22d36b]/40 bg-white/90 dark:bg-white/5"
+                    : "border-[#95d5b2] dark:border-white/20 focus:border-[#40916c] focus:ring-2 focus:ring-[#52b788]/40 bg-white dark:bg-white/5 text-[#081c15] dark:text-white placeholder-[#40916c]/60"
                 }`}
               />
               {fieldErrors.roleSpecificField && (
@@ -362,7 +362,7 @@ export default function SignUpCard() {
 
             {/* Field 3: Phone (+998 XX XXX XX XX) */}
             <div className="flex flex-col gap-1.5">
-              <label htmlFor="phone" className="text-sm font-semibold text-left">
+              <label htmlFor="phone" className="text-sm font-semibold text-left text-[#081c15] dark:text-white">
                 {t.signUp.phoneLabel}
               </label>
               <input
@@ -377,7 +377,7 @@ export default function SignUpCard() {
                 className={`h-[52px] rounded-[14px] px-4 text-base font-medium font-mono outline-none transition border ${
                   fieldErrors.phone
                     ? "border-red-500 focus:ring-2 focus:ring-red-400 bg-red-50/20"
-                    : "border-[#6f8a7f]/60 dark:border-white/20 focus:border-[#22d36b] focus:ring-2 focus:ring-[#22d36b]/40 bg-white/90 dark:bg-white/5"
+                    : "border-[#95d5b2] dark:border-white/20 focus:border-[#40916c] focus:ring-2 focus:ring-[#52b788]/40 bg-white dark:bg-white/5 text-[#081c15] dark:text-white placeholder-[#40916c]/60"
                 }`}
               />
               {fieldErrors.phone && (
@@ -389,7 +389,7 @@ export default function SignUpCard() {
 
             {/* Field 4: Email */}
             <div className="flex flex-col gap-1.5">
-              <label htmlFor="email" className="text-sm font-semibold text-left">
+              <label htmlFor="email" className="text-sm font-semibold text-left text-[#081c15] dark:text-white">
                 {t.signUp.emailLabel}
               </label>
               <input
@@ -407,7 +407,7 @@ export default function SignUpCard() {
                 className={`h-[52px] rounded-[14px] px-4 text-base font-medium outline-none transition border ${
                   fieldErrors.email
                     ? "border-red-500 focus:ring-2 focus:ring-red-400 bg-red-50/20"
-                    : "border-[#6f8a7f]/60 dark:border-white/20 focus:border-[#22d36b] focus:ring-2 focus:ring-[#22d36b]/40 bg-white/90 dark:bg-white/5"
+                    : "border-[#95d5b2] dark:border-white/20 focus:border-[#40916c] focus:ring-2 focus:ring-[#52b788]/40 bg-white dark:bg-white/5 text-[#081c15] dark:text-white placeholder-[#40916c]/60"
                 }`}
               />
               {fieldErrors.email && (
@@ -419,7 +419,7 @@ export default function SignUpCard() {
 
             {/* Field 5: Region */}
             <div className="flex flex-col gap-1.5">
-              <label htmlFor="region" className="text-sm font-semibold text-left">
+              <label htmlFor="region" className="text-sm font-semibold text-left text-[#081c15] dark:text-white">
                 {t.signUp.regionLabel}
               </label>
               <div className="relative">
@@ -431,7 +431,7 @@ export default function SignUpCard() {
                     setRegion(e.target.value);
                     if (fieldErrors.region) setFieldErrors((p) => ({ ...p, region: "" }));
                   }}
-                  className="w-full h-[52px] rounded-[14px] px-4 pr-10 text-base font-medium outline-none transition border border-[#6f8a7f]/60 dark:border-white/20 focus:border-[#22d36b] focus:ring-2 focus:ring-[#22d36b]/40 bg-white/90 dark:bg-[#13293D] appearance-none cursor-pointer"
+                  className="w-full h-[52px] rounded-[14px] px-4 pr-10 text-base font-medium outline-none transition border border-[#95d5b2] dark:border-white/20 focus:border-[#40916c] focus:ring-2 focus:ring-[#52b788]/40 bg-white dark:bg-[#13293D] text-[#081c15] dark:text-white appearance-none cursor-pointer"
                 >
                   {Object.entries(t.regions).map(([key, name]) => (
                     <option key={key} value={key}>
@@ -452,7 +452,7 @@ export default function SignUpCard() {
 
             {/* Field 6: Password */}
             <div className="flex flex-col gap-1.5">
-              <label htmlFor="password" className="text-sm font-semibold text-left">
+              <label htmlFor="password" className="text-sm font-semibold text-left text-[#081c15] dark:text-white">
                 {t.signUp.passwordLabel}
               </label>
               <div className="relative">
@@ -471,14 +471,14 @@ export default function SignUpCard() {
                   className={`w-full h-[52px] rounded-[14px] pl-4 pr-16 text-base font-medium outline-none transition border ${
                     fieldErrors.password
                       ? "border-red-500 focus:ring-2 focus:ring-red-400 bg-red-50/20"
-                      : "border-[#6f8a7f]/60 dark:border-white/20 focus:border-[#22d36b] focus:ring-2 focus:ring-[#22d36b]/40 bg-white/90 dark:bg-white/5"
+                      : "border-[#95d5b2] dark:border-white/20 focus:border-[#40916c] focus:ring-2 focus:ring-[#52b788]/40 bg-white dark:bg-white/5 text-[#081c15] dark:text-white placeholder-[#40916c]/60"
                   }`}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   aria-label={showPassword ? t.signIn.hidePassword : t.signIn.showPassword}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 min-w-[44px] min-h-[44px] flex items-center justify-center text-xs font-bold text-[#4d6a60] dark:text-[#E8F1F2]/70 hover:text-[#087a3c] transition cursor-pointer select-none"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 min-w-[44px] min-h-[44px] flex items-center justify-center text-xs font-bold text-[#2d6a4f] dark:text-[#E8F1F2]/70 hover:text-[#087a3c] transition cursor-pointer select-none"
                 >
                   {showPassword ? "Hide" : "Show"}
                 </button>
@@ -499,7 +499,7 @@ export default function SignUpCard() {
                   />
                 ))}
               </div>
-              <span id="password-hint" className="text-[11px] text-[#4d6a60] dark:text-[#E8F1F2]/60 text-left">
+              <span id="password-hint" className="text-[11px] text-[#2d6a4f] dark:text-[#E8F1F2]/60 text-left">
                 {t.signUp.passwordHint}
               </span>
               {fieldErrors.password && (
@@ -523,11 +523,11 @@ export default function SignUpCard() {
                   setAgreeTerms(e.target.checked);
                   if (fieldErrors.agreeTerms) setFieldErrors((p) => ({ ...p, agreeTerms: "" }));
                 }}
-                className="w-4 h-4 mt-0.5 rounded border-[#6f8a7f] text-[#12303a] focus:ring-[#22d36b] cursor-pointer"
+                className="w-4 h-4 mt-0.5 rounded border-[#95d5b2] text-[#1b4332] focus:ring-[#52b788] cursor-pointer"
               />
               <label
                 htmlFor="agreeTerms"
-                className="text-sm font-medium text-[#4d6a60] dark:text-[#E8F1F2]/80 text-left cursor-pointer select-none"
+                className="text-sm font-medium text-[#2d6a4f] dark:text-[#E8F1F2]/80 text-left cursor-pointer select-none"
               >
                 {t.signUp.agreeTermsStart}
                 <a href="#terms" className="text-[#087a3c] dark:text-[#22d36b] underline font-semibold">
@@ -550,7 +550,7 @@ export default function SignUpCard() {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full min-h-[54px] rounded-full font-bold text-base bg-[#12303a] hover:bg-[#1A362D] dark:bg-[#1B98E0] dark:hover:bg-[#247BA0] dark:text-[#13293D] text-white shadow-md transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60"
+            className="w-full min-h-[54px] rounded-full font-bold text-base bg-[#1b4332] hover:bg-[#2d6a4f] dark:bg-[#1B98E0] dark:hover:bg-[#247BA0] dark:text-[#13293D] text-white shadow-md transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60"
           >
             {isLoading ? (
               <span className="inline-block w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -560,7 +560,7 @@ export default function SignUpCard() {
           </button>
 
           {/* Footer: Already have an account? Sign in */}
-          <div className="text-center text-sm font-medium text-[#4d6a60] dark:text-[#E8F1F2]/70 mt-2">
+          <div className="text-center text-sm font-medium text-[#2d6a4f] dark:text-[#E8F1F2]/70 mt-2">
             {t.signUp.alreadyHaveAccount}{" "}
             <Link
               href="/signin"

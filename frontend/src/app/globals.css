@@ -17,17 +17,28 @@
   --slate-100: #F1F5F9;
   --slate-50: #F8FAFC;
 
+  /* Coolors Light Mode Palette (https://coolors.co/d8f3dc-b7e4c7-95d5b2-74c69d-52b788-40916c-2d6a4f-1b4332-081c15) */
+  --coolors-50: #d8f3dc;
+  --coolors-100: #b7e4c7;
+  --coolors-200: #95d5b2;
+  --coolors-300: #74c69d;
+  --coolors-400: #52b788;
+  --coolors-500: #40916c;
+  --coolors-600: #2d6a4f;
+  --coolors-700: #1b4332;
+  --coolors-800: #081c15;
+
   /* brand */
   --brand-green-text: #087a3c;
-  --brand-green: #087a3c;
-  --emerald-700: #047857;
-  --emerald-600: #059669;
-  --emerald-500: #10B981;
-  --emerald-50: #ECFDF5;
-  --teal-700: #0D7377;
-  --teal-200: #A7D9C8;
-  --teal-50: #EAF6F5;
-  --nav-active: #20382F;
+  --brand-green: #2d6a4f;
+  --emerald-700: #1b4332;
+  --emerald-600: #2d6a4f;
+  --emerald-500: #52b788;
+  --emerald-50: #d8f3dc;
+  --teal-700: #1b4332;
+  --teal-200: #b7e4c7;
+  --teal-50: #d8f3dc;
+  --nav-active: #1b4332;
 
   /* status */
   --amber-600: #D97706;
@@ -35,15 +46,16 @@
   --red-500: #EF4444;
   --red-50: #FEF2F2;
 
-  /* semantic (operational surface) */
-  --bg: var(--slate-50);
+  /* semantic (operational surface for Light mode) */
+  --bg: #f6fbf8;
   --surface: #FFFFFF;
-  --border: var(--slate-200);
-  --text: var(--navy-900);
-  --text-muted: var(--slate-500);
-  --primary: var(--emerald-700);
-  --primary-hover: #065F46;
-  --ring: rgba(16, 185, 129, 0.45);
+  --border: #b7e4c7;
+  --border-strong: #95d5b2;
+  --text: #081c15;
+  --text-muted: #2d6a4f;
+  --primary: #1b4332;
+  --primary-hover: #2d6a4f;
+  --ring: rgba(82, 183, 136, 0.45);
 
   /* cinematic surface */
   --cin-bg: #070B14;

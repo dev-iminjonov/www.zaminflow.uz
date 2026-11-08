@@ -40,6 +40,18 @@ const config: Config = {
           text: "#087a3c",
           glow: "#00C853",
         },
+        // Coolors Light Mode Palette (d8f3dc-b7e4c7-95d5b2-74c69d-52b788-40916c-2d6a4f-1b4332-081c15)
+        coolors: {
+          50: "#d8f3dc",
+          100: "#b7e4c7",
+          200: "#95d5b2",
+          300: "#74c69d",
+          400: "#52b788",
+          500: "#40916c",
+          600: "#2d6a4f",
+          700: "#1b4332",
+          800: "#081c15",
+        },
         navActive: "#20382F",
         amber: {
           600: "#D97706",
