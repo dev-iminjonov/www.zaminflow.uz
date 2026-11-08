@@ -1,7 +1,6 @@
 "use client";
 
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import React, { useState } from "react";
+import React from "react";
 import { LanguageProvider } from "@/context/LanguageContext";
 import { ThemeProvider } from "@/context/ThemeContext";
 import { inter, jetbrainsMono } from "./fonts";
@@ -12,8 +11,6 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const [queryClient] = useState(() => new QueryClient());
-
   return (
     <html lang="uz" className="dark" suppressHydrationWarning>
       <head>
@@ -47,9 +44,7 @@ export default function RootLayout({
       <body className={`${inter.variable} ${jetbrainsMono.variable} font-sans min-h-screen antialiased`}>
         <ThemeProvider>
           <LanguageProvider>
-            <QueryClientProvider client={queryClient}>
-              {children}
-            </QueryClientProvider>
+            {children}
           </LanguageProvider>
         </ThemeProvider>
       </body>
