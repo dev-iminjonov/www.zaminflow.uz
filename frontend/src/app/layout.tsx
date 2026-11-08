@@ -3,6 +3,7 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import React, { useState } from "react";
 import { LanguageProvider } from "@/context/LanguageContext";
+import { inter, jetbrainsMono } from "./fonts";
 import "./globals.css";
 
 export default function RootLayout({
@@ -13,15 +14,15 @@ export default function RootLayout({
   const [queryClient] = useState(() => new QueryClient());
 
   return (
-    <html lang="en" className="dark">
+    <html lang="uz" className="dark">
       <head>
         <title>ZaminFlow v2.0 — B2B Dairy Supply Chain & FinTech Escrow</title>
         <meta
           name="viewport"
-          content="width=device-width, initial-scale=1, maximum-scale=1"
+          content="width=device-width, initial-scale=1"
         />
       </head>
-      <body className="min-h-screen antialiased">
+      <body className={`${inter.variable} ${jetbrainsMono.variable} font-sans min-h-screen antialiased`}>
         <LanguageProvider>
           <QueryClientProvider client={queryClient}>
             {children}

@@ -17,7 +17,7 @@ const teamMembers: TeamMember[] = [
   {
     name: "Iminjonov Muhammadaziz",
     roleKey: "founder",
-    image: "/images/team-muhammadaziz.jpg",
+    image: "/images/team-muhammadaziz.webp",
     linkedin: "https://www.linkedin.com/in/imuhammadaziz/?lipi=urn%3Ali%3Apage%3Ad_flagship3_profile_view_base_contact_details%3B%2FEcJS8O%2FRgGnZhvFIPzRPg%3D%3D",
     github: "https://github.com/dev-iminjonov",
     instagram: "https://instagram.com/im.mukhammadaziz",
@@ -25,20 +25,20 @@ const teamMembers: TeamMember[] = [
   {
     name: "Sevinchoy Soporboyeva",
     roleKey: "coFounder",
-    image: "/images/team-sevinchoy.jpg",
+    image: "/images/team-sevinchoy.webp",
     linkedin: "https://www.linkedin.com/in/sevinchoy-soporboyeva/?lipi=urn%3Ali%3Apage%3Ad_flagship3_profile_view_base_contact_details%3Bj1rNvFTKSPGzLrYpN01iZg%3D%3D",
   },
   {
     name: "Abdumanov Akrom",
     roleKey: "leadDev",
-    image: "/images/team-akrom.jpg",
+    image: "/images/team-akrom.webp",
     linkedin: "https://www.linkedin.com/in/akrom-abdumanov-6457a039a/?lipi=urn%3Ali%3Apage%3Ad_flagship3_profile_view_base_contact_details%3BR1yI1s4YSVqIWhj3gbHoUQ%3D%3D",
     instagram: "https://instagram.com/abdumanovakrom",
   },
   {
     name: "Shokhjakhon Abdufattohov",
     roleKey: "adviser",
-    image: "/images/team-shohjahon.jpg",
+    image: "/images/team-shohjahon.webp",
     email: "sh.abdufattohov@polito.uz",
   },
 ];
@@ -135,6 +135,9 @@ export default function OurTeamCarousel({ isDark = false }: OurTeamCarouselProps
                 <img
                   src={member.image}
                   alt={member.name}
+                  loading="lazy"
+                  width={340}
+                  height={453}
                   className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
                   onError={(e) => {
                     const target = e.target as HTMLImageElement;

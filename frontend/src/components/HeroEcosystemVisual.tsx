@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useLanguage } from "@/context/LanguageContext";
 
 interface HeroEcosystemVisualProps {
@@ -9,6 +9,24 @@ interface HeroEcosystemVisualProps {
 
 export default function HeroEcosystemVisual({ isDark }: HeroEcosystemVisualProps) {
   const { t } = useLanguage();
+  const [livePrice, setLivePrice] = useState<number | null>(null);
+
+  useEffect(() => {
+    let isMounted = true;
+    fetch("/api/v1/public/stats")
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (isMounted && data?.avgRawMilkPrice?.value > 0) {
+          setLivePrice(data.avgRawMilkPrice.value);
+        }
+      })
+      .catch(() => {});
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const displayPrice = livePrice ? livePrice.toLocaleString("en-US") : "4,380";
 
   return (
     <div className="relative w-full max-w-[620px] lg:max-w-none mx-auto select-none p-4 sm:p-6 lg:p-8">
@@ -25,13 +43,19 @@ export default function HeroEcosystemVisual({ isDark }: HeroEcosystemVisualProps
 
       {/* 2. 3D ISOMETRIC ECOSYSTEM RENDER CONTAINER */}
       <div className="relative rounded-3xl overflow-hidden shadow-[0_25px_60px_-15px_rgba(8,28,21,0.12)] border border-white/80 dark:border-white/10 bg-white/40 dark:bg-[#13293D]/40 backdrop-blur-md">
-        <img
-          src="/images/hero-ecosystem-3d.jpg"
-          alt="ZaminFlow Connected 3D Agricultural Ecosystem"
-          className="w-full h-auto object-cover transform hover:scale-[1.01] transition-transform duration-500"
-          width={1376}
-          height={768}
-        />
+        <picture>
+          <source srcSet="/images/hero-ecosystem-3d.avif" type="image/avif" />
+          <source srcSet="/images/hero-ecosystem-3d.webp" type="image/webp" />
+          <img
+            src="/images/hero-ecosystem-3d.jpg"
+            alt="ZaminFlow Connected 3D Agricultural Ecosystem"
+            className="w-full h-auto object-cover transform hover:scale-[1.01] transition-transform duration-500"
+            width={1376}
+            height={768}
+            loading="eager"
+            fetchPriority="high"
+          />
+        </picture>
       </div>
 
       {/* 3. THREE FLOATING FROSTED-GLASS BENTO UI CARDS */}
@@ -58,7 +82,7 @@ export default function HeroEcosystemVisual({ isDark }: HeroEcosystemVisualProps
 
         <div className="flex items-baseline gap-1 mb-2">
           <span className="text-xl sm:text-2xl font-black font-mono tracking-tight text-[#081c15] dark:white">
-            4,380
+            {displayPrice}
           </span>
           <span className="text-[11px] text-[#2d6a4f] dark:text-[#E8F1F2]/70 font-bold">
             UZS / L
