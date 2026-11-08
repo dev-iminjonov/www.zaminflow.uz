@@ -294,7 +294,7 @@ export default function SignUpCard() {
                     {isSelected && (
                       <span className="text-base leading-none">✓</span>
                     )}
-                    <span>{roleOpt.label}</span>
+                    <span>{t.signUp.roles?.[roleOpt.key]?.label || roleOpt.label}</span>
                   </button>
                 );
               })}
@@ -337,7 +337,7 @@ export default function SignUpCard() {
             {/* Field 2: Role-dependent second field */}
             <div className="flex flex-col gap-1.5">
               <label htmlFor="roleField" className="text-sm font-semibold text-left text-[#081c15] dark:text-white">
-                {activeRoleConfig.roleFieldLabel}
+                {t.signUp.roles?.[selectedRole]?.fieldLabel || activeRoleConfig.roleFieldLabel}
               </label>
               <input
                 ref={roleFieldRef}
@@ -350,7 +350,7 @@ export default function SignUpCard() {
                 }}
                 aria-invalid={Boolean(fieldErrors.roleSpecificField)}
                 aria-describedby={fieldErrors.roleSpecificField ? "roleField-error" : undefined}
-                placeholder={activeRoleConfig.roleFieldPlaceholder}
+                placeholder={t.signUp.roles?.[selectedRole]?.fieldPlaceholder || activeRoleConfig.roleFieldPlaceholder}
                 className={`h-[52px] rounded-[14px] px-4 text-base font-medium outline-none transition border ${
                   fieldErrors.roleSpecificField
                     ? "border-red-500 focus:ring-2 focus:ring-red-400 bg-red-50/20"
@@ -482,9 +482,9 @@ export default function SignUpCard() {
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   aria-label={showPassword ? t.signIn.hidePassword : t.signIn.showPassword}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 min-w-[44px] min-h-[44px] flex items-center justify-center text-xs font-bold text-[#2d6a4f] dark:text-[#E8F1F2]/70 hover:text-[#087a3c] transition cursor-pointer select-none"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 min-w-[44px] min-h-[44px] px-2 flex items-center justify-center text-xs font-bold text-[#2d6a4f] dark:text-[#E8F1F2]/70 hover:text-[#087a3c] transition cursor-pointer select-none"
                 >
-                  {showPassword ? "Hide" : "Show"}
+                  {showPassword ? t.signIn.hideBtn : t.signIn.showBtn}
                 </button>
               </div>
 
@@ -534,13 +534,13 @@ export default function SignUpCard() {
                 className="text-sm font-medium text-[#2d6a4f] dark:text-[#E8F1F2]/80 text-left cursor-pointer select-none"
               >
                 {t.signUp.agreeTermsStart}
-                <a href="#terms" className="text-[#087a3c] dark:text-[#22d36b] underline font-semibold">
+                <Link href="/terms" className="text-[#087a3c] dark:text-[#22d36b] underline font-semibold">
                   {t.signUp.termsLink}
-                </a>
+                </Link>
                 {t.signUp.and}
-                <a href="#privacy" className="text-[#087a3c] dark:text-[#22d36b] underline font-semibold">
+                <Link href="/privacy" className="text-[#087a3c] dark:text-[#22d36b] underline font-semibold">
                   {t.signUp.privacyLink}
-                </a>
+                </Link>
               </label>
             </div>
             {fieldErrors.agreeTerms && (

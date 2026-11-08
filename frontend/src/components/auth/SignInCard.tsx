@@ -311,9 +311,9 @@ export default function SignInCard() {
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
                 aria-label={showPassword ? t.signIn.hidePassword : t.signIn.showPassword}
-                className="absolute right-2 top-1/2 -translate-y-1/2 min-w-[44px] min-h-[44px] flex items-center justify-center text-xs font-bold text-[#2d6a4f] dark:text-[#E8F1F2]/70 hover:text-[#087a3c] transition cursor-pointer select-none"
+                className="absolute right-2 top-1/2 -translate-y-1/2 min-w-[44px] min-h-[44px] px-2 flex items-center justify-center text-xs font-bold text-[#2d6a4f] dark:text-[#E8F1F2]/70 hover:text-[#087a3c] transition cursor-pointer select-none"
               >
-                {showPassword ? "Hide" : "Show"}
+                {showPassword ? t.signIn.hideBtn : t.signIn.showBtn}
               </button>
             </div>
             {fieldErrors.password && (

@@ -17,6 +17,8 @@ export const authTranslations = {
       passwordPlaceholder: "Enter your password",
       showPassword: "Show password",
       hidePassword: "Hide password",
+      showBtn: "Show",
+      hideBtn: "Hide",
       forgotPassword: "Forgot password?",
       keepSignedIn: "Keep me signed in",
       submitButton: "Sign in →",
@@ -52,6 +54,33 @@ export const authTranslations = {
       alreadyHaveAccount: "Already have an account?",
       signInLink: "Sign in",
       backToHome: "Home",
+      roles: {
+        farmer: {
+          label: "Farmer",
+          fieldLabel: "Farm or cooperative name",
+          fieldPlaceholder: "e.g. Baraka Agro Cooperative",
+        },
+        dairy: {
+          label: "Dairy Industry",
+          fieldLabel: "Company name",
+          fieldPlaceholder: "e.g. Toshkent Sut Kombinati LLC",
+        },
+        driver: {
+          label: "Driver",
+          fieldLabel: "Vehicle plate number",
+          fieldPlaceholder: "01 A 123 AA",
+        },
+        bank: {
+          label: "Partner Bank",
+          fieldLabel: "CBU Banking License",
+          fieldPlaceholder: "e.g. CBU License #14",
+        },
+        admin: {
+          label: "Admin",
+          fieldLabel: "Department or unit",
+          fieldPlaceholder: "Operations Oversight",
+        },
+      },
     },
     smsModal: {
       title: "Sign in with SMS Code",
@@ -124,6 +153,8 @@ export const authTranslations = {
       passwordPlaceholder: "Введите пароль",
       showPassword: "Показать пароль",
       hidePassword: "Скрыть пароль",
+      showBtn: "Показать",
+      hideBtn: "Скрыть",
       forgotPassword: "Забыли пароль?",
       keepSignedIn: "Запомнить меня",
       submitButton: "Войти →",
@@ -159,6 +190,33 @@ export const authTranslations = {
       alreadyHaveAccount: "Уже есть аккаунт?",
       signInLink: "Войти",
       backToHome: "Главная",
+      roles: {
+        farmer: {
+          label: "Фермер",
+          fieldLabel: "Название фермы или кооператива",
+          fieldPlaceholder: "напр. Кооператив Baraka Agro",
+        },
+        dairy: {
+          label: "Молочный завод",
+          fieldLabel: "Название компании",
+          fieldPlaceholder: "напр. ООО Toshkent Sut Kombinati",
+        },
+        driver: {
+          label: "Водитель",
+          fieldLabel: "Госномер автомобиля",
+          fieldPlaceholder: "01 A 123 AA",
+        },
+        bank: {
+          label: "Банк-партнер",
+          fieldLabel: "Банковская лицензия ЦБ",
+          fieldPlaceholder: "напр. Лицензия ЦБ №14",
+        },
+        admin: {
+          label: "Администратор",
+          fieldLabel: "Отдел или подразделение",
+          fieldPlaceholder: "Операционный контроль",
+        },
+      },
     },
     smsModal: {
       title: "Вход по SMS-коду",
@@ -231,6 +289,8 @@ export const authTranslations = {
       passwordPlaceholder: "Parolingizni kiriting",
       showPassword: "Parolni ko'rsatish",
       hidePassword: "Parolni yashirish",
+      showBtn: "Ko'rsatish",
+      hideBtn: "Yashirish",
       forgotPassword: "Parolni unutdingizmi?",
       keepSignedIn: "Meni eslab qolish",
       submitButton: "Kirish →",
@@ -266,6 +326,33 @@ export const authTranslations = {
       alreadyHaveAccount: "Hisobingiz bormi?",
       signInLink: "Kirish",
       backToHome: "Bosh sahifa",
+      roles: {
+        farmer: {
+          label: "Fermer",
+          fieldLabel: "Fermer xo'jaligi yoki kooperativ nomi",
+          fieldPlaceholder: "masalan, Baraka Agro kooperativi",
+        },
+        dairy: {
+          label: "Qayta ishlash korxonasi",
+          fieldLabel: "Korxona nomi",
+          fieldPlaceholder: "masalan, Toshkent Sut Kombinati MChJ",
+        },
+        driver: {
+          label: "Haydovchi",
+          fieldLabel: "Avtomobil davlat raqami",
+          fieldPlaceholder: "01 A 123 AA",
+        },
+        bank: {
+          label: "Hamkor bank",
+          fieldLabel: "Markaziy bank litsenziyasi",
+          fieldPlaceholder: "masalan, MB Litsenziya №14",
+        },
+        admin: {
+          label: "Administrator",
+          fieldLabel: "Bo'lim yoki tarkibiy tuzilma",
+          fieldPlaceholder: "Operatsion nazorat",
+        },
+      },
     },
     smsModal: {
       title: "SMS kod orqali kirish",
