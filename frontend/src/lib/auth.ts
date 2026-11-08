@@ -48,17 +48,12 @@ export function getStoredSession(): AuthSession | null {
   }
 }
 
-export function saveSession(session: AuthSession, keepSignedIn: boolean = true) {
+export function saveSession(session: AuthSession, _keepSignedIn: boolean = true) {
   if (typeof window === "undefined") return;
   try {
-    // Only safe display metadata is stored client-side (NEVER store access or refresh tokens)
+    // Only safe display metadata is stored client-side (NEVER store access or refresh tokens or unverified role cookies)
     const { accessToken, ...safeSession } = session;
     localStorage.setItem(STORAGE_KEY, JSON.stringify(safeSession));
-
-    // Also set a client-accessible role cookie for Next.js middleware guards
-    const maxAge = keepSignedIn ? 7 * 86400 : 86400;
-    document.cookie = `${ROLE_COOKIE_KEY}=${session.canonicalRole}; path=/; max-age=${maxAge}; SameSite=Lax`;
-    document.cookie = `zaminflow_logged_in=true; path=/; max-age=${maxAge}; SameSite=Lax`;
   } catch (e) {
     console.error("Failed to save auth session", e);
   }
@@ -294,17 +289,31 @@ export async function refreshAccessToken(): Promise<string | null> {
   return null;
 }
 
+function getCsrfTokenFromCookie(): string | null {
+  if (typeof document === "undefined") return null;
+  const match = document.cookie.match(/(?:^|;\s*)csrf_token=([^;]*)/);
+  return match ? decodeURIComponent(match[1]) : null;
+}
+
 /**
- * Authenticated Fetch with Silent Auto-Refresh Interceptor
+ * Authenticated Fetch with Silent Auto-Refresh & Double-Submit CSRF Interceptor
  */
 export async function authenticatedFetch(input: RequestInfo | URL, init: RequestInit = {}): Promise<Response> {
   const headers = new Headers(init.headers || {});
+  const csrf = getCsrfTokenFromCookie();
+  if (csrf && !headers.has("X-CSRF-Token")) {
+    headers.set("X-CSRF-Token", csrf);
+  }
   const response = await fetch(input, { ...init, credentials: "include", headers });
 
   // If 401 Unauthorized, attempt a silent token refresh and retry once
   if (response.status === 401 && typeof window !== "undefined") {
     const newAccessToken = await refreshAccessToken();
     if (newAccessToken) {
+      const updatedCsrf = getCsrfTokenFromCookie();
+      if (updatedCsrf) {
+        headers.set("X-CSRF-Token", updatedCsrf);
+      }
       return await fetch(input, { ...init, credentials: "include", headers });
     } else {
       // Refresh expired, clear session

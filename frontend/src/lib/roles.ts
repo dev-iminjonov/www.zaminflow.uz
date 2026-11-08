@@ -12,7 +12,7 @@
  *   escrow oversight, and platform analytics.
  */
 
-export type RoleKey = "farmer" | "dairy" | "driver" | "admin";
+export type RoleKey = "farmer" | "dairy" | "driver" | "bank" | "admin";
 
 export interface RoleConfig {
   key: RoleKey;
@@ -56,6 +56,16 @@ export const ROLES: Record<RoleKey, RoleConfig> = {
     roleFieldPlaceholder: "01 A 123 AA",
     description: "Transport insulated milk tankers with live GPS and telemetry temperature tracking.",
   },
+  bank: {
+    key: "bank",
+    label: "Partner Bank",
+    backendRole: "BANK",
+    dashboardPath: "/dashboard/bank",
+    allowedSelfSignup: false,
+    roleFieldLabel: "CBU Banking License",
+    roleFieldPlaceholder: "e.g. CBU License #14",
+    description: "Audit escrow vaults, monitor collateral solvency, and export ISO 20022 clearing journals.",
+  },
   admin: {
     key: "admin",
     label: "Admin",
@@ -76,7 +86,7 @@ export const PUBLIC_SIGNUP_ROLES: RoleConfig[] = Object.values(ROLES).filter(
 );
 
 /**
- * Normalizes backend role names (e.g. "INDUSTRY", "INDUSTRY_OWNER", "DRIVER") to canonical RoleKey
+ * Normalizes backend role names (e.g. "INDUSTRY", "INDUSTRY_OWNER", "DRIVER", "BANK") to canonical RoleKey
  */
 export function mapBackendRoleToCanonicalRole(backendRole?: string | null): RoleKey {
   if (!backendRole) return "farmer";
@@ -84,6 +94,9 @@ export function mapBackendRoleToCanonicalRole(backendRole?: string | null): Role
 
   if (upper.includes("ADMIN") || upper.includes("SUPERADMIN")) {
     return "admin";
+  }
+  if (upper.includes("BANK")) {
+    return "bank";
   }
   if (upper.includes("DRIVER")) {
     return "driver";

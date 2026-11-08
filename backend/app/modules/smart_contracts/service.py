@@ -13,6 +13,7 @@ from app.core.idempotency import (
     require_idempotency_key,
     save_idempotency_record,
 )
+from app.core.policy import enforce_abac_tenancy
 from app.modules.auth_rbac.service import (
     CurrentUser,
     get_current_user,
@@ -176,6 +177,27 @@ async def create_or_sign_contract(
     await get_organization_by_id(db, payload.farmer_id)
     await get_organization_by_id(db, payload.industry_id)
 
+    # ABAC Tenancy Enforcement: Farmer can only create contracts for their own farm;
+    # Industry buyer can only create contracts for their own dairy plant.
+    if current_user.role == "FARMER":
+        await enforce_abac_tenancy(
+            db=db,
+            actor_user_id=current_user.id,
+            actor_org_id=current_user.organization_id,
+            actor_role=current_user.role,
+            expected_org_id=payload.farmer_id,
+            resource_type="SUPPLY_CONTRACT",
+        )
+    elif current_user.role == "INDUSTRY":
+        await enforce_abac_tenancy(
+            db=db,
+            actor_user_id=current_user.id,
+            actor_org_id=current_user.organization_id,
+            actor_role=current_user.role,
+            expected_org_id=payload.industry_id,
+            resource_type="SUPPLY_CONTRACT",
+        )
+
     bank_id = payload.partner_bank_id
     if bank_id is None:
         bank_res = await db.execute(
@@ -265,9 +287,27 @@ async def countersign_contract(
     industry_signed = contract["industry_signed_at"] is not None
 
     if current_user.role == "FARMER":
+        await enforce_abac_tenancy(
+            db=db,
+            actor_user_id=current_user.id,
+            actor_org_id=current_user.organization_id,
+            actor_role=current_user.role,
+            expected_org_id=contract["farmer_id"],
+            resource_type="SUPPLY_CONTRACT",
+            resource_id=contract_id,
+        )
         farmer_signed = True
         sign_col = "farmer_signed_at = COALESCE(farmer_signed_at, NOW())"
     elif current_user.role == "INDUSTRY":
+        await enforce_abac_tenancy(
+            db=db,
+            actor_user_id=current_user.id,
+            actor_org_id=current_user.organization_id,
+            actor_role=current_user.role,
+            expected_org_id=contract["industry_id"],
+            resource_type="SUPPLY_CONTRACT",
+            resource_id=contract_id,
+        )
         industry_signed = True
         sign_col = "industry_signed_at = COALESCE(industry_signed_at, NOW())"
     else:

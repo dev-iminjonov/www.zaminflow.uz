@@ -33,21 +33,12 @@ export function middleware(request: NextRequest) {
     }
   }
 
-  // Fallback to client-side cookie if running in development without JWT verification
-  if (!isAuthenticated) {
-    const roleCookie = request.cookies.get("zaminflow_role")?.value;
-    const loggedInCookie = request.cookies.get("zaminflow_logged_in")?.value;
-    if (loggedInCookie && roleCookie) {
-      isAuthenticated = true;
-      userRole = (roleCookie || "farmer") as RoleKey;
-    }
-  }
-
-  // Role dashboard mapping
-  const roleDashboardMap: Record<string, string> = {
+  // Role dashboard mapping (All 5 canonical roles)
+  const roleDashboardMap: Record<RoleKey, string> = {
     farmer: "/dashboard/farmer",
     dairy: "/dashboard/dairy",
     driver: "/dashboard/driver",
+    bank: "/dashboard/bank",
     admin: "/dashboard/admin",
   };
   const myDashboard = roleDashboardMap[userRole] || "/dashboard/farmer";
@@ -91,6 +82,7 @@ export function middleware(request: NextRequest) {
         (pathname.startsWith("/dashboard/farmer") && userRole !== "farmer") ||
         (pathname.startsWith("/dashboard/dairy") && userRole !== "dairy") ||
         (pathname.startsWith("/dashboard/driver") && userRole !== "driver") ||
+        (pathname.startsWith("/dashboard/bank") && userRole !== "bank") ||
         pathname.startsWith("/dashboard/admin")
       ) {
         return NextResponse.redirect(new URL(myDashboard, request.url));
@@ -98,7 +90,7 @@ export function middleware(request: NextRequest) {
     }
   }
 
-  // 3. Legacy Prototype Route Consolidation -> Redirect to Modern Artboard Dashboards
+  // 3. Legacy Route Consolidation -> Redirect to Canonical Dashboards
   if (
     pathname.startsWith("/farmer") ||
     pathname.startsWith("/industry") ||
@@ -119,7 +111,7 @@ export function middleware(request: NextRequest) {
       return NextResponse.redirect(new URL("/dashboard/admin", request.url));
     }
     if (pathname.startsWith("/bank")) {
-      return NextResponse.redirect(new URL("/dashboard/dairy/escrow", request.url));
+      return NextResponse.redirect(new URL("/dashboard/bank", request.url));
     }
   }
 

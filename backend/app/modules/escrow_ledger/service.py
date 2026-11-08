@@ -295,7 +295,7 @@ async def bank_dashboard_kpis_endpoint(
 async def list_ledger_endpoint(
     entry_type: Optional[str] = None,
     current_user: CurrentUser = Depends(
-        require_roles(["BANK", "ADMIN", "FARMER", "INDUSTRY"])
+        require_roles(["BANK", "ADMIN"])
     ),
     db: AsyncSession = Depends(get_db),
 ) -> list[dict[str, Any]]:

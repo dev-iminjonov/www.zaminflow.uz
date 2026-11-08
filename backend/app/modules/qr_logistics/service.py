@@ -14,6 +14,7 @@ from app.core.idempotency import (
     require_idempotency_key,
     save_idempotency_record,
 )
+from app.core.policy import enforce_abac_tenancy
 from app.core.security import sign_qr_payload, verify_qr_payload
 from app.modules.auth_rbac.service import (
     CurrentUser,
@@ -114,6 +115,16 @@ async def generate_farmer_pickup_qr(
             detail="Pickup temperature must be <= 8.0°C (Cold-Chain Rule).",
         )
     contract = await get_contract_by_id(db, payload.contract_id)
+    if current_user.role == "FARMER":
+        await enforce_abac_tenancy(
+            db=db,
+            actor_user_id=current_user.id,
+            actor_org_id=current_user.organization_id,
+            actor_role=current_user.role,
+            expected_org_id=contract["farmer_id"],
+            resource_type="SUPPLY_CONTRACT",
+            resource_id=payload.contract_id,
+        )
     if contract["status"] != "ACTIVE_FUNDED":
         raise HTTPException(
             status_code=400,
@@ -239,6 +250,16 @@ async def record_gate_arrival(
         return replay
 
     batch = await get_batch_by_id(db, batch_id, lock_row=True)
+    if current_user.role == "INDUSTRY" and current_user.sub_role != "DRIVER":
+        await enforce_abac_tenancy(
+            db=db,
+            actor_user_id=current_user.id,
+            actor_org_id=current_user.organization_id,
+            actor_role=current_user.role,
+            expected_org_id=batch["industry_id"],
+            resource_type="DELIVERY_BATCH",
+            resource_id=batch_id,
+        )
     validate_batch_transition(batch["status"], "AT_GATE")
 
     await db.execute(
@@ -279,6 +300,16 @@ async def verify_lab_and_settle_or_freeze(
         return replay
 
     batch = await get_batch_by_id(db, batch_id, lock_row=True)
+    if current_user.role == "INDUSTRY":
+        await enforce_abac_tenancy(
+            db=db,
+            actor_user_id=current_user.id,
+            actor_org_id=current_user.organization_id,
+            actor_role=current_user.role,
+            expected_org_id=batch["industry_id"],
+            resource_type="DELIVERY_BATCH",
+            resource_id=batch_id,
+        )
     contract = await get_contract_by_id(
         db, batch["contract_id"], lock_row=True
     )
@@ -426,8 +457,15 @@ async def list_batches_for_user(
     if current_user.role == "FARMER":
         conditions.append("c.farmer_id = :org_id")
         params["org_id"] = str(current_user.organization_id)
+    elif current_user.sub_role == "DRIVER":
+        conditions.append("(b.driver_user_id = :user_id OR c.industry_id = :org_id)")
+        params["user_id"] = str(current_user.id)
+        params["org_id"] = str(current_user.organization_id)
     elif current_user.role == "INDUSTRY":
         conditions.append("c.industry_id = :org_id")
+        params["org_id"] = str(current_user.organization_id)
+    elif current_user.role == "BANK":
+        conditions.append("c.partner_bank_id = :org_id")
         params["org_id"] = str(current_user.organization_id)
 
     if status_filter:
@@ -484,7 +522,7 @@ async def pickup_handshake_endpoint(
     payload: PickupHandshakeRequest,
     idempotency_key: str = Depends(require_idempotency_key),
     current_user: CurrentUser = Depends(
-        require_roles(["FARMER", "INDUSTRY", "ADMIN"])
+        require_roles(["DRIVER", "FARMER", "INDUSTRY", "ADMIN"])
     ),
     db: AsyncSession = Depends(get_db),
 ) -> dict[str, Any]:
@@ -498,7 +536,7 @@ async def gate_arrival_endpoint(
     id: UUID,
     payload: Optional[GateArrivalRequest] = None,
     idempotency_key: str = Depends(require_idempotency_key),
-    current_user: CurrentUser = Depends(require_roles(["INDUSTRY", "ADMIN"])),
+    current_user: CurrentUser = Depends(require_roles(["DRIVER", "INDUSTRY", "ADMIN"])),
     db: AsyncSession = Depends(get_db),
 ) -> dict[str, Any]:
     return await record_gate_arrival(db, id, current_user, idempotency_key)

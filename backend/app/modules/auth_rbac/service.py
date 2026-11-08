@@ -14,6 +14,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.config import settings
 from app.core.database import get_db
 from app.core.mailer import send_email_async
+from app.core.policy import log_security_audit
 from app.core.security import (
     create_access_token,
     decode_access_token,
@@ -168,13 +169,34 @@ async def get_current_user(
 # RBAC & KYB Dependencies
 # -----------------------------------------------------------------------------
 def require_role(org_roles: list[str], sub_roles: Optional[list[str]] = None) -> Callable:
-    async def role_checker(current_user: CurrentUser = Depends(get_current_user)) -> CurrentUser:
-        if current_user.role not in org_roles:
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail="FORBIDDEN_ROLE",
+    async def role_checker(
+        request: Request,
+        current_user: CurrentUser = Depends(get_current_user),
+        db: AsyncSession = Depends(get_db),
+    ) -> CurrentUser:
+        # Drivers have org_role='INDUSTRY' and sub_role='DRIVER' in schema.
+        # Treat their effective role as 'DRIVER' unless 'DRIVER' is explicitly permitted in org_roles or sub_roles.
+        effective_role = "DRIVER" if current_user.sub_role == "DRIVER" else current_user.role
+        allowed_by_org = (effective_role in org_roles) or (
+            current_user.role in org_roles and sub_roles is not None and current_user.sub_role in sub_roles
+        )
+        allowed_by_sub = (sub_roles is None) or (current_user.sub_role in sub_roles)
+
+        if not allowed_by_org or not allowed_by_sub:
+            await log_security_audit(
+                db=db,
+                actor_user_id=current_user.id,
+                action="UNAUTHORIZED_ACCESS_ATTEMPT",
+                entity_type="ENDPOINT",
+                entity_id=current_user.organization_id,
+                details={
+                    "path": request.url.path,
+                    "method": request.method,
+                    "role": current_user.role,
+                    "sub_role": current_user.sub_role,
+                    "required_roles": org_roles,
+                },
             )
-        if sub_roles and current_user.sub_role not in sub_roles:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail="FORBIDDEN_ROLE",
@@ -341,6 +363,8 @@ def get_canonical_role_and_dashboard(org_role: str, sub_role: str = "") -> tuple
     upper_sub = (sub_role or "").upper()
     if "ADMIN" in upper_org or "SUPERADMIN" in upper_sub:
         return "admin", "/dashboard/admin"
+    if upper_org == "BANK" or "BANK" in upper_sub:
+        return "bank", "/dashboard/bank"
     if upper_org == "DRIVER" or upper_sub == "DRIVER":
         return "driver", "/dashboard/driver"
     if upper_org in ("INDUSTRY", "DAIRY"):
