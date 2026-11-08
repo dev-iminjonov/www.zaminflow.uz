@@ -1,0 +1,27 @@
+Resource,Action,Farmer,Dairy (Buyer),Driver,Bank,Admin,Attribute Conditions & Enforcement Logic
+auth:session,create,ALLOW,ALLOW,ALLOW,ALLOW,DENY_SIGNUP,Public login allowed for all. Admin user creation prohibited via public registration.
+auth:password_reset,execute,ALLOW,ALLOW,ALLOW,ALLOW,ALLOW,Rate-limited OTP to verified email/phone.
+user:profile,read_own,ALLOW,ALLOW,ALLOW,ALLOW,ALLOW,WHERE id = current_user.id
+user:profile,update_own,ALLOW,ALLOW,ALLOW,ALLOW,ALLOW,Cannot change organization_id or role.
+organization:kyb,submit,ALLOW,ALLOW,ALLOW,DENY,ALLOW,Initial submission during onboarding.
+organization:kyb,verify,DENY,DENY,DENY,DENY,ALLOW,Platform Admin only after manual review of INN/veterinary certs.
+supply:batch,create,ALLOW,DENY,DENY,DENY,ALLOW,WHERE org_id = current_user.org_id AND org.status = 'ACTIVE'
+supply:batch,read,ALLOW_OWN,ALLOW_ASSIGNED,ALLOW_ASSIGNED,ALLOW_ALL,ALLOW_ALL,Farmer sees own; Buyer sees contracted/intake; Driver sees assigned route; Bank sees escrow-linked.
+supply:batch,update_status,ALLOW_DRAFT,DENY,ALLOW_TRANSIT,DENY,ALLOW,Farmer edits STORED; Driver updates PICKED_UP/IN_TRANSIT; Admin can override.
+contract:supply,create,DENY,ALLOW,DENY,DENY,ALLOW,Buyer proposes contract to farmer with specific price formulas.
+contract:supply,accept,ALLOW,DENY,DENY,DENY,ALLOW,Farmer accepts or counters buyer contract proposal.
+contract:supply,read,ALLOW_OWN,ALLOW_OWN,DENY,ALLOW_ESCROW,ALLOW_ALL,Strict isolation: farmer and buyer see only contracts where their org_id matches party.
+intake:titration,submit,DENY,ALLOW,DENY,DENY,ALLOW,Certified plant lab technicians only. Requires PIN / token confirmation.
+intake:titration,read,ALLOW_OWN,ALLOW_OWN,DENY,ALLOW_LINKED,ALLOW_ALL,Farmer reads lab results for their delivered batches; Buyer reads own intake tests.
+escrow:reserve,fund,DENY,ALLOW,DENY,ALLOW,ALLOW,Buyer transfers funds into partner bank escrow vault.
+escrow:reserve,release,DENY,DENY,DENY,ALLOW_AUTO,ALLOW_ARBITRATION,Auto-disbursed upon plant lab certification; Admin can execute arbitration verdict.
+escrow:reserve,read_balance,DENY,ALLOW_OWN,DENY,ALLOW_ALL,ALLOW_ALL,Buyer sees own deposited balance; Bank and Admin see total pool & balances.
+ledger:financial,read,ALLOW_OWN,ALLOW_OWN,DENY,ALLOW_ALL,ALLOW_ALL,Farmer/Buyer see own transaction ledger entries; Bank and Admin audit full journal.
+ledger:financial,export_iso20022,DENY,DENY,DENY,ALLOW,ALLOW,Bank and Admin only. Generates ISO 20022 pacs.008 clearing messages.
+logistics:route,create,DENY,ALLOW_PLANT,DENY,DENY,ALLOW,Plant logistics dispatcher or Admin schedules tanker routes.
+logistics:route,read,ALLOW_ETA,ALLOW_FLEET,ALLOW_ASSIGNED,DENY,ALLOW_ALL,Farmer gets pickup ETA; Buyer gets plant inbound; Driver gets turn-by-turn.
+logistics:telemetry,write,DENY,DENY,ALLOW_ASSIGNED,DENY,ALLOW,Driver app or IoT hardware logger writes GPS + compartment temperature.
+logistics:telemetry,read,ALLOW_APPROACH,ALLOW_INBOUND,ALLOW_CURRENT,DENY,ALLOW_ALL,Farmer sees location when tanker is <30 mins away; Buyer sees full inbound cold chain.
+dispute:arbitration,create,ALLOW,ALLOW,DENY,DENY,ALLOW,Farmer or Buyer can open dispute within 48h of titration test if delta > 0.20%.
+dispute:arbitration,resolve,DENY,DENY,DENY,DENY,ALLOW,Admin arbitrator only after reviewing counter-sample evidence.
+audit:trail,read,DENY,DENY,DENY,ALLOW_FINANCIAL,ALLOW_ALL,Bank reads financial audit logs; Admin reads system-wide security & access logs.
