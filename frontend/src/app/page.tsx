@@ -240,16 +240,16 @@ export default function LandingPage() {
           <div className="flex flex-col items-center lg:items-start text-center lg:text-left max-w-xl mx-auto lg:mx-0 min-w-0 w-full lg:pr-4">
             {/* Massive, Bold Sans-Serif Headline */}
             <h1
-              className={`font-black tracking-tight select-none break-words max-w-full ${
+              className={`font-black tracking-tight select-none break-words max-w-full pb-2 ${
                 locale === "ru"
-                  ? "text-3xl sm:text-5xl lg:text-[2.6rem] xl:text-[3.1rem] leading-[1.12]"
-                  : "text-4xl sm:text-5xl lg:text-5xl xl:text-6xl leading-[1.08]"
+                  ? "text-3xl sm:text-5xl lg:text-[2.6rem] xl:text-[3.1rem] leading-[1.18]"
+                  : "text-4xl sm:text-5xl lg:text-5xl xl:text-6xl leading-[1.16]"
               }`}
             >
               <span className={isDark ? "text-[#E8F1F2]" : "text-[#081c15]"}>
                 {t.hero.headlineStart}
               </span>
-              <span className="bg-gradient-to-r from-[#52b788] via-[#40916c] to-[#2d6a4f] dark:from-[#00C853] dark:via-[#4ADE80] dark:to-[#64DD17] bg-clip-text text-transparent drop-shadow-xs">
+              <span className="bg-gradient-to-r from-[#52b788] via-[#40916c] to-[#2d6a4f] dark:from-[#00C853] dark:via-[#4ADE80] dark:to-[#64DD17] bg-clip-text text-transparent py-1.5 drop-shadow-xs">
                 {t.hero.headlineAccent}
               </span>
             </h1>

@@ -87,7 +87,7 @@ export default function ContactUsSection({ isDark = false }: ContactUsSectionPro
             {t.contact.badge}
           </div>
           <h2
-            className={`mt-3 text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight leading-[1.08] ${
+            className={`mt-3 text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight leading-[1.16] pb-1 ${
               isDark ? "text-white" : "text-[#081c15]"
             }`}
           >
