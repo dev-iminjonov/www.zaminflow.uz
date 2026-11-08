@@ -1,0 +1,26 @@
+# Normalize line endings on commit, preserve native on checkout
+* text=auto
+
+# Shell scripts and Docker entrypoints must always use LF
+*.sh text eol=lf
+Dockerfile* text eol=lf
+
+# Windows batch and PowerShell scripts use CRLF
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+
+# Binary assets
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.avif binary
+*.ico binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.pdf binary
+*.zip binary
+*.gz binary
+*.dump binary

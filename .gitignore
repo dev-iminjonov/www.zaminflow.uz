@@ -3,13 +3,15 @@ node_modules/
 .pnp
 .pnp.js
 
-# Next.js Build Output
+# Next.js & Frontend Build Output
 .next/
 out/
 build/
 dist/
+coverage/
+*.tsbuildinfo
 
-# Python & Pytest
+# Python, Linters & Pytest
 __pycache__/
 *.py[cod]
 *$py.class
@@ -19,21 +21,27 @@ env/
 venv/
 .venv/
 .pytest_cache/
+.mypy_cache/
+.ruff_cache/
 *.egg-info/
 .coverage
 htmlcov/
 
 # Secrets & Environment Variables
 .env
-.env*.local
+.env.*
+!.env.example
 *.pem
 *.key
 *.cert
 *.crt
 
-# Database & Local Backups
+# Database Volumes & Dumps
 backups/*.dump
+backups/*.sql
+backups/*.sql.gz
 pgdata/
+postgres_data/
 caddy_data/
 caddy_config/
 
@@ -44,8 +52,12 @@ yarn-error.log*
 pnpm-debug.log*
 *.log
 
-# OS & Editor
+# OS & Editor Junk
 .DS_Store
 Thumbs.db
+desktop.ini
+*.swp
+*.swo
+*~
 .vscode/
 .idea/
