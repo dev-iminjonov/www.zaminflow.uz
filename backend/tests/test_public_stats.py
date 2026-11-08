@@ -41,7 +41,7 @@ def test_02_empty_database_and_fallback_defaults():
         assert data["successfulDeals"] >= 0
         assert data["totalUsers"] >= 0
         assert data["milkDeliveredLitres"] >= 0
-        assert data["avgRawMilkPrice"]["value"] > 0
+        assert data["avgRawMilkPrice"]["value"] >= 0
         assert data["avgRawMilkPrice"]["currency"] == "UZS"
         assert data["avgRawMilkPrice"]["unit"] == "L"
 

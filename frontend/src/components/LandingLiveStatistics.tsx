@@ -366,10 +366,10 @@ export default function LandingLiveStatistics({
             {/* Card 4: Daily Average Raw Milk Price */}
             <li
               className="bg-white/76 dark:bg-[#101E27]/80 backdrop-blur-md border border-white dark:border-white/10 rounded-[28px] shadow-[0_10px_40px_rgba(20,80,60,0.08)] dark:shadow-[0_10px_40px_rgba(0,0,0,0.4)] py-8 px-4 sm:py-12 sm:px-5 text-center transition-transform hover:-translate-y-1 duration-200 box-border flex flex-col justify-center"
-              title={stats ? `${t.liveStats.dailyAvgPrice} (${stats.avgRawMilkPrice.date})` : undefined}
+              title={stats && stats.avgRawMilkPrice.value > 0 ? `${t.liveStats.dailyAvgPrice} (${stats.avgRawMilkPrice.date})` : undefined}
             >
               <div>
-                {stats ? (
+                {stats && stats.avgRawMilkPrice.value > 0 ? (
                   <>
                     <span className="font-mono font-bold text-[clamp(26px,4vw,52px)] leading-none tracking-[-0.02em] text-[#17352c] dark:text-[#E8F1F2]">
                       {formatWholeNumber(animatedPrice)}

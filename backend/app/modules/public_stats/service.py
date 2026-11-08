@@ -78,7 +78,7 @@ class PublicStatsService:
         deals_res = await db.execute(deals_query)
         successful_deals = int(deals_res.scalar_one_or_none() or 0)
 
-        # 3. Definition 2: Platform Users (Active, public roles, non-test, non-suspended)
+        # 3. Definition 2: Platform Users (Active, public roles, non-test, non-suspended, non-seed)
         users_query = text("""
             SELECT COUNT(DISTINCT u.id) AS user_count
             FROM users u
@@ -87,10 +87,14 @@ class PublicStatsService:
               AND o.kyb_status NOT IN ('SUSPENDED', 'REJECTED')
               AND o.role IN ('FARMER', 'INDUSTRY')
               AND u.sub_role IN ('OWNER', 'DRIVER', 'LAB_TECH', 'GATE_RECEIVER')
+              AND COALESCE(u.email, '') NOT IN ('farmer@zaminflow.uz', 'dairy@zaminflow.uz', 'driver@zaminflow.uz', 'admin@zaminflow.uz')
               AND NOT (
                   u.full_name ILIKE '%test%' 
                   OR u.phone_number LIKE '+99800%' 
                   OR COALESCE(u.email, '') ILIKE '%test%'
+                  OR COALESCE(u.email, '') ILIKE 'val_%'
+                  OR COALESCE(u.email, '') ILIKE 'verified_%'
+                  OR COALESCE(u.email, '') ILIKE 'legit_%'
               );
         """)
         users_res = await db.execute(users_query)
@@ -159,9 +163,9 @@ class PublicStatsService:
             price_date = str(price_row[0])
             price_val = int(price_row[1])
         else:
-            # Fallback benchmark when no historical completed days exist yet in database
+            # When no historical completed deals exist yet, price is 0 (frontend displays dash placeholder)
             price_date = fallback_date
-            price_val = 4380
+            price_val = 0
 
         elapsed = time.perf_counter() - start_time
         logger.info("Public stats computed from database in %.4fs", elapsed)

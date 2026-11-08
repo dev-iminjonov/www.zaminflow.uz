@@ -150,14 +150,6 @@ export default function SignInCard() {
     }
   };
 
-  // Quick QA Seed Auto-fill
-  const handleQuickSeedFill = (loginId: string, pass: string) => {
-    setIdentifier(loginId);
-    setPassword(pass);
-    setFieldErrors({});
-    setServerError(null);
-  };
-
   return (
     <div className="min-h-screen w-full flex flex-col justify-center items-center pt-20 sm:pt-24 pb-12 px-4 bg-[linear-gradient(160deg,#f6f9f8_0%,#e4f6ec_100%)] dark:bg-[linear-gradient(160deg,#13293D_0%,#006494_100%)] text-[#17352c] dark:text-[#E8F1F2] transition-colors duration-300 relative">
       
@@ -394,43 +386,6 @@ export default function SignInCard() {
           >
             {t.signIn.signUpLink}
           </Link>
-        </div>
-
-        {/* QA Quick Test Role Pills (For fast grading of 4 test accounts) */}
-        <div className="mt-8 pt-5 border-t border-[#17352c]/10 dark:border-white/10">
-          <div className="text-[11px] font-bold uppercase tracking-wider text-center text-[#4d6a60] dark:text-[#E8F1F2]/50 mb-2.5">
-            Quick Fill Seed Test Accounts:
-          </div>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-            <button
-              type="button"
-              onClick={() => handleQuickSeedFill("farmer@zaminflow.uz", "ZaminFlowFarmer2026!")}
-              className="text-xs font-semibold py-1.5 px-2 rounded-lg bg-emerald-500/10 text-[#087a3c] dark:text-[#22d36b] border border-emerald-500/20 hover:bg-emerald-500/20 transition cursor-pointer text-center"
-            >
-              Farmer
-            </button>
-            <button
-              type="button"
-              onClick={() => handleQuickSeedFill("dairy@zaminflow.uz", "ZaminFlowDairy2026!")}
-              className="text-xs font-semibold py-1.5 px-2 rounded-lg bg-blue-500/10 text-blue-700 dark:text-blue-300 border border-blue-500/20 hover:bg-blue-500/20 transition cursor-pointer text-center"
-            >
-              Dairy
-            </button>
-            <button
-              type="button"
-              onClick={() => handleQuickSeedFill("+998 90 333 44 55", "ZaminFlowDriver2026!")}
-              className="text-xs font-semibold py-1.5 px-2 rounded-lg bg-amber-500/10 text-amber-700 dark:text-amber-300 border border-amber-500/20 hover:bg-amber-500/20 transition cursor-pointer text-center"
-            >
-              Driver
-            </button>
-            <button
-              type="button"
-              onClick={() => handleQuickSeedFill("admin@zaminflow.uz", "ZaminFlowSuperAdmin2026!")}
-              className="text-xs font-semibold py-1.5 px-2 rounded-lg bg-purple-500/10 text-purple-700 dark:text-purple-300 border border-purple-500/20 hover:bg-purple-500/20 transition cursor-pointer text-center"
-            >
-              Admin
-            </button>
-          </div>
         </div>
 
       </div>
