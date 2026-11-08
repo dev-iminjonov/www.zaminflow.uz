@@ -1,0 +1,17 @@
+# ZaminFlow Production Robots Configuration
+User-agent: *
+Allow: /
+Allow: /sign-in
+Allow: /sign-up
+Allow: /forgot-password
+Allow: /privacy
+Allow: /terms
+
+# Disallow authenticated dashboards and internal endpoints
+Disallow: /dashboard/
+Disallow: /admin/
+Disallow: /api/
+Disallow: /reset-password/
+Disallow: /verify-email/
+
+Sitemap: https://zaminflow.uz/sitemap.xml
