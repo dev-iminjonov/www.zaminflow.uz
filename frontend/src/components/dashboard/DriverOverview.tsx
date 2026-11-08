@@ -246,13 +246,13 @@ export default function DriverOverview() {
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
             <div className="text-[11px] font-bold tracking-widest text-[#087a3c] dark:text-[#22d36b] uppercase mb-1">
-              LOGISTICS DRIVER &bull; HAYDOVCHI LOGISTIKA
+              LOGISTICS DRIVER
             </div>
             <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
               {t.driver.welcome}, <span className="text-[#087a3c] dark:text-[#22d36b]">{firstName}</span>
             </h1>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-              Cold-Chain Tanker Fleet &bull; IoT marshrut va topshirish
+              Cold-Chain Tanker Fleet
             </p>
           </div>
 

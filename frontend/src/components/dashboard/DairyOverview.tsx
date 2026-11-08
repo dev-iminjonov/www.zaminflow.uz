@@ -226,13 +226,13 @@ export default function DairyOverview() {
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
             <div className="text-[11px] font-bold tracking-widest text-[#087a3c] dark:text-[#22d36b] uppercase mb-1">
-              DAIRY INDUSTRY PORTAL &bull; QAYTA ISHLASH KORXONASI
+              DAIRY INDUSTRY PORTAL
             </div>
             <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
               {t.dairy.welcome}, <span className="text-[#087a3c] dark:text-[#22d36b]">{firstName}</span>
             </h1>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-              ZaminFlow Automated Cold-Chain &bull; Laboratoriya nazorati va eskrou
+              ZaminFlow Automated Cold-Chain
             </p>
           </div>
 

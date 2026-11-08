@@ -79,10 +79,10 @@ export default function RoleDashboardShell({
   };
 
   const portalEyebrows: Record<RolePortalKey, string> = {
-    farmer: "FARMER PORTAL • FERMER BOSHQARUVI",
-    dairy: "DAIRY INDUSTRY PORTAL • QAYTA ISHLASH KORXONASI",
-    driver: "LOGISTICS DRIVER • HAYDOVCHI LOGISTIKA",
-    admin: "SYSTEM ADMINISTRATION • TIZIM BOSHQARUVI",
+    farmer: "FARMER PORTAL",
+    dairy: "DAIRY INDUSTRY PORTAL",
+    driver: "LOGISTICS DRIVER",
+    admin: "SYSTEM ADMINISTRATION",
   };
 
   const searchPlaceholders: Record<RolePortalKey, string> = {
