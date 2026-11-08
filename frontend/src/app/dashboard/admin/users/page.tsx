@@ -94,11 +94,11 @@ export default function AdminUsersPage() {
         <div className="flex flex-wrap gap-4 items-center justify-between">
           <div className="flex flex-wrap gap-2">
             {[
-              { id: "all", label: "All Roles (2,140)" },
-              { id: "farmer", label: "Farmers (1,480)" },
-              { id: "dairy", label: "Dairy Industry (212)" },
-              { id: "driver", label: "Drivers (436)" },
-              { id: "admin", label: "Operators (12)" },
+              { id: "all", label: `All Roles (${users.length})` },
+              { id: "farmer", label: `Farmers (${users.filter((u) => u.role === "farmer").length})` },
+              { id: "dairy", label: `Dairy Industry (${users.filter((u) => u.role === "dairy").length})` },
+              { id: "driver", label: `Drivers (${users.filter((u) => u.role === "driver").length})` },
+              { id: "admin", label: `Operators (${users.filter((u) => u.role === "admin").length})` },
             ].map((tab) => (
               <button
                 key={tab.id}

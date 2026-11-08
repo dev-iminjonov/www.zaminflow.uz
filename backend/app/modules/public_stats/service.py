@@ -78,19 +78,17 @@ class PublicStatsService:
         deals_res = await db.execute(deals_query)
         successful_deals = int(deals_res.scalar_one_or_none() or 0)
 
-        # 3. Definition 2: Platform Users (Active, public roles, non-test, non-suspended, non-seed)
+        # 3. Definition 2: Platform Users (Active, non-test, non-suspended, non-seed)
         users_query = text("""
             SELECT COUNT(DISTINCT u.id) AS user_count
             FROM users u
             JOIN organizations o ON u.organization_id = o.id
             WHERE u.is_active = TRUE
               AND o.kyb_status NOT IN ('SUSPENDED', 'REJECTED')
-              AND o.role IN ('FARMER', 'INDUSTRY')
-              AND u.sub_role IN ('OWNER', 'DRIVER', 'LAB_TECH', 'GATE_RECEIVER')
-              AND COALESCE(u.email, '') NOT IN ('farmer@zaminflow.uz', 'dairy@zaminflow.uz', 'driver@zaminflow.uz', 'admin@zaminflow.uz')
+              AND COALESCE(u.email, '') NOT IN ('farmer@zaminflow.uz', 'dairy@zaminflow.uz', 'driver@zaminflow.uz', 'admin@zaminflow.uz', 'bank@zaminflow.uz')
               AND NOT (
-                  u.full_name ILIKE '%test%' 
-                  OR u.phone_number LIKE '+99800%' 
+                  COALESCE(u.full_name, '') ILIKE '%test%' 
+                  OR COALESCE(u.phone_number, '') LIKE '+99800%' 
                   OR COALESCE(u.email, '') ILIKE '%test%'
                   OR COALESCE(u.email, '') ILIKE 'val_%'
                   OR COALESCE(u.email, '') ILIKE 'verified_%'

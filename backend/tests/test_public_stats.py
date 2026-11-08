@@ -137,7 +137,7 @@ async def test_03_definitions_with_synthetic_deals_and_users():
               AND o.kyb_status NOT IN ('SUSPENDED', 'REJECTED')
               AND o.role IN ('FARMER', 'INDUSTRY')
               AND u.sub_role IN ('OWNER', 'DRIVER', 'LAB_TECH', 'GATE_RECEIVER')
-              AND NOT (u.full_name ILIKE '%test%' OR u.phone_number LIKE '+99800%' OR COALESCE(u.email, '') ILIKE '%test%');
+              AND NOT (COALESCE(u.full_name, '') ILIKE '%test%' OR COALESCE(u.phone_number, '') LIKE '+99800%' OR COALESCE(u.email, '') ILIKE '%test%');
         """)
         # Excludes superadmin, inactive, test-prefix
         assert user_row["user_count"] >= 2

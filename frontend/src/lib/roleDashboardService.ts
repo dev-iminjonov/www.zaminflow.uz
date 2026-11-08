@@ -266,38 +266,16 @@ export const MOCK_DRIVER_DATA: DriverDashboardData = {
 };
 
 export const MOCK_ADMIN_DATA: AdminDashboardData = {
-  pendingVerification: { value: "9", unit: "users" },
-  activeUsers: { value: "2,140", delta: "+4.1%" },
-  openDisputes: { value: "3", status: "● Needs review", statusType: "warning" },
-  escrowTotal: { value: "48,500,000", unit: "UZS" },
-  verificationQueue: [
-    {
-      id: "org-1",
-      roleLabel: "Farmer · Andijan",
-      location: "Andijan",
-      timeAgo: "Submitted 2 h ago",
-      roleChip: "Farmer",
-    },
-    {
-      id: "org-2",
-      roleLabel: "Dairy Industry · Tashkent",
-      location: "Tashkent",
-      timeAgo: "Submitted 5 h ago",
-      roleChip: "Dairy Industry",
-    },
-    {
-      id: "org-3",
-      roleLabel: "Driver · Samarqand",
-      location: "Samarqand",
-      timeAgo: "Submitted yesterday",
-      roleChip: "Driver",
-    },
-  ],
+  pendingVerification: { value: "0", unit: "users" },
+  activeUsers: { value: "3", delta: "Live DB" },
+  openDisputes: { value: "0", status: "✓ Clear", statusType: "neutral" },
+  escrowTotal: { value: "0", unit: "UZS" },
+  verificationQueue: [],
   usersByRole: [
-    { role: "Farmers", count: "1,480", percentage: 100 },
-    { role: "Dairy Industry", count: "212", percentage: 14 },
-    { role: "Drivers", count: "436", percentage: 29 },
-    { role: "Admins", count: "12", percentage: 3 },
+    { role: "Farmers", count: "0", percentage: 0 },
+    { role: "Dairy Industry", count: "0", percentage: 0 },
+    { role: "Drivers", count: "0", percentage: 0 },
+    { role: "Admins", count: "3", percentage: 100 },
   ],
 };
 

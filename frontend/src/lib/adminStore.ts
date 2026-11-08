@@ -50,59 +50,37 @@ export interface DisputeCase {
 
 export const INITIAL_ADMIN_USERS: AdminUserRecord[] = [
   {
-    id: "u-1",
-    fullName: "Muhammadaziz Iminjonov",
-    legalName: "Sayxunobod Agro Milk MCHJ",
-    role: "farmer",
-    taxId: "304889122",
-    region: "Sirdaryo",
-    kybStatus: "VERIFIED",
-    isActive: true,
-    registeredDate: "01 Nov 2026",
-  },
-  {
-    id: "u-2",
-    fullName: "Malika Alimova",
-    legalName: "Tashkent Central Dairy QK",
-    role: "dairy",
-    taxId: "201994551",
+    id: "8200ed1f-8209-4667-b6cb-30786fe571c5",
+    fullName: "Iminjonov Muhammadaziz",
+    legalName: "ZaminFlow Operations HQ",
+    role: "admin",
+    taxId: "304445566",
     region: "Tashkent",
     kybStatus: "VERIFIED",
     isActive: true,
-    registeredDate: "28 Oct 2026",
+    registeredDate: "08 Nov 2026",
   },
   {
-    id: "u-3",
-    fullName: "Bobur Rahimov",
-    legalName: "Rahimov Logistics YaTT",
-    role: "driver",
-    taxId: "405112883",
-    region: "Sirdaryo",
+    id: "1c51b7be-0ace-4230-9319-11305edca118",
+    fullName: "Abdumanov Akrom",
+    legalName: "ZaminFlow Operations HQ",
+    role: "admin",
+    taxId: "304445566",
+    region: "Tashkent",
     kybStatus: "VERIFIED",
     isActive: true,
-    registeredDate: "02 Nov 2026",
+    registeredDate: "08 Nov 2026",
   },
   {
-    id: "u-4",
-    fullName: "Erkin Toshmatov",
-    legalName: "Andijan Pure Farms XK",
-    role: "farmer",
-    taxId: "308221445",
-    region: "Andijan",
-    kybStatus: "PENDING_VERIFICATION",
+    id: "77b122c1-b022-469a-8b8a-81f5035a08c1",
+    fullName: "Sevinchoy Soporboyeva",
+    legalName: "ZaminFlow Operations HQ",
+    role: "admin",
+    taxId: "304445566",
+    region: "Tashkent",
+    kybStatus: "VERIFIED",
     isActive: true,
-    registeredDate: "Today",
-  },
-  {
-    id: "u-5",
-    fullName: "Jasur Qosimov",
-    legalName: "Samarqand Trans Cold Logistics MCHJ",
-    role: "driver",
-    taxId: "502331998",
-    region: "Samarqand",
-    kybStatus: "PENDING_VERIFICATION",
-    isActive: true,
-    registeredDate: "Yesterday",
+    registeredDate: "08 Nov 2026",
   },
 ];
 
@@ -189,7 +167,7 @@ export const INITIAL_DISPUTE_CASES: DisputeCase[] = [
   },
 ];
 
-const ADMIN_USERS_KEY = "zaminflow_admin_users";
+const ADMIN_USERS_KEY = "zaminflow_admin_users_v2";
 const KYB_KEY = "zaminflow_admin_kyb";
 const DISPUTES_KEY = "zaminflow_admin_disputes";
 
