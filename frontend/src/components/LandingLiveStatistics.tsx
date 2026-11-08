@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState, useEffect, useRef, useTransition } from "react";
-import Link from "next/link";
 import { useLanguage } from "@/context/LanguageContext";
 
 export interface PublicStatsData {
@@ -273,31 +272,22 @@ export default function LandingLiveStatistics({
             </span>
           </h2>
 
-          <p className="text-base sm:text-lg leading-[1.6] text-[#2d6a4f] dark:text-slate-300 max-w-[420px] mb-8">
+          <p className="text-base sm:text-lg leading-[1.6] text-[#2d6a4f] dark:text-slate-300 max-w-[420px] mb-4">
             {t.liveStats.subtitle}
           </p>
 
-          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
-            <Link
-              href="#stats"
-              className="inline-flex items-center justify-center bg-[#1b4332] hover:bg-[#2d6a4f] dark:bg-[#1B98E0] dark:hover:bg-white text-white dark:text-[#13293D] rounded-full px-7 min-h-[52px] font-bold text-base transition-all duration-200 shadow-md active:scale-95 focus-visible:outline-2 focus-visible:outline-[#22d36b] focus-visible:outline-offset-2"
-            >
-              <span>{t.liveStats.cta}</span>
-            </Link>
-
-            {/* Muted last-updated indicator if older than 5 minutes */}
-            {isStale && stats && (
-              <span className="text-xs text-[#2d6a4f]/80 dark:text-slate-400 font-mono">
-                {t.liveStats.lastUpdated}: {lastUpdatedFormatted}
-              </span>
-            )}
-          </div>
+          {/* Muted last-updated indicator if older than 5 minutes */}
+          {isStale && stats && (
+            <div className="text-xs text-[#2d6a4f]/80 dark:text-slate-400 font-mono mb-2">
+              {t.liveStats.lastUpdated}: {lastUpdatedFormatted}
+            </div>
+          )}
 
           {/* Graceful empty/failure fallback announcement */}
           {!stats && (
             <p
               role="alert"
-              className="text-xs text-amber-700 dark:text-amber-300 bg-amber-500/10 px-3.5 py-1.5 rounded-full mt-4 inline-block font-medium"
+              className="text-xs text-amber-700 dark:text-amber-300 bg-amber-500/10 px-3.5 py-1.5 rounded-full mt-2 inline-block font-medium"
             >
               {t.liveStats.temporarilyUnavailable}
             </p>
