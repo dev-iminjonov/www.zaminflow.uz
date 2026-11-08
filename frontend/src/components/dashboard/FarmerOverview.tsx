@@ -132,6 +132,12 @@ export default function FarmerOverview() {
             >
               Arbitration
             </Link>
+            <Link
+              href="/dashboard/farmer/profile"
+              className="px-4 py-1.5 rounded-full text-slate-600 dark:text-slate-300 hover:text-black dark:hover:text-white transition"
+            >
+              Profile
+            </Link>
           </nav>
 
           {/* Right Section: Search, Language Switcher, User Menu */}
@@ -163,19 +169,23 @@ export default function FarmerOverview() {
             </div>
 
             {/* User Profile Pill */}
-            <div className="flex items-center gap-2 pl-2">
-              <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-emerald-600 to-teal-500 text-white font-bold text-xs flex items-center justify-center shadow-xs">
+            <Link
+              href="/dashboard/farmer/profile"
+              title="View Farm Trading Profile"
+              className="flex items-center gap-2 pl-2 hover:opacity-85 transition group"
+            >
+              <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-emerald-600 to-teal-500 text-white font-bold text-xs flex items-center justify-center shadow-xs group-hover:ring-2 ring-emerald-500/50">
                 {firstName.charAt(0)}
               </div>
-              <div className="hidden md:flex flex-col">
-                <span className="text-xs font-bold text-slate-800 dark:text-white leading-tight">
+              <div className="hidden md:flex flex-col text-left">
+                <span className="text-xs font-bold text-slate-800 dark:text-white leading-tight group-hover:text-emerald-700 dark:group-hover:text-emerald-400">
                   {firstName}
                 </span>
                 <span className="text-[10px] text-emerald-700 dark:text-emerald-400 font-mono">
-                  Dairy Farmer
+                  Dairy Farmer ↗
                 </span>
               </div>
-            </div>
+            </Link>
 
             {/* Sign Out Button */}
             <button
