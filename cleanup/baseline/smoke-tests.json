@@ -1,0 +1,12 @@
+﻿{
+    "public_stats_http_200":  true,
+    "landing_page_http_200":  true,
+    "landing_has_live_stats_section":  true,
+    "landing_has_contact_section":  true,
+    "contact_inquiry_post_201":  true,
+    "signin_farmer_http_200":  true,
+    "signin_dairy_http_200":  true,
+    "signin_driver_http_200":  true,
+    "signin_admin_http_200":  true,
+    "signout_http_200":  true
+}
