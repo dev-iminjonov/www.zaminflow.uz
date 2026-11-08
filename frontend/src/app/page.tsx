@@ -5,6 +5,7 @@ import React, { useState, useEffect } from "react";
 import ZaminFlowLogo from "@/components/ZaminFlowLogo";
 import HeroEcosystemVisual from "@/components/HeroEcosystemVisual";
 import OurTeamCarousel from "@/components/OurTeamCarousel";
+import LandingLiveStatistics from "@/components/LandingLiveStatistics";
 import ActiveTradeMetrics from "@/components/ActiveTradeMetrics";
 import ContactUsSection from "@/components/ContactUsSection";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
@@ -299,7 +300,10 @@ export default function LandingPage() {
       {/* 5. OUR TEAM SECTION (Horizontal Carousel with Studio Portraits & Sleek Progress Track) */}
       <OurTeamCarousel isDark={isDark} />
 
-      {/* 6. ACTIVE TRADE METRICS (LIVE STATISTICS) */}
+      {/* 6. LIVE PLATFORM STATISTICS (ARTBOARD: "Real deals, real milk, real prices") */}
+      <LandingLiveStatistics isDark={isDark} />
+
+      {/* 6B. DETAILED ACTIVE TRADE METRICS TELEMETRY */}
       <ActiveTradeMetrics isDark={isDark} />
 
       {/* 7. CONTACT US SECTION (Artboard Glassmorphism Card & Direct Dispatch Channels) */}

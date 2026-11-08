@@ -168,7 +168,7 @@ export default function ActiveTradeMetrics({ isDark = false }: ActiveTradeMetric
 
   return (
     <section
-      id="stats"
+      id="trade-telemetry"
       aria-label={t.stats.titleStart + " " + t.stats.titleAccent}
       className="relative w-full py-16 sm:py-24 transition-colors duration-500 scroll-mt-20"
       style={{

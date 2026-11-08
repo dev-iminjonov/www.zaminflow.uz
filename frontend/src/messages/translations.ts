@@ -83,6 +83,18 @@ export interface Translations {
     noRegionalData: string;
     noShipmentsData: string;
   };
+  liveStats: {
+    headingStart: string;
+    headingAccent: string;
+    subtitle: string;
+    cta: string;
+    successfulDeals: string;
+    platformUsers: string;
+    milkTradedDelivered: string;
+    dailyAvgPrice: string;
+    temporarilyUnavailable: string;
+    lastUpdated: string;
+  };
   contact: {
     badge: string;
     titleStart: string;
@@ -212,6 +224,18 @@ export const translations: Record<Locale, Translations> = {
       noRegionalData: "Ushbu hudud bo'yicha ma'lumot mavjud emas.",
       noShipmentsData: "Ayni paytda faol yuk tashishlar mavjud emas.",
     },
+    liveStats: {
+      headingStart: "Haqiqiy bitimlar, toza sut, ",
+      headingAccent: "haqiqiy narxlar",
+      subtitle: "ZaminFlow platformasidagi jonli ma'lumotlar, har daqiqada yangilanadi.",
+      cta: "Jonli ko'rsatkichlarni ko'rish →",
+      successfulDeals: "Muvaffaqiyatli bitimlar",
+      platformUsers: "Platforma foydalanuvchilari",
+      milkTradedDelivered: "Savdo qilingan va yetkazilgan sut",
+      dailyAvgPrice: "Kunlik o'rtacha xom sut narxi",
+      temporarilyUnavailable: "Ma'lumotlar vaqtincha mavjud emas",
+      lastUpdated: "Oxirgi yangilanish",
+    },
     contact: {
       badge: "Bog'lanish",
       titleStart: "Sut ta'minoti zanjiringiz haqida ",
@@ -339,6 +363,18 @@ export const translations: Record<Locale, Translations> = {
       noRegionalData: "Нет данных по выбранному региону.",
       noShipmentsData: "В настоящее время нет активных рейсов.",
     },
+    liveStats: {
+      headingStart: "Реальные сделки, чистое молоко, ",
+      headingAccent: "реальные цены",
+      subtitle: "Прямые данные с платформы ZaminFlow, обновляются каждую минуту.",
+      cta: "Смотреть показатели онлайн →",
+      successfulDeals: "Успешные сделки",
+      platformUsers: "Пользователи платформы",
+      milkTradedDelivered: "Продано и доставлено молока",
+      dailyAvgPrice: "Среднесуточная цена сырого молока",
+      temporarilyUnavailable: "Данные временно недоступны",
+      lastUpdated: "Последнее обновление",
+    },
     contact: {
       badge: "Контакты",
       titleStart: "Обсудим вашу цепочку ",
@@ -465,6 +501,18 @@ export const translations: Record<Locale, Translations> = {
       retry: "Retry",
       noRegionalData: "No regional breakdown available for this selection.",
       noShipmentsData: "No active shipments currently reporting telemetry.",
+    },
+    liveStats: {
+      headingStart: "Real deals, real milk, ",
+      headingAccent: "real prices",
+      subtitle: "Live figures from the ZaminFlow platform, refreshed every minute.",
+      cta: "Explore live metrics →",
+      successfulDeals: "Successful deals",
+      platformUsers: "Platform users",
+      milkTradedDelivered: "Milk traded & delivered",
+      dailyAvgPrice: "Daily avg. raw milk price",
+      temporarilyUnavailable: "Data temporarily unavailable",
+      lastUpdated: "Last updated",
     },
     contact: {
       badge: "Contact us",
