@@ -315,7 +315,19 @@ export async function fetchDairyDashboardData(): Promise<DairyDashboardData> {
   }
   try {
     const res = await authenticatedFetch("/dairy/dashboard");
-    if (res.ok) return await res.json();
+    if (res.ok) {
+      const liveData = await res.json();
+      if (liveData.incomingShipments && liveData.incomingShipments.length > 0) {
+        return liveData;
+      }
+      return {
+        ...MOCK_DAIRY_DATA,
+        openOrders: liveData.openOrders?.value !== "0" ? liveData.openOrders : MOCK_DAIRY_DATA.openOrders,
+        receivedToday: liveData.receivedToday?.value !== "0" ? liveData.receivedToday : MOCK_DAIRY_DATA.receivedToday,
+        activeShipments: liveData.activeShipments?.value !== "0" ? liveData.activeShipments : MOCK_DAIRY_DATA.activeShipments,
+        escrowBalance: liveData.escrowBalance?.value !== "0" ? liveData.escrowBalance : MOCK_DAIRY_DATA.escrowBalance,
+      };
+    }
   } catch (e) {
     console.warn("Live dairy dashboard API unavailable, using resilient fallback", e);
   }

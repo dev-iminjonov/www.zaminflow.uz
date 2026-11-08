@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import ZaminFlowLogo from "@/components/ZaminFlowLogo";
 import { useRouter } from "next/navigation";
-import { signOut } from "@/lib/auth";
+import { signOut, authenticatedFetch } from "@/lib/auth";
 import { addDairyOrder } from "@/lib/dairyStore";
 
 export default function PlaceOrderPage() {
@@ -21,6 +21,19 @@ export default function PlaceOrderPage() {
 
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [createdOrderNumber, setCreatedOrderNumber] = useState("");
+  const [catalogSuppliers, setCatalogSuppliers] = useState<Array<{ organization_id: string; legal_name: string; daily_capacity_liters: number; trust_score: number }>>([]);
+
+  useEffect(() => {
+    authenticatedFetch("/dairy/catalog")
+      .then((res) => (res.ok ? res.json() : []))
+      .then((list) => {
+        if (Array.isArray(list) && list.length > 0) {
+          setCatalogSuppliers(list);
+          setSupplierCount(list.length);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   const handleSignOut = async () => {
     setIsSigningOut(true);
