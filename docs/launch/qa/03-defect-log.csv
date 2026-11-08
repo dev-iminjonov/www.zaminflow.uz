@@ -1,0 +1,14 @@
+ID,Severity,Priority,Area,Title,Status,VerifiedCommit,RootCauseSummary
+QA-001,S1,P0,Auth/RBAC,Public Sign-Up Endpoint Fallback Accepts role=ADMIN,Verified (Closed),e5b2a1c,Next.js API route had insecure in-memory fallback allowing role spoofing. Removed fallback; enforced HTTP 403 on port 3000 and port 8000.
+QA-002,S2,P1,Auth/Security,Potential Open Redirect via ?next= Parameter,Verified (Closed),f8194ad,Unsanitized window redirect allowed protocol-relative URLs. Enforced sanitizeNextRedirect relative-path validator.
+QA-003,S2,P1,Accessibility,Duplicate <h1> Headings on Main Landing Page,Verified (Closed),9d123cb,Secondary heading rendered as H1. Changed to semantically correct H2.
+QA-004,S2,P1,Accessibility,Emerald Brand Green Text Fails WCAG Contrast on Light Glass,Verified (Closed),b24019a,Used #52b788 on light backgrounds (2.8:1). Centralized to #087a3c (5.25:1 contrast).
+QA-005,S3,P2,Accessibility,Social Media Links in Team Carousel Fail Minimum Touch Target,Verified (Closed),c4912e8,Links had 24x24px bounds. Upgraded to min-w-[44px] min-h-[44px].
+QA-006,S3,P2,Security/Infra,Missing OWASP Security Headers and X-Powered-By Disclosure,Verified (Closed),a7103fe,Missing middleware headers. Added X-Frame-Options DENY nosniff and removed X-Powered-By.
+QA-007,S3,P2,Mobile Layout,Driver Dashboard Navigation Wraps on Mobile (360-390px),Verified (Closed),83bc19d,Fixed flex layout caused horizontal scroll. Added responsive wrapping and scroll-safe padding.
+QA-008,S3,P2,Navigation,Nav Item Live statistics Has Static Hardcoded Active Border,Verified (Closed),41f92da,Active state was hard-coded. Replaced with dynamic IntersectionObserver scroll-spy.
+NEW-001,S3,P2,Security/Proxy,Missing Edge Sliding-Window Rate Limiter on Sign-In Endpoint,Verified (Closed),1c4a09e,Caddy proxy bypassed in-memory rate limiting. Enforced PostgreSQL persistent rate limiter in FastAPI.
+NEW-002,S4,P3,Logistics/Data,Missing ISO 8601 Timezone Offsets in Driver Logistics Mock Data,Verified (Closed),5e1028b,Timestamp lacked explicit timezone offset. Standardized to ISO 8601 UTC with +05:00 offset.
+FND-SEC-001,S1,P0,Auth/Storage,Insecure JWT in localStorage Migrated to HttpOnly Cookies,Verified (Closed),7b9201f,JWT in localStorage vulnerable to XSS. Migrated to HttpOnly Secure SameSite=Lax cookies with double-submit CSRF.
+FND-SEC-002,S1,P0,Auth/RateLimit,Backend Rate Limiting & Hashed SMS OTP with 60s Cooldown,Verified (Closed),9e1208a,Plain OTP in memory without cooldown. Added SHA-256 hashed storage and 60s timer in database.
+FND-DB-001,S1,P0,Database,Alembic Migration 0002 Empty downgrade() Reversible DDL,Verified (Closed),3f8109d,Migration 0002 had pass in downgrade(). Implemented complete reverse DDL with automated cycle test.
