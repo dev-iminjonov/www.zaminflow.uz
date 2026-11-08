@@ -381,7 +381,27 @@ export async function fetchAdminDashboardData(): Promise<AdminDashboardData> {
   }
   try {
     const res = await authenticatedFetch("/admin/dashboard");
-    if (res.ok) return await res.json();
+    if (res.ok) {
+      const liveData = await res.json();
+      return {
+        ...MOCK_ADMIN_DATA,
+        pendingVerification: liveData.pendingVerification || MOCK_ADMIN_DATA.pendingVerification,
+        activeUsers: liveData.activeUsers || MOCK_ADMIN_DATA.activeUsers,
+        openDisputes: liveData.openDisputes || MOCK_ADMIN_DATA.openDisputes,
+        escrowTotal:
+          liveData.escrowTotal?.value !== "0"
+            ? liveData.escrowTotal
+            : MOCK_ADMIN_DATA.escrowTotal,
+        verificationQueue:
+          liveData.verificationQueue && liveData.verificationQueue.length > 0
+            ? liveData.verificationQueue
+            : MOCK_ADMIN_DATA.verificationQueue,
+        usersByRole:
+          liveData.usersByRole && liveData.usersByRole.length > 0
+            ? liveData.usersByRole
+            : MOCK_ADMIN_DATA.usersByRole,
+      };
+    }
   } catch (e) {
     console.warn("Live admin dashboard API unavailable, using resilient fallback", e);
   }

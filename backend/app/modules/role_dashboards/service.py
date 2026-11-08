@@ -758,3 +758,181 @@ async def sync_driver_offline_events(
         "status": "SYNCED",
     }
 
+
+# ==============================================================================
+# SLICE 5: PLATFORM ADMIN DASHBOARD, KYB QUEUE & AUDIT LOGS (DOC-REQ-ADM-001)
+# ==============================================================================
+
+
+@router.get("/admin/dashboard")
+async def get_admin_dashboard(
+    current_user: CurrentUser = Depends(require_roles(["ADMIN"])),
+    db: AsyncSession = Depends(get_db),
+) -> dict[str, Any]:
+    """
+    ADM-01: Live Platform Governance & KYB Verification Queue telemetry.
+    Restricted strictly to Platform ADMIN.
+    """
+    counts_res = await db.execute(
+        text(
+            """
+            SELECT
+                (SELECT COUNT(*) FROM organizations WHERE kyb_status IN ('SUBMITTED', 'INCOMPLETE')) AS pending_kyb,
+                (SELECT COUNT(*) FROM users WHERE is_active = TRUE) AS active_users,
+                (SELECT COUNT(*) FROM delivery_batches WHERE status = 'DISPUTE_FROZEN') AS open_disputes,
+                (
+                    SELECT COALESCE(SUM(CASE WHEN entry_type = 'ESCROW_LOCK' THEN amount_uzs ELSE 0 END), 0)
+                         - COALESCE(SUM(CASE WHEN entry_type IN ('ESCROW_RELEASE', 'DISPUTE_SPLIT_PAYOUT', 'ESCROW_REFUND') THEN amount_uzs ELSE 0 END), 0)
+                    FROM financial_ledger
+                ) AS escrow_total
+            """
+        )
+    )
+    c_row = counts_res.mappings().first() or {}
+    pending_kyb = int(c_row.get("pending_kyb") or 0)
+    active_users = int(c_row.get("active_users") or 0)
+    open_disputes = int(c_row.get("open_disputes") or 0)
+    escrow_total = max(0.0, float(c_row.get("escrow_total") or 0.0))
+
+    queue_res = await db.execute(
+        text(
+            """
+            SELECT id, role, legal_name, kyb_status, COALESCE(address_text, 'Uzbekistan') AS location_name, created_at
+            FROM organizations
+            WHERE kyb_status IN ('SUBMITTED', 'INCOMPLETE')
+            ORDER BY created_at DESC
+            LIMIT 20
+            """
+        )
+    )
+    verification_queue = []
+    for r in queue_res.mappings().all():
+        role_map = {
+            "FARMER": "Farmer",
+            "INDUSTRY": "Dairy Industry",
+            "BANK": "Partner Bank",
+            "ADMIN": "Admin",
+        }
+        chip = role_map.get(r["role"], r["role"])
+        verification_queue.append(
+            {
+                "id": str(r["id"]),
+                "roleLabel": f"{r['legal_name']} · {r['location_name']}",
+                "location": r["location_name"],
+                "timeAgo": f"Status: {r['kyb_status']}",
+                "roleChip": chip,
+            }
+        )
+
+    role_counts_res = await db.execute(
+        text(
+            """
+            SELECT
+                COUNT(CASE WHEN o.role = 'FARMER' THEN 1 END) AS farmers,
+                COUNT(CASE WHEN o.role = 'INDUSTRY' AND u.sub_role <> 'DRIVER' THEN 1 END) AS dairies,
+                COUNT(CASE WHEN u.sub_role = 'DRIVER' THEN 1 END) AS drivers,
+                COUNT(CASE WHEN o.role = 'BANK' THEN 1 END) AS banks,
+                COUNT(CASE WHEN o.role = 'ADMIN' THEN 1 END) AS admins
+            FROM users u
+            JOIN organizations o ON o.id = u.organization_id
+            WHERE u.is_active = TRUE
+            """
+        )
+    )
+    rc = role_counts_res.mappings().first() or {}
+    max_rc = max(
+        1,
+        int(rc.get("farmers") or 0),
+        int(rc.get("dairies") or 0),
+        int(rc.get("drivers") or 0),
+        int(rc.get("banks") or 0),
+        int(rc.get("admins") or 0),
+    )
+
+    users_by_role = [
+        {
+            "role": "Farmers",
+            "count": str(int(rc.get("farmers") or 0)),
+            "percentage": int(round((int(rc.get("farmers") or 0) / max_rc) * 100)),
+        },
+        {
+            "role": "Dairy Industry",
+            "count": str(int(rc.get("dairies") or 0)),
+            "percentage": int(round((int(rc.get("dairies") or 0) / max_rc) * 100)),
+        },
+        {
+            "role": "Drivers",
+            "count": str(int(rc.get("drivers") or 0)),
+            "percentage": int(round((int(rc.get("drivers") or 0) / max_rc) * 100)),
+        },
+        {
+            "role": "Partner Banks",
+            "count": str(int(rc.get("banks") or 0)),
+            "percentage": int(round((int(rc.get("banks") or 0) / max_rc) * 100)),
+        },
+        {
+            "role": "Admins",
+            "count": str(int(rc.get("admins") or 0)),
+            "percentage": int(round((int(rc.get("admins") or 0) / max_rc) * 100)),
+        },
+    ]
+
+    return {
+        "pendingVerification": {"value": str(pending_kyb), "unit": "orgs"},
+        "activeUsers": {"value": f"{active_users:,}", "delta": "Live DB"},
+        "openDisputes": {
+            "value": str(open_disputes),
+            "status": "● Needs review" if open_disputes > 0 else "✓ Clear",
+            "statusType": "warning" if open_disputes > 0 else "neutral",
+        },
+        "escrowTotal": {"value": f"{int(round(escrow_total)):,}", "unit": "UZS"},
+        "verificationQueue": verification_queue,
+        "usersByRole": users_by_role,
+    }
+
+
+@router.get("/admin/audit-logs")
+async def list_admin_audit_logs(
+    limit: int = 100,
+    current_user: CurrentUser = Depends(require_roles(["ADMIN"])),
+    db: AsyncSession = Depends(get_db),
+) -> list[dict[str, Any]]:
+    """
+    ADM-04: Immutable Security & Transaction Audit Log Explorer.
+    """
+    res = await db.execute(
+        text(
+            """
+            SELECT
+                al.id,
+                al.actor_user_id,
+                u.email AS actor_email,
+                al.action,
+                al.entity_type,
+                al.entity_id,
+                al.details,
+                al.created_at
+            FROM audit_logs al
+            LEFT JOIN users u ON u.id = al.actor_user_id
+            ORDER BY al.created_at DESC
+            LIMIT :lim
+            """
+        ),
+        {"lim": min(max(1, limit), 500)},
+    )
+    logs = []
+    for r in res.mappings().all():
+        logs.append(
+            {
+                "id": str(r["id"]),
+                "actor_user_id": str(r["actor_user_id"]) if r["actor_user_id"] else None,
+                "actor_email": r["actor_email"],
+                "action": r["action"],
+                "entity_type": r["entity_type"],
+                "entity_id": str(r["entity_id"]) if r["entity_id"] else None,
+                "details": r["details"],
+                "created_at": r["created_at"].isoformat() if r["created_at"] else None,
+            }
+        )
+    return logs
+
