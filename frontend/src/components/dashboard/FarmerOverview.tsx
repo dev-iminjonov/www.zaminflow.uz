@@ -204,11 +204,14 @@ export default function FarmerOverview() {
         {/* 2. GREETING ROW */}
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
+            <div className="text-[11px] font-bold tracking-widest text-[#087a3c] dark:text-[#22d36b] uppercase mb-1">
+              FARMER PORTAL &bull; FERMER BOSHQARUVI
+            </div>
             <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
               {t.farmer.welcome}, <span className="text-[#087a3c] dark:text-[#22d36b]">{firstName}</span>
             </h1>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-              Sayxunobod Certified Farm &bull; Smart Escrow & Direct Dairy Procurement
+              ZaminFlow Smart Escrow &bull; Kafolatlangan sut taʼminoti
             </p>
           </div>
 

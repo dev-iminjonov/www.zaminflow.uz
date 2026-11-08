@@ -198,11 +198,14 @@ export default function DriverOverview() {
         {/* 2. GREETING ROW */}
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
+            <div className="text-[11px] font-bold tracking-widest text-[#087a3c] dark:text-[#22d36b] uppercase mb-1">
+              LOGISTICS DRIVER &bull; HAYDOVCHI LOGISTIKA
+            </div>
             <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
               {t.driver.welcome}, <span className="text-[#087a3c] dark:text-[#22d36b]">{firstName}</span>
             </h1>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-              Cold-Chain Tanker Fleet &bull; Real-time IoT Gateway & Automated Handover
+              Cold-Chain Tanker Fleet &bull; IoT marshrut va topshirish
             </p>
           </div>
 
@@ -612,6 +615,26 @@ export default function DriverOverview() {
         </div>
 
       </div>
+
+      {/* Mobile Sticky Quick-Action Bar for Drivers (Outdoor thumb-zone ergonomics FND-010) */}
+      <nav aria-label="Driver Mobile Quick Actions" className="xl:hidden fixed bottom-4 inset-x-4 z-40 bg-[#081c15]/95 dark:bg-[#13293D]/95 backdrop-blur-xl border border-[#52b788]/40 rounded-full px-4 py-2.5 flex items-center justify-around shadow-2xl">
+        <Link href="/dashboard/driver" className="flex flex-col items-center text-white text-[10px] font-bold py-1 px-2">
+          <span className="text-lg">📋</span>
+          <span>Marshrut</span>
+        </Link>
+        <Link href="/dashboard/driver/confirm-pickup" className="flex flex-col items-center text-[#22d36b] text-[10px] font-black py-1 px-2">
+          <span className="text-lg">📷</span>
+          <span>QR Skan</span>
+        </Link>
+        <Link href="/dashboard/driver/route" className="flex flex-col items-center text-white text-[10px] font-bold py-1 px-2">
+          <span className="text-lg">🗺️</span>
+          <span>Xarita</span>
+        </Link>
+        <Link href="/dashboard/driver/report-issue" className="flex flex-col items-center text-red-400 text-[10px] font-bold py-1 px-2">
+          <span className="text-lg">⚠️</span>
+          <span>Muammo</span>
+        </Link>
+      </nav>
     </div>
   );
 }
