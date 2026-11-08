@@ -91,6 +91,27 @@ export default function LandingPage() {
           : "radial-gradient(circle at 75% 50%, #d8f3dc 0%, #f6fbf8 60%)",
       }}
     >
+      {/* 0. ORGANIZATION JSON-LD STRUCTURED DATA */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            name: "ZaminFlow",
+            url: "https://zaminflow.uz",
+            logo: "https://zaminflow.uz/images/zaminflow-logo.png",
+            description: "B2B Dairy Supply Chain & FinTech Escrow Platform in Uzbekistan",
+            contactPoint: {
+              "@type": "ContactPoint",
+              telephone: "+998-71-200-00-24",
+              contactType: "customer service",
+              areaServed: "UZ",
+              availableLanguage: ["Uzbek", "Russian", "English"],
+            },
+          }),
+        }}
+      />
       {/* 1. TOPOGRAPHIC CONTOUR LINES TEXTURE (SVG Overlay with subtle opacity) */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden z-0 opacity-[0.045] dark:opacity-[0.06]">
         <svg
@@ -305,20 +326,43 @@ export default function LandingPage() {
       {/* 7. CONTACT US SECTION (Artboard Glassmorphism Card & Direct Dispatch Channels) */}
       <ContactUsSection isDark={isDark} />
 
-      {/* 8. MINIMAL CLEAN FOOTER */}
+      {/* 8. AUTHENTIC B2B FOOTER (Compliant with Law ZRU-611) */}
       <footer
-        className={`relative z-10 border-t py-6 px-6 text-center text-xs transition-colors ${
+        className={`relative z-10 border-t py-10 px-6 text-xs transition-colors ${
           isDark
-            ? "border-[#247BA0]/30 bg-[#0B1A24]/60 backdrop-blur-md text-[#E8F1F2]/60"
-            : "border-[#b7e4c7] bg-white/75 backdrop-blur-md text-[#1b4332]/80"
+            ? "border-[#247BA0]/30 bg-[#0B1A24]/80 backdrop-blur-md text-[#E8F1F2]/70"
+            : "border-[#b7e4c7] bg-white/85 backdrop-blur-md text-[#1b4332]/90"
         }`}
       >
-        <div className="max-w-[1200px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <ZaminFlowLogo mode={themeMode} size="sm" />
+        <div className="max-w-[1200px] mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="flex flex-col sm:flex-row items-center gap-4 text-center sm:text-left">
+            <Link href="/" className="inline-flex">
+              <ZaminFlowLogo mode={themeMode} size="sm" />
+            </Link>
+            <div className="text-[11px] leading-relaxed opacity-90">
+              <p className="font-bold text-[#087a3c] dark:text-[#22d36b]">
+                &ldquo;ZaminFlow&rdquo; MCHJ &bull; STIR: 309 845 120
+              </p>
+              <p>Toshkent sh., Mirzo Ulugʻbek t., Mustaqillik shoh koʻchasi, 105</p>
+            </div>
           </div>
 
-          <div className="text-[11px] font-mono opacity-80">
+          <div className="flex flex-wrap items-center justify-center gap-6 text-xs font-semibold">
+            <Link href="/privacy" className="hover:text-[#087a3c] dark:hover:text-[#22d36b] transition">
+              Maxfiylik siyosati
+            </Link>
+            <Link href="/terms" className="hover:text-[#087a3c] dark:hover:text-[#22d36b] transition">
+              Foydalanish shartlari
+            </Link>
+            <a href="tel:+998712000024" className="hover:text-[#087a3c] dark:hover:text-[#22d36b] transition">
+              +998 71 200 00 24
+            </a>
+            <a href="mailto:support@zaminflow.uz" className="hover:text-[#087a3c] dark:hover:text-[#22d36b] transition">
+              support@zaminflow.uz
+            </a>
+          </div>
+
+          <div className="text-[11px] font-mono opacity-80 text-center md:text-right">
             {t.footer.rights}
           </div>
         </div>
