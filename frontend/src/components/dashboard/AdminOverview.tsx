@@ -99,6 +99,7 @@ export default function AdminOverview() {
   const [chartType, setChartType] = useState<"line" | "bar">("line");
   const [searchQuery, setSearchQuery] = useState("");
   const [approvedIds, setApprovedIds] = useState<string[]>([]);
+  const [rejectedIds, setRejectedIds] = useState<string[]>([]);
   const [bannerNotice, setBannerNotice] = useState<string | null>(null);
 
   // Modals
@@ -140,12 +141,14 @@ export default function AdminOverview() {
   };
 
   const handleQuickApprove = (id: string, name: string) => {
-    setApprovedIds((prev) => [...prev, id]);
+    setApprovedIds((prev) => [...prev.filter((x) => x !== id), id]);
+    setRejectedIds((prev) => prev.filter((x) => x !== id));
     setBannerNotice(`${name} arizasi muvaffaqiyatli tasdiqlandi va akkreditatsiyadan o'tkazildi.`);
   };
 
   const handleQuickReject = (id: string, name: string) => {
-    setApprovedIds((prev) => [...prev, id]);
+    setRejectedIds((prev) => [...prev.filter((x) => x !== id), id]);
+    setApprovedIds((prev) => prev.filter((x) => x !== id));
     setBannerNotice(`${name} arizasi rad etildi va qo'shimcha hujjat so'rovi yuborildi.`);
   };
 
@@ -670,7 +673,8 @@ export default function AdminOverview() {
                         { id: "DOS-102", name: "Maroqand Sut Sanoat LLC", stir: "201948512", role: "Sut Zavodi", date: "Bugun 09:15" },
                         { id: "DOS-103", name: "Chust Chorva Trans", stir: "309148201", role: "Logistika Haydovchi", date: "Kecha 17:00" },
                       ].map((item, idx) => {
-                        const isDone = approvedIds.includes(item.id);
+                        const isApproved = approvedIds.includes(item.id);
+                        const isRejected = rejectedIds.includes(item.id);
                         return (
                           <div key={idx} className="py-3 flex items-center justify-between">
                             <div className="flex items-center gap-3">
@@ -685,8 +689,14 @@ export default function AdminOverview() {
                               </div>
                             </div>
                             <div className="flex items-center gap-1.5">
-                              {isDone ? (
-                                <span className="text-xs font-bold text-emerald-500">Tasdiqlandi ✓</span>
+                              {isApproved ? (
+                                <span className="text-xs font-bold text-emerald-500 flex items-center gap-1">
+                                  Tasdiqlandi ✓
+                                </span>
+                              ) : isRejected ? (
+                                <span className="text-xs font-bold text-rose-500 flex items-center gap-1">
+                                  Rad etildi ✕
+                                </span>
                               ) : (
                                 <>
                                   <button
@@ -792,37 +802,54 @@ export default function AdminOverview() {
                         { id: "DOS-102", name: "Maroqand Sut Sanoat LLC", stir: "201948512", role: "Sut Zavodi", region: "Toshkent shahri", status: "Kutilmoqda" },
                         { id: "DOS-103", name: "Chust Chorva Trans", stir: "309148201", role: "Logistika Haydovchi", region: "Namangan viloyati", status: "Kutilmoqda" },
                         { id: "DOS-100", name: "Siyob Agro Vet", stir: "304812903", role: "Fermer Kooperativi", region: "Samarqand viloyati", status: "Tasdiqlangan" },
-                      ].map((row, i) => (
-                        <tr key={i} className="hover:bg-slate-50 dark:hover:bg-white/[0.02] transition">
-                          <td className="px-5 py-4 font-mono font-bold text-emerald-500">{row.id}</td>
-                          <td className="px-5 py-4 font-bold">{row.name}</td>
-                          <td className="px-5 py-4 font-mono text-slate-500">{row.stir}</td>
-                          <td className="px-5 py-4">{row.role}</td>
-                          <td className="px-5 py-4 text-slate-500">{row.region}</td>
-                          <td className="px-5 py-4 text-center">
-                            <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold ${
-                              approvedIds.includes(row.id) || row.status === "Tasdiqlangan"
-                                ? "bg-emerald-500/10 text-emerald-600 border border-emerald-500/30"
-                                : "bg-amber-500/10 text-amber-600 border border-amber-500/30"
-                            }`}>
-                              {approvedIds.includes(row.id) ? "Tasdiqlangan" : row.status}
-                            </span>
-                          </td>
-                          <td className="px-5 py-4 text-right">
-                            {approvedIds.includes(row.id) || row.status === "Tasdiqlangan" ? (
-                              <span className="text-emerald-500 font-bold">Faol ✓</span>
-                            ) : (
-                              <button
-                                type="button"
-                                onClick={() => handleQuickApprove(row.id, row.name)}
-                                className="px-3 py-1 rounded-xl bg-emerald-600 text-white text-xs font-bold hover:bg-emerald-500 cursor-pointer"
-                              >
-                                Tasdiqlash
-                              </button>
-                            )}
-                          </td>
-                        </tr>
-                      ))}
+                      ].map((row, i) => {
+                        const isApproved = approvedIds.includes(row.id) || row.status === "Tasdiqlangan";
+                        const isRejected = rejectedIds.includes(row.id) || row.status === "Rad etilgan";
+                        return (
+                          <tr key={i} className="hover:bg-slate-50 dark:hover:bg-white/[0.02] transition">
+                            <td className="px-5 py-4 font-mono font-bold text-emerald-500">{row.id}</td>
+                            <td className="px-5 py-4 font-bold">{row.name}</td>
+                            <td className="px-5 py-4 font-mono text-slate-500">{row.stir}</td>
+                            <td className="px-5 py-4">{row.role}</td>
+                            <td className="px-5 py-4 text-slate-500">{row.region}</td>
+                            <td className="px-5 py-4 text-center">
+                              <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold ${
+                                isApproved
+                                  ? "bg-emerald-500/10 text-emerald-600 border border-emerald-500/30"
+                                  : isRejected
+                                  ? "bg-rose-500/10 text-rose-600 border border-rose-500/30"
+                                  : "bg-amber-500/10 text-amber-600 border border-amber-500/30"
+                              }`}>
+                                {isApproved ? "Tasdiqlangan" : isRejected ? "Rad etilgan" : row.status}
+                              </span>
+                            </td>
+                            <td className="px-5 py-4 text-right">
+                              {isApproved ? (
+                                <span className="text-emerald-500 font-bold">Faol ✓</span>
+                              ) : isRejected ? (
+                                <span className="text-rose-500 font-bold">Rad etildi ✕</span>
+                              ) : (
+                                <div className="flex items-center justify-end gap-1.5">
+                                  <button
+                                    type="button"
+                                    onClick={() => handleQuickApprove(row.id, row.name)}
+                                    className="px-2.5 py-1 rounded-xl bg-emerald-600 text-white text-xs font-bold hover:bg-emerald-500 cursor-pointer transition shadow-xs"
+                                  >
+                                    Tasdiq
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => handleQuickReject(row.id, row.name)}
+                                    className="px-2 py-1 rounded-xl border border-rose-500/30 text-rose-500 text-xs font-bold hover:bg-rose-500/10 cursor-pointer transition shadow-xs"
+                                  >
+                                    Rad
+                                  </button>
+                                </div>
+                              )}
+                            </td>
+                          </tr>
+                        );
+                      })}
                     </tbody>
                   </table>
                 </div>
