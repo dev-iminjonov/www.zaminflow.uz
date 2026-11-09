@@ -896,7 +896,7 @@ export default function AdminOverview() {
                     <tbody className="divide-y divide-inherit">
                       {[
                         { name: "Iminjonov Muhammadaziz", email: "dev.iminjonov@gmail.com", role: "ADMIN", date: "2026.01.10", status: "FAOL" },
-                        { name: "Sevinchoy Soporboyeva", email: "sevinchinoyatovna005@gmail.com", role: "ADMIN", date: "2026.01.12", status: "FAOL" },
+                        { name: "Sevinchoy Soporboyeva", email: "sevinchoysoporboyeva@gmail.com", role: "ADMIN", date: "2026.01.12", status: "FAOL" },
                         { name: "Abdumanov Akrom", email: "abdumanovjamshid1@gmail.com", role: "ADMIN", date: "2026.01.14", status: "FAOL" },
                         { name: "Chorva Baraka LLC (Muhammadayub)", email: "iminjonovmuhammadayub@zaminflow.uz", role: "FARMER", date: "2026.02.01", status: "FAOL" },
                       ].map((u, i) => (
