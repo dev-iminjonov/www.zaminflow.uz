@@ -4,7 +4,7 @@ import React from "react";
 import { SplashDoodle } from "./DoodleAccents";
 import { useLanguage } from "@/context/LanguageContext";
 
-export default function BenefitsSection({ isDark = false }: { isDark?: boolean }) {
+export default function BenefitsSection({ isDark = true }: { isDark?: boolean }) {
   const { t } = useLanguage();
   const benefits = t.benefitsSection.cards;
 

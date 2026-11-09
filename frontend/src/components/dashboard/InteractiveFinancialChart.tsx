@@ -44,7 +44,7 @@ export default function InteractiveFinancialChart({
   chartType,
   onChartTypeChange,
   points,
-  isDark = false,
+  isDark = true,
   valueFormatter,
   height = 220,
 }: InteractiveFinancialChartProps) {

@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useLanguage } from "@/context/LanguageContext";
 
-export default function HeroPhoneHandMockup({ isDark = false }: { isDark?: boolean }) {
+export default function HeroPhoneHandMockup({ isDark = true }: { isDark?: boolean }) {
   const { locale } = useLanguage();
   // Live fluctuating telemetry simulation
   const [liters, setLiters] = useState(28450);

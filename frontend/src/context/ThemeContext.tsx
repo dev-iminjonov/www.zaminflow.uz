@@ -14,8 +14,8 @@ interface ThemeContextValue {
 }
 
 const ThemeContext = createContext<ThemeContextValue>({
-  themeMode: "light",
-  isDark: false,
+  themeMode: "dark",
+  isDark: true,
   setThemeMode: () => {},
   toggleTheme: () => {},
 });
@@ -23,29 +23,29 @@ const ThemeContext = createContext<ThemeContextValue>({
 function applyHtmlTheme(mode: ThemeMode) {
   if (typeof document === "undefined") return;
   const root = document.documentElement;
-  if (mode === "dark") {
-    root.classList.add("dark");
-    root.classList.remove("light");
-    root.style.colorScheme = "dark";
-  } else {
+  if (mode === "light") {
     root.classList.remove("dark");
     root.classList.add("light");
     root.style.colorScheme = "light";
+  } else {
+    root.classList.add("dark");
+    root.classList.remove("light");
+    root.style.colorScheme = "dark";
   }
 }
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [themeMode, setThemeModeState] = useState<ThemeMode>("light");
+  const [themeMode, setThemeModeState] = useState<ThemeMode>("dark");
 
   useEffect(() => {
     if (typeof window === "undefined") return;
     const saved = window.localStorage.getItem(THEME_STORAGE_KEY);
-    if (saved === "dark") {
-      setThemeModeState("dark");
-      applyHtmlTheme("dark");
-    } else {
+    if (saved === "light") {
       setThemeModeState("light");
       applyHtmlTheme("light");
+    } else {
+      setThemeModeState("dark");
+      applyHtmlTheme("dark");
     }
 
     const handleStorage = (event: StorageEvent) => {

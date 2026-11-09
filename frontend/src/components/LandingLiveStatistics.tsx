@@ -74,7 +74,7 @@ function useCountUp(target: number, duration: number = 800): number {
 
 export default function LandingLiveStatistics({
   initialData = null,
-  isDark = false,
+  isDark = true,
 }: LandingLiveStatisticsProps) {
   const { locale, t } = useLanguage();
 

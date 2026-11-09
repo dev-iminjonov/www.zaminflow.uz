@@ -11,7 +11,7 @@ import {
   UzbekistanRegionData,
 } from "./uzbekistanMapData";
 
-export default function RegionalMapSearchSection({ isDark = false }: { isDark?: boolean }) {
+export default function RegionalMapSearchSection({ isDark = true }: { isDark?: boolean }) {
   const { t, locale } = useLanguage();
   const [activeRegion, setActiveRegion] = useState<UzbekistanRegionData>(
     UZBEKISTAN_REGIONS.find((r) => r.slug === "tashkent") || UZBEKISTAN_REGIONS[1]

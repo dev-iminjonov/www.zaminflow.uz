@@ -13,7 +13,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="uz" className="light" suppressHydrationWarning>
+    <html lang="uz" className="dark" suppressHydrationWarning>
       <head>
         <title>ZaminFlow</title>
         <meta
@@ -31,14 +31,14 @@ export default function RootLayout({
                 try {
                   var saved = window.localStorage.getItem('zaminflow_theme');
                   var root = document.documentElement;
-                  if (saved === 'dark') {
+                  if (saved === 'light') {
+                    root.classList.add('light');
+                    root.classList.remove('dark');
+                    root.style.colorScheme = 'light';
+                  } else {
                     root.classList.add('dark');
                     root.classList.remove('light');
                     root.style.colorScheme = 'dark';
-                  } else {
-                    root.classList.remove('dark');
-                    root.classList.add('light');
-                    root.style.colorScheme = 'light';
                   }
 
                   var savedLang = window.localStorage.getItem('zaminflow_locale');

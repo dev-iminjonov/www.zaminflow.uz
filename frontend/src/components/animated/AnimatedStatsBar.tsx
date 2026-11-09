@@ -11,7 +11,7 @@ interface StatItem {
   subtitle: string;
 }
 
-export default function AnimatedStatsBar({ isDark = false }: { isDark?: boolean }) {
+export default function AnimatedStatsBar({ isDark = true }: { isDark?: boolean }) {
   const { t } = useLanguage();
   const [hasAnimated, setHasAnimated] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);

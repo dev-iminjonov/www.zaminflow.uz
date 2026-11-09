@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { SplashDoodle } from "./DoodleAccents";
 import { useLanguage } from "@/context/LanguageContext";
 
-export default function TestimonialsSlider({ isDark = false }: { isDark?: boolean }) {
+export default function TestimonialsSlider({ isDark = true }: { isDark?: boolean }) {
   const { t } = useLanguage();
   const testimonials = t.testimonialsSection.items;
   const [currentIndex, setCurrentIndex] = useState(0);

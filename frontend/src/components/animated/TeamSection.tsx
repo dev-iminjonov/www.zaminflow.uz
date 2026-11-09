@@ -40,6 +40,7 @@ const teamMembers: TeamMember[] = [
     badge: "Yetakçi Muhandis",
     image: "/images/team-akrom.webp",
     linkedin: "https://www.linkedin.com/in/akrom-abdumanov-6457a039a/",
+    github: "https://github.com/abdumanovjamshid1-lang",
     instagram: "https://instagram.com/abdumanovakrom",
     email: "abdumanovjamshid1@gmail.com",
   },
@@ -52,7 +53,7 @@ const teamMembers: TeamMember[] = [
   },
 ];
 
-export default function TeamSection({ isDark = false }: { isDark?: boolean }) {
+export default function TeamSection({ isDark = true }: { isDark?: boolean }) {
   const { t } = useLanguage();
   const carouselRef = useRef<HTMLDivElement>(null);
   const [scrollProgress, setScrollProgress] = useState(0);

@@ -48,7 +48,7 @@ const actors: RoleActor[] = [
   },
 ];
 
-export default function EcosystemCommunitySection({ isDark = false }: { isDark?: boolean }) {
+export default function EcosystemCommunitySection({ isDark = true }: { isDark?: boolean }) {
   return (
     <section className="relative w-full py-20 sm:py-28 overflow-hidden select-none">
       <div className="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8">

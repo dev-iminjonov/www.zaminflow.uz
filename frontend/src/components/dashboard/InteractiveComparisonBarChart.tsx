@@ -38,7 +38,7 @@ export default function InteractiveComparisonBarChart({
   secondaryColor = "#94a3b8",
   actionText,
   onActionClick,
-  isDark = false,
+  isDark = true,
   unit = "UZS",
 }: InteractiveComparisonBarChartProps) {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);

@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { SplashDoodle } from "./DoodleAccents";
 import { useLanguage } from "@/context/LanguageContext";
 
-export default function FaqEmailSection({ isDark = false }: { isDark?: boolean }) {
+export default function FaqEmailSection({ isDark = true }: { isDark?: boolean }) {
   const { t, locale } = useLanguage();
   const faqs = t.faqSection.items;
   const [openIdx, setOpenIdx] = useState<number | null>(0);

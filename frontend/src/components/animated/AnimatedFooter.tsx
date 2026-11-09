@@ -5,7 +5,7 @@ import Link from "next/link";
 import ZaminFlowLogo from "@/components/ZaminFlowLogo";
 import { useLanguage } from "@/context/LanguageContext";
 
-export default function AnimatedFooter({ isDark = false }: { isDark?: boolean }) {
+export default function AnimatedFooter({ isDark = true }: { isDark?: boolean }) {
   const { t } = useLanguage();
   const f = t.footerSection;
 

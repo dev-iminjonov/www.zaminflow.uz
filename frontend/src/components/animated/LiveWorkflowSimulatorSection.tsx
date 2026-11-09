@@ -5,7 +5,7 @@ import Link from "next/link";
 import { SplashDoodle } from "./DoodleAccents";
 import { useLanguage } from "@/context/LanguageContext";
 
-export default function LiveWorkflowSimulatorSection({ isDark = false }: { isDark?: boolean }) {
+export default function LiveWorkflowSimulatorSection({ isDark = true }: { isDark?: boolean }) {
   const { t, locale } = useLanguage();
   const steps = t.simulatorSection.steps;
   const [currentStepIndex, setCurrentStepIndex] = useState(0);

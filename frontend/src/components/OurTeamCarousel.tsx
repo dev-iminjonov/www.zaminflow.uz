@@ -35,6 +35,7 @@ const teamMembers: TeamMember[] = [
     roleKey: "leadDev",
     image: "/images/team-akrom.webp",
     linkedin: "https://www.linkedin.com/in/akrom-abdumanov-6457a039a/?lipi=urn%3Ali%3Apage%3Ad_flagship3_profile_view_base_contact_details%3BR1yI1s4YSVqIWhj3gbHoUQ%3D%3D",
+    github: "https://github.com/abdumanovjamshid1-lang",
     instagram: "https://instagram.com/abdumanovakrom",
     email: "abdumanovjamshid1@gmail.com",
   },
@@ -50,7 +51,7 @@ interface OurTeamCarouselProps {
   isDark?: boolean;
 }
 
-export default function OurTeamCarousel({ isDark = false }: OurTeamCarouselProps) {
+export default function OurTeamCarousel({ isDark = true }: OurTeamCarouselProps) {
   const { t } = useLanguage();
   const carouselRef = useRef<HTMLDivElement>(null);
   const [scrollProgress, setScrollProgress] = useState(0);

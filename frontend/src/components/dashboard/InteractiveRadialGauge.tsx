@@ -25,7 +25,7 @@ export default function InteractiveRadialGauge({
   title,
   totalLabel,
   segments,
-  isDark = false,
+  isDark = true,
   centerUnit = "%",
   defaultActiveKey,
 }: InteractiveRadialGaugeProps) {

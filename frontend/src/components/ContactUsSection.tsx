@@ -8,7 +8,7 @@ interface ContactUsSectionProps {
   isDark?: boolean;
 }
 
-export default function ContactUsSection({ isDark = false }: ContactUsSectionProps) {
+export default function ContactUsSection({ isDark = true }: ContactUsSectionProps) {
   const { t } = useLanguage();
   const [formData, setFormData] = useState({
     fullName: "",
