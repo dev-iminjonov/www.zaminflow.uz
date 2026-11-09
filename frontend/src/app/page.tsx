@@ -84,7 +84,7 @@ export default function LandingPage() {
   return (
     <div
       className={`min-h-screen font-sans selection:bg-[#00ffc8]/30 overflow-x-hidden relative transition-colors duration-500 scroll-smooth flex flex-col justify-between ${
-        isDark ? "bg-[#0d1013] text-[#E8F1F2]" : "bg-[#f6fbf8] text-[#081c15]"
+        isDark ? "bg-[#0d1013] text-[#E8F1F2]" : "bg-[#f4fbfe] text-[#03045e]"
       }`}
     >
       {/* 0. ORGANIZATION JSON-LD STRUCTURED DATA */}
@@ -135,7 +135,7 @@ export default function LandingPage() {
           className={`w-[96%] max-w-[1240px] h-16 sm:h-18 rounded-full px-4 sm:px-8 flex items-center justify-between transition-all duration-300 shadow-lg ${
             isDark
               ? "bg-[#14181d]/85 backdrop-blur-xl border border-white/10 text-white"
-              : "bg-white/90 backdrop-blur-xl border border-[#b7e4c7] text-[#081c15] shadow-[0_8px_32px_rgba(0,153,255,0.08)]"
+              : "bg-white/90 backdrop-blur-xl border border-[#ade8f4] text-[#03045e] shadow-[0_8px_32px_rgba(0,153,255,0.08)]"
           }`}
         >
           {/* Brand Logo */}
@@ -220,7 +220,7 @@ export default function LandingPage() {
             className={`lg:hidden fixed top-24 inset-x-4 p-6 rounded-3xl border shadow-2xl backdrop-blur-2xl z-50 flex flex-col gap-4 animate-in fade-in zoom-in-95 ${
               isDark
                 ? "bg-[#14181d]/95 border-white/15 text-white"
-                : "bg-white/95 border-[#b7e4c7] text-[#081c15]"
+                : "bg-white/95 border-[#ade8f4] text-[#03045e]"
             }`}
           >
             {navItems.map((item) => (
@@ -280,7 +280,7 @@ export default function LandingPage() {
             {/* Sub-headline */}
             <p
               className={`mt-6 text-sm sm:text-base lg:text-lg leading-relaxed max-w-xl font-normal ${
-                isDark ? "text-[#E8F1F2]/75" : "text-[#2d6a4f]"
+                isDark ? "text-[#E8F1F2]/75" : "text-[#0077b6]"
               }`}
             >
               {t.hero.subheadline}
@@ -303,7 +303,7 @@ export default function LandingPage() {
                 className={`px-7 py-4 rounded-full text-sm sm:text-base font-bold transition-all flex items-center gap-2.5 backdrop-blur-md shadow-sm hover:shadow border ${
                   isDark
                     ? "bg-[#14181d]/80 border-white/15 text-white hover:bg-white/10"
-                    : "bg-white border-[#b7e4c7] text-[#081c15] hover:bg-slate-100"
+                    : "bg-white border-[#ade8f4] text-[#03045e] hover:bg-slate-100"
                 }`}
               >
                 <svg className="w-4 h-4 text-[#00d3e0]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">

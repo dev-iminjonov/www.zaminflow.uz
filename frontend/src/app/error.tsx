@@ -47,7 +47,7 @@ export default function ErrorPage({
           <button
             type="button"
             onClick={() => reset()}
-            className="px-6 py-2.5 rounded-full bg-[#1b4332] hover:bg-[#2d6a4f] text-white font-bold text-xs sm:text-sm shadow-md transition active:scale-95 cursor-pointer"
+            className="px-6 py-2.5 rounded-full bg-[#023e8a] hover:bg-[#0077b6] text-white font-bold text-xs sm:text-sm shadow-md transition active:scale-95 cursor-pointer"
           >
             Qaytadan urinish
           </button>

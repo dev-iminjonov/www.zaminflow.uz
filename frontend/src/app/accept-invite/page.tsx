@@ -76,7 +76,7 @@ function AcceptInviteContent() {
 
   return (
     <div className={`min-h-screen flex flex-col justify-center items-center py-10 px-4 relative overflow-hidden font-sans select-none transition-colors duration-300 ${
-      isDark ? "bg-[#0d1013] text-[#E8F1F2]" : "bg-[#f6fbf8] text-[#081c15]"
+      isDark ? "bg-[#0d1013] text-[#E8F1F2]" : "bg-[#f4fbfe] text-[#03045e]"
     }`}>
       {/* Ambient Auroras */}
       <div className="absolute top-10 -left-40 w-[600px] h-[600px] pointer-events-none z-0">
@@ -112,7 +112,7 @@ function AcceptInviteContent() {
             className={`text-xs font-bold px-3.5 py-1.5 rounded-full border transition ${
               isDark
                 ? "text-white/70 hover:text-white bg-white/5 border-white/10 hover:bg-white/10"
-                : "text-[#081c15] bg-white border-[#b7e4c7] shadow-xs hover:bg-[#b7e4c7]/20"
+                : "text-[#03045e] bg-white border-[#ade8f4] shadow-xs hover:bg-[#ade8f4]/20"
             }`}
           >
             ← Kirish sahifasiga
@@ -124,7 +124,7 @@ function AcceptInviteContent() {
       <div className={`relative z-10 max-w-[920px] w-full rounded-[36px] border overflow-hidden grid grid-cols-1 md:grid-cols-12 min-h-[460px] ${
         isDark
           ? "bg-[#14181d] border-white/10 shadow-[0_25px_80px_rgba(0,153,255,0.22)]"
-          : "bg-white border-[#b7e4c7] shadow-[0_10px_35px_rgba(0,153,255,0.06)]"
+          : "bg-white border-[#ade8f4] shadow-[0_10px_35px_rgba(0,153,255,0.06)]"
       }`}>
         {/* Left Hero */}
         <div className="md:col-span-5 bg-gradient-to-br from-[#00ffc8] to-[#00b4d8] text-[#070B14] p-8 sm:p-10 flex flex-col justify-between relative overflow-hidden">

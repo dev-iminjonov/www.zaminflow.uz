@@ -296,7 +296,7 @@ export default function AdminOverview() {
 
   return (
     <div className={`min-h-screen py-4 px-3 sm:px-6 relative overflow-x-hidden font-sans antialiased transition-colors duration-300 ${
-      isDark ? "bg-[#0d1013] text-[#E8F1F2]" : "bg-[#f6fbf8] text-[#081c15]"
+      isDark ? "bg-[#0d1013] text-[#E8F1F2]" : "bg-[#f4fbfe] text-[#03045e]"
     }`}>
       {/* Background Subtle Gradient Blobs */}
       <div className="absolute top-0 left-1/4 w-[600px] h-[600px] pointer-events-none -z-0 opacity-20 blur-[140px] bg-gradient-to-br from-teal-500 to-sky-400" />
@@ -305,7 +305,7 @@ export default function AdminOverview() {
       <div className={`relative z-10 max-w-[1520px] mx-auto rounded-[32px] border shadow-2xl flex flex-col lg:flex-row overflow-hidden transition-all ${
         isDark
           ? "bg-[#14181d] border-white/10 shadow-[0_30px_90px_rgba(0,0,0,0.6)] text-[#E8F1F2]"
-          : "bg-white border-[#b7e4c7] shadow-[0_10px_35px_rgba(0,153,255,0.06)] text-[#081c15]"
+          : "bg-white border-[#ade8f4] shadow-[0_10px_35px_rgba(0,153,255,0.06)] text-[#03045e]"
       }`}>
 
         {/* =========================================================================

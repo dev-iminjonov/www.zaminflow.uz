@@ -73,7 +73,7 @@ export default function UserDetailsPage({ params }: UserDetailsPageProps) {
   if (isLoading) {
     return (
       <div className={`min-h-screen flex items-center justify-center p-8 ${
-        isDark ? "bg-[#0d1013]" : "bg-[#f6fbf8]"
+        isDark ? "bg-[#0d1013]" : "bg-[#f4fbfe]"
       }`}>
         <div className="w-10 h-10 rounded-full border-3 border-[#00ffc8] border-t-transparent animate-spin" />
       </div>
@@ -83,10 +83,10 @@ export default function UserDetailsPage({ params }: UserDetailsPageProps) {
   if (error || !user) {
     return (
       <div className={`min-h-screen p-8 flex items-center justify-center ${
-        isDark ? "bg-[#0d1013]" : "bg-[#f6fbf8]"
+        isDark ? "bg-[#0d1013]" : "bg-[#f4fbfe]"
       }`}>
         <div className={`max-w-md w-full rounded-3xl p-8 text-center border ${
-          isDark ? "bg-[#14181d] border-white/10" : "bg-white border-[#b7e4c7] shadow-xl"
+          isDark ? "bg-[#14181d] border-white/10" : "bg-white border-[#ade8f4] shadow-xl"
         }`}>
           <p className="text-sm font-bold text-rose-500 mb-4">{error || "User not found"}</p>
           <Link
@@ -103,7 +103,7 @@ export default function UserDetailsPage({ params }: UserDetailsPageProps) {
   return (
     <div
       className={`min-h-screen font-sans antialiased pb-20 relative overflow-hidden transition-colors duration-300 ${
-        isDark ? "bg-[#0d1013] text-[#E8F1F2]" : "bg-[#f6fbf8] text-[#081c15]"
+        isDark ? "bg-[#0d1013] text-[#E8F1F2]" : "bg-[#f4fbfe] text-[#03045e]"
       }`}
     >
       {/* 1. AMBIENT TURQUOISE DREAMLAND BACKDROP AURORAS */}
@@ -132,7 +132,7 @@ export default function UserDetailsPage({ params }: UserDetailsPageProps) {
       {/* Frosted ZaminFlow Global Top Header */}
       <header
         className={`sticky top-0 z-40 backdrop-blur-xl border-b transition-colors duration-300 ${
-          isDark ? "bg-[#0d1013]/80 border-white/10" : "bg-white/80 border-[#b7e4c7]/60"
+          isDark ? "bg-[#0d1013]/80 border-white/10" : "bg-white/80 border-[#ade8f4]/60"
         }`}
       >
         <div className="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
@@ -141,7 +141,7 @@ export default function UserDetailsPage({ params }: UserDetailsPageProps) {
               <ZaminFlowLogo size="md" mode={themeMode} />
             </Link>
             <span className={`text-xs font-black uppercase tracking-wider px-2.5 py-1 rounded-full border ${
-              isDark ? "border-white/10 text-gray-400 bg-white/5" : "border-[#b7e4c7] text-[#2d6a4f] bg-[#eaf7f0]"
+              isDark ? "border-white/10 text-gray-400 bg-white/5" : "border-[#ade8f4] text-[#0077b6] bg-[#eaf7f0]"
             }`}>
               User Details
             </span>
@@ -155,7 +155,7 @@ export default function UserDetailsPage({ params }: UserDetailsPageProps) {
               className={`text-xs font-bold px-4 py-2 rounded-full border transition-all flex items-center gap-1.5 cursor-pointer shadow-xs ${
                 isDark
                   ? "border-white/15 bg-white/5 hover:bg-white/10 text-white"
-                  : "border-[#b7e4c7] bg-white hover:bg-[#b7e4c7]/20 text-[#081c15]"
+                  : "border-[#ade8f4] bg-white hover:bg-[#ade8f4]/20 text-[#03045e]"
               }`}
             >
               <span>←</span>
@@ -175,7 +175,7 @@ export default function UserDetailsPage({ params }: UserDetailsPageProps) {
             className={`w-9 h-9 rounded-full border flex items-center justify-center transition shadow-xs ${
               isDark
                 ? "border-white/15 bg-white/5 text-gray-300 hover:text-white hover:bg-white/10"
-                : "border-[#b7e4c7] bg-white text-[#081c15] hover:bg-[#b7e4c7]/20"
+                : "border-[#ade8f4] bg-white text-[#03045e] hover:bg-[#ade8f4]/20"
             }`}
             aria-label="Back to users list"
           >
@@ -187,7 +187,7 @@ export default function UserDetailsPage({ params }: UserDetailsPageProps) {
             <h1 className="text-2xl sm:text-3xl font-black tracking-tight">
               {user.firstName} {user.lastName}
             </h1>
-            <p className={`text-xs mt-0.5 ${isDark ? "text-gray-400" : "text-[#2d6a4f]"}`}>
+            <p className={`text-xs mt-0.5 ${isDark ? "text-gray-400" : "text-[#0077b6]"}`}>
               @{user.username} • {user.role}
             </p>
           </div>
@@ -201,7 +201,7 @@ export default function UserDetailsPage({ params }: UserDetailsPageProps) {
             className={`lg:col-span-8 rounded-3xl border p-6 sm:p-8 backdrop-blur-xl transition-all ${
               isDark
                 ? "bg-[#14181d]/90 border-white/10 shadow-[0_10px_35px_rgba(0,0,0,0.5)]"
-                : "bg-white/95 border-[#b7e4c7]/80 shadow-[0_10px_35px_rgba(0,153,255,0.08)]"
+                : "bg-white/95 border-[#ade8f4]/80 shadow-[0_10px_35px_rgba(0,153,255,0.08)]"
             }`}
           >
             {/* Top Row: Title + Month Dropdown */}
@@ -217,7 +217,7 @@ export default function UserDetailsPage({ params }: UserDetailsPageProps) {
                   className={`appearance-none rounded-full px-4 py-1.5 pr-8 text-xs font-bold border transition cursor-pointer outline-none ${
                     isDark
                       ? "bg-[#0d1013] border-white/15 text-white focus:border-[#00d3e0]"
-                      : "bg-[#f6fbf8] border-[#b7e4c7] text-[#081c15] focus:border-[#00d3e0]"
+                      : "bg-[#f4fbfe] border-[#ade8f4] text-[#03045e] focus:border-[#00d3e0]"
                   }`}
                 >
                   <option value="Month">{uT.thisMonth}</option>
@@ -242,7 +242,7 @@ export default function UserDetailsPage({ params }: UserDetailsPageProps) {
                     ? "bg-gradient-to-r from-[#00ffc8] via-[#00d3e0] to-[#0099ff] text-[#070B14] shadow-md"
                     : isDark
                     ? "text-gray-400 hover:text-white hover:bg-white/5"
-                    : "text-gray-600 hover:text-[#081c15] hover:bg-[#b7e4c7]/20"
+                    : "text-gray-600 hover:text-[#03045e] hover:bg-[#ade8f4]/20"
                 }`}
               >
                 {uT.activities}
@@ -256,7 +256,7 @@ export default function UserDetailsPage({ params }: UserDetailsPageProps) {
                     ? "bg-gradient-to-r from-[#00ffc8] via-[#00d3e0] to-[#0099ff] text-[#070B14] shadow-md"
                     : isDark
                     ? "text-gray-400 hover:text-white hover:bg-white/5"
-                    : "text-gray-600 hover:text-[#081c15] hover:bg-[#b7e4c7]/20"
+                    : "text-gray-600 hover:text-[#03045e] hover:bg-[#ade8f4]/20"
                 }`}
               >
                 {uT.order}
@@ -291,7 +291,7 @@ export default function UserDetailsPage({ params }: UserDetailsPageProps) {
                     <button
                       type="button"
                       className={`w-7 h-7 flex items-center justify-center rounded-full transition cursor-pointer shrink-0 ${
-                        isDark ? "text-gray-400 hover:text-white hover:bg-white/10" : "text-gray-400 hover:text-gray-700 hover:bg-[#b7e4c7]/30"
+                        isDark ? "text-gray-400 hover:text-white hover:bg-white/10" : "text-gray-400 hover:text-gray-700 hover:bg-[#ade8f4]/30"
                       }`}
                       aria-label="Activity item menu"
                     >
@@ -342,7 +342,7 @@ export default function UserDetailsPage({ params }: UserDetailsPageProps) {
                 {/* 2. Billing & Shipping Address Cards */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className={`rounded-2xl p-4 border ${
-                    isDark ? "bg-[#0d1013] border-white/10" : "bg-[#f6fbf8] border-[#b7e4c7]/60"
+                    isDark ? "bg-[#0d1013] border-white/10" : "bg-[#f4fbfe] border-[#ade8f4]/60"
                   }`}>
                     <h4 className="text-[11px] font-black uppercase tracking-wider text-[#00d3e0] mb-2">
                       {uT.billingAddress}
@@ -356,7 +356,7 @@ export default function UserDetailsPage({ params }: UserDetailsPageProps) {
                   </div>
 
                   <div className={`rounded-2xl p-4 border ${
-                    isDark ? "bg-[#0d1013] border-white/10" : "bg-[#f6fbf8] border-[#b7e4c7]/60"
+                    isDark ? "bg-[#0d1013] border-white/10" : "bg-[#f4fbfe] border-[#ade8f4]/60"
                   }`}>
                     <h4 className="text-[11px] font-black uppercase tracking-wider text-[#00d3e0] mb-2">
                       {uT.shippingAddress}
@@ -381,7 +381,7 @@ export default function UserDetailsPage({ params }: UserDetailsPageProps) {
                         className={`appearance-none rounded-full px-3 py-1 pr-7 text-xs font-bold border transition cursor-pointer outline-none ${
                           isDark
                             ? "bg-[#0d1013] border-white/15 text-white focus:border-[#00d3e0]"
-                            : "bg-[#f6fbf8] border-[#b7e4c7] text-[#081c15] focus:border-[#00d3e0]"
+                            : "bg-[#f4fbfe] border-[#ade8f4] text-[#03045e] focus:border-[#00d3e0]"
                         }`}
                       >
                         <option value="All Orders">All Orders</option>
@@ -424,7 +424,7 @@ export default function UserDetailsPage({ params }: UserDetailsPageProps) {
             className={`lg:col-span-4 rounded-3xl border p-6 sm:p-7 backdrop-blur-xl transition-all ${
               isDark
                 ? "bg-[#14181d]/90 border-white/10 shadow-[0_10px_35px_rgba(0,0,0,0.5)]"
-                : "bg-white/95 border-[#b7e4c7]/80 shadow-[0_10px_35px_rgba(0,153,255,0.08)]"
+                : "bg-white/95 border-[#ade8f4]/80 shadow-[0_10px_35px_rgba(0,153,255,0.08)]"
             }`}
           >
             <h2 className="text-sm sm:text-base font-black tracking-tight pb-4 border-b border-black/5 dark:border-white/10">
@@ -452,7 +452,7 @@ export default function UserDetailsPage({ params }: UserDetailsPageProps) {
               <div className="mt-3 flex items-center gap-2">
                 <UserStatusBadge status={user.status} />
                 <span className={`text-[11px] font-black px-3 py-0.5 rounded-full border ${
-                  isDark ? "border-white/15 bg-white/5 text-gray-300" : "border-[#b7e4c7] bg-[#eaf7f0] text-[#2d6a4f]"
+                  isDark ? "border-white/15 bg-white/5 text-gray-300" : "border-[#ade8f4] bg-[#eaf7f0] text-[#0077b6]"
                 }`}>
                   {user.role}
                 </span>
@@ -518,7 +518,7 @@ export default function UserDetailsPage({ params }: UserDetailsPageProps) {
                 className={`w-full py-2.5 rounded-full border text-xs font-black transition cursor-pointer ${
                   isDark
                     ? "border-white/15 bg-white/5 hover:bg-white/10 text-white"
-                    : "border-[#b7e4c7] bg-white hover:bg-[#b7e4c7]/20 text-[#081c15]"
+                    : "border-[#ade8f4] bg-white hover:bg-[#ade8f4]/20 text-[#03045e]"
                 }`}
               >
                 Back to All Users

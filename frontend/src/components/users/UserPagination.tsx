@@ -63,7 +63,7 @@ export default function UserPagination({
         className={`w-8 h-8 flex items-center justify-center rounded-full text-xs font-bold transition cursor-pointer disabled:opacity-20 disabled:pointer-events-none ${
           isDark
             ? "border border-white/10 text-gray-300 hover:bg-white/10 hover:text-white"
-            : "border border-[#b7e4c7] text-[#081c15] hover:bg-[#b7e4c7]/30"
+            : "border border-[#ade8f4] text-[#03045e] hover:bg-[#ade8f4]/30"
         }`}
         aria-label="Previous page"
       >
@@ -98,7 +98,7 @@ export default function UserPagination({
                   ? "bg-gradient-to-r from-[#00ffc8] via-[#00d3e0] to-[#0099ff] text-[#070B14] shadow-md scale-105"
                   : isDark
                   ? "text-gray-300 hover:text-white hover:bg-white/10"
-                  : "text-[#081c15] hover:bg-[#b7e4c7]/30"
+                  : "text-[#03045e] hover:bg-[#ade8f4]/30"
               }`}
             >
               {page}
@@ -115,7 +115,7 @@ export default function UserPagination({
         className={`w-8 h-8 flex items-center justify-center rounded-full text-xs font-bold transition cursor-pointer disabled:opacity-20 disabled:pointer-events-none ${
           isDark
             ? "border border-white/10 text-gray-300 hover:bg-white/10 hover:text-white"
-            : "border border-[#b7e4c7] text-[#081c15] hover:bg-[#b7e4c7]/30"
+            : "border border-[#ade8f4] text-[#03045e] hover:bg-[#ade8f4]/30"
         }`}
         aria-label="Next page"
       >

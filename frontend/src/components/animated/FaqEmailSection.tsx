@@ -46,7 +46,7 @@ export default function FaqEmailSection({ isDark = false }: { isDark?: boolean }
 
             <h2
               className={`text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-[1.25] sm:leading-[1.3] mb-4 ${
-                isDark ? "text-white" : "text-[#081c15]"
+                isDark ? "text-white" : "text-[#03045e]"
               }`}
             >
               {t.faqSection.titleStart}{" "}
@@ -61,7 +61,7 @@ export default function FaqEmailSection({ isDark = false }: { isDark?: boolean }
 
             <p
               className={`text-sm sm:text-base leading-relaxed mb-8 ${
-                isDark ? "text-[#E8F1F2]/70" : "text-[#2d6a4f]"
+                isDark ? "text-[#E8F1F2]/70" : "text-[#0077b6]"
               }`}
             >
               {t.faqSection.subtitle}
@@ -84,7 +84,7 @@ export default function FaqEmailSection({ isDark = false }: { isDark?: boolean }
                 className={`rounded-full p-2 border flex items-center shadow-lg transition-all ${
                   isDark
                     ? "bg-[#14181d]/90 backdrop-blur-xl border-white/15 focus-within:border-[#00d3e0] focus-within:ring-2 focus-within:ring-[#00d3e0]/20"
-                    : "bg-white/95 backdrop-blur-xl border-[#b7e4c7] focus-within:border-[#00d3e0] focus-within:ring-2 focus-within:ring-[#00d3e0]/20 shadow-[0_10px_35px_rgba(0,153,255,0.12)]"
+                    : "bg-white/95 backdrop-blur-xl border-[#ade8f4] focus-within:border-[#00d3e0] focus-within:ring-2 focus-within:ring-[#00d3e0]/20 shadow-[0_10px_35px_rgba(0,153,255,0.12)]"
                 }`}
               >
                 <input
@@ -134,7 +134,7 @@ export default function FaqEmailSection({ isDark = false }: { isDark?: boolean }
                   className={`rounded-[24px] border transition-all duration-300 overflow-hidden ${
                     isDark
                       ? "bg-[#14181d]/80 border-white/10"
-                      : "bg-white/90 border-[#b7e4c7] shadow-[0_4px_16px_rgba(0,0,0,0.02)]"
+                      : "bg-white/90 border-[#ade8f4] shadow-[0_4px_16px_rgba(0,0,0,0.02)]"
                   }`}
                 >
                   <button
@@ -143,7 +143,7 @@ export default function FaqEmailSection({ isDark = false }: { isDark?: boolean }
                     aria-expanded={isOpen}
                     className="w-full p-5 sm:p-6 text-left flex items-center justify-between gap-4 font-bold text-sm sm:text-base cursor-pointer"
                   >
-                    <span className={isDark ? "text-white" : "text-[#081c15]"}>
+                    <span className={isDark ? "text-white" : "text-[#03045e]"}>
                       {faq.question}
                     </span>
                     <span

@@ -178,7 +178,7 @@ function UserAdminListContent() {
   return (
     <div
       className={`min-h-screen font-sans antialiased pb-20 relative overflow-hidden transition-colors duration-300 ${
-        isDark ? "bg-[#0d1013] text-[#E8F1F2]" : "bg-[#f6fbf8] text-[#081c15]"
+        isDark ? "bg-[#0d1013] text-[#E8F1F2]" : "bg-[#f4fbfe] text-[#03045e]"
       }`}
     >
       {/* 1. AMBIENT TURQUOISE DREAMLAND BACKDROP AURORAS */}
@@ -215,7 +215,7 @@ function UserAdminListContent() {
       {/* Frosted ZaminFlow Global Top Header */}
       <header
         className={`sticky top-0 z-40 backdrop-blur-xl border-b transition-colors duration-300 ${
-          isDark ? "bg-[#0d1013]/80 border-white/10" : "bg-white/80 border-[#b7e4c7]/60"
+          isDark ? "bg-[#0d1013]/80 border-white/10" : "bg-white/80 border-[#ade8f4]/60"
         }`}
       >
         <div className="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
@@ -224,7 +224,7 @@ function UserAdminListContent() {
               <ZaminFlowLogo size="md" mode={themeMode} />
             </Link>
             <span className={`text-xs font-black uppercase tracking-wider px-2.5 py-1 rounded-full border ${
-              isDark ? "border-white/10 text-gray-400 bg-white/5" : "border-[#b7e4c7] text-[#2d6a4f] bg-[#eaf7f0]"
+              isDark ? "border-white/10 text-gray-400 bg-white/5" : "border-[#ade8f4] text-[#0077b6] bg-[#eaf7f0]"
             }`}>
               User Management
             </span>
@@ -238,7 +238,7 @@ function UserAdminListContent() {
               className={`text-xs font-bold px-4 py-2 rounded-full border transition-all flex items-center gap-1.5 cursor-pointer shadow-xs ${
                 isDark
                   ? "border-white/15 bg-white/5 hover:bg-white/10 text-white"
-                  : "border-[#b7e4c7] bg-white hover:bg-[#b7e4c7]/20 text-[#081c15]"
+                  : "border-[#ade8f4] bg-white hover:bg-[#ade8f4]/20 text-[#03045e]"
               }`}
             >
               <span>←</span>
@@ -257,7 +257,7 @@ function UserAdminListContent() {
             <h1 className="text-2xl sm:text-3xl font-black tracking-tight">
               {uT.title}
             </h1>
-            <p className={`text-xs sm:text-sm mt-1 ${isDark ? "text-gray-400" : "text-[#2d6a4f]"}`}>
+            <p className={`text-xs sm:text-sm mt-1 ${isDark ? "text-gray-400" : "text-[#0077b6]"}`}>
               {uT.addUserSubtitle}
             </p>
           </div>
@@ -271,7 +271,7 @@ function UserAdminListContent() {
                 className={`appearance-none rounded-full px-4 py-2 pr-8 text-xs font-bold border transition cursor-pointer ${
                   isDark
                     ? "bg-[#14181d] border-white/15 text-white focus:border-[#00d3e0]"
-                    : "bg-white border-[#b7e4c7] text-[#081c15] focus:border-[#00d3e0]"
+                    : "bg-white border-[#ade8f4] text-[#03045e] focus:border-[#00d3e0]"
                 }`}
               >
                 <option value="Today">Today</option>
@@ -305,7 +305,7 @@ function UserAdminListContent() {
                 ? "bg-gradient-to-r from-[#00ffc8] via-[#00d3e0] to-[#0099ff] text-[#070B14] shadow-md"
                 : isDark
                 ? "text-gray-400 hover:text-white hover:bg-white/5"
-                : "text-gray-600 hover:text-[#081c15] hover:bg-[#b7e4c7]/20"
+                : "text-gray-600 hover:text-[#03045e] hover:bg-[#ade8f4]/20"
             }`}
           >
             {uT.userTab}
@@ -319,7 +319,7 @@ function UserAdminListContent() {
                 ? "bg-gradient-to-r from-[#00ffc8] via-[#00d3e0] to-[#0099ff] text-[#070B14] shadow-md"
                 : isDark
                 ? "text-gray-400 hover:text-white hover:bg-white/5"
-                : "text-gray-600 hover:text-[#081c15] hover:bg-[#b7e4c7]/20"
+                : "text-gray-600 hover:text-[#03045e] hover:bg-[#ade8f4]/20"
             }`}
           >
             {uT.adminTab}
@@ -354,7 +354,7 @@ function UserAdminListContent() {
                 className={`w-48 sm:w-64 pl-10 pr-8 py-2 rounded-full text-xs font-medium border transition outline-none ${
                   isDark
                     ? "bg-[#14181d] border-white/15 text-white placeholder-gray-500 focus:border-[#00d3e0] focus:ring-1 focus:ring-[#00d3e0]/20"
-                    : "bg-white border-[#b7e4c7] text-[#081c15] placeholder-gray-400 focus:border-[#00d3e0] focus:ring-1 focus:ring-[#00d3e0]/20 shadow-xs"
+                    : "bg-white border-[#ade8f4] text-[#03045e] placeholder-gray-400 focus:border-[#00d3e0] focus:ring-1 focus:ring-[#00d3e0]/20 shadow-xs"
                 }`}
               />
               {searchInput && (
@@ -381,7 +381,7 @@ function UserAdminListContent() {
                 className={`appearance-none rounded-full px-4 py-2 pr-8 text-xs font-bold border transition cursor-pointer ${
                   isDark
                     ? "bg-[#14181d] border-white/15 text-white focus:border-[#00d3e0]"
-                    : "bg-white border-[#b7e4c7] text-[#081c15] focus:border-[#00d3e0] shadow-xs"
+                    : "bg-white border-[#ade8f4] text-[#03045e] focus:border-[#00d3e0] shadow-xs"
                 }`}
               >
                 <option value="all">{uT.allUser}</option>
@@ -400,7 +400,7 @@ function UserAdminListContent() {
         <div className="overflow-x-auto">
           {/* Table Header */}
           <div className={`grid grid-cols-12 gap-3 px-5 py-2.5 text-xs font-bold uppercase tracking-wider min-w-[760px] ${
-            isDark ? "text-gray-400" : "text-[#2d6a4f]"
+            isDark ? "text-gray-400" : "text-[#0077b6]"
           }`}>
             <div className="col-span-1 flex items-center">
               <span>{uT.select}</span>
@@ -419,7 +419,7 @@ function UserAdminListContent() {
                 <div
                   key={idx}
                   className={`rounded-2xl p-4 border animate-pulse flex items-center justify-between ${
-                    isDark ? "bg-[#14181d]/80 border-white/10" : "bg-white border-[#b7e4c7]/40 shadow-xs"
+                    isDark ? "bg-[#14181d]/80 border-white/10" : "bg-white border-[#ade8f4]/40 shadow-xs"
                   }`}
                 >
                   <div className="flex items-center gap-3 w-1/3">
@@ -454,7 +454,7 @@ function UserAdminListContent() {
           {/* Empty State */}
           {!isLoading && !error && data && data.users.length === 0 && (
             <div className={`rounded-3xl p-12 text-center border my-4 ${
-              isDark ? "bg-[#14181d] border-white/10" : "bg-white border-[#b7e4c7]/60 shadow-sm"
+              isDark ? "bg-[#14181d] border-white/10" : "bg-white border-[#ade8f4]/60 shadow-sm"
             }`}>
               <div className="w-12 h-12 rounded-full bg-[#00d3e0]/10 text-[#00d3e0] mx-auto flex items-center justify-center mb-3">
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -495,7 +495,7 @@ function UserAdminListContent() {
                           : "bg-white border-[#00d3e0] shadow-[0_4px_20px_rgba(0,211,224,0.18)]"
                         : isDark
                         ? "bg-[#14181d]/80 border-white/10 hover:border-white/20 hover:bg-[#14181d]"
-                        : "bg-white border-[#b7e4c7]/60 hover:border-[#b7e4c7] hover:shadow-[0_4px_20px_rgba(0,0,0,0.04)]"
+                        : "bg-white border-[#ade8f4]/60 hover:border-[#ade8f4] hover:shadow-[0_4px_20px_rgba(0,0,0,0.04)]"
                     }`}
                   >
                     {/* Checkbox + Avatar */}
@@ -526,7 +526,7 @@ function UserAdminListContent() {
 
                     {/* Last Name */}
                     <div className={`col-span-2 text-xs sm:text-sm font-medium truncate ${
-                      isDark ? "text-gray-300" : "text-[#081c15]"
+                      isDark ? "text-gray-300" : "text-[#03045e]"
                     }`}>
                       {user.lastName}
                     </div>

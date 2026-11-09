@@ -102,14 +102,14 @@ export default function OurTeamCarousel({ isDark = false }: OurTeamCarouselProps
         <div className="text-center mb-12 sm:mb-16">
           <h2
             className={`text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight ${
-              isDark ? "text-white" : "text-[#081c15]"
+              isDark ? "text-white" : "text-[#03045e]"
             }`}
           >
             {t.team.title}
           </h2>
           <p
             className={`mt-3 text-sm sm:text-base font-normal max-w-md mx-auto ${
-              isDark ? "text-[#E8F1F2]/70" : "text-[#2d6a4f]"
+              isDark ? "text-[#E8F1F2]/70" : "text-[#0077b6]"
             }`}
           >
             {t.team.subtitle}
@@ -132,7 +132,7 @@ export default function OurTeamCarousel({ isDark = false }: OurTeamCarouselProps
                 className={`w-full aspect-[3/4] rounded-[28px] sm:rounded-[32px] overflow-hidden shadow-[0_12px_32px_rgba(8,28,21,0.06)] transition-all duration-300 group-hover:shadow-[0_20px_40px_rgba(8,28,21,0.12)] group-hover:-translate-y-1 border ${
                   isDark
                     ? "bg-[#1E293B] border-[#247BA0]/30"
-                    : "bg-[#d8f3dc]/30 border-[#b7e4c7]"
+                    : "bg-[#caf0f8]/30 border-[#ade8f4]"
                 }`}
               >
                 <img
@@ -155,14 +155,14 @@ export default function OurTeamCarousel({ isDark = false }: OurTeamCarouselProps
               <div className="mt-5 text-center w-full px-2">
                 <h3
                   className={`text-lg sm:text-xl font-bold tracking-tight transition-colors ${
-                    isDark ? "text-[#E8F1F2] group-hover:text-[#1B98E0]" : "text-[#081c15] group-hover:text-[#2d6a4f]"
+                    isDark ? "text-[#E8F1F2] group-hover:text-[#1B98E0]" : "text-[#03045e] group-hover:text-[#0077b6]"
                   }`}
                 >
                   {member.name}
                 </h3>
                 <p
                   className={`text-xs sm:text-sm font-medium mt-1 ${
-                    isDark ? "text-[#E8F1F2]/65" : "text-[#2d6a4f]"
+                    isDark ? "text-[#E8F1F2]/65" : "text-[#0077b6]"
                   }`}
                 >
                   {t.team.roles[member.roleKey]}
@@ -180,7 +180,7 @@ export default function OurTeamCarousel({ isDark = false }: OurTeamCarouselProps
                       className={`min-w-[44px] min-h-[44px] flex items-center justify-center p-2 rounded-full transition-colors ${
                         isDark
                           ? "text-[#E8F1F2]/75 hover:text-[#1B98E0] hover:bg-white/10"
-                          : "text-[#1b4332]/75 hover:text-[#087a3c] hover:bg-[#d8f3dc]/60"
+                          : "text-[#023e8a]/75 hover:text-[#087a3c] hover:bg-[#caf0f8]/60"
                       }`}
                     >
                       <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -199,7 +199,7 @@ export default function OurTeamCarousel({ isDark = false }: OurTeamCarouselProps
                       className={`min-w-[44px] min-h-[44px] flex items-center justify-center p-2 rounded-full transition-colors ${
                         isDark
                           ? "text-[#E8F1F2]/75 hover:text-[#1B98E0] hover:bg-white/10"
-                          : "text-[#1b4332]/75 hover:text-[#087a3c] hover:bg-[#d8f3dc]/60"
+                          : "text-[#023e8a]/75 hover:text-[#087a3c] hover:bg-[#caf0f8]/60"
                       }`}
                     >
                       <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -218,7 +218,7 @@ export default function OurTeamCarousel({ isDark = false }: OurTeamCarouselProps
                       className={`min-w-[44px] min-h-[44px] flex items-center justify-center p-2 rounded-full transition-colors ${
                         isDark
                           ? "text-[#E8F1F2]/75 hover:text-[#1B98E0] hover:bg-white/10"
-                          : "text-[#1b4332]/75 hover:text-[#087a3c] hover:bg-[#d8f3dc]/60"
+                          : "text-[#023e8a]/75 hover:text-[#087a3c] hover:bg-[#caf0f8]/60"
                       }`}
                     >
                       <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -235,7 +235,7 @@ export default function OurTeamCarousel({ isDark = false }: OurTeamCarouselProps
                       className={`min-w-[44px] min-h-[44px] flex items-center justify-center p-2 rounded-full transition-colors ${
                         isDark
                           ? "text-[#E8F1F2]/75 hover:text-[#1B98E0] hover:bg-white/10"
-                          : "text-[#1b4332]/75 hover:text-[#087a3c] hover:bg-[#d8f3dc]/60"
+                          : "text-[#023e8a]/75 hover:text-[#087a3c] hover:bg-[#caf0f8]/60"
                       }`}
                     >
                       <svg
@@ -262,9 +262,9 @@ export default function OurTeamCarousel({ isDark = false }: OurTeamCarouselProps
         {/* 3. PROGRESS BAR & NAVIGATION CONTROLS */}
         <div className="mt-8 flex items-center justify-between gap-4 max-w-md mx-auto">
           {/* Progress Indicator Track */}
-          <div className="flex-1 h-1.5 bg-[#b7e4c7]/50 dark:bg-white/10 rounded-full overflow-hidden">
+          <div className="flex-1 h-1.5 bg-[#ade8f4]/50 dark:bg-white/10 rounded-full overflow-hidden">
             <div
-              className="h-full bg-gradient-to-r from-[#52b788] to-[#2d6a4f] dark:from-[#00C853] dark:to-[#1B98E0] rounded-full transition-all duration-300"
+              className="h-full bg-gradient-to-r from-[#00b4d8] to-[#0077b6] dark:from-[#00C853] dark:to-[#1B98E0] rounded-full transition-all duration-300"
               style={{ width: `${scrollProgress}%` }}
             />
           </div>
@@ -280,7 +280,7 @@ export default function OurTeamCarousel({ isDark = false }: OurTeamCarouselProps
                 canScrollLeft
                   ? isDark
                     ? "bg-[#13293D] border-[#247BA0]/40 text-white hover:bg-[#247BA0]/40 active:scale-95"
-                    : "bg-white/90 border-[#b7e4c7] text-[#081c15] hover:bg-[#d8f3dc] active:scale-95 shadow-xs"
+                    : "bg-white/90 border-[#ade8f4] text-[#03045e] hover:bg-[#caf0f8] active:scale-95 shadow-xs"
                   : "opacity-30 cursor-not-allowed border-transparent text-gray-400"
               }`}
             >
@@ -295,7 +295,7 @@ export default function OurTeamCarousel({ isDark = false }: OurTeamCarouselProps
                 canScrollRight
                   ? isDark
                     ? "bg-[#13293D] border-[#247BA0]/40 text-white hover:bg-[#247BA0]/40 active:scale-95"
-                    : "bg-white/90 border-[#b7e4c7] text-[#081c15] hover:bg-[#d8f3dc] active:scale-95 shadow-xs"
+                    : "bg-white/90 border-[#ade8f4] text-[#03045e] hover:bg-[#caf0f8] active:scale-95 shadow-xs"
                   : "opacity-30 cursor-not-allowed border-transparent text-gray-400"
               }`}
             >

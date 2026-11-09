@@ -27,28 +27,28 @@
   --turquoise-gradient: linear-gradient(135deg, #00ffc8 0%, #00d3e0 50%, #0099ff 100%);
   --turquoise-glow: 0 10px 40px rgba(0, 211, 224, 0.28);
 
-  /* Coolors Light Mode Palette (https://coolors.co/d8f3dc-b7e4c7-95d5b2-74c69d-52b788-40916c-2d6a4f-1b4332-081c15) */
-  --coolors-50: #d8f3dc;
-  --coolors-100: #b7e4c7;
-  --coolors-200: #95d5b2;
-  --coolors-300: #74c69d;
-  --coolors-400: #52b788;
-  --coolors-500: #40916c;
-  --coolors-600: #2d6a4f;
-  --coolors-700: #1b4332;
-  --coolors-800: #081c15;
+  /* Coolors Light Mode Palette (https://coolors.co/03045e-023e8a-0077b6-0096c7-00b4d8-48cae4-90e0ef-ade8f4-caf0f8) */
+  --coolors-50: #caf0f8;
+  --coolors-100: #ade8f4;
+  --coolors-200: #90e0ef;
+  --coolors-300: #48cae4;
+  --coolors-400: #00b4d8;
+  --coolors-500: #0096c7;
+  --coolors-600: #0077b6;
+  --coolors-700: #023e8a;
+  --coolors-800: #03045e;
 
   /* brand */
   --brand-green-text: #087a3c;
-  --brand-green: #2d6a4f;
-  --emerald-700: #1b4332;
-  --emerald-600: #2d6a4f;
-  --emerald-500: #52b788;
-  --emerald-50: #d8f3dc;
-  --teal-700: #1b4332;
-  --teal-200: #b7e4c7;
-  --teal-50: #d8f3dc;
-  --nav-active: #1b4332;
+  --brand-green: #0077b6;
+  --emerald-700: #023e8a;
+  --emerald-600: #0077b6;
+  --emerald-500: #00b4d8;
+  --emerald-50: #caf0f8;
+  --teal-700: #023e8a;
+  --teal-200: #ade8f4;
+  --teal-50: #caf0f8;
+  --nav-active: #023e8a;
 
   /* status */
   --amber-600: #D97706;
@@ -57,14 +57,14 @@
   --red-50: #FEF2F2;
 
   /* semantic (operational surface for Light mode) */
-  --bg: #f6fbf8;
+  --bg: #f4fbfe;
   --surface: #FFFFFF;
-  --border: #b7e4c7;
-  --border-strong: #95d5b2;
-  --text: #081c15;
-  --text-muted: #2d6a4f;
-  --primary: #1b4332;
-  --primary-hover: #2d6a4f;
+  --border: #ade8f4;
+  --border-strong: #90e0ef;
+  --text: #03045e;
+  --text-muted: #0077b6;
+  --primary: #023e8a;
+  --primary-hover: #0077b6;
   --ring: rgba(82, 183, 136, 0.45);
 
   /* cinematic surface */
@@ -314,16 +314,16 @@ html:not(.dark) {
 
 html.light body,
 html:not(.dark) body {
-  background-color: #f8fafc !important; /* Premium Slate-50 */
-  color: #0f172a !important; /* Deep Slate-900 */
+  background-color: #f4fbfe !important; /* Coolors 50 Frosted Ice Canvas */
+  color: #03045e !important; /* Coolors 800 Deep Navy Typography */
 }
 
 /* Master Floating Canvases in Light Mode */
 html.light .relative.z-10.max-w-\[1380px\],
 html.light .relative.z-10.max-w-\[1420px\] {
   background-color: #ffffff !important;
-  border-color: #e2e8f0 !important;
-  box-shadow: 0 20px 60px -15px rgba(15, 23, 42, 0.07), 0 0 0 1px rgba(15, 23, 42, 0.04) !important;
+  border-color: #ade8f4 !important;
+  box-shadow: 0 20px 60px -15px rgba(3, 4, 94, 0.07), 0 0 0 1px rgba(173, 232, 244, 0.4) !important;
 }
 
 /* 1. Universal Card Normalization in Light Mode (Converts glass to solid elevated cards) */
@@ -335,35 +335,35 @@ html.light [class*="bg-white/[0.08]"],
 html.light [class*="bg-white/5"],
 html.light [class*="bg-white/10"] {
   background-color: #ffffff !important;
-  border-color: #e2e8f0 !important;
-  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05), 0 1px 3px rgba(15, 23, 42, 0.03) !important;
+  border-color: #ade8f4 !important;
+  box-shadow: 0 4px 20px -2px rgba(3, 4, 94, 0.05), 0 1px 3px rgba(3, 4, 94, 0.03) !important;
 }
 
 /* 2. Deep High-Contrast Typography in Light Mode */
 html.light .text-white,
 html.light [class*="text-white "] {
-  color: #0f172a !important; /* Slate-900 */
+  color: #03045e !important; /* Coolors 800 Deep Navy */
 }
 html.light [class*="text-white/90"],
 html.light [class*="text-white/80"] {
-  color: #1e293b !important; /* Slate-800 */
+  color: #023e8a !important; /* Coolors 700 Royal Cobalt */
 }
 html.light [class*="text-white/70"],
 html.light [class*="text-white/60"] {
-  color: #334155 !important; /* Slate-700 */
+  color: #0077b6 !important; /* Coolors 600 Ocean Blue */
 }
 html.light [class*="text-white/50"],
 html.light [class*="text-white/40"] {
-  color: #64748b !important; /* Slate-500 */
+  color: #0096c7 !important; /* Coolors 500 Pacific Cyan */
 }
 
-/* 3. Hero Metric Cards (Card 1) - Luxury Emerald-Cyan Gradient */
+/* 3. Hero Metric Cards (Card 1) - Luxury Ocean Blue Gradient */
 html.light [class*="from-[#0c2e28]"],
 html.light [class*="from-[#0c312d]"],
 html.light [class*="from-[#059669]"] {
-  background: linear-gradient(135deg, #065f46 0%, #0d9488 50%, #0284c7 100%) !important;
-  border-color: rgba(5, 150, 105, 0.4) !important;
-  box-shadow: 0 14px 35px -5px rgba(6, 95, 70, 0.28) !important;
+  background: linear-gradient(135deg, #023e8a 0%, #0077b6 50%, #00b4d8 100%) !important;
+  border-color: rgba(0, 180, 216, 0.4) !important;
+  box-shadow: 0 14px 35px -5px rgba(2, 62, 138, 0.28) !important;
   color: #ffffff !important;
 }
 html.light [class*="from-[#0c2e28]"] *,
@@ -376,19 +376,19 @@ html.light [class*="from-[#0c2e28]"] [class*="text-emerald-100"],
 html.light [class*="from-[#0c312d]"] [class*="text-[#00ffc8]"],
 html.light [class*="from-[#059669]"] [class*="text-[#00ffc8]"],
 html.light [class*="from-[#059669]"] [class*="text-emerald-100"] {
-  color: #a7f3d0 !important; /* Mint-200 */
+  color: #ade8f4 !important; /* Coolors 100 Soft Ice */
 }
 
 /* 4. Secondary Simulator Container & Sliders in Light Mode */
 html.light [class*="from-[#121921]"] {
-  background: linear-gradient(135deg, #f0fdf4 0%, #ecfeff 50%, #f8fafc 100%) !important;
-  border-color: #a7f3d0 !important;
-  box-shadow: 0 10px 30px rgba(5, 150, 105, 0.08) !important;
+  background: linear-gradient(135deg, #caf0f8 0%, #ade8f4 50%, #f4fbfe 100%) !important;
+  border-color: #ade8f4 !important;
+  box-shadow: 0 10px 30px rgba(0, 119, 182, 0.08) !important;
 }
 html.light [class*="bg-black/30"] {
   background-color: #ffffff !important;
-  border-color: #e2e8f0 !important;
-  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04) !important;
+  border-color: #ade8f4 !important;
+  box-shadow: 0 2px 6px rgba(3, 4, 94, 0.04) !important;
 }
 
 /* 5. Telemetry Ribbons & Badges in Light Mode */
@@ -396,16 +396,16 @@ html.light .flex.flex-wrap.items-center.gap-2\.5.py-1 > div,
 html.light [class*="bg-[#00ffc8]/10"],
 html.light [class*="bg-[#00ffc8]/15"],
 html.light [class*="bg-[#00ffc8]/20"] {
-  background-color: #ecfdf5 !important; /* Emerald-50 */
-  border-color: #a7f3d0 !important; /* Emerald-200 */
-  color: #065f46 !important; /* Emerald-800 */
+  background-color: #caf0f8 !important; /* Coolors 50 Ice Tint */
+  border-color: #ade8f4 !important; /* Coolors 100 Mist */
+  color: #023e8a !important; /* Coolors 700 Royal Cobalt */
   font-weight: 700 !important;
 }
 html.light [class*="bg-[#00d3e0]/10"],
 html.light [class*="bg-[#00d3e0]/20"] {
-  background-color: #f0f9ff !important; /* Sky-50 */
-  border-color: #bae6fd !important; /* Sky-200 */
-  color: #0369a1 !important; /* Sky-700 */
+  background-color: #f4fbfe !important; /* Coolors Tint */
+  border-color: #90e0ef !important; /* Coolors 200 */
+  color: #0077b6 !important; /* Coolors 600 */
   font-weight: 700 !important;
 }
 html.light [class*="bg-amber-500/10"],
@@ -417,18 +417,18 @@ html.light [class*="bg-amber-500/20"] {
   font-weight: 700 !important;
 }
 
-/* 6. Primary Action Buttons (Turquoise Dreamland Pills) in Light Mode */
+/* 6. Primary Action Buttons (Coolors Ocean-Cyan Dreamland Pills) in Light Mode */
 html.light button[class*="bg-gradient-to-r from-[#00ffc8]"],
 html.light a[class*="bg-gradient-to-r from-[#00ffc8]"]:not([class*="bg-clip-text"]),
 html.light label[class*="bg-gradient-to-r from-[#00ffc8]"] {
-  background: linear-gradient(135deg, #00ffc8 0%, #00d3e0 50%, #0099ff 100%) !important;
-  color: #070B14 !important;
+  background: linear-gradient(135deg, #00b4d8 0%, #0077b6 50%, #023e8a 100%) !important;
+  color: #ffffff !important;
   font-weight: 900 !important;
-  box-shadow: 0 8px 24px -4px rgba(0, 211, 224, 0.3) !important;
+  box-shadow: 0 8px 24px -4px rgba(0, 150, 199, 0.35) !important;
 }
 html.light button[class*="bg-gradient-to-r from-[#00ffc8]"] *,
 html.light a[class*="bg-gradient-to-r from-[#00ffc8]"]:not([class*="bg-clip-text"]) * {
-  color: #070B14 !important;
+  color: #ffffff !important;
 }
 
 /* Universal Glyph Clearance for all Gradient Text Clips (prevents ascender clipping on tall glyphs) */
@@ -449,7 +449,7 @@ html.light h3 [class*="bg-clip-text"],
 html.light h4 [class*="bg-clip-text"],
 html.light div[class*="bg-clip-text"] {
   background-color: transparent !important;
-  background-image: linear-gradient(135deg, #059669 0%, #0284c7 60%, #0369a1 100%) !important;
+  background-image: linear-gradient(135deg, #023e8a 0%, #0077b6 50%, #00b4d8 100%) !important;
   -webkit-background-clip: text !important;
   background-clip: text !important;
   -webkit-text-fill-color: transparent !important;
@@ -464,21 +464,21 @@ html.light div[class*="bg-clip-text"] {
   line-height: normal;
 }
 
-/* 7. Navigation Pills, Header Borders & Search Bars (ZaminFlow Mint Identity) */
+/* 7. Navigation Pills, Header Borders & Search Bars (Coolors Ice-Ocean Identity) */
 html.light header.border-b {
-  border-color: rgba(183, 228, 199, 0.6) !important;
+  border-color: rgba(173, 232, 244, 0.8) !important;
 }
 html.light nav.hidden.lg\:flex,
 html.light .bg-white\/5.p-1,
 html.light .bg-white\/5.p-0\.5 {
-  background-color: #f6fbf8 !important; /* Soft mint off-white */
-  border-color: #b7e4c7 !important;
+  background-color: #f4fbfe !important; /* Soft frosted ice */
+  border-color: #ade8f4 !important;
 }
 html.light nav a:not([class*="bg-gradient-to-r"]) {
-  color: #2d6a4f !important;
+  color: #0077b6 !important;
 }
 html.light nav a:not([class*="bg-gradient-to-r"]):hover {
-  color: #081c15 !important;
+  color: #03045e !important;
   background-color: #ffffff !important;
   box-shadow: 0 1px 3px rgba(0, 153, 255, 0.08);
 }
@@ -488,23 +488,23 @@ html.light input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
 html.light select,
 html.light textarea,
 html.light .hidden.sm\:flex.items-center.gap-2.px-3\.5 {
-  background-color: #f6fbf8 !important;
-  border-color: #b7e4c7 !important;
-  color: #081c15 !important;
+  background-color: #f4fbfe !important;
+  border-color: #ade8f4 !important;
+  color: #03045e !important;
 }
 html.light input:focus,
 html.light select:focus,
 html.light textarea:focus,
 html.light .hidden.sm\:flex.items-center.gap-2.px-3\.5:focus-within {
   background-color: #ffffff !important;
-  border-color: #00d3e0 !important;
-  box-shadow: 0 0 0 3px rgba(0, 211, 224, 0.2) !important;
+  border-color: #00b4d8 !important;
+  box-shadow: 0 0 0 3px rgba(0, 180, 216, 0.25) !important;
 }
 html.light input::placeholder,
 html.light textarea::placeholder,
 html.light .hidden.sm\:flex.items-center.gap-2.px-3\.5 span {
-  color: #2d6a4f !important;
-  opacity: 0.6;
+  color: #0077b6 !important;
+  opacity: 0.65;
 }
 
 /* 9. Progress Bars, Mini Bar Chart Tracks & Radial Gauges */
@@ -512,14 +512,14 @@ html.light .bg-white\/5.h-2\.5,
 html.light .bg-white\/5.rounded-full.h-16,
 html.light .bg-white\/5.rounded-full.h-32,
 html.light .bg-white\/5.h-20 {
-  background-color: #eaf7f0 !important;
-  border-color: #b7e4c7 !important;
+  background-color: #caf0f8 !important;
+  border-color: #ade8f4 !important;
 }
 html.light [class*="bg-[#00d3e0]/30"] {
-  background-color: #b7e4c7 !important;
+  background-color: #ade8f4 !important;
 }
 html.light svg path.text-white\/10 {
-  stroke: #b7e4c7 !important;
+  stroke: #ade8f4 !important;
 }
 
 /* 10. Dividers & Borders */
@@ -527,11 +527,11 @@ html.light [class*="border-white/10"],
 html.light [class*="border-white/5"],
 html.light [class*="border-white/15"],
 html.light [class*="border-white/20"] {
-  border-color: #b7e4c7 !important;
+  border-color: #ade8f4 !important;
 }
 html.light [class*="divide-white/5"] > * + *,
 html.light [class*="divide-white/10"] > * + * {
-  border-color: rgba(183, 228, 199, 0.5) !important;
+  border-color: rgba(173, 232, 244, 0.6) !important;
 }
 
 /* 11. Accessible Accent Brand Text in Light Mode */
@@ -541,7 +541,7 @@ html.light [class*="text-[#00f0d0]"] {
 }
 html.light [class*="text-[#00d3e0]"],
 html.light [class*="text-[#00c5e7]"] {
-  color: #0088cc !important;
+  color: #0077b6 !important;
 }
 html.light [class*="text-amber-300"] {
   color: #b45309 !important;
@@ -550,43 +550,43 @@ html.light [class*="text-amber-300"] {
 /* 12. Left Vertical Icon Dock in Light Mode */
 html.light aside.hidden.xl\:flex {
   background-color: #ffffff !important;
-  border-color: #b7e4c7 !important;
-  box-shadow: 0 4px 16px rgba(0, 153, 255, 0.06) !important;
+  border-color: #ade8f4 !important;
+  box-shadow: 0 4px 16px rgba(0, 119, 182, 0.08) !important;
 }
 html.light aside.hidden.xl\:flex a:not([class*="bg-gradient-to-r"]) {
-  color: #2d6a4f !important;
+  color: #0077b6 !important;
 }
 html.light aside.hidden.xl\:flex a:not([class*="bg-gradient-to-r"]):hover {
-  color: #081c15 !important;
-  background-color: #f6fbf8 !important;
+  color: #03045e !important;
+  background-color: #caf0f8 !important;
 }
 html.light aside.hidden.xl\:flex .bg-white\/10 {
-  background-color: #b7e4c7 !important;
+  background-color: #ade8f4 !important;
 }
 
 /* 13. Table Headers & Rows in Light Mode */
 html.light table th {
-  background-color: #f6fbf8 !important;
-  color: #2d6a4f !important;
-  border-bottom: 1px solid #b7e4c7 !important;
+  background-color: #caf0f8 !important;
+  color: #023e8a !important;
+  border-bottom: 1px solid #ade8f4 !important;
   font-weight: 700 !important;
 }
 html.light table td {
-  border-bottom: 1px solid rgba(183, 228, 199, 0.5) !important;
-  color: #081c15 !important;
+  border-bottom: 1px solid rgba(173, 232, 244, 0.6) !important;
+  color: #03045e !important;
 }
 html.light table tr:hover td {
-  background-color: #f6fbf8 !important;
+  background-color: #f4fbfe !important;
 }
 
 /* 14. Interactive Hover States in Light Mode */
 html.light [class*="hover:bg-white/[0.04]"]:hover,
 html.light [class*="hover:bg-white/5"]:hover,
 html.light [class*="hover:bg-white/10"]:hover {
-  background-color: #f6fbf8 !important;
+  background-color: #caf0f8 !important;
 }
 html.light [class*="hover:text-white"]:hover {
-  color: #081c15 !important;
+  color: #03045e !important;
 }
 
 /* 15. Defensive Isolation against Third-Party Browser Extension Floating Dark Mode Widgets */

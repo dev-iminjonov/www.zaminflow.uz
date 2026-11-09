@@ -49,7 +49,7 @@ export default function LiveWorkflowSimulatorSection({ isDark = false }: { isDar
 
           <h2
             className={`text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-[1.25] sm:leading-[1.3] mb-4 ${
-              isDark ? "text-white" : "text-[#081c15]"
+              isDark ? "text-white" : "text-[#03045e]"
             }`}
           >
             {t.simulatorSection.titleStart}{" "}

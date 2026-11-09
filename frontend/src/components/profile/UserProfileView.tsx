@@ -574,7 +574,7 @@ export default function UserProfileView({
 
   return (
     <div className={`min-h-screen py-5 px-3 sm:px-6 relative overflow-x-hidden font-sans antialiased select-none pb-20 transition-colors duration-300 ${
-      isDark ? "bg-[#0d1013] text-white" : "bg-[#f4fbf7] text-[#081c15]"
+      isDark ? "bg-[#0d1013] text-white" : "bg-[#f4fbf7] text-[#03045e]"
     }`}>
       {/* 1. AMBIENT DREAMLAND BACKDROP AURORAS */}
       <div className="absolute top-10 -left-40 w-[600px] h-[600px] pointer-events-none z-0">
@@ -603,12 +603,12 @@ export default function UserProfileView({
       <div className={`relative z-10 max-w-[1420px] mx-auto rounded-[36px] border p-4 sm:p-8 flex flex-col gap-6 transition-colors duration-300 ${
         isDark
           ? "bg-[#14181d]/90 backdrop-blur-2xl shadow-[0_25px_80px_rgba(0,153,255,0.18)] border-white/10 text-white"
-          : "bg-white/95 backdrop-blur-2xl shadow-[0_25px_80px_rgba(0,153,255,0.08)] border-[#b7e4c7] text-[#081c15]"
+          : "bg-white/95 backdrop-blur-2xl shadow-[0_25px_80px_rgba(0,153,255,0.08)] border-[#ade8f4] text-[#03045e]"
       }`}>
 
         {/* 1. TOP HEADER NAVIGATION */}
         <header className={`flex flex-wrap items-center justify-between gap-4 pb-4 border-b ${
-          isDark ? "border-white/10" : "border-[#b7e4c7]"
+          isDark ? "border-white/10" : "border-[#ade8f4]"
         }`}>
           <Link href={`/dashboard/${role}`} className="flex items-center shrink-0 transition-transform hover:scale-105">
             <ZaminFlowLogo mode={themeMode} size="md" />

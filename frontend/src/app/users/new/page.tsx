@@ -102,7 +102,7 @@ export default function AddNewUserPage() {
   return (
     <div
       className={`min-h-screen font-sans antialiased pb-20 relative overflow-hidden transition-colors duration-300 ${
-        isDark ? "bg-[#0d1013] text-[#E8F1F2]" : "bg-[#f6fbf8] text-[#081c15]"
+        isDark ? "bg-[#0d1013] text-[#E8F1F2]" : "bg-[#f4fbfe] text-[#03045e]"
       }`}
     >
       {/* 1. AMBIENT TURQUOISE DREAMLAND BACKDROP AURORAS */}
@@ -139,7 +139,7 @@ export default function AddNewUserPage() {
       {/* Frosted ZaminFlow Global Top Header */}
       <header
         className={`sticky top-0 z-40 backdrop-blur-xl border-b transition-colors duration-300 ${
-          isDark ? "bg-[#0d1013]/80 border-white/10" : "bg-white/80 border-[#b7e4c7]/60"
+          isDark ? "bg-[#0d1013]/80 border-white/10" : "bg-white/80 border-[#ade8f4]/60"
         }`}
       >
         <div className="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
@@ -148,7 +148,7 @@ export default function AddNewUserPage() {
               <ZaminFlowLogo size="md" mode={themeMode} />
             </Link>
             <span className={`text-xs font-black uppercase tracking-wider px-2.5 py-1 rounded-full border ${
-              isDark ? "border-white/10 text-gray-400 bg-white/5" : "border-[#b7e4c7] text-[#2d6a4f] bg-[#eaf7f0]"
+              isDark ? "border-white/10 text-gray-400 bg-white/5" : "border-[#ade8f4] text-[#0077b6] bg-[#eaf7f0]"
             }`}>
               {uT.addUserTitle}
             </span>
@@ -162,7 +162,7 @@ export default function AddNewUserPage() {
               className={`text-xs font-bold px-4 py-2 rounded-full border transition-all flex items-center gap-1.5 cursor-pointer shadow-xs ${
                 isDark
                   ? "border-white/15 bg-white/5 hover:bg-white/10 text-white"
-                  : "border-[#b7e4c7] bg-white hover:bg-[#b7e4c7]/20 text-[#081c15]"
+                  : "border-[#ade8f4] bg-white hover:bg-[#ade8f4]/20 text-[#03045e]"
               }`}
             >
               <span>←</span>
@@ -182,7 +182,7 @@ export default function AddNewUserPage() {
             className={`w-9 h-9 rounded-full border flex items-center justify-center transition shadow-xs ${
               isDark
                 ? "border-white/15 bg-white/5 text-gray-300 hover:text-white hover:bg-white/10"
-                : "border-[#b7e4c7] bg-white text-[#081c15] hover:bg-[#b7e4c7]/20"
+                : "border-[#ade8f4] bg-white text-[#03045e] hover:bg-[#ade8f4]/20"
             }`}
             aria-label="Back to users list"
           >
@@ -194,7 +194,7 @@ export default function AddNewUserPage() {
             <h1 className="text-2xl sm:text-3xl font-black tracking-tight">
               {uT.addUserTitle}
             </h1>
-            <p className={`text-xs mt-0.5 ${isDark ? "text-gray-400" : "text-[#2d6a4f]"}`}>
+            <p className={`text-xs mt-0.5 ${isDark ? "text-gray-400" : "text-[#0077b6]"}`}>
               {uT.addUserSubtitle}
             </p>
           </div>
@@ -205,7 +205,7 @@ export default function AddNewUserPage() {
           className={`w-full lg:w-[48%] max-w-xl rounded-3xl border p-6 sm:p-8 backdrop-blur-xl transition-all ${
             isDark
               ? "bg-[#14181d]/90 border-white/10 shadow-[0_10px_35px_rgba(0,0,0,0.5)]"
-              : "bg-white/95 border-[#b7e4c7]/80 shadow-[0_10px_35px_rgba(0,153,255,0.08)]"
+              : "bg-white/95 border-[#ade8f4]/80 shadow-[0_10px_35px_rgba(0,153,255,0.08)]"
           }`}
         >
           {serverError && (
@@ -234,7 +234,7 @@ export default function AddNewUserPage() {
                       ? "border-rose-400 bg-rose-500/10"
                       : isDark
                       ? "bg-[#0d1013] border-white/15 text-white focus:border-[#00d3e0] focus:ring-2 focus:ring-[#00d3e0]/20"
-                      : "bg-[#f6fbf8] border-[#b7e4c7] text-[#081c15] focus:border-[#00d3e0] focus:ring-2 focus:ring-[#00d3e0]/20"
+                      : "bg-[#f4fbfe] border-[#ade8f4] text-[#03045e] focus:border-[#00d3e0] focus:ring-2 focus:ring-[#00d3e0]/20"
                   }`}
                 />
                 {errors.firstName && (
@@ -258,7 +258,7 @@ export default function AddNewUserPage() {
                       ? "border-rose-400 bg-rose-500/10"
                       : isDark
                       ? "bg-[#0d1013] border-white/15 text-white focus:border-[#00d3e0] focus:ring-2 focus:ring-[#00d3e0]/20"
-                      : "bg-[#f6fbf8] border-[#b7e4c7] text-[#081c15] focus:border-[#00d3e0] focus:ring-2 focus:ring-[#00d3e0]/20"
+                      : "bg-[#f4fbfe] border-[#ade8f4] text-[#03045e] focus:border-[#00d3e0] focus:ring-2 focus:ring-[#00d3e0]/20"
                   }`}
                 />
                 {errors.lastName && (
@@ -284,7 +284,7 @@ export default function AddNewUserPage() {
                     ? "border-rose-400 bg-rose-500/10"
                     : isDark
                     ? "bg-[#0d1013] border-white/15 text-white focus:border-[#00d3e0] focus:ring-2 focus:ring-[#00d3e0]/20"
-                    : "bg-[#f6fbf8] border-[#b7e4c7] text-[#081c15] focus:border-[#00d3e0] focus:ring-2 focus:ring-[#00d3e0]/20"
+                    : "bg-[#f4fbfe] border-[#ade8f4] text-[#03045e] focus:border-[#00d3e0] focus:ring-2 focus:ring-[#00d3e0]/20"
                 }`}
               />
               {errors.username && (
@@ -305,7 +305,7 @@ export default function AddNewUserPage() {
                 className={`w-full px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-semibold border transition outline-none ${
                   isDark
                     ? "bg-[#0d1013] border-white/15 text-white placeholder-gray-500 focus:border-[#00d3e0] focus:ring-2 focus:ring-[#00d3e0]/20"
-                    : "bg-[#f6fbf8] border-[#b7e4c7] text-[#081c15] placeholder-gray-400 focus:border-[#00d3e0] focus:ring-2 focus:ring-[#00d3e0]/20"
+                    : "bg-[#f4fbfe] border-[#ade8f4] text-[#03045e] placeholder-gray-400 focus:border-[#00d3e0] focus:ring-2 focus:ring-[#00d3e0]/20"
                 }`}
               />
             </div>
@@ -327,7 +327,7 @@ export default function AddNewUserPage() {
                     ? "border-rose-400 bg-rose-500/10"
                     : isDark
                     ? "bg-[#0d1013] border-white/15 text-white focus:border-[#00d3e0] focus:ring-2 focus:ring-[#00d3e0]/20"
-                    : "bg-[#f6fbf8] border-[#b7e4c7] text-[#081c15] focus:border-[#00d3e0] focus:ring-2 focus:ring-[#00d3e0]/20"
+                    : "bg-[#f4fbfe] border-[#ade8f4] text-[#03045e] focus:border-[#00d3e0] focus:ring-2 focus:ring-[#00d3e0]/20"
                 }`}
               />
               {errors.email && (
@@ -353,7 +353,7 @@ export default function AddNewUserPage() {
                     ? "border-rose-400 bg-rose-500/10"
                     : isDark
                     ? "bg-[#0d1013] border-white/15 text-white focus:border-[#00d3e0] focus:ring-2 focus:ring-[#00d3e0]/20"
-                    : "bg-[#f6fbf8] border-[#b7e4c7] text-[#081c15] focus:border-[#00d3e0] focus:ring-2 focus:ring-[#00d3e0]/20"
+                    : "bg-[#f4fbfe] border-[#ade8f4] text-[#03045e] focus:border-[#00d3e0] focus:ring-2 focus:ring-[#00d3e0]/20"
                 }`}
               />
               {errors.phone && (
@@ -379,7 +379,7 @@ export default function AddNewUserPage() {
                       ? "border-rose-400 bg-rose-500/10"
                       : isDark
                       ? "bg-[#0d1013] border-white/15 text-white focus:border-[#00d3e0] focus:ring-2 focus:ring-[#00d3e0]/20"
-                      : "bg-[#f6fbf8] border-[#b7e4c7] text-[#081c15] focus:border-[#00d3e0] focus:ring-2 focus:ring-[#00d3e0]/20"
+                      : "bg-[#f4fbfe] border-[#ade8f4] text-[#03045e] focus:border-[#00d3e0] focus:ring-2 focus:ring-[#00d3e0]/20"
                   }`}
                 />
                 <button
@@ -417,7 +417,7 @@ export default function AddNewUserPage() {
                   className={`w-full appearance-none px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-semibold border transition cursor-pointer outline-none ${
                     isDark
                       ? "bg-[#0d1013] border-white/15 text-white focus:border-[#00d3e0]"
-                      : "bg-[#f6fbf8] border-[#b7e4c7] text-[#081c15] focus:border-[#00d3e0]"
+                      : "bg-[#f4fbfe] border-[#ade8f4] text-[#03045e] focus:border-[#00d3e0]"
                   }`}
                 >
                   <option value="All User">All User</option>

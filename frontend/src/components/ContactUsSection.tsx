@@ -83,7 +83,7 @@ export default function ContactUsSection({ isDark = false }: ContactUsSectionPro
       <div className="max-w-[760px] mx-auto px-4 sm:px-6 lg:px-8">
         {/* 1. SECTION HEADER (Centered Overline) */}
         <header className="text-center mb-6 sm:mb-8">
-          <div className="text-sm sm:text-base font-bold tracking-[0.08em] uppercase text-[#2d6a4f] dark:text-[#4be08a]">
+          <div className="text-sm sm:text-base font-bold tracking-[0.08em] uppercase text-[#0077b6] dark:text-[#4be08a]">
             {t.contact.badge}
           </div>
         </header>
@@ -93,12 +93,12 @@ export default function ContactUsSection({ isDark = false }: ContactUsSectionPro
           className={`rounded-[32px] p-7 sm:p-11 transition-all duration-300 shadow-xl border ${
             isDark
               ? "bg-[#13293D]/80 backdrop-blur-md border-white/10 text-white shadow-[0_10px_40px_rgba(0,0,0,0.3)]"
-              : "bg-white/85 backdrop-blur-md border border-[#b7e4c7] text-[#081c15] shadow-[0_10px_40px_rgba(8,28,21,0.06)]"
+              : "bg-white/85 backdrop-blur-md border border-[#ade8f4] text-[#03045e] shadow-[0_10px_40px_rgba(8,28,21,0.06)]"
           }`}
         >
           {isSubmitted ? (
             <div className="py-12 flex flex-col items-center justify-center text-center space-y-4">
-              <div className="w-16 h-16 rounded-full bg-[#52b788]/15 text-[#2d6a4f] dark:text-[#4be08a] flex items-center justify-center text-2xl font-bold">
+              <div className="w-16 h-16 rounded-full bg-[#00b4d8]/15 text-[#0077b6] dark:text-[#4be08a] flex items-center justify-center text-2xl font-bold">
                 ✓
               </div>
               <h3 className="text-2xl font-bold tracking-tight">
@@ -106,7 +106,7 @@ export default function ContactUsSection({ isDark = false }: ContactUsSectionPro
               </h3>
               <p
                 className={`max-w-md text-sm sm:text-base leading-relaxed ${
-                  isDark ? "text-white/70" : "text-[#2d6a4f]"
+                  isDark ? "text-white/70" : "text-[#0077b6]"
                 }`}
               >
                 {t.contact.successDesc}
@@ -114,7 +114,7 @@ export default function ContactUsSection({ isDark = false }: ContactUsSectionPro
               <button
                 type="button"
                 onClick={handleReset}
-                className="mt-6 px-6 py-2.5 rounded-full text-sm font-semibold bg-[#1b4332] text-white hover:bg-[#2d6a4f] transition-colors cursor-pointer"
+                className="mt-6 px-6 py-2.5 rounded-full text-sm font-semibold bg-[#023e8a] text-white hover:bg-[#0077b6] transition-colors cursor-pointer"
               >
                 {t.contact.sendAnother}
               </button>
@@ -143,10 +143,10 @@ export default function ContactUsSection({ isDark = false }: ContactUsSectionPro
                     value={formData.fullName}
                     onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
                     placeholder={t.contact.fullNamePlaceholder}
-                    className={`h-[52px] w-full px-4 rounded-[14px] text-base transition-all focus:outline-none focus:ring-2 focus:ring-[#52b788] ${
+                    className={`h-[52px] w-full px-4 rounded-[14px] text-base transition-all focus:outline-none focus:ring-2 focus:ring-[#00b4d8] ${
                       isDark
                         ? "bg-[#0A1926] border border-white/20 text-white placeholder-white/40"
-                        : "bg-white border border-[#95d5b2] text-[#081c15] placeholder-[#40916c]/70"
+                        : "bg-white border border-[#90e0ef] text-[#03045e] placeholder-[#0096c7]/70"
                     }`}
                   />
                 </div>
@@ -165,10 +165,10 @@ export default function ContactUsSection({ isDark = false }: ContactUsSectionPro
                     value={formData.contactInfo}
                     onChange={(e) => setFormData({ ...formData, contactInfo: e.target.value })}
                     placeholder={t.contact.phoneOrEmailPlaceholder}
-                    className={`h-[52px] w-full px-4 rounded-[14px] text-base transition-all focus:outline-none focus:ring-2 focus:ring-[#52b788] ${
+                    className={`h-[52px] w-full px-4 rounded-[14px] text-base transition-all focus:outline-none focus:ring-2 focus:ring-[#00b4d8] ${
                       isDark
                         ? "bg-[#0A1926] border border-white/20 text-white placeholder-white/40"
-                        : "bg-white border border-[#95d5b2] text-[#081c15] placeholder-[#40916c]/70"
+                        : "bg-white border border-[#90e0ef] text-[#03045e] placeholder-[#0096c7]/70"
                     }`}
                   />
                 </div>
@@ -186,10 +186,10 @@ export default function ContactUsSection({ isDark = false }: ContactUsSectionPro
                   id="cr"
                   value={formData.role}
                   onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-                  className={`h-[52px] w-full px-4 rounded-[14px] text-base transition-all focus:outline-none focus:ring-2 focus:ring-[#52b788] cursor-pointer ${
+                  className={`h-[52px] w-full px-4 rounded-[14px] text-base transition-all focus:outline-none focus:ring-2 focus:ring-[#00b4d8] cursor-pointer ${
                     isDark
                       ? "bg-[#0A1926] border border-white/20 text-white"
-                      : "bg-white border border-[#95d5b2] text-[#081c15]"
+                      : "bg-white border border-[#90e0ef] text-[#03045e]"
                   }`}
                 >
                   <option value="Farmer">{t.contact.roles.farmer}</option>
@@ -214,10 +214,10 @@ export default function ContactUsSection({ isDark = false }: ContactUsSectionPro
                   value={formData.message}
                   onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                   placeholder={t.contact.messagePlaceholder}
-                  className={`min-h-[130px] p-4 rounded-[14px] text-base resize-y transition-all focus:outline-none focus:ring-2 focus:ring-[#52b788] ${
+                  className={`min-h-[130px] p-4 rounded-[14px] text-base resize-y transition-all focus:outline-none focus:ring-2 focus:ring-[#00b4d8] ${
                     isDark
                       ? "bg-[#0A1926] border border-white/20 text-white placeholder-white/40"
-                      : "bg-white border border-[#95d5b2] text-[#081c15] placeholder-[#40916c]/70"
+                      : "bg-white border border-[#90e0ef] text-[#03045e] placeholder-[#0096c7]/70"
                   }`}
                 />
               </div>
@@ -229,7 +229,7 @@ export default function ContactUsSection({ isDark = false }: ContactUsSectionPro
                   required
                   checked={formData.agreed}
                   onChange={(e) => setFormData({ ...formData, agreed: e.target.checked })}
-                  className="w-5 h-5 rounded mt-0.5 accent-[#1b4332] dark:accent-[#087a3c] cursor-pointer flex-shrink-0"
+                  className="w-5 h-5 rounded mt-0.5 accent-[#023e8a] dark:accent-[#087a3c] cursor-pointer flex-shrink-0"
                 />
                 <span>
                   {t.contact.consent}
@@ -246,7 +246,7 @@ export default function ContactUsSection({ isDark = false }: ContactUsSectionPro
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full min-h-[54px] rounded-full font-bold text-[17px] text-white bg-[#1b4332] hover:bg-[#2d6a4f] active:scale-[0.99] transition-all duration-200 cursor-pointer shadow-md hover:shadow-lg disabled:opacity-60 disabled:cursor-not-allowed mt-2 flex items-center justify-center gap-2"
+                className="w-full min-h-[54px] rounded-full font-bold text-[17px] text-white bg-[#023e8a] hover:bg-[#0077b6] active:scale-[0.99] transition-all duration-200 cursor-pointer shadow-md hover:shadow-lg disabled:opacity-60 disabled:cursor-not-allowed mt-2 flex items-center justify-center gap-2"
               >
                 {isSubmitting ? (
                   <>

@@ -10,7 +10,7 @@ export default function TermsPage() {
 
   return (
     <div className={`min-h-screen py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden font-sans select-none transition-colors duration-300 ${
-      isDark ? "bg-[#0d1013] text-[#E8F1F2]" : "bg-[#f6fbf8] text-[#081c15]"
+      isDark ? "bg-[#0d1013] text-[#E8F1F2]" : "bg-[#f4fbfe] text-[#03045e]"
     }`}>
       {/* 1. AMBIENT TURQUOISE DREAMLAND BACKDROP AURORAS */}
       <div className="absolute top-10 -left-40 w-[600px] h-[600px] pointer-events-none z-0">
@@ -37,7 +37,7 @@ export default function TermsPage() {
 
       <div className="max-w-[920px] mx-auto relative z-10">
         {/* Header */}
-        <header className={`flex items-center justify-between border-b pb-6 mb-8 ${isDark ? "border-white/10" : "border-[#b7e4c7]/60"}`}>
+        <header className={`flex items-center justify-between border-b pb-6 mb-8 ${isDark ? "border-white/10" : "border-[#ade8f4]/60"}`}>
           <Link href="/" className="inline-flex transition-transform hover:scale-105">
             <ZaminFlowLogo size="md" mode={themeMode} />
           </Link>
@@ -48,7 +48,7 @@ export default function TermsPage() {
               className={`text-xs font-bold px-4 py-2 rounded-full border transition flex items-center gap-1.5 shadow-xs ${
                 isDark
                   ? "border-white/15 bg-white/5 hover:bg-white/10 text-white"
-                  : "border-[#b7e4c7] bg-white hover:bg-[#b7e4c7]/20 text-[#081c15] shadow-xs"
+                  : "border-[#ade8f4] bg-white hover:bg-[#ade8f4]/20 text-[#03045e] shadow-xs"
               }`}
             >
               <span>&larr;</span>
@@ -61,7 +61,7 @@ export default function TermsPage() {
         <article className={`rounded-[36px] p-8 sm:p-12 border shadow-xl space-y-8 backdrop-blur-2xl ${
           isDark
             ? "bg-[#14181d]/90 border-white/10 shadow-[0_25px_80px_rgba(0,153,255,0.18)]"
-            : "bg-white border-[#b7e4c7] shadow-[0_10px_35px_rgba(0,153,255,0.06)]"
+            : "bg-white border-[#ade8f4] shadow-[0_10px_35px_rgba(0,153,255,0.06)]"
         }`}>
           <div>
             <div className={`text-xs font-bold uppercase tracking-widest mb-2 ${

@@ -146,7 +146,7 @@ export default function SlidingAuthCard({ initialMode = "signin" }: SlidingAuthC
 
   return (
     <div className={`min-h-screen w-full flex flex-col items-center justify-center p-4 sm:p-6 lg:p-8 select-none relative font-sans overflow-x-hidden transition-colors duration-300 ${
-      isDark ? "bg-[#0d1013] text-[#E8F1F2]" : "bg-[#f6fbf8] text-[#081c15]"
+      isDark ? "bg-[#0d1013] text-[#E8F1F2]" : "bg-[#f4fbfe] text-[#03045e]"
     }`}>
       
       {/* 1. CREATIVE TURQUOISE DREAMLAND BACKGROUND AURORAS */}
@@ -186,7 +186,7 @@ export default function SlidingAuthCard({ initialMode = "signin" }: SlidingAuthC
         <div className="flex items-center gap-3 sm:gap-4">
           {/* Language Switcher */}
           <div className={`flex rounded-full p-1 border text-xs font-bold backdrop-blur-md ${
-            isDark ? "bg-white/5 border-white/10" : "bg-white border-[#b7e4c7] shadow-xs"
+            isDark ? "bg-white/5 border-white/10" : "bg-white border-[#ade8f4] shadow-xs"
           }`}>
             {(["uz", "ru", "en"] as const).map((loc) => (
               <button
@@ -196,7 +196,7 @@ export default function SlidingAuthCard({ initialMode = "signin" }: SlidingAuthC
                 className={`px-3 py-1 rounded-full uppercase transition-all ${
                   locale === loc
                     ? "bg-gradient-to-r from-[#00ffc8] to-[#0099ff] text-[#070B14] font-black shadow-md"
-                    : isDark ? "text-white/60 hover:text-white" : "text-[#2d6a4f] hover:text-[#081c15]"
+                    : isDark ? "text-white/60 hover:text-white" : "text-[#0077b6] hover:text-[#03045e]"
                 }`}
               >
                 {loc}
@@ -212,7 +212,7 @@ export default function SlidingAuthCard({ initialMode = "signin" }: SlidingAuthC
             className={`px-4 py-1.5 rounded-full text-xs font-bold border transition-all flex items-center gap-1.5 ${
               isDark
                 ? "border-white/10 bg-white/5 hover:bg-white/10 text-white/80 hover:text-white"
-                : "border-[#b7e4c7] bg-white hover:bg-[#b7e4c7]/20 text-[#081c15] shadow-xs"
+                : "border-[#ade8f4] bg-white hover:bg-[#ade8f4]/20 text-[#03045e] shadow-xs"
             }`}
           >
             <span>←</span>
@@ -235,7 +235,7 @@ export default function SlidingAuthCard({ initialMode = "signin" }: SlidingAuthC
         className={`relative w-full max-w-[840px] min-h-[520px] rounded-[32px] overflow-hidden border z-10 transition-all ${
           isDark
             ? "bg-[#14181d] border-white/10 shadow-[0_25px_80px_rgba(0,153,255,0.22)]"
-            : "bg-white border-[#b7e4c7] shadow-[0_10px_35px_rgba(0,153,255,0.08)]"
+            : "bg-white border-[#ade8f4] shadow-[0_10px_35px_rgba(0,153,255,0.08)]"
         } ${isSignUp ? "right-panel-active" : ""}`}
       >
         

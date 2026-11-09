@@ -65,7 +65,7 @@ function ResetPasswordContent() {
 
   return (
     <div className={`min-h-screen flex flex-col justify-center items-center py-10 px-4 relative overflow-hidden font-sans select-none transition-colors duration-300 ${
-      isDark ? "bg-[#0d1013] text-[#E8F1F2]" : "bg-[#f6fbf8] text-[#081c15]"
+      isDark ? "bg-[#0d1013] text-[#E8F1F2]" : "bg-[#f4fbfe] text-[#03045e]"
     }`}>
       {/* Ambient Auroras */}
       <div className="absolute top-10 -left-40 w-[600px] h-[600px] pointer-events-none z-0">
@@ -101,7 +101,7 @@ function ResetPasswordContent() {
             className={`text-xs font-bold px-3.5 py-1.5 rounded-full border transition ${
               isDark
                 ? "text-white/70 hover:text-white bg-white/5 border-white/10 hover:bg-white/10"
-                : "text-[#081c15] hover:text-emerald-700 bg-white border-[#b7e4c7] shadow-xs hover:bg-[#f6fbf8]"
+                : "text-[#03045e] hover:text-emerald-700 bg-white border-[#ade8f4] shadow-xs hover:bg-[#f4fbfe]"
             }`}
           >
             ← Kiriş sahifasiga
@@ -113,7 +113,7 @@ function ResetPasswordContent() {
       <div className={`relative z-10 max-w-[920px] w-full rounded-[36px] border overflow-hidden grid grid-cols-1 md:grid-cols-12 min-h-[460px] ${
         isDark
           ? "bg-[#12161a] border-white/10 shadow-[0_25px_80px_rgba(0,153,255,0.22)]"
-          : "bg-white/95 border-[#b7e4c7] shadow-[0_25px_80px_rgba(0,153,255,0.06)]"
+          : "bg-white/95 border-[#ade8f4] shadow-[0_25px_80px_rgba(0,153,255,0.06)]"
       }`}>
         {/* Left Hero */}
         <div className="md:col-span-5 bg-gradient-to-br from-[#00ffc8] to-[#00b4d8] text-[#070B14] p-8 sm:p-10 flex flex-col justify-between relative overflow-hidden">
@@ -146,18 +146,18 @@ function ResetPasswordContent() {
               <div className="w-14 h-14 rounded-full bg-[#00ffc8]/15 border border-[#00ffc8]/30 text-[#00ffc8] text-2xl flex items-center justify-center mx-auto mb-2">
                 ✓
               </div>
-              <h3 className={`text-xl font-black ${isDark ? "text-white" : "text-[#081c15]"}`}>Parol yangilandi!</h3>
-              <p className={`text-xs leading-relaxed max-w-sm mx-auto ${isDark ? "text-white/60" : "text-[#2d6a4f]"}`}>
+              <h3 className={`text-xl font-black ${isDark ? "text-white" : "text-[#03045e]"}`}>Parol yangilandi!</h3>
+              <p className={`text-xs leading-relaxed max-w-sm mx-auto ${isDark ? "text-white/60" : "text-[#0077b6]"}`}>
                 Yangi parolingiz muvaffaqiyatli saqlandi. Kiriş sahifasiga yönaltirilmoqdasiz...
               </p>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <h3 className={`text-xl sm:text-2xl font-black tracking-tight ${isDark ? "text-white" : "text-[#081c15]"}`}>
+                <h3 className={`text-xl sm:text-2xl font-black tracking-tight ${isDark ? "text-white" : "text-[#03045e]"}`}>
                   Parolni özgartiş
                 </h3>
-                <p className={`text-xs mt-1 ${isDark ? "text-white/50" : "text-[#2d6a4f]"}`}>
+                <p className={`text-xs mt-1 ${isDark ? "text-white/50" : "text-[#0077b6]"}`}>
                   Yangi xavfsiz parolni kiriting va tasdiqlang
                 </p>
               </div>
@@ -169,7 +169,7 @@ function ResetPasswordContent() {
               )}
 
               <div className="space-y-1.5">
-                <label className={`text-xs font-bold block ${isDark ? "text-white/70" : "text-[#081c15]"}`}>Yangi parol</label>
+                <label className={`text-xs font-bold block ${isDark ? "text-white/70" : "text-[#03045e]"}`}>Yangi parol</label>
                 <div className="relative">
                   <input
                     type={showPassword ? "text" : "password"}
@@ -180,7 +180,7 @@ function ResetPasswordContent() {
                     className={`w-full px-4 py-3 rounded-2xl border text-sm outline-none transition ${
                       isDark
                         ? "bg-black/40 border-white/10 text-white placeholder-white/30 focus:border-[#00ffc8]"
-                        : "bg-[#f6fbf8] border-[#b7e4c7] text-[#081c15] placeholder-slate-400 focus:border-[#00d3e0]"
+                        : "bg-[#f4fbfe] border-[#ade8f4] text-[#03045e] placeholder-slate-400 focus:border-[#00d3e0]"
                     }`}
                   />
                   <button
@@ -207,7 +207,7 @@ function ResetPasswordContent() {
               </div>
 
               <div className="space-y-1.5">
-                <label className={`text-xs font-bold block ${isDark ? "text-white/70" : "text-[#081c15]"}`}>Parolni tasdiqlang</label>
+                <label className={`text-xs font-bold block ${isDark ? "text-white/70" : "text-[#03045e]"}`}>Parolni tasdiqlang</label>
                 <input
                   type={showPassword ? "text" : "password"}
                   required
@@ -217,7 +217,7 @@ function ResetPasswordContent() {
                   className={`w-full px-4 py-3 rounded-2xl border text-sm outline-none transition ${
                     isDark
                       ? "bg-black/40 border-white/10 text-white placeholder-white/30 focus:border-[#00ffc8]"
-                      : "bg-[#f6fbf8] border-[#b7e4c7] text-[#081c15] placeholder-slate-400 focus:border-[#00d3e0]"
+                      : "bg-[#f4fbfe] border-[#ade8f4] text-[#03045e] placeholder-slate-400 focus:border-[#00d3e0]"
                   }`}
                 />
               </div>

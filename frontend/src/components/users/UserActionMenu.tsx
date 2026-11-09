@@ -59,7 +59,7 @@ export default function UserActionMenu({
         className={`w-7 h-7 flex items-center justify-center rounded-full transition cursor-pointer ${
           isDark
             ? "text-gray-400 hover:text-white hover:bg-white/10"
-            : "text-gray-500 hover:text-gray-900 hover:bg-[#b7e4c7]/30"
+            : "text-gray-500 hover:text-gray-900 hover:bg-[#ade8f4]/30"
         }`}
         aria-haspopup="true"
         aria-expanded={isOpen}
@@ -73,7 +73,7 @@ export default function UserActionMenu({
           className={`absolute right-0 mt-2 w-44 rounded-2xl border py-1.5 z-40 shadow-xl backdrop-blur-xl animate-in fade-in zoom-in-95 duration-100 ${
             isDark
               ? "bg-[#14181d]/95 border-white/15 text-white"
-              : "bg-white/95 border-[#b7e4c7] text-[#081c15] shadow-[0_10px_35px_rgba(0,153,255,0.12)]"
+              : "bg-white/95 border-[#ade8f4] text-[#03045e] shadow-[0_10px_35px_rgba(0,153,255,0.12)]"
           }`}
           role="menu"
           aria-orientation="vertical"

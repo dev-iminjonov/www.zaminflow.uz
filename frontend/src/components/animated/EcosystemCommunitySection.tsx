@@ -65,7 +65,7 @@ export default function EcosystemCommunitySection({ isDark = false }: { isDark?:
 
             <h2
               className={`text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-[1.25] sm:leading-[1.3] mb-6 ${
-                isDark ? "text-white" : "text-[#081c15]"
+                isDark ? "text-white" : "text-[#03045e]"
               }`}
             >
               Yetkazuvchidan Zavodgacha:{" "}
@@ -80,7 +80,7 @@ export default function EcosystemCommunitySection({ isDark = false }: { isDark?:
 
             <p
               className={`text-base sm:text-lg leading-relaxed mb-8 ${
-                isDark ? "text-[#E8F1F2]/75" : "text-[#2d6a4f]"
+                isDark ? "text-[#E8F1F2]/75" : "text-[#0077b6]"
               }`}
             >
               Fermerlar sifatli sut yetkazadi, haydovchilar sovuq zanjirni kafolatlaydi,
@@ -117,7 +117,7 @@ export default function EcosystemCommunitySection({ isDark = false }: { isDark?:
                 className={`p-4 sm:p-5 rounded-[24px] border backdrop-blur-xl transition-all duration-300 hover:scale-[1.02] shadow-lg flex items-center gap-4 ${
                   isDark
                     ? "bg-[#14181d]/85 border-white/10"
-                    : "bg-white/95 border-[#b7e4c7] shadow-[0_10px_30px_rgba(0,0,0,0.03)]"
+                    : "bg-white/95 border-[#ade8f4] shadow-[0_10px_30px_rgba(0,0,0,0.03)]"
                 }`}
                 style={{
                   transform: `translateX(${idx % 2 === 0 ? "0px" : "12px"})`,
@@ -139,7 +139,7 @@ export default function EcosystemCommunitySection({ isDark = false }: { isDark?:
                   <div className="flex items-center justify-between gap-2 mb-1">
                     <span
                       className={`text-sm font-extrabold truncate ${
-                        isDark ? "text-white" : "text-[#081c15]"
+                        isDark ? "text-white" : "text-[#03045e]"
                       }`}
                     >
                       {actor.name}

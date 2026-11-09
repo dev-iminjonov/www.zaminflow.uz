@@ -252,7 +252,7 @@ export default function LandingLiveStatistics({
       className={`min-h-[640px] flex items-center transition-colors duration-300 ${
         isDark
           ? "bg-[linear-gradient(160deg,#0a1b24_0%,#052331_100%)] text-[#E8F1F2]"
-          : "bg-[linear-gradient(160deg,#d8f3dc_0%,#b7e4c7_100%)] text-[#081c15]"
+          : "bg-[linear-gradient(160deg,#caf0f8_0%,#ade8f4_100%)] text-[#03045e]"
       }`}
     >
       <section
@@ -272,13 +272,13 @@ export default function LandingLiveStatistics({
             </span>
           </h2>
 
-          <p className="text-base sm:text-lg leading-[1.6] text-[#2d6a4f] dark:text-slate-300 max-w-[420px] mb-4">
+          <p className="text-base sm:text-lg leading-[1.6] text-[#0077b6] dark:text-slate-300 max-w-[420px] mb-4">
             {t.liveStats.subtitle}
           </p>
 
           {/* Muted last-updated indicator if older than 5 minutes */}
           {isStale && stats && (
-            <div className="text-xs text-[#2d6a4f]/80 dark:text-slate-400 font-mono mb-2">
+            <div className="text-xs text-[#0077b6]/80 dark:text-slate-400 font-mono mb-2">
               {t.liveStats.lastUpdated}: {lastUpdatedFormatted}
             </div>
           )}
@@ -301,41 +301,41 @@ export default function LandingLiveStatistics({
             className="grid grid-cols-2 gap-3 sm:gap-5 list-none p-0 m-0"
           >
             {/* Card 1: Successful Deals */}
-            <li className="bg-white/80 dark:bg-[#101E27]/80 backdrop-blur-md border border-[#b7e4c7] dark:border-white/10 rounded-[28px] shadow-[0_10px_40px_rgba(8,28,21,0.06)] dark:shadow-[0_10px_40px_rgba(0,0,0,0.4)] py-8 px-4 sm:py-12 sm:px-5 text-center transition-transform hover:-translate-y-1 duration-200 box-border flex flex-col justify-center">
+            <li className="bg-white/80 dark:bg-[#101E27]/80 backdrop-blur-md border border-[#ade8f4] dark:border-white/10 rounded-[28px] shadow-[0_10px_40px_rgba(8,28,21,0.06)] dark:shadow-[0_10px_40px_rgba(0,0,0,0.4)] py-8 px-4 sm:py-12 sm:px-5 text-center transition-transform hover:-translate-y-1 duration-200 box-border flex flex-col justify-center">
               <div>
-                <span className="font-mono font-bold text-[clamp(26px,4vw,52px)] leading-none tracking-[-0.02em] text-[#081c15] dark:text-[#E8F1F2]">
+                <span className="font-mono font-bold text-[clamp(26px,4vw,52px)] leading-none tracking-[-0.02em] text-[#03045e] dark:text-[#E8F1F2]">
                   {stats ? formatWholeNumber(animatedDeals) : "—"}
                 </span>
               </div>
-              <div className="mt-3 sm:mt-4 text-xs sm:text-base text-[#2d6a4f] dark:text-slate-300 font-medium">
+              <div className="mt-3 sm:mt-4 text-xs sm:text-base text-[#0077b6] dark:text-slate-300 font-medium">
                 {t.liveStats.successfulDeals}
               </div>
             </li>
 
             {/* Card 2: Platform Users */}
-            <li className="bg-white/80 dark:bg-[#101E27]/80 backdrop-blur-md border border-[#b7e4c7] dark:border-white/10 rounded-[28px] shadow-[0_10px_40px_rgba(8,28,21,0.06)] dark:shadow-[0_10px_40px_rgba(0,0,0,0.4)] py-8 px-4 sm:py-12 sm:px-5 text-center transition-transform hover:-translate-y-1 duration-200 box-border flex flex-col justify-center">
+            <li className="bg-white/80 dark:bg-[#101E27]/80 backdrop-blur-md border border-[#ade8f4] dark:border-white/10 rounded-[28px] shadow-[0_10px_40px_rgba(8,28,21,0.06)] dark:shadow-[0_10px_40px_rgba(0,0,0,0.4)] py-8 px-4 sm:py-12 sm:px-5 text-center transition-transform hover:-translate-y-1 duration-200 box-border flex flex-col justify-center">
               <div>
-                <span className="font-mono font-bold text-[clamp(26px,4vw,52px)] leading-none tracking-[-0.02em] text-[#081c15] dark:text-[#E8F1F2]">
+                <span className="font-mono font-bold text-[clamp(26px,4vw,52px)] leading-none tracking-[-0.02em] text-[#03045e] dark:text-[#E8F1F2]">
                   {stats ? formatWholeNumber(animatedUsers) : "—"}
                 </span>
               </div>
-              <div className="mt-3 sm:mt-4 text-xs sm:text-base text-[#2d6a4f] dark:text-slate-300 font-medium">
+              <div className="mt-3 sm:mt-4 text-xs sm:text-base text-[#0077b6] dark:text-slate-300 font-medium">
                 {t.liveStats.platformUsers}
               </div>
             </li>
 
             {/* Card 3: Milk Traded & Delivered */}
             <li
-              className="bg-white/80 dark:bg-[#101E27]/80 backdrop-blur-md border border-[#b7e4c7] dark:border-white/10 rounded-[28px] shadow-[0_10px_40px_rgba(8,28,21,0.06)] dark:shadow-[0_10px_40px_rgba(0,0,0,0.4)] py-8 px-4 sm:py-12 sm:px-5 text-center transition-transform hover:-translate-y-1 duration-200 box-border flex flex-col justify-center"
+              className="bg-white/80 dark:bg-[#101E27]/80 backdrop-blur-md border border-[#ade8f4] dark:border-white/10 rounded-[28px] shadow-[0_10px_40px_rgba(8,28,21,0.06)] dark:shadow-[0_10px_40px_rgba(0,0,0,0.4)] py-8 px-4 sm:py-12 sm:px-5 text-center transition-transform hover:-translate-y-1 duration-200 box-border flex flex-col justify-center"
               title={stats ? milkDisplay.fullText : undefined}
             >
               <div>
                 {stats ? (
                   <>
-                    <span className="font-mono font-bold text-[clamp(26px,4vw,52px)] leading-none tracking-[-0.02em] text-[#081c15] dark:text-[#E8F1F2]">
+                    <span className="font-mono font-bold text-[clamp(26px,4vw,52px)] leading-none tracking-[-0.02em] text-[#03045e] dark:text-[#E8F1F2]">
                       {milkDisplay.compactNumber}
                     </span>
-                    <span className="font-mono font-bold text-lg sm:text-[22px] text-[#40916c] dark:text-[#22d36b] ml-1.5">
+                    <span className="font-mono font-bold text-lg sm:text-[22px] text-[#0096c7] dark:text-[#22d36b] ml-1.5">
                       {milkDisplay.unitLabel}
                     </span>
                     <span className="sr-only">
@@ -343,28 +343,28 @@ export default function LandingLiveStatistics({
                     </span>
                   </>
                 ) : (
-                  <span className="font-mono font-bold text-[clamp(26px,4vw,52px)] leading-none tracking-[-0.02em] text-[#081c15] dark:text-[#E8F1F2]">
+                  <span className="font-mono font-bold text-[clamp(26px,4vw,52px)] leading-none tracking-[-0.02em] text-[#03045e] dark:text-[#E8F1F2]">
                     —
                   </span>
                 )}
               </div>
-              <div className="mt-3 sm:mt-4 text-xs sm:text-base text-[#2d6a4f] dark:text-slate-300 font-medium">
+              <div className="mt-3 sm:mt-4 text-xs sm:text-base text-[#0077b6] dark:text-slate-300 font-medium">
                 {t.liveStats.milkTradedDelivered}
               </div>
             </li>
 
             {/* Card 4: Daily Average Raw Milk Price */}
             <li
-              className="bg-white/80 dark:bg-[#101E27]/80 backdrop-blur-md border border-[#b7e4c7] dark:border-white/10 rounded-[28px] shadow-[0_10px_40px_rgba(8,28,21,0.06)] dark:shadow-[0_10px_40px_rgba(0,0,0,0.4)] py-8 px-4 sm:py-12 sm:px-5 text-center transition-transform hover:-translate-y-1 duration-200 box-border flex flex-col justify-center"
+              className="bg-white/80 dark:bg-[#101E27]/80 backdrop-blur-md border border-[#ade8f4] dark:border-white/10 rounded-[28px] shadow-[0_10px_40px_rgba(8,28,21,0.06)] dark:shadow-[0_10px_40px_rgba(0,0,0,0.4)] py-8 px-4 sm:py-12 sm:px-5 text-center transition-transform hover:-translate-y-1 duration-200 box-border flex flex-col justify-center"
               title={stats && stats.avgRawMilkPrice.value > 0 ? `${t.liveStats.dailyAvgPrice} (${stats.avgRawMilkPrice.date})` : undefined}
             >
               <div>
                 {stats && stats.avgRawMilkPrice.value > 0 ? (
                   <>
-                    <span className="font-mono font-bold text-[clamp(26px,4vw,52px)] leading-none tracking-[-0.02em] text-[#081c15] dark:text-[#E8F1F2]">
+                    <span className="font-mono font-bold text-[clamp(26px,4vw,52px)] leading-none tracking-[-0.02em] text-[#03045e] dark:text-[#E8F1F2]">
                       {formatWholeNumber(animatedPrice)}
                     </span>
-                    <span className="font-mono font-bold text-base sm:text-[20px] text-[#40916c] dark:text-[#22d36b] ml-1.5">
+                    <span className="font-mono font-bold text-base sm:text-[20px] text-[#0096c7] dark:text-[#22d36b] ml-1.5">
                       UZS/L
                     </span>
                     <span className="sr-only">
@@ -372,12 +372,12 @@ export default function LandingLiveStatistics({
                     </span>
                   </>
                 ) : (
-                  <span className="font-mono font-bold text-[clamp(26px,4vw,52px)] leading-none tracking-[-0.02em] text-[#081c15] dark:text-[#E8F1F2]">
+                  <span className="font-mono font-bold text-[clamp(26px,4vw,52px)] leading-none tracking-[-0.02em] text-[#03045e] dark:text-[#E8F1F2]">
                     —
                   </span>
                 )}
               </div>
-              <div className="mt-3 sm:mt-4 text-xs sm:text-base text-[#2d6a4f] dark:text-slate-300 font-medium">
+              <div className="mt-3 sm:mt-4 text-xs sm:text-base text-[#0077b6] dark:text-slate-300 font-medium">
                 {t.liveStats.dailyAvgPrice}
               </div>
             </li>

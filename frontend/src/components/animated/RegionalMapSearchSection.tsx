@@ -53,7 +53,7 @@ export default function RegionalMapSearchSection({ isDark = false }: { isDark?: 
 
           <h2
             className={`text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-[1.25] sm:leading-[1.3] mb-4 ${
-              isDark ? "text-white" : "text-[#081c15]"
+              isDark ? "text-white" : "text-[#03045e]"
             }`}
           >
             {t.mapSection.titleStart}
@@ -283,7 +283,7 @@ export default function RegionalMapSearchSection({ isDark = false }: { isDark?: 
             className={`relative z-30 self-start max-w-sm w-full sm:w-auto rounded-3xl p-5 backdrop-blur-2xl border shadow-2xl transition-all duration-300 animate-in fade-in slide-in-from-top-2 ${
               isDark
                 ? "bg-[#14181d]/90 border-[#00d3e0]/40 text-white shadow-[0_20px_50px_rgba(0,0,0,0.7)]"
-                : "bg-white/95 border-[#00d3e0]/40 text-[#081c15] shadow-[0_20px_50px_rgba(0,153,255,0.15)]"
+                : "bg-white/95 border-[#00d3e0]/40 text-[#03045e] shadow-[0_20px_50px_rgba(0,153,255,0.15)]"
             }`}
           >
             <div className="flex items-center justify-between mb-2">

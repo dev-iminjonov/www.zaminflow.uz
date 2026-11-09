@@ -23,7 +23,7 @@ export default function BenefitsSection({ isDark = false }: { isDark?: boolean }
             </div>
             <h2
               className={`text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-[1.25] sm:leading-[1.3] ${
-                isDark ? "text-white" : "text-[#081c15]"
+                isDark ? "text-white" : "text-[#03045e]"
               }`}
             >
               {t.benefitsSection.title1}
@@ -39,7 +39,7 @@ export default function BenefitsSection({ isDark = false }: { isDark?: boolean }
 
           <p
             className={`text-sm sm:text-base max-w-md leading-relaxed font-normal ${
-              isDark ? "text-[#E8F1F2]/70" : "text-[#2d6a4f]"
+              isDark ? "text-[#E8F1F2]/70" : "text-[#0077b6]"
             }`}
           >
             {t.benefitsSection.subtitle}
@@ -54,7 +54,7 @@ export default function BenefitsSection({ isDark = false }: { isDark?: boolean }
               className={`group relative rounded-[32px] p-8 transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_20px_50px_rgba(0,153,255,0.18)] border flex flex-col justify-between ${
                 isDark
                   ? "bg-[#14181d]/80 backdrop-blur-xl border-white/10 hover:border-[#00d3e0]/50"
-                  : "bg-white/90 backdrop-blur-xl border-[#b7e4c7] hover:border-[#00d3e0]/60 shadow-[0_10px_35px_rgba(0,0,0,0.04)]"
+                  : "bg-white/90 backdrop-blur-xl border-[#ade8f4] hover:border-[#00d3e0]/60 shadow-[0_10px_35px_rgba(0,0,0,0.04)]"
               }`}
             >
               {/* Subtle Card Glow Header Gradient */}
@@ -74,7 +74,7 @@ export default function BenefitsSection({ isDark = false }: { isDark?: boolean }
 
                 <h3
                   className={`text-xl font-bold tracking-tight mb-3 ${
-                    isDark ? "text-white" : "text-[#081c15]"
+                    isDark ? "text-white" : "text-[#03045e]"
                   }`}
                 >
                   {card.title}
@@ -82,7 +82,7 @@ export default function BenefitsSection({ isDark = false }: { isDark?: boolean }
 
                 <p
                   className={`text-sm leading-relaxed ${
-                    isDark ? "text-[#E8F1F2]/65" : "text-[#2d6a4f]"
+                    isDark ? "text-[#E8F1F2]/65" : "text-[#0077b6]"
                   }`}
                 >
                   {card.description}

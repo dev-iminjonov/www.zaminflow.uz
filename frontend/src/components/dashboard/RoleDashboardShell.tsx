@@ -342,7 +342,7 @@ export default function RoleDashboardShell({
 
   return (
     <div className={`min-h-screen py-5 px-3 sm:px-6 relative overflow-x-hidden font-sans antialiased select-none transition-colors duration-300 ${
-      isDark ? "bg-[#0d1013] text-[#E8F1F2]" : "bg-[#f6fbf8] text-[#081c15]"
+      isDark ? "bg-[#0d1013] text-[#E8F1F2]" : "bg-[#f4fbfe] text-[#03045e]"
     }`}>
       {/* 1. AMBIENT DREAMLAND BACKDROP AURORAS */}
       <div className="absolute top-10 -left-40 w-[550px] h-[550px] pointer-events-none z-0">
@@ -375,11 +375,11 @@ export default function RoleDashboardShell({
       <div className={`relative z-10 max-w-[1380px] mx-auto rounded-[36px] border p-4 sm:p-8 flex flex-col gap-6 transition-colors duration-300 ${
         isDark
           ? "bg-[#14181d]/90 backdrop-blur-2xl shadow-[0_25px_80px_rgba(0,153,255,0.18)] border-white/10 text-[#E8F1F2]"
-          : "bg-white/95 backdrop-blur-2xl shadow-[0_10px_35px_rgba(0,153,255,0.06)] border-[#b7e4c7] text-[#081c15]"
+          : "bg-white/95 backdrop-blur-2xl shadow-[0_10px_35px_rgba(0,153,255,0.06)] border-[#ade8f4] text-[#03045e]"
       }`}>
         {/* 1. TOP NAV BAR */}
         <header className={`flex flex-wrap items-center justify-between gap-4 pb-4 border-b ${
-          isDark ? "border-white/10" : "border-[#b7e4c7]/60"
+          isDark ? "border-white/10" : "border-[#ade8f4]/60"
         }`}>
           {/* Brand Logo */}
           <Link href={`/dashboard/${role}`} className="flex items-center shrink-0 transition-transform hover:scale-105">
@@ -388,7 +388,7 @@ export default function RoleDashboardShell({
 
           {/* Navigation Pill Tabs */}
           <nav className={`hidden lg:flex items-center gap-1.5 p-1 rounded-full border text-xs font-semibold backdrop-blur-md ${
-            isDark ? "bg-white/5 border-white/10" : "bg-[#f6fbf8] border-[#b7e4c7]"
+            isDark ? "bg-white/5 border-white/10" : "bg-[#f4fbfe] border-[#ade8f4]"
           }`}>
             {navItems.map((item) => {
               const active = isNavItemActive(item);
@@ -401,7 +401,7 @@ export default function RoleDashboardShell({
                       ? "px-4 py-1.5 rounded-full bg-gradient-to-r from-[#00ffc8] via-[#00d3e0] to-[#0099ff] text-[#070B14] shadow-md font-black transition"
                       : isDark
                       ? "px-4 py-1.5 rounded-full text-white/70 hover:text-white hover:bg-white/5 transition"
-                      : "px-4 py-1.5 rounded-full text-[#2d6a4f] hover:text-[#081c15] hover:bg-white shadow-xs transition"
+                      : "px-4 py-1.5 rounded-full text-[#0077b6] hover:text-[#03045e] hover:bg-white shadow-xs transition"
                   }
                 >
                   {item.label}
@@ -411,7 +411,7 @@ export default function RoleDashboardShell({
             <Link
               href={`/dashboard/${role}/profile`}
               className={`px-4 py-1.5 rounded-full transition ${
-                isDark ? "text-white/70 hover:text-white hover:bg-white/5" : "text-[#2d6a4f] hover:text-[#081c15] hover:bg-white shadow-xs"
+                isDark ? "text-white/70 hover:text-white hover:bg-white/5" : "text-[#0077b6] hover:text-[#03045e] hover:bg-white shadow-xs"
               }`}
             >
               Profile
@@ -429,7 +429,7 @@ export default function RoleDashboardShell({
 
             {/* Language Selector */}
             <div className={`flex rounded-full p-1 border text-[11px] font-bold ${
-              isDark ? "border-white/10 bg-white/5" : "border-[#b7e4c7] bg-[#f6fbf8]"
+              isDark ? "border-white/10 bg-white/5" : "border-[#ade8f4] bg-[#f4fbfe]"
             }`} role="group" aria-label="Language selector">
               {(["uz", "ru", "en"] as const).map((loc) => (
                 <button
@@ -651,7 +651,7 @@ export default function RoleDashboardShell({
         html.light .zf-unified-subpage h1 {
           font-size: clamp(1.5rem, 2.4vw, 2rem) !important;
           line-height: 1.15 !important;
-          color: #081c15 !important;
+          color: #03045e !important;
         }
         html.light .zf-unified-subpage [class*="bg-[rgba(255,255,255"],
         html.light .zf-unified-subpage [class*="bg-white/80"],
@@ -660,39 +660,39 @@ export default function RoleDashboardShell({
         html.light .zf-unified-subpage [class*="bg-white/[0.03]"],
         html.light .zf-unified-subpage [class*="bg-white/[0.02]"] {
           background-color: #ffffff !important;
-          border-color: #b7e4c7 !important;
-          color: #081c15 !important;
+          border-color: #ade8f4 !important;
+          color: #03045e !important;
           box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03) !important;
         }
         html.light .zf-unified-subpage [class*="text-white"] {
-          color: #081c15 !important;
+          color: #03045e !important;
         }
         html.light .zf-unified-subpage [class*="text-white/80"],
         html.light .zf-unified-subpage [class*="text-white/70"] {
-          color: #2d6a4f !important;
+          color: #0077b6 !important;
         }
         html.light .zf-unified-subpage [class*="text-white/50"],
         html.light .zf-unified-subpage [class*="text-white/40"] {
-          color: #52b788 !important;
+          color: #00b4d8 !important;
         }
         html.light .zf-unified-subpage input,
         html.light .zf-unified-subpage select,
         html.light .zf-unified-subpage textarea {
           background-color: #ffffff !important;
-          border-color: #b7e4c7 !important;
-          color: #081c15 !important;
+          border-color: #ade8f4 !important;
+          color: #03045e !important;
         }
         html.light .zf-unified-subpage input:focus,
         html.light .zf-unified-subpage select:focus,
         html.light .zf-unified-subpage textarea:focus {
-          border-color: #2d6a4f !important;
+          border-color: #0077b6 !important;
           box-shadow: 0 0 12px rgba(45, 106, 79, 0.2) !important;
         }
         html.light .zf-unified-subpage table th,
         html.light .zf-unified-subpage table td,
         html.light .zf-unified-subpage tr {
-          border-color: #b7e4c7 !important;
-          color: #081c15 !important;
+          border-color: #ade8f4 !important;
+          color: #03045e !important;
         }
 
         /* 4. Common Brand Gradients */

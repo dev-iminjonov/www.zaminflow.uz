@@ -25,7 +25,7 @@ export default function LanguageSwitcher({ className = "", isDark }: LanguageSwi
       className={`inline-flex items-center rounded-full p-1 border transition-all duration-200 ${
         isDark
           ? "bg-[#0A1926]/90 border-[#247BA0]/40 shadow-xs"
-          : "bg-white/90 border-[#b7e4c7] shadow-xs"
+          : "bg-white/90 border-[#ade8f4] shadow-xs"
       } ${className}`}
     >
       {LANGUAGES.map((lang) => {
@@ -41,10 +41,10 @@ export default function LanguageSwitcher({ className = "", isDark }: LanguageSwi
               isActive
                 ? isDark
                   ? "bg-[#1B98E0] text-[#13293D] shadow-sm scale-100"
-                  : "bg-[#1b4332] text-white shadow-sm scale-100"
+                  : "bg-[#023e8a] text-white shadow-sm scale-100"
                 : isDark
                 ? "text-[#E8F1F2]/75 hover:text-white hover:bg-white/10"
-                : "text-[#2d6a4f] hover:text-[#081c15] hover:bg-[#d8f3dc]/60"
+                : "text-[#0077b6] hover:text-[#03045e] hover:bg-[#caf0f8]/60"
             }`}
           >
             {lang.label}

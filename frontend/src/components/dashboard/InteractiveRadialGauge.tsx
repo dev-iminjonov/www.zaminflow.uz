@@ -102,7 +102,7 @@ export default function InteractiveRadialGauge({
         <div className="absolute bottom-1 flex flex-col items-center text-center pointer-events-none">
           <span
             className="text-3xl font-black font-mono tracking-tight transition-all duration-300"
-            style={{ color: isDark ? "#ffffff" : "#081c15" }}
+            style={{ color: isDark ? "#ffffff" : "#03045e" }}
           >
             {activeSegment ? `${activeSegment.percentage.toFixed(1)}${centerUnit}` : "--"}
           </span>

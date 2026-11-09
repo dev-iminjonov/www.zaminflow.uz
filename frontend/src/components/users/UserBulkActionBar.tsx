@@ -65,7 +65,7 @@ export default function UserBulkActionBar({
           className={`w-7 h-7 flex items-center justify-center rounded-full transition cursor-pointer disabled:opacity-20 disabled:pointer-events-none ${
             isDark
               ? "border border-white/10 text-gray-300 hover:bg-white/10 hover:text-white"
-              : "border border-[#b7e4c7] text-[#081c15] hover:bg-[#b7e4c7]/30"
+              : "border border-[#ade8f4] text-[#03045e] hover:bg-[#ade8f4]/30"
           }`}
           aria-label="Bulk actions menu"
           aria-haspopup="true"
@@ -79,7 +79,7 @@ export default function UserBulkActionBar({
             className={`absolute left-0 mt-2 w-44 rounded-2xl border py-1.5 z-40 shadow-xl backdrop-blur-xl animate-in fade-in zoom-in-95 ${
               isDark
                 ? "bg-[#14181d]/95 border-white/15 text-white"
-                : "bg-white/95 border-[#b7e4c7] text-[#081c15] shadow-[0_10px_35px_rgba(0,153,255,0.12)]"
+                : "bg-white/95 border-[#ade8f4] text-[#03045e] shadow-[0_10px_35px_rgba(0,153,255,0.12)]"
             }`}
             role="menu"
           >

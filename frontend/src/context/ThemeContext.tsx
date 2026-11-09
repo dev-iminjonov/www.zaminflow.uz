@@ -120,7 +120,7 @@ export function ThemeToggleButton({
       className={`${sizeClasses} rounded-full flex items-center justify-center font-bold transition-all duration-200 border cursor-pointer select-none shrink-0 ${
         isDark
           ? "bg-[#212d40]/60 border-[#273246] text-[#22d36b] hover:bg-[#2c374b]/60 shadow-xs"
-          : "bg-white/90 border-[#b7e4c7] text-[#081c15] hover:bg-[#d8f3dc] hover:border-[#52b788] shadow-xs"
+          : "bg-white/90 border-[#ade8f4] text-[#03045e] hover:bg-[#caf0f8] hover:border-[#00b4d8] shadow-xs"
       } ${className}`}
     >
       <span aria-hidden="true">{isDark ? "☀️" : "🌙"}</span>

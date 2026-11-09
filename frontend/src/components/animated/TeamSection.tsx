@@ -111,7 +111,7 @@ export default function TeamSection({ isDark = false }: { isDark?: boolean }) {
             </div>
             <h2
               className={`text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-[1.25] sm:leading-[1.3] ${
-                isDark ? "text-white" : "text-[#081c15]"
+                isDark ? "text-white" : "text-[#03045e]"
               }`}
             >
               {t.team.titleStart}{" "}
@@ -125,7 +125,7 @@ export default function TeamSection({ isDark = false }: { isDark?: boolean }) {
             </h2>
             <p
               className={`mt-3 text-sm sm:text-base max-w-lg ${
-                isDark ? "text-[#E8F1F2]/70" : "text-[#2d6a4f]"
+                isDark ? "text-[#E8F1F2]/70" : "text-[#0077b6]"
               }`}
             >
               {t.team.subtitle}
@@ -179,7 +179,7 @@ export default function TeamSection({ isDark = false }: { isDark?: boolean }) {
               className={`snap-start shrink-0 w-[280px] sm:w-[320px] rounded-[32px] overflow-hidden border transition-all duration-300 group hover:-translate-y-2 hover:shadow-[0_20px_50px_rgba(0,153,255,0.22)] ${
                 isDark
                   ? "bg-[#14181d]/85 backdrop-blur-xl border-white/10 hover:border-[#00d3e0]/50"
-                  : "bg-white/95 backdrop-blur-xl border-[#b7e4c7] hover:border-[#00d3e0]/60 shadow-[0_10px_35px_rgba(0,0,0,0.04)]"
+                  : "bg-white/95 backdrop-blur-xl border-[#ade8f4] hover:border-[#00d3e0]/60 shadow-[0_10px_35px_rgba(0,0,0,0.04)]"
               }`}
             >
               {/* Studio Portrait Frame */}
@@ -203,7 +203,7 @@ export default function TeamSection({ isDark = false }: { isDark?: boolean }) {
               <div className="p-6">
                 <h3
                   className={`text-lg sm:text-xl font-bold tracking-tight mb-1 ${
-                    isDark ? "text-white" : "text-[#081c15]"
+                    isDark ? "text-white" : "text-[#03045e]"
                   }`}
                 >
                   {member.name}
