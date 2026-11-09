@@ -21,12 +21,14 @@ const teamMembers: TeamMember[] = [
     linkedin: "https://www.linkedin.com/in/imuhammadaziz/?lipi=urn%3Ali%3Apage%3Ad_flagship3_profile_view_base_contact_details%3B%2FEcJS8O%2FRgGnZhvFIPzRPg%3D%3D",
     github: "https://github.com/dev-iminjonov",
     instagram: "https://instagram.com/im.mukhammadaziz",
+    email: "iminjonov.mukhammadaziz@gmail.com",
   },
   {
     name: "Sevinçoy Soporboyeva",
     roleKey: "coFounder",
     image: "/images/team-sevinchoy.webp",
     linkedin: "https://www.linkedin.com/in/sevinchoy-soporboyeva/?lipi=urn%3Ali%3Apage%3Ad_flagship3_profile_view_base_contact_details%3Bj1rNvFTKSPGzLrYpN01iZg%3D%3D",
+    email: "sevinchoysoporboyeva@gmail.com",
   },
   {
     name: "Akrom Abdumanov",
@@ -34,6 +36,7 @@ const teamMembers: TeamMember[] = [
     image: "/images/team-akrom.webp",
     linkedin: "https://www.linkedin.com/in/akrom-abdumanov-6457a039a/?lipi=urn%3Ali%3Apage%3Ad_flagship3_profile_view_base_contact_details%3BR1yI1s4YSVqIWhj3gbHoUQ%3D%3D",
     instagram: "https://instagram.com/abdumanovakrom",
+    email: "abdumanovjamshid1@gmail.com",
   },
   {
     name: "Şohjahon Abdufattohov",

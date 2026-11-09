@@ -24,6 +24,7 @@ const teamMembers: TeamMember[] = [
     linkedin: "https://www.linkedin.com/in/imuhammadaziz/",
     github: "https://github.com/dev-iminjonov",
     instagram: "https://instagram.com/im.mukhammadaziz",
+    email: "iminjonov.mukhammadaziz@gmail.com",
   },
   {
     name: "Sevinçoy Soporboyeva",
@@ -31,6 +32,7 @@ const teamMembers: TeamMember[] = [
     badge: "Operatsiyalar",
     image: "/images/team-sevinchoy.webp",
     linkedin: "https://www.linkedin.com/in/sevinchoy-soporboyeva/",
+    email: "sevinchoysoporboyeva@gmail.com",
   },
   {
     name: "Akrom Abdumanov",
@@ -39,6 +41,7 @@ const teamMembers: TeamMember[] = [
     image: "/images/team-akrom.webp",
     linkedin: "https://www.linkedin.com/in/akrom-abdumanov-6457a039a/",
     instagram: "https://instagram.com/abdumanovakrom",
+    email: "abdumanovjamshid1@gmail.com",
   },
   {
     name: "Şohjahon Abdufattohov",
