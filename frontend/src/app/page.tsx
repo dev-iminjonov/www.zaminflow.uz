@@ -3,21 +3,32 @@
 import Link from "next/link";
 import React, { useState, useEffect } from "react";
 import ZaminFlowLogo from "@/components/ZaminFlowLogo";
-import HeroEcosystemVisual from "@/components/HeroEcosystemVisual";
-import OurTeamCarousel from "@/components/OurTeamCarousel";
-import LandingLiveStatistics from "@/components/LandingLiveStatistics";
-import ContactUsSection from "@/components/ContactUsSection";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { useLanguage } from "@/context/LanguageContext";
 import { useTheme } from "@/context/ThemeContext";
+
+// New Animated Design System Components
+import { HandDrawnUnderline, SplashDoodle, CurvedConnectorLine } from "@/components/animated/DoodleAccents";
+import HeroPhoneHandMockup from "@/components/animated/HeroPhoneHandMockup";
+import AnimatedStatsBar from "@/components/animated/AnimatedStatsBar";
+import BenefitsSection from "@/components/animated/BenefitsSection";
+import TeamSection from "@/components/animated/TeamSection";
+import RegionalMapSearchSection from "@/components/animated/RegionalMapSearchSection";
+import TestimonialsSlider from "@/components/animated/TestimonialsSlider";
+import LiveWorkflowSimulatorSection from "@/components/animated/LiveWorkflowSimulatorSection";
+import FaqEmailSection from "@/components/animated/FaqEmailSection";
+import AnimatedFooter from "@/components/animated/AnimatedFooter";
 
 export default function LandingPage() {
   const { t, locale } = useLanguage();
   const { themeMode, setThemeMode, isDark } = useTheme();
   const [activeSection, setActiveSection] = useState<string>("company");
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navItems = [
     { id: "company", label: t.nav.company },
+    { id: "benefits", label: t.nav.benefits },
+    { id: "simulator", label: t.nav.demo },
     { id: "team", label: t.nav.team },
     { id: "stats", label: t.nav.stats },
     { id: "contact", label: t.nav.contact },
@@ -26,16 +37,18 @@ export default function LandingPage() {
   useEffect(() => {
     if (typeof window === "undefined") return;
 
-    // 1. Initial hash detection
     const initialHash = window.location.hash.replace("#", "");
-    if (["company", "team", "stats", "contact"].includes(initialHash)) {
+    if (["company", "benefits", "simulator", "team", "stats", "contact"].includes(initialHash)) {
       setActiveSection(initialHash);
+      setTimeout(() => {
+        const el = document.getElementById(initialHash);
+        if (el) el.scrollIntoView({ behavior: "smooth" });
+      }, 120);
     }
 
-    // 2. Hash and History event listeners
     const handleHash = () => {
       const hash = window.location.hash.replace("#", "");
-      if (["company", "team", "stats", "contact"].includes(hash)) {
+      if (["company", "benefits", "simulator", "team", "stats", "contact"].includes(hash)) {
         setActiveSection(hash);
       }
     };
@@ -43,7 +56,6 @@ export default function LandingPage() {
     window.addEventListener("hashchange", handleHash);
     window.addEventListener("popstate", handleHash);
 
-    // 3. Dynamic Scroll-Spy with IntersectionObserver
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -58,7 +70,7 @@ export default function LandingPage() {
       }
     );
 
-    ["company", "team", "stats", "contact"].forEach((id) => {
+    ["company", "benefits", "simulator", "team", "stats", "contact"].forEach((id) => {
       const el = document.getElementById(id);
       if (el) observer.observe(el);
     });
@@ -72,14 +84,9 @@ export default function LandingPage() {
 
   return (
     <div
-      className={`min-h-screen font-sans selection:bg-[#52b788]/25 overflow-x-hidden relative transition-colors duration-500 scroll-smooth flex flex-col justify-between ${
-        isDark ? "text-[#E8F1F2]" : "text-[#081c15]"
+      className={`min-h-screen font-sans selection:bg-[#00ffc8]/30 overflow-x-hidden relative transition-colors duration-500 scroll-smooth flex flex-col justify-between ${
+        isDark ? "bg-[#0d1013] text-[#E8F1F2]" : "bg-[#f6fbf8] text-[#081c15]"
       }`}
-      style={{
-        background: isDark
-          ? "radial-gradient(circle at 75% 50%, #13293D 0%, #0A1926 70%)"
-          : "radial-gradient(circle at 75% 50%, #d8f3dc 0%, #f6fbf8 60%)",
-      }}
     >
       {/* 0. ORGANIZATION JSON-LD STRUCTURED DATA */}
       <script
@@ -94,101 +101,61 @@ export default function LandingPage() {
             description: "B2B Dairy Supply Chain & FinTech Escrow Platform in Uzbekistan",
             contactPoint: {
               "@type": "ContactPoint",
-              telephone: "+998-71-200-00-24",
-              contactType: "customer service",
+              telephone: "+998 71 200 45 67",
+              contactType: "Customer Support",
+              email: "support@zaminflow.uz",
               areaServed: "UZ",
               availableLanguage: ["Uzbek", "Russian", "English"],
             },
           }),
         }}
       />
-      {/* 1. TOPOGRAPHIC CONTOUR LINES TEXTURE (SVG Overlay with subtle opacity) */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden z-0 opacity-[0.045] dark:opacity-[0.06]">
-        <svg
-          className="w-full h-full min-w-[1200px]"
-          viewBox="0 0 1440 900"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M-100 200 C300 150, 600 400, 1000 220 C1200 120, 1400 300, 1600 200"
-            stroke="currentColor"
-            strokeWidth="1.5"
-          />
-          <path
-            d="M-100 280 C320 220, 580 460, 980 300 C1180 200, 1380 360, 1600 280"
-            stroke="currentColor"
-            strokeWidth="1.5"
-          />
-          <path
-            d="M-100 360 C340 290, 560 520, 960 380 C1160 280, 1360 420, 1600 360"
-            stroke="currentColor"
-            strokeWidth="1.5"
-          />
-          <path
-            d="M-100 440 C360 360, 540 580, 940 460 C1140 360, 1340 480, 1600 440"
-            stroke="currentColor"
-            strokeWidth="1.5"
-          />
-          <path
-            d="M-100 520 C380 430, 520 640, 920 540 C1120 440, 1320 540, 1600 520"
-            stroke="currentColor"
-            strokeWidth="1.5"
-          />
-          <path
-            d="M-100 600 C400 500, 500 700, 900 620 C1100 520, 1300 600, 1600 600"
-            stroke="currentColor"
-            strokeWidth="1.5"
-          />
-          <path
-            d="M-100 680 C420 570, 480 760, 880 700 C1080 600, 1280 660, 1600 680"
-            stroke="currentColor"
-            strokeWidth="1.5"
-          />
-        </svg>
-      </div>
 
-      {/* 2. SOFT GLOWING EMERALD LIGHT AURA (Right Side Illumination) */}
-      <div className="absolute top-1/4 right-0 w-[550px] lg:w-[750px] h-[550px] lg:h-[750px] pointer-events-none z-0">
+      {/* 1. SOFT BACKGROUND GRADIENT BLOBS (Turquoise Dreamland Glows) */}
+      <div className="absolute top-0 right-0 w-[550px] lg:w-[850px] h-[550px] lg:h-[850px] pointer-events-none z-0">
         <div
-          className={`w-full h-full rounded-full blur-[140px] opacity-70 ${
-            isDark
-              ? "bg-gradient-to-br from-[#00C853]/15 via-[#1B98E0]/15 to-transparent"
-              : "bg-gradient-to-br from-[#52b788]/25 via-[#74c69d]/20 to-transparent"
-          }`}
+          className="w-full h-full rounded-full blur-[140px] opacity-40 dark:opacity-25"
+          style={{
+            background: "radial-gradient(circle, #00ffc8 0%, #00d3e0 40%, #0099ff 70%, transparent 100%)",
+          }}
         />
       </div>
 
-      {/* 3. FLOATING PILL-SHAPED TOP NAVIGATION BAR */}
+      <div className="absolute top-[35%] left-0 w-[450px] h-[450px] pointer-events-none z-0">
+        <div
+          className="w-full h-full rounded-full blur-[130px] opacity-35 dark:opacity-20"
+          style={{
+            background: "radial-gradient(circle, #00d3e0 0%, #0099ff 50%, transparent 100%)",
+          }}
+        />
+      </div>
+
+      {/* 2. STICKY FROSTED NAVBAR (Reference 2.2) */}
       <header className="sticky top-4 inset-x-0 z-50 flex justify-center px-4 w-full">
         <nav
-          className={`w-[92%] max-w-[1240px] h-16 rounded-full px-4 sm:px-7 flex items-center justify-between transition-all duration-300 ${
+          className={`w-[96%] max-w-[1240px] h-16 sm:h-18 rounded-full px-4 sm:px-8 flex items-center justify-between transition-all duration-300 shadow-lg ${
             isDark
-              ? "bg-[#13293D]/80 backdrop-blur-xl border border-[#247BA0]/40 shadow-[0_8px_32px_rgba(0,0,0,0.35)] text-[#E8F1F2]"
-              : "bg-white/85 backdrop-blur-xl border border-[#b7e4c7] shadow-[0_8px_32px_rgba(8,28,21,0.06)] text-[#081c15]"
+              ? "bg-[#14181d]/85 backdrop-blur-xl border border-white/10 text-white"
+              : "bg-white/90 backdrop-blur-xl border border-[#b7e4c7] text-[#081c15] shadow-[0_8px_32px_rgba(0,153,255,0.08)]"
           }`}
         >
-          {/* Logo "Zaminflow" (Exact Official Assets) */}
+          {/* Brand Logo */}
           <Link href="/" className="flex items-center shrink-0">
             <ZaminFlowLogo mode={themeMode} size="md" />
           </Link>
 
-          {/* Center Navigation Links (Dynamic Scroll-Spy) */}
-          <div className="hidden md:flex items-center gap-7 text-xs font-bold tracking-tight">
+          {/* Center Navigation Links (Desktop) */}
+          <div className="hidden lg:flex items-center gap-7 text-xs sm:text-sm font-bold tracking-tight">
             {navItems.map((item) => {
               const isActive = activeSection === item.id;
               return (
                 <a
                   key={item.id}
                   href={`#${item.id}`}
-                  className={`transition pb-0.5 ${
+                  className={`transition-all pb-0.5 ${
                     isActive
-                      ? "text-[#2d6a4f] dark:text-[#22d36b] border-b-2 border-[#2d6a4f] dark:border-[#22d36b] font-bold"
-                      : `${
-                          isDark
-                            ? "text-[#E8F1F2]/80 hover:text-white"
-                            : "text-[#1b4332]/85 hover:text-[#2d6a4f]"
-                        } hover:underline underline-offset-4 font-semibold`
+                      ? "text-[#00ffc8] dark:text-[#00ffc8] border-b-2 border-[#00d3e0] font-black"
+                      : "text-slate-600 dark:text-white/70 hover:text-[#00d3e0] font-semibold"
                   }`}
                 >
                   {item.label}
@@ -197,9 +164,8 @@ export default function LandingPage() {
             })}
           </div>
 
-          {/* Right Actions: Language Switcher + Dark Mode Toggle + Sign up Button */}
+          {/* Right Actions: Lang + Theme + Login/Register Pill Buttons */}
           <div className="flex items-center gap-2 sm:gap-3">
-            {/* Language Switcher */}
             <LanguageSwitcher isDark={isDark} />
 
             {/* Dark Mode Toggle */}
@@ -209,94 +175,139 @@ export default function LandingPage() {
               title={`Switch to ${isDark ? "Light" : "Dark"} Mode`}
               className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold transition border ${
                 isDark
-                  ? "bg-[#006494]/50 border-[#247BA0] text-[#1B98E0] hover:bg-[#247BA0]/40"
-                  : "bg-white/90 border-[#b7e4c7] text-[#081c15] hover:bg-[#d8f3dc] shadow-xs"
+                  ? "bg-[#1a2026] border-white/10 text-[#00ffc8] hover:bg-white/10"
+                  : "bg-white border-[#b7e4c7] text-[#081c15] hover:bg-slate-100 shadow-xs"
               }`}
             >
               {isDark ? "☀️" : "🌙"}
             </button>
 
-            {/* Dark Navy Blue "Sign up" Button */}
+            {/* Login Pill (Desktop) */}
+            <Link
+              href="/sign-in"
+              className={`hidden sm:inline-flex px-4 py-2 rounded-full font-bold text-xs transition border ${
+                isDark
+                  ? "border-white/20 text-white hover:bg-white/10"
+                  : "border-slate-300 text-slate-800 hover:bg-slate-100"
+              }`}
+            >
+              {t.nav.signIn}
+            </Link>
+
+            {/* Register / Get Started Dark Pill */}
             <Link
               href="/sign-up"
-              className={`px-4 sm:px-6 py-2 sm:py-2.5 rounded-full font-bold text-xs sm:text-sm transition-all duration-200 shadow-md active:scale-95 flex items-center gap-1.5 shrink-0 ${
-                isDark
-                  ? "bg-[#1B98E0] text-[#13293D] hover:bg-white"
-                  : "bg-[#1b4332] text-white hover:bg-[#2d6a4f]"
-              }`}
+              className="px-5 py-2 sm:py-2.5 rounded-full font-extrabold text-xs sm:text-sm text-[#070B14] bg-gradient-to-r from-[#00ffc8] via-[#00d3e0] to-[#0099ff] hover:opacity-95 active:scale-95 shadow-md transition-all shrink-0 flex items-center gap-1.5"
             >
               <span>{t.nav.signUp}</span>
-              <span className="text-xs">&rarr;</span>
+              <span className="text-xs font-black">→</span>
             </Link>
+
+            {/* Mobile Hamburger Toggle */}
+            <button
+              type="button"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="lg:hidden w-9 h-9 rounded-full flex items-center justify-center text-lg font-bold border border-slate-300 dark:border-white/15"
+              aria-label="Menyu"
+            >
+              {mobileMenuOpen ? "✕" : "☰"}
+            </button>
           </div>
         </nav>
+
+        {/* Mobile Slide-In Navigation Drawer */}
+        {mobileMenuOpen && (
+          <div
+            className={`lg:hidden fixed top-24 inset-x-4 p-6 rounded-3xl border shadow-2xl backdrop-blur-2xl z-50 flex flex-col gap-4 animate-in fade-in zoom-in-95 ${
+              isDark
+                ? "bg-[#14181d]/95 border-white/15 text-white"
+                : "bg-white/95 border-[#b7e4c7] text-[#081c15]"
+            }`}
+          >
+            {navItems.map((item) => (
+              <a
+                key={item.id}
+                href={`#${item.id}`}
+                onClick={() => setMobileMenuOpen(false)}
+                className="text-base font-bold py-2 border-b border-black/5 dark:border-white/5"
+              >
+                {item.label}
+              </a>
+            ))}
+            <div className="flex gap-3 pt-2">
+              <Link
+                href="/sign-in"
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex-1 py-3 text-center rounded-full font-bold text-sm border border-slate-300 dark:border-white/20"
+              >
+                {t.nav.signIn}
+              </Link>
+              <Link
+                href="/sign-up"
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex-1 py-3 text-center rounded-full font-black text-sm text-[#070B14] bg-gradient-to-r from-[#00ffc8] to-[#0099ff]"
+              >
+                {t.nav.signUp}
+              </Link>
+            </div>
+          </div>
+        )}
       </header>
 
-      {/* 4. OUR COMPANY / HERO SECTION (ASYMMETRICAL SPLIT LAYOUT 1fr 1fr) */}
-      <main id="company" className="relative z-10 w-full max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8 pt-8 sm:pt-12 pb-16 sm:pb-24 flex-1 flex items-center">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-10 xl:gap-12 items-center w-full">
+      {/* 3. HERO SECTION (Reference 2.3 — 3-Line Headline with Doodles + Hand Phone Mockup) */}
+      <main id="company" className="relative z-10 w-full max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 lg:py-28 min-h-[calc(100vh-5rem)] flex items-center scroll-mt-24">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center w-full">
           
-          {/* LEFT SIDE: TYPOGRAPHY & CTAs */}
-          <div className="flex flex-col items-center lg:items-start text-center lg:text-left max-w-xl mx-auto lg:mx-0 min-w-0 w-full lg:pr-4">
-            {/* Massive, Bold Sans-Serif Headline */}
+          {/* Left Column (6 cols): Typography, Doodle Splash, Hand-drawn Underline, CTAs */}
+          <div className="lg:col-span-6 flex flex-col items-center lg:items-start text-center lg:text-left">
+            {/* 3-Line Confident Headline with Hand-Drawn Underline */}
             <h1
-              className={`font-black tracking-tight select-none break-words max-w-full pb-2 ${
+              className={`font-black tracking-tight leading-[1.12] pb-2 ${
                 locale === "ru"
-                  ? "text-3xl sm:text-5xl lg:text-[2.6rem] xl:text-[3.1rem] leading-[1.18]"
-                  : "text-4xl sm:text-5xl lg:text-5xl xl:text-6xl leading-[1.16]"
+                  ? "text-3xl sm:text-5xl lg:text-[2.8rem] xl:text-[3.2rem]"
+                  : "text-4xl sm:text-5xl lg:text-[3.2rem] xl:text-[3.8rem]"
               }`}
             >
-              <span className={isDark ? "text-[#E8F1F2]" : "text-[#081c15]"}>
-                {t.hero.headlineStart}
-              </span>
-              <span className="bg-gradient-to-r from-[#52b788] via-[#40916c] to-[#2d6a4f] dark:from-[#00C853] dark:via-[#4ADE80] dark:to-[#64DD17] bg-clip-text text-transparent py-1.5 drop-shadow-xs">
-                {t.hero.headlineAccent}
+              <span>{t.hero.headlineLine1}</span>
+              <br />
+              <span>{t.hero.headlineLine2}</span>
+              <br />
+              <span className="relative inline-block text-[#00d3e0]">
+                {t.hero.headlineLine3}
+                <HandDrawnUnderline color="#00ffc8" />
               </span>
             </h1>
 
-            {/* Dark Grey Subheadline */}
+            {/* Sub-headline */}
             <p
-              className={`mt-6 text-sm sm:text-base lg:text-lg leading-relaxed font-normal ${
+              className={`mt-6 text-sm sm:text-base lg:text-lg leading-relaxed max-w-xl font-normal ${
                 isDark ? "text-[#E8F1F2]/75" : "text-[#2d6a4f]"
               }`}
             >
               {t.hero.subheadline}
             </p>
 
-            {/* Two Horizontal Buttons */}
+            {/* Dual CTAs (Reference 2.3: Dark Pill + Ghost Button) */}
             <div className="mt-8 sm:mt-10 flex flex-wrap items-center justify-center lg:justify-start gap-4 w-full">
-              {/* Primary Dark Green "Join Us" Button */}
+              {/* Primary Dark Pill with Turquoise Glow */}
               <Link
                 href="/sign-up"
-                className={`px-8 py-3.5 rounded-full text-sm sm:text-base font-bold transition-all duration-200 shadow-lg hover:shadow-xl active:scale-95 flex items-center gap-2 ${
-                  isDark
-                    ? "bg-[#1B98E0] text-[#13293D] hover:bg-white"
-                    : "bg-[#1b4332] text-white hover:bg-[#2d6a4f]"
-                }`}
+                className="px-8 py-4 rounded-full font-extrabold text-sm sm:text-base text-[#070B14] bg-gradient-to-r from-[#00ffc8] via-[#00d3e0] to-[#0099ff] hover:opacity-95 active:scale-95 shadow-[0_12px_36px_rgba(0,153,255,0.28)] transition-all flex items-center gap-2"
               >
                 <span>{t.hero.joinUs}</span>
-                <span className="text-base font-extrabold">&rarr;</span>
+                <span className="text-base font-black">→</span>
               </Link>
 
-              {/* Light Grey Ghost Button: "Explore Live Stats" with Line-Chart Icon */}
+              {/* Ghost Button: Live Stats Explorer */}
               <a
                 href="#stats"
-                className={`px-7 py-3.5 rounded-full text-sm sm:text-base font-semibold transition-all duration-200 flex items-center gap-2.5 backdrop-blur-md shadow-sm hover:shadow active:scale-95 border ${
+                className={`px-7 py-4 rounded-full text-sm sm:text-base font-bold transition-all flex items-center gap-2.5 backdrop-blur-md shadow-sm hover:shadow border ${
                   isDark
-                    ? "bg-[#006494]/30 border-[#247BA0]/40 text-[#E8F1F2] hover:bg-[#006494]/50"
-                    : "bg-white/90 border-[#b7e4c7] text-[#081c15] hover:bg-[#d8f3dc] hover:border-[#74c69d]"
+                    ? "bg-[#14181d]/80 border-white/15 text-white hover:bg-white/10"
+                    : "bg-white border-[#b7e4c7] text-[#081c15] hover:bg-slate-100"
                 }`}
               >
-                {/* Line Chart Icon */}
-                <svg
-                  className={`w-4 h-4 ${isDark ? "text-[#1B98E0]" : "text-[#40916c]"}`}
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
+                <svg className="w-4 h-4 text-[#00d3e0]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M3 3v18h18" />
                   <path d="M18 9l-5 5-4-4-4 4" />
                 </svg>
@@ -305,64 +316,43 @@ export default function LandingPage() {
             </div>
           </div>
 
-          {/* RIGHT SIDE: 3D HERO VISUALS & FLOATING BENTO UI CARDS */}
-          <div className="w-full min-w-0 flex justify-center lg:justify-end">
-            <HeroEcosystemVisual isDark={isDark} />
+          {/* Right Column (6 cols): Harmonic Duo Mockup (Open Laptop + Companion Phone) */}
+          <div className="lg:col-span-6 flex justify-center lg:justify-end">
+            <HeroPhoneHandMockup isDark={isDark} />
           </div>
 
         </div>
       </main>
 
-      {/* 5. OUR TEAM SECTION (Horizontal Carousel with Studio Portraits & Sleek Progress Track) */}
-      <OurTeamCarousel isDark={isDark} />
+      {/* 4. ANIMATED STATS BAR (Full-Width Royal/Turquoise Band Overlapping Bottom of Hero) */}
+      <AnimatedStatsBar isDark={isDark} />
 
-      {/* 6. LIVE PLATFORM STATISTICS (ARTBOARD: "Real deals, real milk, real prices") */}
-      <LandingLiveStatistics isDark={isDark} />
+      {/* 5. CURVED CONNECTOR LINE */}
+      <CurvedConnectorLine variant="loop" className="my-8" />
 
-      {/* 7. CONTACT US SECTION (Artboard Glassmorphism Card & Direct Dispatch Channels) */}
-      <ContactUsSection isDark={isDark} />
+      {/* 6. BENEFITS SECTION ("Nima Uchun ZaminFlow?") */}
+      <BenefitsSection isDark={isDark} />
 
-      {/* 8. AUTHENTIC B2B FOOTER (Compliant with Law ZRU-611) */}
-      <footer
-        className={`relative z-10 border-t py-10 px-6 text-xs transition-colors ${
-          isDark
-            ? "border-[#247BA0]/30 bg-[#0B1A24]/80 backdrop-blur-md text-[#E8F1F2]/70"
-            : "border-[#b7e4c7] bg-white/85 backdrop-blur-md text-[#1b4332]/90"
-        }`}
-      >
-        <div className="max-w-[1200px] mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="flex flex-col sm:flex-row items-center gap-4 text-center sm:text-left">
-            <Link href="/" className="inline-flex">
-              <ZaminFlowLogo mode={themeMode} size="sm" />
-            </Link>
-            <div className="text-[11px] leading-relaxed opacity-90">
-              <p className="font-bold text-[#087a3c] dark:text-[#22d36b]">
-                &ldquo;ZaminFlow&rdquo; MCHJ &bull; STIR: 309 845 120
-              </p>
-              <p>Toshkent sh., Mirzo Ulugʻbek t., Mustaqillik shoh koʻchasi, 105</p>
-            </div>
-          </div>
+      {/* 6.5. JONLI SHARTNOMA VA ESKROU SIMULYATORI (5-Stage Interactive Demo) */}
+      <LiveWorkflowSimulatorSection isDark={isDark} />
 
-          <div className="flex flex-wrap items-center justify-center gap-6 text-xs font-semibold">
-            <Link href="/privacy" className="hover:text-[#087a3c] dark:hover:text-[#22d36b] transition">
-              Maxfiylik siyosati
-            </Link>
-            <Link href="/terms" className="hover:text-[#087a3c] dark:hover:text-[#22d36b] transition">
-              Foydalanish shartlari
-            </Link>
-            <a href="tel:+998712000024" className="hover:text-[#087a3c] dark:hover:text-[#22d36b] transition">
-              +998 71 200 00 24
-            </a>
-            <a href="mailto:support@zaminflow.uz" className="hover:text-[#087a3c] dark:hover:text-[#22d36b] transition">
-              support@zaminflow.uz
-            </a>
-          </div>
+      {/* 7. TEAM SECTION ("Bizning Jamoa") */}
+      <TeamSection isDark={isDark} />
 
-          <div className="text-[11px] font-mono opacity-80 text-center md:text-right">
-            {t.footer.rights}
-          </div>
-        </div>
-      </footer>
+      {/* 8. CURVED CONNECTOR LINE */}
+      <CurvedConnectorLine variant="wave" className="my-8" />
+
+      {/* 9. REGIONAL MAP OF UZBEKISTAN & DESTINATION SEARCH */}
+      <RegionalMapSearchSection isDark={isDark} />
+
+      {/* 11. TESTIMONIALS CAROUSEL (Real Producer Quotes & Star Ratings) */}
+      <TestimonialsSlider isDark={isDark} />
+
+      {/* 12. FAQ ACCORDION & INSTANT EMAIL DISPATCH */}
+      <FaqEmailSection isDark={isDark} />
+
+      {/* 13. B2B LEGAL & COMPLIANT FOOTER */}
+      <AnimatedFooter isDark={isDark} />
     </div>
   );
 }

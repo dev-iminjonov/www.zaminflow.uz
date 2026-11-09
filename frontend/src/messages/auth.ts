@@ -8,7 +8,7 @@ export const authTranslations = {
   en: {
     signIn: {
       eyebrow: "WELCOME BACK",
-      headingStart: "Sign in to ",
+      headingStart: "",
       headingBrand: "ZaminFlow",
       headingEnd: "",
       phoneOrEmailLabel: "Phone or email",
@@ -144,7 +144,7 @@ export const authTranslations = {
   ru: {
     signIn: {
       eyebrow: "С ВОЗВРАЩЕНИЕМ",
-      headingStart: "Вход в ",
+      headingStart: "",
       headingBrand: "ZaminFlow",
       headingEnd: "",
       phoneOrEmailLabel: "Телефон или email",
@@ -282,7 +282,7 @@ export const authTranslations = {
       eyebrow: "QAYTGANINGIZ BILAN",
       headingStart: "",
       headingBrand: "ZaminFlow",
-      headingEnd: "ga kiring",
+      headingEnd: "",
       phoneOrEmailLabel: "Telefon yoki email",
       phoneOrEmailPlaceholder: "+998 90 123 45 67",
       passwordLabel: "Parol",

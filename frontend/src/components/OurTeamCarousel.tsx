@@ -92,7 +92,7 @@ export default function OurTeamCarousel({ isDark = false }: OurTeamCarouselProps
   };
 
   return (
-    <section id="team" className="relative w-full py-20 sm:py-28 overflow-hidden select-none">
+    <section id="team" className="relative w-full py-20 sm:py-28 overflow-hidden select-none scroll-mt-24">
       <div className="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* 1. SECTION HEADER (Centered, Bold, Modern, Minimalist) */}

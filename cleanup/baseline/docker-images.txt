@@ -1,6 +1,0 @@
-﻿REPOSITORY                TAG             IMAGE ID       SIZE
-wwwzaminflowuz-backend    latest          c4684256d3d5   812MB
-wwwzaminflowuz-frontend   latest          49f6cbf1d48a   1.42GB
-caddy                     2-alpine        78bd35025c7b   92MB
-node                      20-alpine       fb4cd12c85ee   194MB
-postgis/postgis           16-3.4-alpine   681931a625df   627MB

@@ -19,7 +19,7 @@ const STORAGE_KEY = "zaminflow_locale";
 const COOKIE_NAME = "NEXT_LOCALE";
 
 function getInitialLocale(): Locale {
-  if (typeof window === "undefined") return "en";
+  if (typeof window === "undefined") return "uz";
 
   try {
     // 1. Local storage check
@@ -48,7 +48,7 @@ function getInitialLocale(): Locale {
 }
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
-  const [locale, setLocaleState] = useState<Locale>("en");
+  const [locale, setLocaleState] = useState<Locale>("uz");
   const [isInitialized, setIsInitialized] = useState(false);
 
   useEffect(() => {

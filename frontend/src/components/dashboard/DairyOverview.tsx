@@ -1,65 +1,89 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { getStoredSession, signOut, AuthSession } from "@/lib/auth";
-import {
-  DairyDashboardData,
-  fetchDairyDashboardData,
-} from "@/lib/roleDashboardService";
 import { useLanguage } from "@/context/LanguageContext";
-import { ThemeToggleButton } from "@/context/ThemeContext";
-import ZaminFlowLogo from "@/components/ZaminFlowLogo";
+import { useTheme, ThemeToggleButton } from "@/context/ThemeContext";
+import {
+  fetchDairyDashboardData,
+  DairyDashboardData,
+  MOCK_DAIRY_DATA,
+} from "@/lib/roleDashboardService";
+import { getStoredSession, signOut, AuthSession } from "@/lib/auth";
 import { resolveUserAvatar } from "@/lib/userAvatar";
+import ZaminFlowLogo from "@/components/ZaminFlowLogo";
+
+export type DairyWindowKey =
+  | "overview"
+  | "orders"
+  | "shipments"
+  | "escrow"
+  | "pricing"
+  | "analytics"
+  | "settings";
 
 export default function DairyOverview() {
   const router = useRouter();
+  const { t, locale, setLocale } = useLanguage();
+  const { themeMode, isDark } = useTheme();
+
+  // Active in-place window tab (Figma/Investure style - zero page reload!)
+  const [activeWindow, setActiveWindow] = useState<DairyWindowKey>("overview");
+
   const [session, setSession] = useState<AuthSession | null>(null);
-  const [data, setData] = useState<DairyDashboardData | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [data, setData] = useState<DairyDashboardData | null>(MOCK_DAIRY_DATA);
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isSigningOut, setIsSigningOut] = useState(false);
-  const [timeRange, setTimeRange] = useState<"7d" | "30d">("7d");
-  const { locale, setLocale, dashT: t } = useLanguage();
 
-  useEffect(() => {
-    setSession(getStoredSession());
-  }, []);
+  // Financial Chart Controls
+  const [timeRange, setTimeRange] = useState<"1d" | "1w" | "1m" | "6m" | "1y" | "all">("1m");
+  const [chartType, setChartType] = useState<"line" | "bar">("line");
+  const [hoveredPoint, setHoveredPoint] = useState<{ x: number; y: number; label: string; value: string } | null>(null);
+
+  // Procurement order modal state
+  const [showOrderModal, setShowOrderModal] = useState(false);
+  const [procureLiters, setProcureLiters] = useState(5000);
+  const [procureRegion, setProcureRegion] = useState("Samarqand");
+  const [orderSuccess, setOrderSuccess] = useState(false);
+
+  // Regional prices state
+  const [regionalPriceAdjustments, setRegionalPriceAdjustments] = useState<Record<string, number>>({
+    Samarqand: 5800,
+    Toshkent: 6200,
+    Fargʻona: 5600,
+    Buxoro: 5400,
+  });
+
+  const handlePriceStep = (region: string, delta: number) => {
+    setRegionalPriceAdjustments((prev) => ({
+      ...prev,
+      [region]: Math.max(3000, (prev[region] || 5800) + delta),
+    }));
+  };
 
   useEffect(() => {
     let isMounted = true;
+    setSession(getStoredSession());
 
     const loadData = async () => {
       try {
         const result = await fetchDairyDashboardData();
+        if (isMounted) setData(result);
+      } catch (err: unknown) {
         if (isMounted) {
-          setData(result);
-          setError(null);
-        }
-      } catch (err: any) {
-        if (isMounted) {
-          setError(err.message || "Failed to fetch dairy metrics");
-        }
-      } finally {
-        if (isMounted) {
-          setIsLoading(false);
+          const message = err instanceof Error ? err.message : "Maʻlumot yuklanmadi";
+          setError(message);
         }
       }
     };
 
     loadData();
-
-    const interval = setInterval(() => {
-      if (typeof document !== "undefined" && document.visibilityState === "visible") {
-        loadData();
-      }
-    }, 15000);
+    const interval = setInterval(loadData, 30000);
 
     const onVisibilityChange = () => {
-      if (document.visibilityState === "visible") {
-        loadData();
-      }
+      if (document.visibilityState === "visible") loadData();
     };
     document.addEventListener("visibilitychange", onVisibilityChange);
 
@@ -80,593 +104,1124 @@ export default function DairyOverview() {
     ? session.user.fullName.trim().split(" ").slice(-1)[0]
     : "Malika";
 
-  // Mock bar chart heights for weekly intake telemetry
-  const barData = [
-    { day: "Mon", height: "48%", val: "142k L" },
-    { day: "Tue", height: "62%", val: "165k L" },
-    { day: "Wed", height: "55%", val: "154k L" },
-    { day: "Thu", height: "92%", val: "186.4k L", peak: true },
-    { day: "Fri", height: "70%", val: "172k L" },
-    { day: "Sat", height: "78%", val: "179k L" },
+  // Financial Chart Data based on timeRange
+  const chartDatasets = useMemo(() => {
+    switch (timeRange) {
+      case "1d":
+        return {
+          points: [
+            { label: "06:00", val: 32000 },
+            { label: "09:00", val: 58000 },
+            { label: "12:00", val: 94000 },
+            { label: "15:00", val: 128000 },
+            { label: "18:00", val: 165000 },
+            { label: "21:00", val: 186400 },
+          ],
+          total: "186,400 Litr",
+          delta: "+8.4% bugun",
+        };
+      case "1w":
+        return {
+          points: [
+            { label: "Dush", val: 142000 },
+            { label: "Sesh", val: 165000 },
+            { label: "Chor", val: 154000 },
+            { label: "Pay", val: 186400 },
+            { label: "Jum", val: 172000 },
+            { label: "Shan", val: 179000 },
+            { label: "Yak", val: 184000 },
+          ],
+          total: "1,182,400 Litr",
+          delta: "+12.1% bu hafta",
+        };
+      case "1m":
+      default:
+        return {
+          points: [
+            { label: "1 May", val: 130000 },
+            { label: "5 May", val: 145000 },
+            { label: "10 May", val: 162000 },
+            { label: "15 May", val: 158000 },
+            { label: "20 May", val: 175000 },
+            { label: "25 May", val: 171000 },
+            { label: "1 Iyun", val: 186400 },
+          ],
+          total: "48,500,000 UZS",
+          delta: "+16.8% oylik hajm",
+        };
+      case "6m":
+      case "1y":
+      case "all":
+        return {
+          points: [
+            { label: "Yan", val: 95000 },
+            { label: "Fev", val: 115000 },
+            { label: "Mar", val: 142000 },
+            { label: "Apr", val: 168000 },
+            { label: "May", val: 178000 },
+            { label: "Iyun", val: 186400 },
+          ],
+          total: "284,500,000 UZS",
+          delta: "+42.5% jami xarid",
+        };
+    }
+  }, [timeRange]);
+
+  // Compute SVG coordinates for the Investure-style smooth curve
+  const svgMetrics = useMemo(() => {
+    const pts = chartDatasets.points;
+    const minVal = Math.min(...pts.map((p) => p.val)) * 0.95;
+    const maxVal = Math.max(...pts.map((p) => p.val)) * 1.05;
+    const width = 760;
+    const height = 220;
+
+    const coords = pts.map((p, idx) => {
+      const x = (idx / (pts.length - 1)) * (width - 40) + 20;
+      const y = height - ((p.val - minVal) / (maxVal - minVal)) * (height - 40) - 20;
+      return { x, y, label: p.label, value: `${(p.val / 1000).toFixed(1)}k L` };
+    });
+
+    let pathD = `M ${coords[0].x} ${coords[0].y}`;
+    for (let i = 0; i < coords.length - 1; i++) {
+      const p0 = coords[i];
+      const p1 = coords[i + 1];
+      const cpX = (p0.x + p1.x) / 2;
+      pathD += ` C ${cpX} ${p0.y}, ${cpX} ${p1.y}, ${p1.x} ${p1.y}`;
+    }
+
+    const areaD = `${pathD} L ${coords[coords.length - 1].x} ${height} L ${coords[0].x} ${height} Z`;
+
+    return { coords, pathD, areaD, width, height };
+  }, [chartDatasets]);
+
+  // Navigation items matching Investure layout
+  const navigationItems: Array<{
+    key: DairyWindowKey;
+    label: string;
+    icon: React.ReactNode;
+    badge?: string;
+  }> = [
+    {
+      key: "overview",
+      label: "Dashboard",
+      icon: (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+        </svg>
+      ),
+    },
+    {
+      key: "orders",
+      label: "Xarid Buyurtmalari",
+      badge: "12",
+      icon: (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+        </svg>
+      ),
+    },
+    {
+      key: "shipments",
+      label: "Kiruvchi Flot",
+      badge: "Live",
+      icon: (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" />
+        </svg>
+      ),
+    },
+    {
+      key: "escrow",
+      label: "Eskrou & Depozit",
+      icon: (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      ),
+    },
+    {
+      key: "pricing",
+      label: "Iqtisodiyot & Narxlar",
+      icon: (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+        </svg>
+      ),
+    },
+    {
+      key: "analytics",
+      label: "Zavod Tahlili",
+      icon: (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+        </svg>
+      ),
+    },
+    {
+      key: "settings",
+      label: "Zavod Profili & ISO",
+      icon: (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+        </svg>
+      ),
+    },
   ];
 
+  const handleCreateOrder = (e: React.FormEvent) => {
+    e.preventDefault();
+    setOrderSuccess(true);
+    setTimeout(() => {
+      setOrderSuccess(false);
+      setShowOrderModal(false);
+    }, 1500);
+  };
+
+  const activeRate = regionalPriceAdjustments[procureRegion] || 5800;
+  const totalProcureEscrow = procureLiters * activeRate;
+
   return (
-    <div className="min-h-screen bg-[#EAEFF0] dark:bg-[#0A1318] py-5 px-3 sm:px-6 transition-colors font-sans antialiased">
-      {/* Quixotic / TeamHub Floating Master Canvas */}
-      <div className="max-w-[1380px] mx-auto bg-white dark:bg-[#101E27] rounded-[36px] shadow-[0_20px_50px_rgba(15,40,30,0.06)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.4)] border border-slate-100 dark:border-white/5 p-4 sm:p-8 flex flex-col gap-6">
+    <div className={`min-h-screen py-4 px-3 sm:px-6 relative overflow-x-hidden font-sans antialiased transition-colors duration-300 ${
+      isDark ? "bg-[#0b0f14] text-white" : "bg-[#f1f5f9] text-slate-900"
+    }`}>
+      {/* Background Subtle Gradient Blobs */}
+      <div className="absolute top-0 left-1/4 w-[600px] h-[600px] pointer-events-none -z-0 opacity-20 blur-[140px] bg-gradient-to-br from-teal-400 to-emerald-400" />
 
-        {/* 1. TOP NAV BAR (Brand, Navigation Tabs, Search, Profile) */}
-        <header className="flex flex-wrap items-center justify-between gap-4 pb-3 border-b border-slate-100 dark:border-white/5">
-          {/* Brand Logo */}
-          <Link href="/dashboard/dairy" className="flex items-center shrink-0">
-            <ZaminFlowLogo size="md" />
-          </Link>
+      {/* Master Container: Fixed Left Sidebar + Dynamic In-Place Content Area */}
+      <div className={`relative z-10 max-w-[1520px] mx-auto rounded-[32px] border shadow-2xl flex flex-col lg:flex-row overflow-hidden transition-all ${
+        isDark
+          ? "bg-[#121820] border-white/10 shadow-[0_30px_90px_rgba(0,0,0,0.6)] text-white"
+          : "bg-white border-slate-200 shadow-[0_20px_70px_rgba(15,23,42,0.06)] text-slate-900"
+      }`}>
 
-          {/* Navigation Pill Tabs (Quixotic Center Navigation) */}
-          <nav className="hidden lg:flex items-center gap-1.5 p-1 rounded-full bg-slate-50 dark:bg-white/5 border border-slate-200/60 dark:border-white/10 text-xs font-semibold">
-            <Link
-              href="/dashboard/dairy"
-              className="px-4 py-1.5 rounded-full bg-[#087a3c] text-white shadow-xs font-bold transition"
-            >
-              {t.nav.overview}
-            </Link>
-            <Link
-              href="/dashboard/dairy/orders"
-              className="px-4 py-1.5 rounded-full text-slate-600 dark:text-slate-300 hover:text-black dark:hover:text-white transition"
-            >
-              {t.nav.orders}
-            </Link>
-            <Link
-              href="/dashboard/dairy/shipments"
-              className="px-4 py-1.5 rounded-full text-slate-600 dark:text-slate-300 hover:text-black dark:hover:text-white transition"
-            >
-              {t.nav.shipments}
-            </Link>
-            <Link
-              href="/dashboard/dairy/escrow"
-              className="px-4 py-1.5 rounded-full text-slate-600 dark:text-slate-300 hover:text-black dark:hover:text-white transition"
-            >
-              {t.nav.escrow}
-            </Link>
-            <Link
-              href="/dashboard/dairy/regional-pricing"
-              className="px-4 py-1.5 rounded-full text-slate-600 dark:text-slate-300 hover:text-black dark:hover:text-white transition"
-            >
-              Economics
-            </Link>
-            <Link
-              href="/dashboard/dairy/profile"
-              className="px-4 py-1.5 rounded-full text-slate-600 dark:text-slate-300 hover:text-black dark:hover:text-white transition"
-            >
-              Profile
-            </Link>
-          </nav>
-
-          {/* Right Section: Search, Language Switcher, User Menu */}
-          <div className="flex items-center gap-3">
-            {/* Search Pill */}
-            <div className="hidden sm:flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-50 dark:bg-white/5 border border-slate-200/60 dark:border-white/10 text-xs text-slate-400">
-              <svg className="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-              <span className="text-slate-400">Search batches, trucks...</span>
+        {/* =========================================================================
+            LEFT NAVIGATION SIDEBAR (Investure / FlowBoard Architecture)
+        ========================================================================= */}
+        <aside className={`w-full lg:w-72 shrink-0 border-b lg:border-b-0 lg:border-r p-6 flex flex-col justify-between transition-colors ${
+          isDark ? "border-white/10 bg-[#0e1319]" : "border-slate-100 bg-[#fafcff]"
+        }`}>
+          <div>
+            {/* 1. Brand Logo */}
+            <div className="flex items-center justify-between pb-8">
+              <Link href="/" className="flex items-center gap-2 transition hover:scale-105">
+                <ZaminFlowLogo mode={themeMode} size="md" />
+              </Link>
+              <span className={`text-[10px] font-mono font-bold px-2.5 py-1 rounded-full uppercase border ${
+                isDark ? "bg-teal-500/10 border-teal-500/30 text-teal-400" : "bg-teal-50 border-teal-200 text-teal-800"
+              }`}>
+                Dairy Plant
+              </span>
             </div>
 
-            {/* Language Selector */}
-            <div className="flex rounded-full p-0.5 border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-[11px] font-bold">
-              {(["uz", "ru", "en"] as const).map((loc) => (
-                <button
-                  key={loc}
-                  type="button"
-                  onClick={() => setLocale(loc)}
-                  className={`px-2 py-0.5 rounded-full uppercase transition cursor-pointer ${
-                    locale === loc
-                      ? "bg-[#12303a] text-white dark:bg-[#1B98E0] dark:text-[#13293D]"
-                      : "text-slate-500 hover:text-black dark:hover:text-white"
-                  }`}
-                >
-                  {loc}
-                </button>
-              ))}
-            </div>
-
-            {/* Theme Mode Toggle */}
-            <ThemeToggleButton size="sm" />
-
-            {/* User Profile Pill */}
-            <Link
-              href="/dashboard/dairy/profile"
-              title="View Partner Profile"
-              className="flex items-center gap-2 pl-2 hover:opacity-85 transition group"
-            >
-              {(() => {
-                const avatar = resolveUserAvatar(
-                  session?.user?.fullName || firstName,
-                  session?.user?.email
-                );
+            {/* 2. Navigation Items with Right Emerald Indicator Line */}
+            <nav className="space-y-1.5" role="tablist">
+              {navigationItems.map((item) => {
+                const isActive = activeWindow === item.key;
                 return (
-                  <div className="w-8 h-8 rounded-full overflow-hidden bg-gradient-to-tr from-emerald-600 to-teal-500 text-white font-bold text-xs flex items-center justify-center shadow-xs group-hover:ring-2 ring-emerald-500/50">
-                    {avatar ? (
+                  <button
+                    key={item.key}
+                    type="button"
+                    role="tab"
+                    aria-selected={isActive}
+                    onClick={() => setActiveWindow(item.key)}
+                    className={`w-full flex items-center justify-between px-3.5 py-3 rounded-2xl text-xs font-bold transition-all relative group cursor-pointer ${
+                      isActive
+                        ? isDark
+                          ? "bg-white/[0.08] text-white"
+                          : "bg-slate-100 text-slate-900 shadow-xs"
+                        : isDark
+                        ? "text-white/60 hover:text-white hover:bg-white/[0.03]"
+                        : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
+                    }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <span className={`transition-colors ${
+                        isActive
+                          ? "text-teal-500"
+                          : isDark ? "text-white/40 group-hover:text-white/70" : "text-slate-400 group-hover:text-slate-600"
+                      }`}>
+                        {item.icon}
+                      </span>
+                      <span>{item.label}</span>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      {item.badge && (
+                        <span className={`text-[10px] font-mono px-2 py-0.5 rounded-full font-bold ${
+                          isActive
+                            ? "bg-teal-500 text-white"
+                            : isDark ? "bg-white/10 text-white/60" : "bg-slate-200 text-slate-600"
+                        }`}>
+                          {item.badge}
+                        </span>
+                      )}
+
+                      {/* Right Indicator Line */}
+                      {isActive && (
+                        <span className="w-1.5 h-5 rounded-full bg-teal-500 absolute right-1.5 top-1/2 -translate-y-1/2 shadow-[0_0_10px_rgba(20,184,166,0.8)]" />
+                      )}
+                    </div>
+                  </button>
+                );
+              })}
+            </nav>
+          </div>
+
+          {/* 3. Bottom Industrial Depository Card */}
+          <div className="mt-8 pt-6 border-t border-slate-200/60 dark:border-white/10">
+            <div className={`p-4 rounded-2xl border text-center relative overflow-hidden transition ${
+              isDark ? "bg-white/[0.02] border-white/10" : "bg-gradient-to-br from-teal-50/60 to-emerald-50/60 border-teal-100"
+            }`}>
+              <div className="w-10 h-10 mx-auto rounded-full bg-teal-500/10 text-teal-600 dark:text-teal-400 flex items-center justify-center text-lg mb-2">
+                🏭
+              </div>
+              <div className="font-bold text-xs mb-1">
+                AgroBank Sanoat Eskrousi
+              </div>
+              <p className={`text-[11px] leading-relaxed mb-3 ${isDark ? "text-white/50" : "text-slate-500"}`}>
+                Depozit balansi: 48,500,000 UZS. Xaridlar uchun avtomatlashtirilgan kliring.
+              </p>
+              <button
+                type="button"
+                onClick={() => setActiveWindow("escrow")}
+                className="w-full py-2 rounded-xl bg-teal-600 hover:bg-teal-700 text-white text-[11px] font-bold shadow-xs transition cursor-pointer"
+              >
+                Eskrouni koʻrish
+              </button>
+            </div>
+
+            {/* User Quick Pill */}
+            <div className="flex items-center justify-between mt-4 px-2">
+              <div className="flex items-center gap-2.5">
+                <div className="relative">
+                  <div className="w-8 h-8 rounded-full overflow-hidden bg-teal-600 text-white font-black text-xs flex items-center justify-center">
+                    {resolveUserAvatar(firstName, session?.user?.email) ? (
                       <img
-                        src={avatar}
+                        src={resolveUserAvatar(firstName, session?.user?.email) || ""}
                         alt={firstName}
-                        className="w-full h-full object-cover object-[center_18%]"
+                        className="w-full h-full object-cover"
                       />
                     ) : (
                       <span>{firstName.charAt(0)}</span>
                     )}
                   </div>
-                );
-              })()}
-              <div className="hidden md:flex flex-col text-left">
-                <span className="text-xs font-bold text-slate-800 dark:text-white leading-tight group-hover:text-emerald-700 dark:group-hover:text-emerald-400">
-                  {firstName}
-                </span>
-                <span className="text-[10px] text-emerald-700 dark:text-emerald-400 font-mono">
-                  Dairy Partner ↗
-                </span>
-              </div>
-            </Link>
-
-            {/* Sign Out Button */}
-            <button
-              onClick={handleSignOut}
-              disabled={isSigningOut}
-              title={t.nav.signOut}
-              className="p-2 rounded-full border border-slate-200 dark:border-white/10 text-slate-500 hover:text-red-600 hover:border-red-300 transition cursor-pointer"
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-              </svg>
-            </button>
-          </div>
-        </header>
-
-        {/* 2. GREETING & DATE FILTER ROW (Quixotic Header) */}
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <div>
-            <div className="text-[11px] font-bold tracking-widest text-[#087a3c] dark:text-[#22d36b] uppercase mb-1">
-              DAIRY INDUSTRY PORTAL
-            </div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
-              {t.dairy.welcome}, <span className="text-[#087a3c] dark:text-[#22d36b]">{firstName}</span>
-            </h1>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-              ZaminFlow Automated Cold-Chain
-            </p>
-          </div>
-
-          <div className="flex items-center gap-3">
-            {/* Date Range Filter */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-2 rounded-full bg-slate-50 dark:bg-white/5 border border-slate-200/80 dark:border-white/10 text-xs font-semibold text-slate-700 dark:text-slate-200">
-              <span>📅 Today, 7 Nov 2026</span>
-              <span className="text-[10px] text-slate-400">⌄</span>
-            </div>
-
-            {/* Primary Action Button */}
-            <Link
-              href="/dashboard/dairy/place-order"
-              className="inline-flex items-center gap-1.5 px-5 py-2 rounded-full bg-[#087a3c] hover:bg-[#065F46] text-white font-bold text-xs sm:text-sm shadow-md transition-all active:scale-95 cursor-pointer"
-            >
-              <span>+</span>
-              <span>{t.dairy.placeOrderBtn}</span>
-            </Link>
-          </div>
-        </div>
-
-        {/* Error Alert */}
-        {error && (
-          <div className="bg-red-50 border border-red-200 rounded-2xl p-4 flex items-center justify-between text-sm text-red-800">
-            <span>{error}</span>
-            <button
-              onClick={() => {
-                setIsLoading(true);
-                fetchDairyDashboardData()
-                  .then(setData)
-                  .catch((e) => setError(e.message))
-                  .finally(() => setIsLoading(false));
-              }}
-              className="underline font-bold"
-            >
-              Retry
-            </button>
-          </div>
-        )}
-
-        {/* 3. MAIN DASHBOARD CONTENT WITH LEFT FLOATING DOCK */}
-        <div className="flex gap-6 items-start">
-          
-          {/* Left Vertical Icon Dock (Quixotic Navigation Strip) */}
-          <aside className="hidden xl:flex flex-col items-center gap-4 py-5 px-2.5 rounded-full bg-slate-50 dark:bg-white/5 border border-slate-200/80 dark:border-white/10 shrink-0 select-none shadow-xs">
-            <Link
-              href="/dashboard/dairy"
-              className="w-10 h-10 rounded-full bg-[#087a3c] text-white flex items-center justify-center shadow-xs"
-              title="Overview"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
-              </svg>
-            </Link>
-
-            <Link
-              href="/dashboard/dairy/orders"
-              className="w-10 h-10 rounded-full text-slate-500 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/50 dark:hover:bg-white/10 flex items-center justify-center transition"
-              title="Orders"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-              </svg>
-            </Link>
-
-            <Link
-              href="/dashboard/dairy/shipments"
-              className="w-10 h-10 rounded-full text-slate-500 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/50 dark:hover:bg-white/10 flex items-center justify-center transition"
-              title="Cold-chain Fleet"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" />
-              </svg>
-            </Link>
-
-            <Link
-              href="/dashboard/dairy/escrow"
-              className="w-10 h-10 rounded-full text-slate-500 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/50 dark:hover:bg-white/10 flex items-center justify-center transition"
-              title="Escrow Ledger"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
-              </svg>
-            </Link>
-
-            <Link
-              href="/dashboard/dairy/regional-pricing"
-              className="w-10 h-10 rounded-full text-slate-500 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/50 dark:hover:bg-white/10 flex items-center justify-center transition"
-              title="Economics & Pricing"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-              </svg>
-            </Link>
-
-            <div className="w-6 h-px bg-slate-200 dark:bg-white/10 my-1" />
-
-            <button
-              onClick={handleSignOut}
-              className="w-10 h-10 rounded-full text-slate-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/20 flex items-center justify-center transition cursor-pointer"
-              title="Sign Out"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-              </svg>
-            </button>
-          </aside>
-
-          {/* Grid of Quixotic / TeamHub Dashboard Cards */}
-          <div className="flex-1 flex flex-col gap-6 w-full min-w-0">
-
-            {/* ROW 1: FINTECH CARD + ENGAGEMENT/VOLUME BARS + PERFORMANCE AREA */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-5">
-              
-              {/* CARD 1: Quixotic FinTech Escrow Card (cols 4) */}
-              <div className="lg:col-span-4 flex flex-col gap-3">
-                <div className="rounded-[28px] p-6 bg-gradient-to-br from-[#065F46] via-[#047857] to-[#022c22] text-white shadow-lg relative overflow-hidden flex flex-col justify-between min-h-[220px]">
-                  {/* Subtle decorative circles */}
-                  <div className="absolute -top-12 -right-12 w-36 h-36 rounded-full bg-white/10 blur-xl pointer-events-none" />
-                  
-                  {/* Top: Brand & Contactless Icon */}
-                  <div className="flex items-center justify-between relative z-10">
-                    <span className="text-xs font-mono tracking-wider uppercase text-emerald-200 font-bold">
-                      ZaminFlow Escrow
-                    </span>
-                    {/* Contactless waves SVG */}
-                    <svg className="w-5 h-5 text-emerald-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.14 0M1.393 9.393c5.857-5.857 15.355-5.857 21.213 0" />
-                    </svg>
-                  </div>
-
-                  {/* Middle: Big Balance */}
-                  <div className="my-auto relative z-10 pt-2">
-                    <div className="text-[11px] text-emerald-100/80 uppercase font-semibold">
-                      Secured Escrow Balance
-                    </div>
-                    <div className="text-3xl font-extrabold tracking-tight font-mono text-white mt-1">
-                      {data?.escrowBalance.value || "48,500,000"}{" "}
-                      <span className="text-sm font-normal text-emerald-200">UZS</span>
-                    </div>
-                  </div>
-
-                  {/* Bottom: Card Number & Clearing Status */}
-                  <div className="flex items-center justify-between text-xs font-mono text-emerald-100/90 pt-3 border-t border-white/10 relative z-10">
-                    <span>•••• 8820</span>
-                    <span className="text-[10px] font-sans font-bold bg-white/20 text-white rounded-full px-2 py-0.5">
-                      CBU Regulated
-                    </span>
-                  </div>
+                  <span className="w-2 h-2 rounded-full bg-teal-500 absolute bottom-0 right-0 border-2 border-white dark:border-[#0e1319]" />
                 </div>
+                <div className="flex flex-col text-left">
+                  <span className="text-xs font-bold leading-tight truncate max-w-[110px]">{firstName}</span>
+                  <span className="text-[10px] text-teal-600 dark:text-teal-400 font-mono">Zavod ID #4</span>
+                </div>
+              </div>
 
-                {/* Sub-card: Open Orders Counter */}
-                <div className="bg-slate-50 dark:bg-white/5 rounded-[22px] p-4 border border-slate-200/70 dark:border-white/10 flex items-center justify-between">
-                  <div>
-                    <span className="text-[11px] font-bold uppercase text-slate-500 dark:text-slate-400">
-                      Open Orders In Pipeline
-                    </span>
-                    <div className="text-xl font-extrabold text-slate-800 dark:text-white font-mono mt-0.5">
-                      {data?.openOrders.value || "12"}
-                    </div>
-                  </div>
-                  <Link
-                    href="/dashboard/dairy/orders"
-                    className="text-xs font-bold text-emerald-700 dark:text-emerald-400 hover:underline"
+              <button
+                type="button"
+                onClick={handleSignOut}
+                disabled={isSigningOut}
+                title="Chiqish"
+                className="p-1.5 rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition cursor-pointer"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </aside>
+
+        {/* =========================================================================
+            RIGHT MAIN WINDOW (Dynamic In-Place View Switcher)
+        ========================================================================= */}
+        <main className="flex-1 flex flex-col min-w-0">
+
+          {/* 1. TOP HEADER BAR */}
+          <header className={`px-6 sm:px-8 py-5 border-b flex flex-wrap items-center justify-between gap-4 transition-colors ${
+            isDark ? "border-white/10 bg-[#121820]" : "border-slate-100 bg-white"
+          }`}>
+            <div>
+              <h1 className="text-xl sm:text-2xl font-black tracking-tight">
+                {activeWindow === "overview" && "Dashboard"}
+                {activeWindow === "orders" && "Sut Xaridi Buyurtmalari & Shartnomalar"}
+                {activeWindow === "shipments" && "Kiruvchi Yuklar & IoT Telemetriya"}
+                {activeWindow === "escrow" && "AgroBank Eskrou Depoziti & Toʻlovlar"}
+                {activeWindow === "pricing" && "Mintaqaviy Xarid Narxlari Sozlamasi"}
+                {activeWindow === "analytics" && "Zavod Ishlab Chiqarish Tahlili"}
+                {activeWindow === "settings" && "Zavod Profili & Xalqaro Standartlar"}
+              </h1>
+              <p className={`text-xs mt-0.5 ${isDark ? "text-white/50" : "text-slate-500"}`}>
+                Samarqand Sut Zavodi #4 &bull; IoT Silo & Sovuq Zanjir Nazorati
+              </p>
+            </div>
+
+            <div className="flex items-center gap-3">
+              {/* Search Pill */}
+              <div className={`hidden sm:flex items-center gap-2 px-3.5 py-1.5 rounded-full border text-xs transition ${
+                isDark ? "bg-white/5 border-white/10 text-white/50 focus-within:border-teal-500" : "bg-slate-50 border-slate-200 text-slate-500 focus-within:border-teal-500"
+              }`}>
+                <svg className="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+                <input
+                  type="text"
+                  placeholder="Partiya yoki haydovchi qidirish..."
+                  className="bg-transparent border-none outline-hidden text-xs w-48 placeholder-slate-400"
+                />
+                <kbd className="hidden md:inline-block px-1.5 py-0.5 text-[9px] font-mono font-bold rounded bg-slate-200/60 dark:bg-white/10">⌘K</kbd>
+              </div>
+
+              {/* Language Selector */}
+              <div className={`flex rounded-full p-1 border text-[11px] font-bold ${
+                isDark ? "border-white/10 bg-white/5" : "border-slate-200 bg-slate-50"
+              }`}>
+                {(["uz", "ru", "en"] as const).map((loc) => (
+                  <button
+                    key={loc}
+                    type="button"
+                    onClick={() => setLocale(loc)}
+                    className={`px-2.5 py-0.5 rounded-full uppercase transition cursor-pointer ${
+                      locale === loc
+                        ? "bg-teal-600 text-white font-black shadow-xs"
+                        : isDark ? "text-white/60 hover:text-white" : "text-slate-600 hover:text-slate-900"
+                    }`}
                   >
-                    View All →
-                  </Link>
-                </div>
+                    {loc}
+                  </button>
+                ))}
               </div>
 
-              {/* CARD 2: Quixotic Intake & Volume Bar Chart (cols 5) */}
-              <div className="lg:col-span-5 bg-slate-50 dark:bg-white/5 rounded-[28px] p-6 border border-slate-200/70 dark:border-white/10 flex flex-col justify-between">
-                <div className="flex items-center justify-between pb-3">
-                  <div>
-                    <span className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-400">
-                      Telemetry & Supply
-                    </span>
-                    <h3 className="text-base font-bold text-slate-800 dark:text-white">
-                      Daily Milk Volume (L)
-                    </h3>
-                  </div>
+              {/* Single Theme Toggle Button */}
+              <ThemeToggleButton size="sm" />
 
-                  {/* Monthly / Weekly toggle */}
-                  <div className="flex rounded-full p-0.5 bg-slate-200/60 dark:bg-white/10 text-[10px] font-bold">
-                    <button
-                      onClick={() => setTimeRange("7d")}
-                      className={`px-2.5 py-1 rounded-full transition ${
-                        timeRange === "7d" ? "bg-[#087a3c] text-white shadow-xs" : "text-slate-500"
-                      }`}
-                    >
-                      7 Days
-                    </button>
-                    <button
-                      onClick={() => setTimeRange("30d")}
-                      className={`px-2.5 py-1 rounded-full transition ${
-                        timeRange === "30d" ? "bg-[#087a3c] text-white shadow-xs" : "text-slate-500"
-                      }`}
-                    >
-                      30 Days
-                    </button>
-                  </div>
-                </div>
+              {/* Primary Action Button */}
+              <button
+                type="button"
+                onClick={() => setShowOrderModal(true)}
+                className="px-4 py-2 rounded-full bg-teal-600 hover:bg-teal-700 text-white text-xs font-black shadow-md hover:shadow-lg transition cursor-pointer flex items-center gap-1.5"
+              >
+                <span>+</span>
+                <span>Xarid Buyurtmasi</span>
+              </button>
+            </div>
+          </header>
 
-                {/* Bar Graph Visual */}
-                <div className="h-40 flex items-end justify-between gap-3 pt-6 pb-2 px-2">
-                  {barData.map((bar) => (
-                    <div key={bar.day} className="flex-1 flex flex-col items-center gap-2 group relative">
-                      {/* Tooltip on peak */}
-                      {bar.peak && (
-                        <span className="absolute -top-7 text-[10px] font-bold bg-[#087a3c] text-white px-2 py-0.5 rounded-full shadow-xs whitespace-nowrap">
-                          {data?.receivedToday.delta || "+3.8%"}
-                        </span>
-                      )}
-                      <div className="w-full bg-slate-200/70 dark:bg-white/10 rounded-full h-32 flex items-end overflow-hidden">
-                        <div
-                          className={`w-full rounded-full transition-all duration-500 ${
-                            bar.peak
-                              ? "bg-[#087a3c] shadow-md"
-                              : "bg-emerald-400/80 dark:bg-emerald-500/60 group-hover:bg-emerald-500"
-                          }`}
-                          style={{ height: bar.height }}
-                        />
-                      </div>
-                      <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400">
-                        {bar.day}
+          {/* 2. DYNAMIC CONTENT SWITCHER */}
+          <div className="p-6 sm:p-8 flex-1 overflow-y-auto">
+
+            {/* =========================================================================
+                WINDOW 1: OVERVIEW (Financial Intake & Silo Command)
+            ========================================================================= */}
+            {activeWindow === "overview" && (
+              <div className="space-y-6">
+
+                {/* 1. HERO FINANCIAL INTAKE CHART */}
+                <div className={`rounded-3xl p-6 sm:p-7 border relative overflow-hidden transition ${
+                  isDark ? "bg-[#141b24] border-white/10" : "bg-white border-slate-200/80 shadow-xs"
+                }`}>
+                  <div className="flex flex-wrap items-center justify-between gap-4 pb-4">
+                    <div>
+                      <span className={`text-xs font-mono uppercase font-bold tracking-wider ${
+                        isDark ? "text-white/50" : "text-slate-500"
+                      }`}>
+                        Kunlik & Oylik Qabul Qilingan Xomashyo Hajmi
                       </span>
+                      <div className="flex items-baseline gap-3 mt-1">
+                        <span className="text-3xl sm:text-4xl font-black font-mono tracking-tight">
+                          {chartDatasets.total}
+                        </span>
+                        <span className="text-xs font-bold text-teal-600 dark:text-teal-400 bg-teal-500/10 px-2 py-0.5 rounded-full">
+                          ▲ {chartDatasets.delta}
+                        </span>
+                      </div>
                     </div>
-                  ))}
-                </div>
 
-                {/* Sub-label */}
-                <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 pt-2 border-t border-slate-200/50 dark:border-white/5">
-                  <span>Processed Today: <strong className="text-slate-800 dark:text-white font-mono">{data?.receivedToday.value || "186,400"} L</strong></span>
-                  <span className="text-emerald-700 dark:text-emerald-400 font-bold">{data?.receivedToday.delta || "+3.8%"} vs yesterday</span>
-                </div>
-              </div>
+                    {/* Chart Controls */}
+                    <div className="flex flex-wrap items-center gap-2">
+                      <div className={`flex rounded-xl p-1 border ${
+                        isDark ? "bg-white/5 border-white/10" : "bg-slate-100 border-slate-200"
+                      }`}>
+                        <button
+                          type="button"
+                          onClick={() => setChartType("line")}
+                          className={`p-1.5 rounded-lg transition ${
+                            chartType === "line"
+                              ? "bg-white dark:bg-white/20 text-teal-600 dark:text-white shadow-xs"
+                              : "text-slate-400 hover:text-slate-700 dark:hover:text-white"
+                          }`}
+                          title="Line Chart"
+                        >
+                          📈
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setChartType("bar")}
+                          className={`p-1.5 rounded-lg transition ${
+                            chartType === "bar"
+                              ? "bg-white dark:bg-white/20 text-teal-600 dark:text-white shadow-xs"
+                              : "text-slate-400 hover:text-slate-700 dark:hover:text-white"
+                          }`}
+                          title="Bar Chart"
+                        >
+                          📊
+                        </button>
+                      </div>
 
-              {/* CARD 3: Quixotic Active Cold Chain Card (cols 3) */}
-              <div className="lg:col-span-3 bg-slate-50 dark:bg-white/5 rounded-[28px] p-6 border border-slate-200/70 dark:border-white/10 flex flex-col justify-between">
-                <div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-400">
-                      Cold Chain Oversight
-                    </span>
-                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
-                  </div>
-                  <h3 className="text-base font-bold text-slate-800 dark:text-white mt-1">
-                    Active Shipments
-                  </h3>
-                  <div className="text-3xl font-extrabold text-slate-900 dark:text-white font-mono mt-2">
-                    {data?.activeShipments.value || "47"}
-                  </div>
-                  <span className="inline-block mt-1 text-xs font-bold bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 rounded-lg px-2 py-0.5">
-                    {data?.activeShipments.coldStatus || "+3.2°C cold"}
-                  </span>
-                </div>
-
-                {/* Smooth Wavy SVG line (Quixotic Spline) */}
-                <div className="py-2">
-                  <svg className="w-full h-12 text-emerald-500 overflow-visible" viewBox="0 0 100 30" fill="none">
-                    <path
-                      d="M0 25 C20 15, 30 28, 50 12 C70 -4, 80 18, 100 8"
-                      stroke="currentColor"
-                      strokeWidth="2.5"
-                      strokeLinecap="round"
-                    />
-                  </svg>
-                </div>
-
-                {/* Action Buttons */}
-                <div className="grid grid-cols-2 gap-2 pt-2">
-                  <Link
-                    href="/dashboard/dairy/shipments"
-                    className="text-center py-2 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold text-xs hover:opacity-90 transition"
-                  >
-                    Track Fleet ↑
-                  </Link>
-                  <Link
-                    href="/dashboard/dairy/escrow"
-                    className="text-center py-2 rounded-xl border border-slate-300 dark:border-white/20 text-slate-700 dark:text-white font-bold text-xs hover:bg-white dark:hover:bg-white/10 transition"
-                  >
-                    Escrow ↓
-                  </Link>
-                </div>
-              </div>
-
-            </div>
-
-            {/* ROW 2: RECENT SHIPMENTS TABLE + REGIONAL PRICING BREAKDOWN */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
-              
-              {/* TABLE: Incoming Shipments (cols 7) */}
-              <div className="lg:col-span-7 bg-slate-50 dark:bg-white/5 rounded-[28px] p-6 border border-slate-200/70 dark:border-white/10">
-                <div className="flex items-center justify-between pb-4 border-b border-slate-200/60 dark:border-white/10">
-                  <div>
-                    <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
-                      Live Telemetry
-                    </span>
-                    <h3 className="text-lg font-bold text-slate-900 dark:text-white">
-                      Incoming Route Deliveries
-                    </h3>
-                  </div>
-                  <Link
-                    href="/dashboard/dairy/shipments"
-                    className="text-xs font-bold text-emerald-700 dark:text-emerald-400 hover:underline"
-                  >
-                    Full Fleet View →
-                  </Link>
-                </div>
-
-                {/* Table Body */}
-                <div className="divide-y divide-slate-200/50 dark:divide-white/5">
-                  {data?.incomingShipments.map((shipment) => (
-                    <div
-                      key={shipment.id}
-                      className="py-3.5 flex flex-wrap items-center justify-between gap-3 text-xs transition hover:bg-white/60 dark:hover:bg-white/5 px-2 rounded-xl"
-                    >
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 flex items-center justify-center font-bold text-xs">
-                          🥛
-                        </div>
-                        <div>
-                          <Link
-                            href="/dashboard/dairy/shipments"
-                            className="font-bold text-slate-900 dark:text-white hover:text-emerald-700"
+                      <div className={`flex rounded-xl p-1 border text-xs font-bold ${
+                        isDark ? "bg-white/5 border-white/10" : "bg-slate-100 border-slate-200"
+                      }`}>
+                        {(["1d", "1w", "1m", "6m", "1y", "all"] as const).map((period) => (
+                          <button
+                            key={period}
+                            type="button"
+                            onClick={() => setTimeRange(period)}
+                            className={`px-2.5 py-1 rounded-lg uppercase transition cursor-pointer ${
+                              timeRange === period
+                                ? "bg-white dark:bg-white/20 text-slate-900 dark:text-white shadow-xs font-black"
+                                : "text-slate-500 dark:text-white/50 hover:text-slate-900 dark:hover:text-white"
+                            }`}
                           >
-                            {shipment.route}
-                          </Link>
-                          <div className="text-[11px] text-slate-500 font-mono">
-                            {shipment.batch}
+                            {period}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Interactive SVG Chart Canvas */}
+                  <div className="relative pt-4 pb-2">
+                    <div className="relative w-full h-[220px]">
+                      <svg className="w-full h-full overflow-visible" viewBox={`0 0 ${svgMetrics.width} ${svgMetrics.height}`}>
+                        <defs>
+                          <linearGradient id="dairyGradient" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stopColor="#14b8a6" stopOpacity="0.25" />
+                            <stop offset="100%" stopColor="#14b8a6" stopOpacity="0.0" />
+                          </linearGradient>
+                        </defs>
+
+                        <path d={svgMetrics.areaD} fill="url(#dairyGradient)" />
+                        <path
+                          d={svgMetrics.pathD}
+                          fill="none"
+                          stroke="#14b8a6"
+                          strokeWidth="3"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+
+                        {svgMetrics.coords.map((pt, idx) => (
+                          <circle
+                            key={idx}
+                            cx={pt.x}
+                            cy={pt.y}
+                            r={hoveredPoint?.x === pt.x ? 6 : 4}
+                            className="fill-white dark:fill-[#121820] stroke-teal-500 stroke-[3] cursor-pointer transition-all hover:scale-125"
+                            onMouseEnter={() => setHoveredPoint(pt)}
+                            onMouseLeave={() => setHoveredPoint(null)}
+                          />
+                        ))}
+                      </svg>
+
+                      {hoveredPoint && (
+                        <div
+                          className="absolute z-20 pointer-events-none -translate-x-1/2 -translate-y-full mb-3 px-3 py-1.5 rounded-xl bg-slate-900 text-white text-xs font-mono shadow-xl border border-white/20 flex flex-col items-center"
+                          style={{ left: `${(hoveredPoint.x / svgMetrics.width) * 100}%`, top: `${hoveredPoint.y}px` }}
+                        >
+                          <span className="text-[10px] text-slate-400">{hoveredPoint.label}</span>
+                          <span className="font-bold text-teal-400">{hoveredPoint.value}</span>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="flex justify-between items-center text-[10px] font-mono text-slate-400 pt-3 border-t border-slate-100 dark:border-white/5">
+                      {chartDatasets.points.map((pt, idx) => (
+                        <span key={idx}>{pt.label}</span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* 2. FOUR FINANCIAL BENTO METRIC CARDS */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                  
+                  {/* Card 1: Secured Escrow */}
+                  <div className={`p-5 rounded-3xl border flex flex-col justify-between transition hover:-translate-y-0.5 ${
+                    isDark ? "bg-[#141b24] border-white/10" : "bg-white border-slate-200/80 shadow-xs"
+                  }`}>
+                    <div className="flex items-center justify-between">
+                      <span className={`text-xs font-mono uppercase font-bold ${isDark ? "text-white/50" : "text-slate-500"}`}>
+                        Secured Escrow Balance
+                      </span>
+                      <div className="w-8 h-8 rounded-full bg-teal-500/10 text-teal-500 flex items-center justify-center font-bold text-xs">
+                        🔒
+                      </div>
+                    </div>
+                    <div className="mt-2">
+                      <div className="text-2xl font-black font-mono">
+                        {data?.escrowBalance.value || "48,500,000"} <span className="text-xs font-normal text-teal-500 font-bold">UZS</span>
+                      </div>
+                      <div className="flex items-center gap-1.5 text-xs text-teal-600 dark:text-teal-400 font-bold mt-1">
+                        <span>AgroBank ATB Depoziti</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Card 2: Received Today */}
+                  <div className={`p-5 rounded-3xl border flex flex-col justify-between transition hover:-translate-y-0.5 ${
+                    isDark ? "bg-[#141b24] border-white/10" : "bg-white border-slate-200/80 shadow-xs"
+                  }`}>
+                    <div className="flex items-center justify-between">
+                      <span className={`text-xs font-mono uppercase font-bold ${isDark ? "text-white/50" : "text-slate-500"}`}>
+                        Bugungi Qabul Hajmi
+                      </span>
+                      <div className="w-8 h-8 rounded-full bg-blue-500/10 text-blue-500 flex items-center justify-center font-bold text-xs">
+                        🥛
+                      </div>
+                    </div>
+                    <div className="mt-2">
+                      <div className="text-2xl font-black font-mono">
+                        {data?.receivedToday.value || "186,400"} <span className="text-xs font-normal text-slate-400">L</span>
+                      </div>
+                      <div className="flex items-center gap-1.5 text-xs text-blue-500 font-bold mt-1">
+                        <span>{data?.receivedToday.delta || "+8.2% vs oʻtgan hafta"}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Card 3: Open Orders */}
+                  <div className={`p-5 rounded-3xl border flex flex-col justify-between transition hover:-translate-y-0.5 ${
+                    isDark ? "bg-[#141b24] border-white/10" : "bg-white border-slate-200/80 shadow-xs"
+                  }`}>
+                    <div className="flex items-center justify-between">
+                      <span className={`text-xs font-mono uppercase font-bold ${isDark ? "text-white/50" : "text-slate-500"}`}>
+                        Faol Xarid Shartnomalari
+                      </span>
+                      <div className="w-8 h-8 rounded-full bg-amber-500/10 text-amber-500 flex items-center justify-center font-bold text-xs">
+                        📄
+                      </div>
+                    </div>
+                    <div className="mt-2">
+                      <div className="text-2xl font-black font-mono">
+                        {data?.openOrders.value || "12"} <span className="text-xs font-normal text-slate-400">partiya</span>
+                      </div>
+                      <div className="flex items-center gap-1.5 text-xs text-amber-500 font-bold mt-1">
+                        <span>Barchasi eskrouda bronlangan</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Card 4: Silo Capacity */}
+                  <div className={`p-5 rounded-3xl border flex flex-col justify-between transition hover:-translate-y-0.5 ${
+                    isDark ? "bg-[#141b24] border-white/10" : "bg-white border-slate-200/80 shadow-xs"
+                  }`}>
+                    <div className="flex items-center justify-between">
+                      <span className={`text-xs font-mono uppercase font-bold ${isDark ? "text-white/50" : "text-slate-500"}`}>
+                        Silo Rezervuari #1
+                      </span>
+                      <div className="w-8 h-8 rounded-full bg-emerald-500/10 text-emerald-500 flex items-center justify-center font-bold text-xs">
+                        ⚙️
+                      </div>
+                    </div>
+                    <div className="mt-2">
+                      <div className="text-2xl font-black font-mono text-emerald-600 dark:text-emerald-400">
+                        74.5% <span className="text-xs font-normal text-slate-400 font-sans">(186k / 250k L)</span>
+                      </div>
+                      <div className="flex items-center gap-1.5 text-xs text-emerald-500 font-bold mt-1">
+                        <span>Sovutgich: 2.8°C (Locked)</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 3. THREE-COLUMN BOTTOM BENTO */}
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+
+                  {/* Col 1: Inbound Shipments list */}
+                  <div className={`lg:col-span-5 p-6 rounded-3xl border flex flex-col justify-between transition ${
+                    isDark ? "bg-[#141b24] border-white/10" : "bg-white border-slate-200/80 shadow-xs"
+                  }`}>
+                    <div>
+                      <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-white/10">
+                        <h3 className="font-bold text-sm">Kiruvchi Yuklar & Sisternalar</h3>
+                        <span className="text-xs font-mono text-teal-500 font-bold">Jonli GPS</span>
+                      </div>
+
+                      <div className="divide-y divide-slate-100 dark:divide-white/5 mt-2 space-y-1">
+                        {data?.incomingShipments.map((shipment) => (
+                          <div key={shipment.id} className="py-3 flex items-center justify-between gap-3">
+                            <div className="flex items-center gap-3">
+                              <div className="w-9 h-9 rounded-2xl bg-teal-500/10 text-teal-600 flex items-center justify-center font-bold text-xs">
+                                🚛
+                              </div>
+                              <div>
+                                <div className="font-bold text-xs">{shipment.route}</div>
+                                <div className="text-[10px] text-slate-400 font-mono">{shipment.batch} &bull; {shipment.temp}</div>
+                              </div>
+                            </div>
+                            <div className="text-right">
+                              <div className="font-bold font-mono text-xs">{shipment.etaOrStatus}</div>
+                              <span className="text-[10px] font-bold text-teal-500">
+                                GPS {shipment.gpsLock ? "🔒 Locked" : "Signal"}
+                              </span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => setActiveWindow("shipments")}
+                      className="mt-4 pt-3 border-t border-slate-100 dark:border-white/10 text-xs font-bold text-teal-600 dark:text-teal-400 hover:underline text-center w-full block cursor-pointer"
+                    >
+                      Barcha yuklar radarini ochish →
+                    </button>
+                  </div>
+
+                  {/* Col 2: Silo Tank Capacity Semi-Circle Gauge */}
+                  <div className={`lg:col-span-4 p-6 rounded-3xl border flex flex-col justify-between transition ${
+                    isDark ? "bg-[#141b24] border-white/10" : "bg-white border-slate-200/80 shadow-xs"
+                  }`}>
+                    <div>
+                      <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-white/10">
+                        <h3 className="font-bold text-sm">Silo Sigʻimi & Xomashyo</h3>
+                        <span className="text-xs font-mono text-emerald-500 font-bold">Avtomatik Datchik</span>
+                      </div>
+
+                      <div className="my-6 flex flex-col items-center justify-center">
+                        <div className="relative w-44 h-24 overflow-hidden flex items-end justify-center">
+                          <svg className="w-44 h-44 -rotate-180" viewBox="0 0 100 100">
+                            <circle
+                              cx="50"
+                              cy="50"
+                              r="40"
+                              fill="none"
+                              stroke={isDark ? "rgba(255,255,255,0.08)" : "#f1f5f9"}
+                              strokeWidth="10"
+                              strokeDasharray="125 250"
+                            />
+                            <circle
+                              cx="50"
+                              cy="50"
+                              r="40"
+                              fill="none"
+                              stroke="#14b8a6"
+                              strokeWidth="10"
+                              strokeDasharray="93 250"
+                              strokeLinecap="round"
+                            />
+                          </svg>
+
+                          <div className="absolute bottom-0 flex flex-col items-center">
+                            <span className="text-[10px] uppercase font-bold text-slate-400">Toʻla Daraja</span>
+                            <span className="text-2xl font-black font-mono">74.5%</span>
+                          </div>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-3 w-full mt-5 text-[11px] font-mono">
+                          <div className="p-2 rounded-xl bg-slate-50 dark:bg-white/5 flex justify-between">
+                            <span className="text-slate-500">Silo #1:</span>
+                            <span className="font-bold">186.4k L</span>
+                          </div>
+                          <div className="p-2 rounded-xl bg-slate-50 dark:bg-white/5 flex justify-between">
+                            <span className="text-slate-500">Silo #2:</span>
+                            <span className="font-bold">42.0k L</span>
+                          </div>
+                          <div className="p-2 rounded-xl bg-slate-50 dark:bg-white/5 flex justify-between">
+                            <span className="text-slate-500">Harorat:</span>
+                            <span className="font-bold text-teal-500">2.8°C</span>
+                          </div>
+                          <div className="p-2 rounded-xl bg-slate-50 dark:bg-white/5 flex justify-between">
+                            <span className="text-slate-500">Bosim:</span>
+                            <span className="font-bold">1.2 bar</span>
                           </div>
                         </div>
                       </div>
-
-                      <div className="flex items-center gap-4">
-                        <span className="font-mono font-bold text-slate-800 dark:text-slate-200">
-                          {shipment.temp}
-                        </span>
-                        <span className="text-slate-500 font-mono text-[11px]">
-                          {shipment.etaOrStatus}
-                        </span>
-                        <span
-                          className={`px-2.5 py-1 rounded-full text-[11px] font-bold ${
-                            shipment.statusType === "warning"
-                              ? "bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300"
-                              : shipment.statusType === "neutral"
-                              ? "bg-slate-200 text-slate-800 dark:bg-slate-800 dark:text-slate-300"
-                              : "bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300"
-                          }`}
-                        >
-                          {shipment.status}
-                        </span>
-                      </div>
                     </div>
-                  ))}
-                </div>
-              </div>
 
-              {/* CARD: Regional Pricing & Partner Network (cols 5) */}
-              <div className="lg:col-span-5 bg-slate-50 dark:bg-white/5 rounded-[28px] p-6 border border-slate-200/70 dark:border-white/10 flex flex-col justify-between">
-                <div>
-                  <div className="flex items-center justify-between pb-3 border-b border-slate-200/60 dark:border-white/10">
-                    <div>
-                      <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
-                        Supply Economics
-                      </span>
-                      <h3 className="text-lg font-bold text-slate-900 dark:text-white">
-                        Regional Supplier Price (UZS/L)
-                      </h3>
-                    </div>
-                    <Link
-                      href="/dashboard/dairy/regional-pricing"
-                      className="text-xs font-bold text-emerald-700 dark:text-emerald-400 hover:underline"
+                    <button
+                      type="button"
+                      onClick={() => setActiveWindow("pricing")}
+                      className="pt-3 border-t border-slate-100 dark:border-white/10 text-xs font-bold text-teal-600 dark:text-teal-400 hover:underline text-center w-full block cursor-pointer"
                     >
-                      Compare →
-                    </Link>
+                      Xarid narxlarini yangilash →
+                    </button>
                   </div>
 
-                  {/* Progress bars */}
-                  <div className="space-y-3.5 pt-4">
-                    {data?.regionalPrices.map((item) => (
-                      <div key={item.region} className="flex items-center gap-3">
-                        <span className="w-24 text-xs font-bold text-slate-700 dark:text-slate-300 truncate">
-                          {item.region}
-                        </span>
-                        <div className="flex-1 h-2 rounded-full bg-slate-200 dark:bg-white/10 overflow-hidden">
-                          <div
-                            className="h-2 rounded-full bg-[#087a3c]"
-                            style={{ width: `${item.percentage}%` }}
-                          />
+                  {/* Col 3: Regional Pricing Matrix Stepper */}
+                  <div className={`lg:col-span-3 p-6 rounded-3xl border flex flex-col justify-between transition ${
+                    isDark ? "bg-[#141b24] border-white/10" : "bg-white border-slate-200/80 shadow-xs"
+                  }`}>
+                    <div>
+                      <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-white/10">
+                        <h3 className="font-bold text-sm">Xarid Narxlari</h3>
+                        <span className="text-xs font-mono text-slate-400">UZS / L</span>
+                      </div>
+
+                      <div className="space-y-2.5 mt-3">
+                        {Object.entries(regionalPriceAdjustments).slice(0, 3).map(([reg, price]) => (
+                          <div key={reg} className="p-2.5 rounded-xl border border-slate-200 dark:border-white/10 flex items-center justify-between">
+                            <span className="text-xs font-bold">{reg}</span>
+                            <div className="flex items-center gap-1.5 font-mono">
+                              <button
+                                type="button"
+                                onClick={() => handlePriceStep(reg, -100)}
+                                className="w-6 h-6 rounded-md bg-slate-100 dark:bg-white/10 text-xs font-bold hover:bg-slate-200 cursor-pointer"
+                              >
+                                -
+                              </button>
+                              <span className="font-bold text-xs min-w-[55px] text-center text-teal-600 dark:text-teal-400">
+                                {price}
+                              </span>
+                              <button
+                                type="button"
+                                onClick={() => handlePriceStep(reg, 100)}
+                                className="w-6 h-6 rounded-md bg-slate-100 dark:bg-white/10 text-xs font-bold hover:bg-slate-200 cursor-pointer"
+                              >
+                                +
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => setActiveWindow("pricing")}
+                      className="pt-3 border-t border-slate-100 dark:border-white/10 text-xs font-bold text-teal-600 dark:text-teal-400 hover:underline text-center w-full block cursor-pointer"
+                    >
+                      Toʻliq narxlar matritsasi →
+                    </button>
+                  </div>
+
+                </div>
+
+              </div>
+            )}
+
+            {/* =========================================================================
+                WINDOW 2: ORDERS (In-place window)
+            ========================================================================= */}
+            {activeWindow === "orders" && (
+              <div className="space-y-6">
+                <div className={`p-6 rounded-3xl border transition ${
+                  isDark ? "bg-[#141b24] border-white/10" : "bg-white border-slate-200/80 shadow-xs"
+                }`}>
+                  <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-slate-100 dark:border-white/10">
+                    <div>
+                      <h3 className="text-lg font-bold">Xarid Buyurtmalari Reestri</h3>
+                      <p className="text-xs text-slate-500">Fermerlar bilan tuzilgan va AgroBank depozitida kafolatlangan partiyalar</p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setShowOrderModal(true)}
+                      className="px-4 py-2 rounded-full bg-teal-600 text-white font-bold text-xs hover:bg-teal-700 transition cursor-pointer"
+                    >
+                      + Yangi Buyurtma Joylash
+                    </button>
+                  </div>
+
+                  <div className="overflow-x-auto mt-4">
+                    <table className="w-full text-xs text-left">
+                      <thead>
+                        <tr className="border-b border-slate-200 dark:border-white/10 uppercase font-mono text-[10px] text-slate-400">
+                          <th className="py-3 px-3">Buyurtma ID</th>
+                          <th className="py-3 px-3">Fermer Kooperativi</th>
+                          <th className="py-3 px-3">Hajm</th>
+                          <th className="py-3 px-3">Stavka</th>
+                          <th className="py-3 px-3">Eskrou Depoziti</th>
+                          <th className="py-3 px-3">Holat</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-100 dark:divide-white/5 font-mono">
+                        {[
+                          { id: "ORD-941", farmer: "Oqdaryo Fayzli Dalalari", vol: "5,000 Litr", rate: "5,800 UZS/L", sum: "29,000,000 UZS", status: "Kafolatlangan (Eskrou)" },
+                          { id: "ORD-940", farmer: "Zarafshon Agro Hamkor", vol: "3,200 Litr", rate: "5,800 UZS/L", sum: "18,560,000 UZS", status: "Yetkazilmoqda" },
+                          { id: "ORD-939", farmer: "Pastdargʻom Baraka", vol: "8,000 Litr", rate: "5,750 UZS/L", sum: "46,000,000 UZS", status: "Qabul Qilindi" },
+                        ].map((o) => (
+                          <tr key={o.id} className="hover:bg-slate-50 dark:hover:bg-white/[0.02] transition">
+                            <td className="py-3.5 px-3 font-bold">{o.id}</td>
+                            <td className="py-3.5 px-3 font-sans font-bold">{o.farmer}</td>
+                            <td className="py-3.5 px-3">{o.vol}</td>
+                            <td className="py-3.5 px-3">{o.rate}</td>
+                            <td className="py-3.5 px-3 font-bold text-teal-600 dark:text-teal-400">{o.sum}</td>
+                            <td className="py-3.5 px-3">
+                              <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-teal-500/10 text-teal-600 dark:text-teal-400 border border-teal-500/20">
+                                {o.status}
+                              </span>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* =========================================================================
+                WINDOW 3: SHIPMENTS (In-place window)
+            ========================================================================= */}
+            {activeWindow === "shipments" && (
+              <div className="space-y-6">
+                <div className={`p-6 rounded-3xl border transition ${
+                  isDark ? "bg-[#141b24] border-white/10" : "bg-white border-slate-200/80 shadow-xs"
+                }`}>
+                  <h3 className="text-lg font-bold pb-2">Sovuq Zanjir Logistika Floti & IoT Telemetriya</h3>
+                  <p className="text-xs text-slate-500 mb-6">Zavod darvozasiga yetib kelayotgan barcha izotermik sut tashuvchi sisternalar</p>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {data?.incomingShipments.map((s) => (
+                      <div key={s.id} className="p-4 rounded-2xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 space-y-2">
+                        <div className="flex justify-between items-center">
+                          <span className="font-bold text-sm">🚛 {s.route}</span>
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-teal-500 text-white">
+                            {s.etaOrStatus}
+                          </span>
                         </div>
-                        <span className="w-20 text-right font-mono text-xs font-bold text-slate-900 dark:text-white">
-                          {item.price}
-                        </span>
+                        <div className="flex justify-between text-xs font-mono text-slate-500">
+                          <span>Sisterna Harorati:</span>
+                          <span className="font-bold text-teal-600 dark:text-teal-400">{s.temp}</span>
+                        </div>
+                        <div className="flex justify-between text-xs font-mono text-slate-500">
+                          <span>Partiya Kodi:</span>
+                          <span className="font-bold">{s.batch}</span>
+                        </div>
                       </div>
                     ))}
                   </div>
                 </div>
+              </div>
+            )}
 
-                {/* Mandatory Settlement & Liaison Avatars (Quixotic style) */}
-                <div className="mt-5 pt-4 border-t border-slate-200/60 dark:border-white/10 flex items-center justify-between">
-                  <div>
-                    <span className="text-[10px] uppercase font-bold text-slate-400 block">
-                      Regional Field Liaisons
-                    </span>
-                    <span className="text-xs font-bold text-slate-800 dark:text-white">
-                      14 Certified Inspector Stations
-                    </span>
-                  </div>
-                  <div className="flex items-center -space-x-2">
-                    <div className="w-7 h-7 rounded-full bg-emerald-600 text-white font-bold text-[10px] flex items-center justify-center border-2 border-white dark:border-slate-900">
-                      A
+            {/* =========================================================================
+                WINDOW 4: ESCROW (In-place window)
+            ========================================================================= */}
+            {activeWindow === "escrow" && (
+              <div className="space-y-6">
+                <div className={`p-6 rounded-3xl border transition ${
+                  isDark ? "bg-[#141b24] border-white/10" : "bg-white border-slate-200/80 shadow-xs"
+                }`}>
+                  <h3 className="text-lg font-bold pb-2">AgroBank ATB Sanoat Eskrousi</h3>
+                  <p className="text-xs text-slate-500 mb-6">Qabul qilingan xomashyo uchun avtomatlashtirilgan toʻlov kafolatlari</p>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div className="p-5 rounded-2xl bg-teal-50 dark:bg-teal-950/30 border border-teal-200 dark:border-teal-800">
+                      <span className="text-xs font-bold text-teal-700 dark:text-teal-400">Joriy Depozit Qoldigʻi</span>
+                      <div className="text-2xl font-black font-mono text-teal-900 dark:text-teal-200 mt-1">48,500,000 UZS</div>
                     </div>
-                    <div className="w-7 h-7 rounded-full bg-teal-600 text-white font-bold text-[10px] flex items-center justify-center border-2 border-white dark:border-slate-900">
-                      S
+                    <div className="p-5 rounded-2xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10">
+                      <span className="text-xs font-bold text-slate-500">Bugun Qabul Qilingan Partiyalar</span>
+                      <div className="text-2xl font-black font-mono mt-1">18,420,000 UZS</div>
                     </div>
-                    <div className="w-7 h-7 rounded-full bg-blue-600 text-white font-bold text-[10px] flex items-center justify-center border-2 border-white dark:border-slate-900">
-                      M
-                    </div>
-                    <div className="w-7 h-7 rounded-full bg-slate-800 text-white font-bold text-[10px] flex items-center justify-center border-2 border-white dark:border-slate-900">
-                      +11
+                    <div className="p-5 rounded-2xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10">
+                      <span className="text-xs font-bold text-slate-500">Kliring Holati</span>
+                      <div className="text-base font-bold font-mono text-teal-600 dark:text-teal-400 mt-2">ISO 20022 PACS.008 Faol</div>
                     </div>
                   </div>
                 </div>
-
               </div>
+            )}
 
-            </div>
+            {/* =========================================================================
+                WINDOW 5: PRICING (In-place window)
+            ========================================================================= */}
+            {activeWindow === "pricing" && (
+              <div className="space-y-6">
+                <div className={`p-6 rounded-3xl border transition ${
+                  isDark ? "bg-[#141b24] border-white/10" : "bg-white border-slate-200/80 shadow-xs"
+                }`}>
+                  <h3 className="text-lg font-bold pb-2">Hududiy Bazaviy Xarid Narxlari Matritsasi</h3>
+                  <p className="text-xs text-slate-500 mb-6">Fermerlar uchun ommaviy kotirovka narxlari (3.4% yogʻlilik bazasida)</p>
+
+                  <div className="space-y-3 max-w-xl">
+                    {Object.entries(regionalPriceAdjustments).map(([reg, price]) => (
+                      <div key={reg} className="p-4 rounded-2xl border border-slate-200 dark:border-white/10 flex items-center justify-between">
+                        <div>
+                          <div className="font-bold text-sm">{reg} Viloyati</div>
+                          <div className="text-xs text-slate-500">Standart 3.4% yogʻlik uchun stavka</div>
+                        </div>
+                        <div className="flex items-center gap-2 font-mono">
+                          <button
+                            type="button"
+                            onClick={() => handlePriceStep(reg, -100)}
+                            className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-white/10 text-sm font-black hover:bg-slate-200 cursor-pointer"
+                          >
+                            -
+                          </button>
+                          <span className="text-base font-black text-teal-600 dark:text-teal-400 min-w-[70px] text-center">
+                            {price}
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => handlePriceStep(reg, 100)}
+                            className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-white/10 text-sm font-black hover:bg-slate-200 cursor-pointer"
+                          >
+                            +
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* =========================================================================
+                WINDOW 6: ANALYTICS (In-place window)
+            ========================================================================= */}
+            {activeWindow === "analytics" && (
+              <div className="space-y-6">
+                <div className={`p-6 rounded-3xl border transition ${
+                  isDark ? "bg-[#141b24] border-white/10" : "bg-white border-slate-200/80 shadow-xs"
+                }`}>
+                  <h3 className="text-lg font-bold pb-2">Zavod Ishlab Chiqarish & Xomashyo Oqimi</h3>
+                  <p className="text-xs text-slate-500 mb-6">Oylik tahlil va taʻminotchilar ishonchlilik reytingi</p>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="p-5 rounded-2xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10">
+                      <span className="text-xs font-bold text-slate-500">Oʻrtacha Yogʻlilik Koʻrsatkichi</span>
+                      <div className="text-2xl font-black font-mono text-teal-600 dark:text-teal-400 mt-1">4.08% Fat</div>
+                      <p className="text-[11px] text-slate-500 mt-2">Barcha qabul qilingan partiyalarning oʻrtacha oʻlchovi.</p>
+                    </div>
+                    <div className="p-5 rounded-2xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10">
+                      <span className="text-xs font-bold text-slate-500">Faol Fermer Hamkorlar</span>
+                      <div className="text-2xl font-black font-mono text-blue-600 dark:text-blue-400 mt-1">84 ta Ferma</div>
+                      <p className="text-[11px] text-slate-500 mt-2">99.4% oʻz vaqtida yetkazib berish darajasi.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* =========================================================================
+                WINDOW 7: SETTINGS & ISO (In-place window)
+            ========================================================================= */}
+            {activeWindow === "settings" && (
+              <div className="space-y-6">
+                <div className={`p-6 rounded-3xl border transition ${
+                  isDark ? "bg-[#141b24] border-white/10" : "bg-white border-slate-200/80 shadow-xs"
+                }`}>
+                  <h3 className="text-lg font-bold pb-2">Zavod Profili & ISO Standartlari</h3>
+                  <p className="text-xs text-slate-500 mb-6">Yuridik shaxs maʻlumotlari va gigiyena sertifikatlari</p>
+
+                  <div className="space-y-4 max-w-lg text-xs">
+                    <div>
+                      <label className="font-bold block mb-1">Kompaniya Nomi</label>
+                      <input
+                        type="text"
+                        defaultValue="Samarqand Sut Zavodi #4 MCHJ"
+                        className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-transparent font-medium"
+                      />
+                    </div>
+                    <div>
+                      <label className="font-bold block mb-1">STIR (TIN)</label>
+                      <input
+                        type="text"
+                        defaultValue="204918231"
+                        readOnly
+                        className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 font-mono"
+                      />
+                    </div>
+                    <div>
+                      <label className="font-bold block mb-1">ISO 22000 Sertifikati</label>
+                      <input
+                        type="text"
+                        defaultValue="ISO-22000-UZ-2026-CERT-991"
+                        readOnly
+                        className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 font-mono"
+                      />
+                    </div>
+                    <button
+                      type="button"
+                      className="px-5 py-2.5 rounded-full bg-teal-600 text-white font-bold hover:bg-teal-700 transition cursor-pointer"
+                    >
+                      Oʻzgarishlarni Saqlash
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
 
           </div>
 
-        </div>
+        </main>
 
       </div>
+
+      {/* =========================================================================
+          NEW PROCUREMENT ORDER MODAL
+      ========================================================================= */}
+      {showOrderModal && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className={`max-w-md w-full rounded-3xl p-6 border shadow-2xl transition ${
+            isDark ? "bg-[#141b24] border-white/20 text-white" : "bg-white border-slate-200 text-slate-900"
+          }`}>
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-white/10">
+              <h3 className="font-bold text-base">Yangi Sut Xaridi Buyurtmasi</h3>
+              <button
+                type="button"
+                onClick={() => setShowOrderModal(false)}
+                className="w-7 h-7 rounded-full bg-slate-100 dark:bg-white/10 flex items-center justify-center cursor-pointer hover:bg-slate-200"
+              >
+                ✕
+              </button>
+            </div>
+
+            {orderSuccess ? (
+              <div className="py-8 text-center space-y-2">
+                <div className="w-12 h-12 mx-auto rounded-full bg-teal-500 text-white flex items-center justify-center text-xl">
+                  ✓
+                </div>
+                <div className="font-black text-lg">Buyurtma Muvaffaqiyatli Joylandi!</div>
+                <p className="text-xs text-slate-500">AgroBank Eskrou depozitida {totalProcureEscrow.toLocaleString()} UZS bloklandi.</p>
+              </div>
+            ) : (
+              <form onSubmit={handleCreateOrder} className="space-y-4 pt-4 text-xs">
+                <div>
+                  <label className="font-bold block mb-1">Talab Qilinuvchi Hajm (Litr)</label>
+                  <input
+                    type="number"
+                    min="1000"
+                    max="50000"
+                    step="500"
+                    value={procureLiters}
+                    onChange={(e) => setProcureLiters(Number(e.target.value))}
+                    className="w-full px-4 py-2 rounded-xl border border-slate-200 dark:border-white/10 bg-transparent font-mono"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="font-bold block mb-1">Hudud</label>
+                  <select
+                    value={procureRegion}
+                    onChange={(e) => setProcureRegion(e.target.value)}
+                    className="w-full px-4 py-2 rounded-xl border border-slate-200 dark:border-white/10 bg-transparent font-medium"
+                  >
+                    {Object.keys(regionalPriceAdjustments).map((reg) => (
+                      <option key={reg} value={reg} className="dark:bg-[#141b24]">
+                        {reg} ({regionalPriceAdjustments[reg].toLocaleString()} UZS/L)
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="p-3 rounded-2xl bg-teal-500/10 border border-teal-500/20 text-teal-600 dark:text-teal-400 font-mono text-[11px] flex justify-between items-center">
+                  <span>Eskrouda Talab Qilinuvchi Summa:</span>
+                  <span className="font-black text-sm">{totalProcureEscrow.toLocaleString()} UZS</span>
+                </div>
+
+                <button
+                  type="submit"
+                  className="w-full py-2.5 rounded-full bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs shadow-md transition cursor-pointer"
+                >
+                  AgroBank Depozitida Bron Qilish →
+                </button>
+              </form>
+            )}
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }

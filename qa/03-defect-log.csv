@@ -1,9 +1,0 @@
-Defect ID,Severity,Priority,Area,Status,Title,Assigned Team
-QA-001,S1 Critical,P0,Auth / Security,Closed (Verified),Public Sign-Up Endpoint Fallback Accepts role=ADMIN (Returns 201 Instead of 403),Backend / API
-QA-002,S2 Major,P1,Auth / Security,Closed (Verified),Potential Open Redirect via ?next= Parameter for Admin Role in SignInCard,Frontend
-QA-003,S2 Major,P1,Accessibility / SEO,Closed (Verified),Duplicate <h1> Headings on Main Landing Page (Violates WCAG 1.3.1),Frontend / Design
-QA-004,S2 Major,P1,Accessibility / Design,Closed (Verified),Emerald Brand Green Text (#00C853 and #22d36b) Fails WCAG 2.2 Contrast on Light Glass,Frontend / Design
-QA-005,S3 Minor,P2,Accessibility / Mobile,Closed (Verified),Social Media Links in Team Carousel Fail WCAG 2.5.8 Minimum Touch Target Size (16px),Frontend
-QA-006,S3 Minor,P1,Security / Infra,Closed (Verified),Missing OWASP Security Headers (X-Frame-Options CSP) and Next.js Header Disclosure,DevOps / Next.js
-QA-007,S3 Minor,P2,Responsive / Mobile,Closed (Verified),Driver Dashboard Desktop Navigation Bar Wraps and Breaks on Mobile Viewports (360-390px),Frontend
-QA-008,S3 Minor,P2,UI / Navigation,Closed (Verified),Nav Item Live statistics Has Static Hardcoded Active Border Irrespective of Scroll Position,Frontend

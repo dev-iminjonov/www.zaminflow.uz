@@ -2,227 +2,182 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import ZaminFlowLogo from "@/components/ZaminFlowLogo";
-import { useRouter } from "next/navigation";
-import { signOut } from "@/lib/auth";
 import { getDairyShipments, DairyShipment } from "@/lib/dairyStore";
 
 export default function DairyShipmentsPage() {
-  const router = useRouter();
   const [shipments, setShipments] = useState<DairyShipment[]>([]);
-  const [isSigningOut, setIsSigningOut] = useState(false);
 
   useEffect(() => {
     setShipments(getDairyShipments());
   }, []);
 
-  const handleSignOut = async () => {
-    setIsSigningOut(true);
-    await signOut();
-    router.push("/signin");
-  };
-
   return (
-    <div className="min-h-[940px] bg-[linear-gradient(160deg,#f6f9f8_0%,#e4f6ec_100%)] text-[#17352c] font-[family-name:var(--font-inter,sans-serif)]">
-      <div className="max-w-[1180px] mx-auto px-6 pt-6 pb-14 flex flex-col gap-7">
-        
-        {/* Floating Top Pill Nav */}
-        <nav className="bg-white rounded-[40px] px-8 py-3.5 flex flex-wrap items-center justify-between gap-4 shadow-[0_10px_40px_rgba(20,80,60,0.08)]">
-          <Link href="/dashboard/dairy" className="flex items-center shrink-0">
-            <ZaminFlowLogo mode="light" size="md" />
-          </Link>
-          <div className="flex flex-wrap items-center gap-7 text-[15px] font-semibold">
-            <Link href="/dashboard/dairy" className="text-[#17352c] hover:text-[#087a3c] transition pb-0.5">
-              Overview
-            </Link>
-            <Link href="/dashboard/dairy/orders" className="text-[#17352c] hover:text-[#087a3c] transition pb-0.5">
-              Orders
-            </Link>
-            <Link href="/dashboard/dairy/shipments" className="text-[#087a3c] border-b-2 border-[#22d36b] pb-0.5">
-              Shipments
-            </Link>
-            <Link href="/dashboard/dairy/escrow" className="text-[#17352c] hover:text-[#087a3c] transition pb-0.5">
-              Escrow
-            </Link>
+    <div className="flex flex-col gap-6 w-full">
+      {/* 1. HEADER ROW */}
+      <header className="flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <div className="text-[11px] font-black tracking-widest bg-gradient-to-r from-[#00ffc8] to-[#00d3e0] bg-clip-text text-transparent uppercase mb-1">
+            LOGISTIKA VA FLOT MONITORINGI
           </div>
-          <div className="flex items-center gap-3">
-            <span className="text-xs font-bold bg-[#d9f7e5] text-[#087a3c] rounded-lg px-2 py-1 whitespace-nowrap">
-              Dairy Industry
+          <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-white">
+            Kelayotgan Sut Tankerlari &{" "}
+            <span className="bg-gradient-to-r from-[#00ffc8] via-[#00d3e0] to-[#0099ff] bg-clip-text text-transparent">
+              Telematika
             </span>
-            <button
-              onClick={handleSignOut}
-              disabled={isSigningOut}
-              className="bg-white text-[#12303a] border-[1.5px] border-[#12303a] rounded-full px-5 min-h-[44px] font-bold text-[15px] hover:bg-[#12303a] hover:text-white transition cursor-pointer"
+          </h1>
+          <p className="text-xs text-white/50 mt-0.5">
+            Sovuq zanjir tankerlari, real vaqt datchiklari va zavod qabul darvozasi
+          </p>
+        </div>
+
+        <Link
+          href="/dashboard/dairy/regional-pricing"
+          className="px-4 py-2 rounded-full border border-white/10 bg-white/5 hover:border-[#00d3e0] text-xs font-bold text-white hover:text-[#00ffc8] transition"
+        >
+          Hududiy Narxlarni Sozlash →
+        </Link>
+      </header>
+
+      {/* 2. FLEET KPI TELEMETRY GRID */}
+      <section className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="rounded-[24px] p-5 bg-white/[0.03] border border-white/10 hover:border-[#00d3e0]/40 transition-all flex flex-col justify-between">
+          <div className="text-[11px] font-bold tracking-wider text-white/50 uppercase flex items-center justify-between">
+            <span>Faol Kiruvchi Tankerlar</span>
+            <span className="w-2 h-2 rounded-full bg-[#00ffc8] animate-ping" />
+          </div>
+          <div className="flex items-baseline gap-2 mt-2">
+            <span className="font-mono text-3xl font-black text-white">47</span>
+            <span className="text-xs text-white/50">ta tanker</span>
+            <span className="ml-auto text-[10px] font-bold bg-[#00ffc8]/15 border border-[#00ffc8]/30 text-[#00ffc8] rounded-full px-2.5 py-0.5">
+              +3.2°C Sovutilgan
+            </span>
+          </div>
+        </div>
+
+        <div className="rounded-[24px] p-5 bg-white/[0.03] border border-white/10 hover:border-[#00d3e0]/40 transition-all flex flex-col justify-between">
+          <div className="text-[11px] font-bold tracking-wider text-white/50 uppercase">
+            Bugun Qabul Qilindi
+          </div>
+          <div className="flex items-baseline gap-2 mt-2">
+            <span className="font-mono text-3xl font-black text-[#00ffc8]">186,400</span>
+            <span className="text-xs text-[#00ffc8] font-mono">L</span>
+            <span className="ml-auto text-[10px] font-bold bg-[#00ffc8]/15 border border-[#00ffc8]/30 text-[#00ffc8] rounded-full px-2.5 py-0.5">
+              +3.8% reja
+            </span>
+          </div>
+        </div>
+
+        <div className="rounded-[24px] p-5 bg-white/[0.03] border border-white/10 hover:border-[#00d3e0]/40 transition-all flex flex-col justify-between">
+          <div className="text-[11px] font-bold tracking-wider text-white/50 uppercase">
+            Darvozada Kutmoqda
+          </div>
+          <div className="flex items-baseline gap-2 mt-2">
+            <span className="font-mono text-3xl font-black text-amber-300">1</span>
+            <span className="text-xs text-white/50">tanker navbatda</span>
+            <span className="ml-auto text-[10px] font-bold bg-amber-400/15 border border-amber-400/30 text-amber-300 rounded-full px-2.5 py-0.5">
+              Titratsiyaga Tayyor
+            </span>
+          </div>
+        </div>
+      </section>
+
+      {/* 3. FLEET LIST */}
+      <section className="flex flex-col gap-4">
+        {shipments.map((shipment) => {
+          const isTesting = shipment.status === "testing";
+          const isReleased = shipment.status === "released";
+
+          return (
+            <div
+              key={shipment.id}
+              className="rounded-[28px] p-6 bg-white/[0.03] border border-white/10 hover:border-[#00d3e0]/40 shadow-lg flex flex-wrap items-center justify-between gap-6 transition-all"
             >
-              {isSigningOut ? "..." : "Sign out"}
-            </button>
-          </div>
-        </nav>
-
-        {/* Header Row */}
-        <header className="flex flex-wrap items-end justify-between gap-5 pt-4">
-          <div>
-            <h1 className="m-0 text-4xl sm:text-5xl font-extrabold tracking-[-0.03em] leading-[1.05] text-[#17352c]">
-              Inbound Milk Tankers <span className="text-[#087a3c]">& Telemetry</span>
-            </h1>
-          </div>
-          <Link
-            href="/dashboard/dairy/regional-pricing"
-            className="inline-flex items-center justify-center bg-white text-[#12303a] border-[1.5px] border-[#12303a] rounded-full px-5 min-h-[44px] font-bold text-sm hover:bg-[#12303a] hover:text-white transition"
-          >
-            Adjust Regional Spot Prices →
-          </Link>
-        </header>
-
-        {/* Fleet KPI Telemetry Grid */}
-        <section className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-5">
-          <div className="bg-[rgba(255,255,255,0.76)] border border-white rounded-[24px] shadow-[0_10px_40px_rgba(20,80,60,0.08)] p-6 box-border">
-            <div className="text-xs font-bold tracking-[0.08em] text-[#087a3c] uppercase">
-              Active Inbound Tankers
-            </div>
-            <div className="flex items-baseline flex-wrap gap-2 mt-3">
-              <span className="font-[family-name:var(--font-jetbrains-mono,monospace)] text-[34px] font-bold text-[#17352c]">
-                47
-              </span>
-              <span className="text-xs font-bold bg-[#d9f7e5] text-[#087a3c] rounded-lg px-2 py-1">
-                +3.2°C cold
-              </span>
-            </div>
-          </div>
-
-          <div className="bg-[rgba(255,255,255,0.76)] border border-white rounded-[24px] shadow-[0_10px_40px_rgba(20,80,60,0.08)] p-6 box-border">
-            <div className="text-xs font-bold tracking-[0.08em] text-[#087a3c] uppercase">
-              Received at Plant Today
-            </div>
-            <div className="flex items-baseline flex-wrap gap-2 mt-3">
-              <span className="font-[family-name:var(--font-jetbrains-mono,monospace)] text-[34px] font-bold text-[#17352c]">
-                186,400
-              </span>
-              <span className="font-[family-name:var(--font-jetbrains-mono,monospace)] text-[13px] font-medium text-[#4d6a60]">
-                L
-              </span>
-              <span className="text-xs font-bold bg-[#d9f7e5] text-[#087a3c] rounded-lg px-2 py-1">
-                +3.8%
-              </span>
-            </div>
-          </div>
-
-          <div className="bg-[rgba(255,255,255,0.76)] border border-white rounded-[24px] shadow-[0_10px_40px_rgba(20,80,60,0.08)] p-6 box-border">
-            <div className="text-xs font-bold tracking-[0.08em] text-[#087a3c] uppercase">
-              Awaiting Gate Reception
-            </div>
-            <div className="flex items-baseline flex-wrap gap-2 mt-3">
-              <span className="font-[family-name:var(--font-jetbrains-mono,monospace)] text-[34px] font-bold text-[#b45309]">
-                1
-              </span>
-              <span className="font-[family-name:var(--font-jetbrains-mono,monospace)] text-[13px] font-medium text-[#4d6a60]">
-                tanker at gate
-              </span>
-              <span className="text-xs font-bold bg-[#fdf0d2] text-[#7a4b00] rounded-lg px-2 py-1">
-                Titration ready
-              </span>
-            </div>
-          </div>
-        </section>
-
-        {/* Fleet List */}
-        <section className="flex flex-col gap-5">
-          {shipments.map((shipment) => {
-            const isTesting = shipment.status === "testing";
-            const isReleased = shipment.status === "released";
-
-            return (
-              <div
-                key={shipment.id}
-                className="bg-[rgba(255,255,255,0.76)] border border-white rounded-[24px] shadow-[0_10px_40px_rgba(20,80,60,0.08)] p-6 sm:p-7 flex flex-wrap items-center justify-between gap-6"
-              >
-                <div className="flex-[1_1_280px]">
-                  <div className="flex items-center gap-3 mb-1">
-                    <span className="font-bold text-lg text-[#12303a]">
-                      {shipment.route}
+              <div className="flex-[1_1_280px]">
+                <div className="flex items-center gap-2.5 mb-1.5">
+                  <span className="font-bold text-lg text-white">
+                    {shipment.route}
+                  </span>
+                  <span className="font-mono text-xs font-bold bg-white/5 border border-white/10 text-[#00d3e0] rounded-full px-2.5 py-0.5">
+                    {shipment.batchNumber}
+                  </span>
+                  {shipment.gpsLock && (
+                    <span className="text-[10px] font-bold text-[#00ffc8] flex items-center gap-1 bg-[#00ffc8]/10 border border-[#00ffc8]/25 rounded-full px-2 py-0.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#00ffc8] animate-pulse" />
+                      GPS Qulflangan
                     </span>
-                    <span className="font-[family-name:var(--font-jetbrains-mono,monospace)] text-xs font-bold bg-[#e6ecea] text-[#33473f] rounded-lg px-2 py-0.5">
-                      {shipment.batchNumber}
-                    </span>
-                    {shipment.gpsLock && (
-                      <span className="text-xs font-bold text-[#087a3c] flex items-center gap-1">
-                        <span className="w-2 h-2 rounded-full bg-[#22d36b] animate-pulse" />
-                        GPS locked
-                      </span>
-                    )}
-                  </div>
-                  <div className="text-sm text-[#4d6a60]">
-                    From: {shipment.sourceRegion} → To: <strong>{shipment.destinationPlant}</strong>
-                  </div>
-                  <div className="text-xs text-[#4d6a60] mt-1">
-                    Driver: {shipment.driverName} ({shipment.truckPlate}) • Phone: {shipment.driverPhone}
-                  </div>
+                  )}
                 </div>
-
-                {/* Telemetry numbers */}
-                <div className="flex flex-wrap items-center gap-6">
-                  <div>
-                    <div className="text-xs text-[#4d6a60]">Volume</div>
-                    <div className="font-[family-name:var(--font-jetbrains-mono,monospace)] font-bold text-lg text-[#17352c]">
-                      {shipment.volumeLiters.toLocaleString()} L
-                    </div>
-                  </div>
-
-                  <div>
-                    <div className="text-xs text-[#4d6a60]">Cold Temp</div>
-                    <div className="font-[family-name:var(--font-jetbrains-mono,monospace)] font-bold text-lg text-[#087a3c]">
-                      {shipment.tempC}°C
-                    </div>
-                  </div>
-
-                  <div>
-                    <div className="text-xs text-[#4d6a60]">ETA / Status</div>
-                    <div className="font-semibold text-sm text-[#12303a]">
-                      {shipment.etaOrStatus}
-                    </div>
-                  </div>
-
-                  <div>
-                    <span
-                      className={`text-xs font-bold rounded-lg px-3 py-1.5 inline-block ${
-                        isTesting
-                          ? "bg-[#fdf0d2] text-[#7a4b00]"
-                          : isReleased
-                          ? "bg-[#e6ecea] text-[#33473f]"
-                          : "bg-[#d9f7e5] text-[#087a3c]"
-                      }`}
-                    >
-                      {shipment.status === "in_transit" && "● In transit"}
-                      {shipment.status === "testing" && "● Titration pending"}
-                      {shipment.status === "released" && "✓ Escrow released"}
-                    </span>
-                  </div>
+                <div className="text-xs text-white/70">
+                  Haydovchi: <strong className="text-white">{shipment.driverName}</strong> • Tanker raqami: <strong className="text-white font-mono">{shipment.truckPlate}</strong>
                 </div>
+                <div className="text-[11px] text-white/40 mt-0.5">
+                  Taxminiy yetib kelish (ETA): <span className="text-[#00ffc8] font-mono">{shipment.etaOrStatus}</span>
+                </div>
+              </div>
 
-                {/* Direct Action */}
+              <div className="flex flex-wrap items-center gap-6">
                 <div>
-                  {isTesting ? (
+                  <div className="text-[11px] text-white/40 uppercase font-semibold">Hajm</div>
+                  <div className="font-mono font-bold text-lg text-white">
+                    {shipment.volumeLiters.toLocaleString()} L
+                  </div>
+                </div>
+
+                <div>
+                  <div className="text-[11px] text-white/40 uppercase font-semibold">Harorat</div>
+                  <div className="font-mono font-bold text-lg text-[#00ffc8] flex items-center gap-1">
+                    <span className="w-2 h-2 rounded-full bg-[#00ffc8]" />
+                    {shipment.tempC || shipment.temperatureC || 3.2}°C
+                  </div>
+                </div>
+
+                <div>
+                  <div className="text-[11px] text-white/40 uppercase font-semibold">Eskrou Holati</div>
+                  <div className="font-mono font-bold text-sm text-[#00d3e0]">
+                    {(shipment.lockedEscrowUZS || (shipment.volumeLiters * 4380)).toLocaleString()} UZS
+                  </div>
+                </div>
+
+                <div>
+                  <div className="text-[11px] text-white/40 uppercase font-semibold mb-1">Bosqich</div>
+                  <span
+                    className={`text-[10px] font-bold rounded-full px-3 py-1 inline-flex items-center gap-1.5 border ${
+                      isReleased
+                        ? "bg-[#00ffc8]/15 border-[#00ffc8]/30 text-[#00ffc8]"
+                        : isTesting
+                        ? "bg-amber-400/15 border-amber-400/30 text-amber-300"
+                        : "bg-[#00d3e0]/15 border-[#00d3e0]/30 text-[#00d3e0]"
+                    }`}
+                  >
+                    {isReleased && "✓ To'liq Qabul Qilindi"}
+                    {isTesting && "● Darvoza Titratsiyasi"}
+                    {!isReleased && !isTesting && "● Tranzitda (GPS)"}
+                  </span>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  {isTesting && (
                     <Link
                       href={`/dashboard/dairy/receive-batch?batch=${shipment.batchNumber}`}
-                      className="bg-[#12303a] text-white rounded-full px-6 min-h-[46px] font-bold text-sm inline-flex items-center justify-center hover:bg-[#087a3c] transition shadow-md"
+                      className="px-4 py-2 rounded-full bg-gradient-to-r from-[#00ffc8] to-[#0099ff] text-[#070B14] font-black text-xs uppercase tracking-wider shadow-md hover:opacity-95 transition"
                     >
-                      Receive & Input Lab Test →
+                      Tahlilni Tasdiqlash →
                     </Link>
-                  ) : (
-                    <button
-                      disabled
-                      className="bg-[#e6ecea] text-[#33473f] rounded-full px-5 min-h-[46px] font-semibold text-xs inline-flex items-center justify-center cursor-default"
+                  )}
+                  {!isTesting && (
+                    <Link
+                      href={`/dashboard/farmer/batches/${shipment.batchNumber}`}
+                      className="px-4 py-2 rounded-full border border-white/10 bg-white/5 hover:border-[#00d3e0] text-xs font-bold text-white/80 hover:text-white transition"
                     >
-                      {isReleased ? "Escrow Settled" : "In Route Dispatch"}
-                    </button>
+                      Marshrut →
+                    </Link>
                   )}
                 </div>
               </div>
-            );
-          })}
-        </section>
-
-      </div>
+            </div>
+          );
+        })}
+      </section>
     </div>
   );
 }

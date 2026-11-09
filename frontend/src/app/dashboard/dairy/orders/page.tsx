@@ -2,26 +2,15 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import ZaminFlowLogo from "@/components/ZaminFlowLogo";
-import { useRouter } from "next/navigation";
-import { signOut } from "@/lib/auth";
 import { getDairyOrders, DairyOrder } from "@/lib/dairyStore";
 
 export default function DairyOrdersPage() {
-  const router = useRouter();
   const [orders, setOrders] = useState<DairyOrder[]>([]);
   const [statusFilter, setStatusFilter] = useState<string>("all");
-  const [isSigningOut, setIsSigningOut] = useState(false);
 
   useEffect(() => {
     setOrders(getDairyOrders());
   }, []);
-
-  const handleSignOut = async () => {
-    setIsSigningOut(true);
-    await signOut();
-    router.push("/signin");
-  };
 
   const filteredOrders = orders.filter((o) => {
     if (statusFilter === "all") return true;
@@ -33,199 +22,168 @@ export default function DairyOrdersPage() {
   const totalLockedEscrow = orders.reduce((acc, curr) => acc + curr.lockedEscrowUZS, 0);
 
   return (
-    <div className="min-h-[940px] bg-[linear-gradient(160deg,#f6f9f8_0%,#e4f6ec_100%)] text-[#17352c] font-[family-name:var(--font-inter,sans-serif)]">
-      <div className="max-w-[1180px] mx-auto px-6 pt-6 pb-14 flex flex-col gap-7">
-        
-        {/* Floating Top Pill Nav */}
-        <nav className="bg-white rounded-[40px] px-8 py-3.5 flex flex-wrap items-center justify-between gap-4 shadow-[0_10px_40px_rgba(20,80,60,0.08)]">
-          <Link href="/dashboard/dairy" className="flex items-center shrink-0">
-            <ZaminFlowLogo mode="light" size="md" />
-          </Link>
-          <div className="flex flex-wrap items-center gap-7 text-[15px] font-semibold">
-            <Link href="/dashboard/dairy" className="text-[#17352c] hover:text-[#087a3c] transition pb-0.5">
-              Overview
-            </Link>
-            <Link href="/dashboard/dairy/orders" className="text-[#087a3c] border-b-2 border-[#22d36b] pb-0.5">
-              Orders
-            </Link>
-            <Link href="/dashboard/dairy/shipments" className="text-[#17352c] hover:text-[#087a3c] transition pb-0.5">
-              Shipments
-            </Link>
-            <Link href="/dashboard/dairy/escrow" className="text-[#17352c] hover:text-[#087a3c] transition pb-0.5">
-              Escrow
-            </Link>
+    <div className="flex flex-col gap-6 w-full">
+      {/* 1. HEADER ROW */}
+      <header className="flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <div className="text-[11px] font-black tracking-widest bg-gradient-to-r from-[#00ffc8] to-[#00d3e0] bg-clip-text text-transparent uppercase mb-1">
+            XARID VA SHARTNOMALAR
           </div>
-          <div className="flex items-center gap-3">
-            <span className="text-xs font-bold bg-[#d9f7e5] text-[#087a3c] rounded-lg px-2 py-1 whitespace-nowrap">
-              Dairy Industry
+          <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-white">
+            Sut Xarid Buyurtmalari &{" "}
+            <span className="bg-gradient-to-r from-[#00ffc8] via-[#00d3e0] to-[#0099ff] bg-clip-text text-transparent">
+              Kontraktlar
             </span>
-            <button
-              onClick={handleSignOut}
-              disabled={isSigningOut}
-              className="bg-white text-[#12303a] border-[1.5px] border-[#12303a] rounded-full px-5 min-h-[44px] font-bold text-[15px] hover:bg-[#12303a] hover:text-white transition cursor-pointer"
-            >
-              {isSigningOut ? "..." : "Sign out"}
-            </button>
-          </div>
-        </nav>
-
-        {/* Header Row */}
-        <header className="flex flex-wrap items-end justify-between gap-5 pt-4">
-          <div>
-            <h1 className="m-0 text-4xl sm:text-5xl font-extrabold tracking-[-0.03em] leading-[1.05] text-[#17352c]">
-              Procurement <span className="text-[#087a3c]">Orders & Contracts</span>
-            </h1>
-          </div>
-          <Link
-            href="/dashboard/dairy/place-order"
-            className="inline-flex items-center justify-center bg-[#12303a] text-white rounded-full px-7 min-h-[48px] font-bold text-base hover:bg-[#087a3c] transition shadow-sm cursor-pointer"
-          >
-            + Place new milk order
-          </Link>
-        </header>
-
-        {/* Procurement Fulfillment KPIs */}
-        <section className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-5">
-          <div className="bg-[rgba(255,255,255,0.76)] border border-white rounded-[24px] shadow-[0_10px_40px_rgba(20,80,60,0.08)] p-6 box-border">
-            <div className="text-xs font-bold tracking-[0.08em] text-[#087a3c] uppercase">
-              Contracted Target Volume
-            </div>
-            <div className="flex items-baseline flex-wrap gap-2 mt-3">
-              <span className="font-[family-name:var(--font-jetbrains-mono,monospace)] text-[34px] font-bold text-[#17352c]">
-                {totalContractedLiters.toLocaleString()}
-              </span>
-              <span className="font-[family-name:var(--font-jetbrains-mono,monospace)] text-[13px] font-medium text-[#4d6a60]">
-                L
-              </span>
-            </div>
-          </div>
-
-          <div className="bg-[rgba(255,255,255,0.76)] border border-white rounded-[24px] shadow-[0_10px_40px_rgba(20,80,60,0.08)] p-6 box-border">
-            <div className="text-xs font-bold tracking-[0.08em] text-[#087a3c] uppercase">
-              Actual Intake Received
-            </div>
-            <div className="flex items-baseline flex-wrap gap-2 mt-3">
-              <span className="font-[family-name:var(--font-jetbrains-mono,monospace)] text-[34px] font-bold text-[#17352c]">
-                {totalReceivedLiters.toLocaleString()}
-              </span>
-              <span className="font-[family-name:var(--font-jetbrains-mono,monospace)] text-[13px] font-medium text-[#4d6a60]">
-                L
-              </span>
-              <span className="text-xs font-bold bg-[#d9f7e5] text-[#087a3c] rounded-lg px-2 py-1">
-                {Math.round((totalReceivedLiters / totalContractedLiters) * 100)}% Fulfilled
-              </span>
-            </div>
-          </div>
-
-          <div className="bg-[rgba(255,255,255,0.76)] border border-white rounded-[24px] shadow-[0_10px_40px_rgba(20,80,60,0.08)] p-6 box-border">
-            <div className="text-xs font-bold tracking-[0.08em] text-[#087a3c] uppercase">
-              Prefunded Escrow Capital
-            </div>
-            <div className="flex items-baseline flex-wrap gap-2 mt-3">
-              <span className="font-[family-name:var(--font-jetbrains-mono,monospace)] text-[30px] font-bold text-[#12303a]">
-                {totalLockedEscrow.toLocaleString()}
-              </span>
-              <span className="font-[family-name:var(--font-jetbrains-mono,monospace)] text-[13px] font-medium text-[#4d6a60]">
-                UZS
-              </span>
-            </div>
-          </div>
-        </section>
-
-        {/* Filter Tabs */}
-        <div className="flex flex-wrap gap-2">
-          {[
-            { id: "all", label: "All Orders" },
-            { id: "in_transit", label: "In Fulfillment / Transit" },
-            { id: "open", label: "Awaiting Supply Matching" },
-            { id: "fulfilled", label: "Completed Orders" },
-          ].map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setStatusFilter(tab.id)}
-              className={`px-5 py-2 rounded-full text-sm font-bold transition cursor-pointer ${
-                statusFilter === tab.id
-                  ? "bg-[#12303a] text-white"
-                  : "bg-white/80 text-[#17352c] border border-white hover:bg-white"
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
+          </h1>
+          <p className="text-xs text-white/50 mt-0.5">
+            Sut zavodi uchun fermerlar kooperativi bilan tuzilgan ta'minot shartnomalari
+          </p>
         </div>
 
-        {/* Orders Card Grid */}
-        <section className="flex flex-col gap-4">
-          {filteredOrders.map((order) => {
-            const percent = Math.round((order.fulfilledVolumeLiters / order.targetVolumeLiters) * 100);
+        <Link
+          href="/dashboard/dairy/place-order"
+          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-[#00ffc8] via-[#00d3e0] to-[#0099ff] hover:opacity-95 text-[#070B14] font-black text-xs sm:text-sm shadow-[0_10px_30px_rgba(0,211,224,0.35)] transition-all active:scale-95 cursor-pointer uppercase tracking-wider"
+        >
+          <span className="text-base leading-none font-black">+</span>
+          <span>Yangi buyurtma berish</span>
+        </Link>
+      </header>
 
-            return (
-              <div
-                key={order.id}
-                className="bg-[rgba(255,255,255,0.76)] border border-white rounded-[24px] shadow-[0_10px_40px_rgba(20,80,60,0.08)] p-6 sm:p-7 flex flex-wrap items-center justify-between gap-6"
-              >
-                <div className="flex-[1_1_260px]">
-                  <div className="flex items-center gap-3 mb-1">
-                    <span className="font-[family-name:var(--font-jetbrains-mono,monospace)] font-bold text-xl text-[#12303a]">
-                      {order.orderNumber}
-                    </span>
-                    <span className="text-xs font-bold bg-[#d9f7e5] text-[#087a3c] rounded-lg px-2.5 py-0.5">
-                      Required Grade {order.requiredGrade}
-                    </span>
-                  </div>
-                  <div className="text-sm font-semibold text-[#17352c]">
-                    Plant: {order.destinationPlant}
-                  </div>
-                  <div className="text-xs text-[#4d6a60] mt-0.5">
-                    Delivery deadline: {order.deliveryDate} • {order.supplierCount} Smallholder Suppliers Matched
-                  </div>
+      {/* 2. PROCUREMENT FULFILLMENT KPIS */}
+      <section className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="rounded-[24px] p-5 bg-white/[0.03] border border-white/10 hover:border-[#00d3e0]/40 transition-all flex flex-col justify-between">
+          <div className="text-[11px] font-bold tracking-wider text-white/50 uppercase">
+            Shartnoma Qilingan Hajm
+          </div>
+          <div className="flex items-baseline gap-2 mt-2">
+            <span className="font-mono text-3xl font-black text-white">
+              {totalContractedLiters.toLocaleString()}
+            </span>
+            <span className="text-xs text-[#00d3e0] font-mono">L</span>
+          </div>
+        </div>
+
+        <div className="rounded-[24px] p-5 bg-white/[0.03] border border-white/10 hover:border-[#00d3e0]/40 transition-all flex flex-col justify-between">
+          <div className="text-[11px] font-bold tracking-wider text-white/50 uppercase flex items-center justify-between">
+            <span>Haqiqiy Qabul Qilingan</span>
+            <span className="text-[10px] font-bold bg-[#00ffc8]/15 text-[#00ffc8] border border-[#00ffc8]/30 rounded-full px-2 py-0.5">
+              {Math.round((totalReceivedLiters / totalContractedLiters) * 100)}% Bajarildi
+            </span>
+          </div>
+          <div className="flex items-baseline gap-2 mt-2">
+            <span className="font-mono text-3xl font-black text-[#00ffc8]">
+              {totalReceivedLiters.toLocaleString()}
+            </span>
+            <span className="text-xs text-[#00ffc8] font-mono">L</span>
+          </div>
+        </div>
+
+        <div className="rounded-[24px] p-5 bg-white/[0.03] border border-white/10 hover:border-[#00d3e0]/40 transition-all flex flex-col justify-between">
+          <div className="text-[11px] font-bold tracking-wider text-white/50 uppercase">
+            Depozit Qilingan Eskrou
+          </div>
+          <div className="flex items-baseline gap-2 mt-2">
+            <span className="font-mono text-3xl font-black text-white">
+              {totalLockedEscrow.toLocaleString()}
+            </span>
+            <span className="text-xs text-white/60 font-mono">UZS</span>
+          </div>
+        </div>
+      </section>
+
+      {/* 3. FILTER TABS */}
+      <div className="flex flex-wrap gap-2 pt-1">
+        {[
+          { id: "all", label: "Barcha Buyurtmalar" },
+          { id: "in_transit", label: "Yetkazilmoqda / Tranzitda" },
+          { id: "open", label: "Fermer Tanlanmoqda" },
+          { id: "fulfilled", label: "Tugatilgan Buyurtmalar" },
+        ].map((tab) => (
+          <button
+            key={tab.id}
+            type="button"
+            onClick={() => setStatusFilter(tab.id)}
+            className={`px-4 py-1.5 rounded-full text-xs font-bold transition cursor-pointer ${
+              statusFilter === tab.id
+                ? "bg-gradient-to-r from-[#00ffc8] to-[#0099ff] text-[#070B14] shadow-md font-black"
+                : "bg-white/5 border border-white/10 text-white/70 hover:text-white hover:bg-white/10"
+            }`}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
+
+      {/* 4. ORDERS CARDS */}
+      <section className="flex flex-col gap-4">
+        {filteredOrders.map((order) => {
+          const percent = Math.round((order.fulfilledVolumeLiters / order.targetVolumeLiters) * 100);
+
+          return (
+            <div
+              key={order.id}
+              className="rounded-[28px] p-6 bg-white/[0.03] border border-white/10 hover:border-[#00d3e0]/40 shadow-lg flex flex-wrap items-center justify-between gap-6 transition-all"
+            >
+              <div className="flex-[1_1_260px]">
+                <div className="flex items-center gap-2.5 mb-1.5">
+                  <span className="font-mono font-bold text-lg text-white">
+                    {order.orderNumber}
+                  </span>
+                  <span className="text-[10px] font-bold bg-[#00ffc8]/15 border border-[#00ffc8]/30 text-[#00ffc8] rounded-full px-2 py-0.5">
+                    Kerakli sinf: {order.requiredGrade}
+                  </span>
                 </div>
-
-                {/* Progress bar */}
-                <div className="flex-[1_1_220px]">
-                  <div className="flex justify-between text-xs mb-1.5 font-semibold text-[#4d6a60]">
-                    <span>Fulfillment ({percent}%)</span>
-                    <span className="font-[family-name:var(--font-jetbrains-mono,monospace)] text-[#17352c]">
-                      {order.fulfilledVolumeLiters.toLocaleString()} / {order.targetVolumeLiters.toLocaleString()} L
-                    </span>
-                  </div>
-                  <div className="w-full h-2.5 bg-[#e3efe9] rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-[#12303a] rounded-full"
-                      style={{ width: `${percent}%` }}
-                    />
-                  </div>
+                <div className="text-xs text-white/80">
+                  Zavod: <strong className="text-white">{order.destinationPlant}</strong>
                 </div>
-
-                {/* Pricing & Escrow */}
-                <div className="flex flex-wrap items-center gap-6">
-                  <div>
-                    <div className="text-xs text-[#4d6a60]">Ceiling Price</div>
-                    <div className="font-[family-name:var(--font-jetbrains-mono,monospace)] font-bold text-base text-[#17352c]">
-                      {order.maxPricePerLiter.toLocaleString()} UZS / L
-                    </div>
-                  </div>
-
-                  <div>
-                    <div className="text-xs text-[#4d6a60]">Escrow Backing</div>
-                    <div className="font-[family-name:var(--font-jetbrains-mono,monospace)] font-bold text-base text-[#087a3c]">
-                      {order.lockedEscrowUZS.toLocaleString()} UZS
-                    </div>
-                  </div>
-
-                  <Link
-                    href="/dashboard/dairy/shipments"
-                    className="bg-white text-[#12303a] border-[1.5px] border-[#12303a] rounded-full px-5 min-h-[44px] font-bold text-sm inline-flex items-center justify-center hover:bg-[#12303a] hover:text-white transition"
-                  >
-                    View Fleet Telemetry →
-                  </Link>
+                <div className="text-[11px] text-white/40 mt-0.5">
+                  Muddat: {order.deliveryDate} • {order.supplierCount} ta fermer biriktirilgan
                 </div>
               </div>
-            );
-          })}
-        </section>
 
-      </div>
+              {/* Progress bar */}
+              <div className="flex-[1_1_220px]">
+                <div className="flex justify-between text-xs mb-1.5 font-semibold text-white/60">
+                  <span>Yetkazib berish ({percent}%)</span>
+                  <span className="font-mono text-white">
+                    {order.fulfilledVolumeLiters.toLocaleString()} / {order.targetVolumeLiters.toLocaleString()} L
+                  </span>
+                </div>
+                <div className="w-full h-2 rounded-full bg-white/10 overflow-hidden">
+                  <div
+                    className="h-full rounded-full transition-all duration-500 bg-gradient-to-r from-[#00ffc8] to-[#0099ff]"
+                    style={{ width: `${percent}%` }}
+                  />
+                </div>
+              </div>
+
+              {/* Pricing & Escrow */}
+              <div className="flex flex-wrap items-center gap-6">
+                <div>
+                  <div className="text-[11px] text-white/40 uppercase font-semibold">Chegara Narx</div>
+                  <div className="font-mono font-bold text-sm text-white">
+                    {order.maxPricePerLiter.toLocaleString()} UZS / L
+                  </div>
+                </div>
+
+                <div>
+                  <div className="text-[11px] text-white/40 uppercase font-semibold">Bloklangan Eskrou</div>
+                  <div className="font-mono font-bold text-base text-[#00ffc8]">
+                    {order.lockedEscrowUZS.toLocaleString()} UZS
+                  </div>
+                </div>
+
+                <Link
+                  href="/dashboard/dairy/shipments"
+                  className="px-4 py-2 rounded-full border border-white/15 bg-white/5 hover:border-[#00d3e0] text-xs font-bold text-white hover:text-[#00ffc8] transition"
+                >
+                  Flot Telematikasi →
+                </Link>
+              </div>
+            </div>
+          );
+        })}
+      </section>
     </div>
   );
 }

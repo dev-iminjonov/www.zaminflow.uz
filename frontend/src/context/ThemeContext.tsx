@@ -14,8 +14,8 @@ interface ThemeContextValue {
 }
 
 const ThemeContext = createContext<ThemeContextValue>({
-  themeMode: "dark",
-  isDark: true,
+  themeMode: "light",
+  isDark: false,
   setThemeMode: () => {},
   toggleTheme: () => {},
 });
@@ -35,20 +35,17 @@ function applyHtmlTheme(mode: ThemeMode) {
 }
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [themeMode, setThemeModeState] = useState<ThemeMode>("dark");
+  const [themeMode, setThemeModeState] = useState<ThemeMode>("light");
 
   useEffect(() => {
     if (typeof window === "undefined") return;
     const saved = window.localStorage.getItem(THEME_STORAGE_KEY);
-    if (saved === "light" || saved === "dark") {
-      setThemeModeState(saved);
-      applyHtmlTheme(saved);
+    if (saved === "dark") {
+      setThemeModeState("dark");
+      applyHtmlTheme("dark");
     } else {
-      const initial: ThemeMode = document.documentElement.classList.contains("dark")
-        ? "dark"
-        : "light";
-      setThemeModeState(initial);
-      applyHtmlTheme(initial);
+      setThemeModeState("light");
+      applyHtmlTheme("light");
     }
 
     const handleStorage = (event: StorageEvent) => {
@@ -122,7 +119,7 @@ export function ThemeToggleButton({
       title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
       className={`${sizeClasses} rounded-full flex items-center justify-center font-bold transition-all duration-200 border cursor-pointer select-none shrink-0 ${
         isDark
-          ? "bg-[#006494]/50 border-[#247BA0] text-[#1B98E0] hover:bg-[#247BA0]/40 shadow-xs"
+          ? "bg-[#212d40]/60 border-[#273246] text-[#22d36b] hover:bg-[#2c374b]/60 shadow-xs"
           : "bg-white/90 border-[#b7e4c7] text-[#081c15] hover:bg-[#d8f3dc] hover:border-[#52b788] shadow-xs"
       } ${className}`}
     >

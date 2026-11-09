@@ -2,209 +2,176 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import ZaminFlowLogo from "@/components/ZaminFlowLogo";
-import { useRouter } from "next/navigation";
-import { signOut } from "@/lib/auth";
-import { getDriverStops, DriverTripStop } from "@/lib/driverStore";
+import { getDriverManifest, DriverStop } from "@/lib/driverStore";
 
 export default function DriverTripsPage() {
-  const router = useRouter();
-  const [stops, setStops] = useState<DriverTripStop[]>([]);
-  const [isSigningOut, setIsSigningOut] = useState(false);
+  const [stops, setStops] = useState<DriverStop[]>([]);
 
   useEffect(() => {
-    setStops(getDriverStops());
+    setStops(getDriverManifest());
   }, []);
 
-  const handleSignOut = async () => {
-    setIsSigningOut(true);
-    await signOut();
-    router.push("/signin");
-  };
-
-  const totalLitresScheduled = stops
-    .filter((s) => s.type === "pickup")
-    .reduce((acc, curr) => acc + curr.volumeLiters, 0);
+  const totalLitresScheduled = stops.reduce((acc, curr) => acc + curr.volumeLiters, 0);
 
   return (
-    <div className="min-h-[940px] bg-[linear-gradient(160deg,#f6f9f8_0%,#e4f6ec_100%)] text-[#17352c] font-[family-name:var(--font-inter,sans-serif)]">
-      <div className="max-w-[1180px] mx-auto px-6 pt-6 pb-14 flex flex-col gap-7">
-        
-        {/* Floating Top Pill Nav */}
-        <nav className="bg-white rounded-[40px] px-8 py-3.5 flex flex-wrap items-center justify-between gap-4 shadow-[0_10px_40px_rgba(20,80,60,0.08)]">
-          <Link href="/dashboard/driver" className="flex items-center shrink-0">
-            <ZaminFlowLogo mode="light" size="md" />
-          </Link>
-          <div className="flex flex-wrap items-center gap-7 text-[15px] font-semibold">
-            <Link href="/dashboard/driver" className="text-[#17352c] hover:text-[#087a3c] transition pb-0.5">
-              Overview
-            </Link>
-            <Link href="/dashboard/driver/my-trips" className="text-[#087a3c] border-b-2 border-[#22d36b] pb-0.5">
-              My trips
-            </Link>
-            <Link href="/dashboard/driver/route" className="text-[#17352c] hover:text-[#087a3c] transition pb-0.5">
-              Route
-            </Link>
-            <Link href="/dashboard/driver/history" className="text-[#17352c] hover:text-[#087a3c] transition pb-0.5">
-              History
-            </Link>
+    <div className="flex flex-col gap-6 w-full">
+      {/* 1. HEADER ROW */}
+      <header className="flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <div className="text-[11px] font-black tracking-widest bg-gradient-to-r from-[#00ffc8] to-[#00d3e0] bg-clip-text text-transparent uppercase mb-1">
+            LOGISTIKA REYSI VA MARSHRUT
           </div>
-          <div className="flex items-center gap-3">
-            <span className="text-xs font-bold bg-[#d9f7e5] text-[#087a3c] rounded-lg px-2 py-1 whitespace-nowrap">
-              Driver
+          <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-white">
+            Bugungi Reys Manifesi &{" "}
+            <span className="bg-gradient-to-r from-[#00ffc8] via-[#00d3e0] to-[#0099ff] bg-clip-text text-transparent">
+              Bekatlar
             </span>
-            <button
-              onClick={handleSignOut}
-              disabled={isSigningOut}
-              className="bg-white text-[#12303a] border-[1.5px] border-[#12303a] rounded-full px-5 min-h-[44px] font-bold text-[15px] hover:bg-[#12303a] hover:text-white transition cursor-pointer"
+          </h1>
+          <p className="text-xs text-white/50 mt-0.5">
+            Sovuq zanjir tanker marshruti, fermalardan sut yuklash va zavodga yetkazish
+          </p>
+        </div>
+
+        <Link
+          href="/dashboard/driver/start-trip"
+          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-[#00ffc8] via-[#00d3e0] to-[#0099ff] hover:opacity-95 text-[#070B14] font-black text-xs sm:text-sm shadow-[0_10px_30px_rgba(0,211,224,0.35)] transition-all active:scale-95 cursor-pointer uppercase tracking-wider"
+        >
+          <span>Reysni Boshlash →</span>
+        </Link>
+      </header>
+
+      {/* 2. TELEMETRY SUMMARY CARDS */}
+      <section className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="rounded-[24px] p-5 bg-white/[0.03] border border-white/10 hover:border-[#00d3e0]/40 transition-all flex flex-col justify-between">
+          <div className="text-[11px] font-bold tracking-wider text-white/50 uppercase flex items-center justify-between">
+            <span>Rejalashtirilgan Bekatlar</span>
+            <span className="text-xs">📍</span>
+          </div>
+          <div className="flex items-baseline gap-2 mt-2">
+            <span className="font-mono text-3xl font-black text-white">{stops.length}</span>
+            <span className="text-xs text-white/50">bekat</span>
+            <span className="ml-auto text-[10px] font-bold bg-[#00ffc8]/15 border border-[#00ffc8]/30 text-[#00ffc8] rounded-full px-2.5 py-0.5">
+              2 Ta Ferma Yuklash
+            </span>
+          </div>
+        </div>
+
+        <div className="rounded-[24px] p-5 bg-white/[0.03] border border-white/10 hover:border-[#00d3e0]/40 transition-all flex flex-col justify-between">
+          <div className="text-[11px] font-bold tracking-wider text-white/50 uppercase flex items-center justify-between">
+            <span>Jami Yuklanadigan Sut</span>
+            <span className="text-xs">🥛</span>
+          </div>
+          <div className="flex items-baseline gap-2 mt-2">
+            <span className="font-mono text-3xl font-black text-white">
+              {totalLitresScheduled.toLocaleString()}
+            </span>
+            <span className="text-xs text-[#00d3e0] font-mono">L</span>
+            <span className="ml-auto text-[10px] font-bold bg-[#00d3e0]/15 border border-[#00d3e0]/30 text-[#00d3e0] rounded-full px-2.5 py-0.5">
+              72% Tank Sig'imi
+            </span>
+          </div>
+        </div>
+
+        <div className="rounded-[24px] p-5 bg-white/[0.03] border border-white/10 hover:border-[#00d3e0]/40 transition-all flex flex-col justify-between">
+          <div className="text-[11px] font-bold tracking-wider text-white/50 uppercase flex items-center justify-between">
+            <span>Tanker IoT Harorati</span>
+            <span className="text-xs">❄️</span>
+          </div>
+          <div className="flex items-baseline gap-2 mt-2">
+            <span className="font-mono text-3xl font-black text-[#00ffc8]">3.2°C</span>
+            <span className="ml-auto text-[10px] font-bold bg-[#00ffc8]/15 border border-[#00ffc8]/30 text-[#00ffc8] rounded-full px-2.5 py-0.5">
+              ✓ Optimal (2°–4°C)
+            </span>
+          </div>
+        </div>
+      </section>
+
+      {/* 3. MANIFEST STOPS TIMELINE */}
+      <section className="flex flex-col gap-4">
+        {stops.map((stop, index) => {
+          const isNext = stop.status === "next";
+
+          return (
+            <div
+              key={stop.id}
+              className={`rounded-[28px] p-6 border shadow-lg flex flex-wrap items-center justify-between gap-6 transition-all ${
+                isNext
+                  ? "bg-white/[0.05] border-[#00ffc8]/40 shadow-[0_10px_35px_rgba(0,255,200,0.12)]"
+                  : "bg-white/[0.03] border-white/10 hover:border-white/20"
+              }`}
             >
-              {isSigningOut ? "..." : "Sign out"}
-            </button>
-          </div>
-        </nav>
-
-        {/* Header Row */}
-        <header className="flex flex-wrap items-end justify-between gap-5 pt-4">
-          <div>
-            <h1 className="m-0 text-4xl sm:text-5xl font-extrabold tracking-[-0.03em] leading-[1.05] text-[#17352c]">
-              Today&apos;s Trip <span className="text-[#087a3c]">Manifest & Stops</span>
-            </h1>
-          </div>
-          <Link
-            href="/dashboard/driver/start-trip"
-            className="inline-flex items-center justify-center bg-[#12303a] text-white rounded-full px-7 min-h-[48px] font-bold text-base hover:bg-[#087a3c] transition shadow-sm cursor-pointer"
-          >
-            Start next trip →
-          </Link>
-        </header>
-
-        {/* Telemetry Summary Cards */}
-        <section className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-5">
-          <div className="bg-[rgba(255,255,255,0.76)] border border-white rounded-[24px] shadow-[0_10px_40px_rgba(20,80,60,0.08)] p-6 box-border">
-            <div className="text-xs font-bold tracking-[0.08em] text-[#087a3c] uppercase">
-              Scheduled Stops
-            </div>
-            <div className="flex items-baseline flex-wrap gap-2 mt-3">
-              <span className="font-[family-name:var(--font-jetbrains-mono,monospace)] text-[34px] font-bold text-[#17352c]">
-                {stops.length}
-              </span>
-              <span className="font-[family-name:var(--font-jetbrains-mono,monospace)] text-[13px] font-medium text-[#4d6a60]">
-                stops
-              </span>
-              <span className="text-xs font-bold bg-[#d9f7e5] text-[#087a3c] rounded-lg px-2 py-1">
-                2 Farm Pickups
-              </span>
-            </div>
-          </div>
-
-          <div className="bg-[rgba(255,255,255,0.76)] border border-white rounded-[24px] shadow-[0_10px_40px_rgba(20,80,60,0.08)] p-6 box-border">
-            <div className="text-xs font-bold tracking-[0.08em] text-[#087a3c] uppercase">
-              Total Volume to Haul
-            </div>
-            <div className="flex items-baseline flex-wrap gap-2 mt-3">
-              <span className="font-[family-name:var(--font-jetbrains-mono,monospace)] text-[34px] font-bold text-[#17352c]">
-                {totalLitresScheduled.toLocaleString()}
-              </span>
-              <span className="font-[family-name:var(--font-jetbrains-mono,monospace)] text-[13px] font-medium text-[#4d6a60]">
-                L
-              </span>
-              <span className="text-xs font-bold bg-[#d9f7e5] text-[#087a3c] rounded-lg px-2 py-1">
-                72% Tank Capacity
-              </span>
-            </div>
-          </div>
-
-          <div className="bg-[rgba(255,255,255,0.76)] border border-white rounded-[24px] shadow-[0_10px_40px_rgba(20,80,60,0.08)] p-6 box-border">
-            <div className="text-xs font-bold tracking-[0.08em] text-[#087a3c] uppercase">
-              Tanker IoT Temperature
-            </div>
-            <div className="flex items-baseline flex-wrap gap-2 mt-3">
-              <span className="font-[family-name:var(--font-jetbrains-mono,monospace)] text-[34px] font-bold text-[#087a3c]">
-                3.2°C
-              </span>
-              <span className="text-xs font-bold bg-[#d9f7e5] text-[#087a3c] rounded-lg px-2 py-1">
-                ✓ In range (2°–4°C)
-              </span>
-            </div>
-          </div>
-        </section>
-
-        {/* Manifest Stops Timeline */}
-        <section className="flex flex-col gap-5">
-          {stops.map((stop, index) => {
-            const isNext = stop.status === "next";
-
-            return (
-              <div
-                key={stop.id}
-                className="bg-[rgba(255,255,255,0.76)] border border-white rounded-[24px] shadow-[0_10px_40px_rgba(20,80,60,0.08)] p-6 sm:p-7 flex flex-wrap items-center justify-between gap-6"
-              >
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-full bg-[#12303a] text-white font-bold flex items-center justify-center font-[family-name:var(--font-jetbrains-mono,monospace)] text-lg">
-                    {index + 1}
-                  </div>
-                  <div>
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="font-[family-name:var(--font-jetbrains-mono,monospace)] font-bold text-lg text-[#12303a]">
-                        {stop.time}
-                      </span>
-                      <span
-                        className={`text-xs font-bold rounded-lg px-2.5 py-0.5 ${
-                          isNext ? "bg-[#d9f7e5] text-[#087a3c]" : "bg-[#e6ecea] text-[#33473f]"
-                        }`}
-                      >
-                        {isNext ? "● Next Stop" : "Scheduled"}
-                      </span>
-                    </div>
-                    <h3 className="font-bold text-lg text-[#17352c]">{stop.locationName}</h3>
-                    <div className="text-xs text-[#4d6a60]">{stop.address}</div>
-                  </div>
+              <div className="flex items-center gap-4">
+                <div
+                  className={`w-12 h-12 rounded-2xl flex items-center justify-center font-mono text-base font-black shadow-md ${
+                    isNext
+                      ? "bg-gradient-to-tr from-[#00ffc8] to-[#0099ff] text-[#070B14]"
+                      : "bg-white/5 text-white/60 border border-white/10"
+                  }`}
+                >
+                  0{index + 1}
                 </div>
-
-                <div className="flex flex-wrap items-center gap-6">
-                  <div>
-                    <div className="text-xs text-[#4d6a60]">Batch Target</div>
-                    <div className="font-[family-name:var(--font-jetbrains-mono,monospace)] font-bold text-base text-[#12303a]">
-                      {stop.batchNumber}
-                    </div>
-                  </div>
-
-                  <div>
-                    <div className="text-xs text-[#4d6a60]">Volume</div>
-                    <div className="font-[family-name:var(--font-jetbrains-mono,monospace)] font-bold text-base text-[#087a3c]">
-                      {stop.volumeLiters.toLocaleString()} L
-                    </div>
-                  </div>
-
-                  <div>
-                    <div className="text-xs text-[#4d6a60]">Station Contact</div>
-                    <div className="text-xs font-semibold text-[#17352c]">{stop.contactName}</div>
-                    <div className="text-xs font-[family-name:var(--font-jetbrains-mono,monospace)] text-[#4d6a60]">{stop.contactPhone}</div>
-                  </div>
-
-                  <div className="flex items-center gap-3">
-                    <Link
-                      href="/dashboard/driver/route"
-                      className="bg-white text-[#12303a] border-[1.5px] border-[#12303a] rounded-full px-5 min-h-[44px] font-bold text-xs inline-flex items-center justify-center hover:bg-[#12303a] hover:text-white transition"
+                <div>
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="font-mono font-bold text-base text-white">
+                      {stop.time}
+                    </span>
+                    <span
+                      className={`text-[10px] font-bold rounded-full px-2.5 py-0.5 border ${
+                        isNext
+                          ? "bg-[#00ffc8]/15 border-[#00ffc8]/30 text-[#00ffc8]"
+                          : "bg-white/5 border-white/10 text-white/50"
+                      }`}
                     >
-                      Route Map →
-                    </Link>
-                    {isNext && (
-                      <Link
-                        href="/dashboard/driver/confirm-pickup"
-                        className="bg-[#12303a] text-white rounded-full px-5 min-h-[44px] font-bold text-xs inline-flex items-center justify-center hover:bg-[#087a3c] transition shadow-md"
-                      >
-                        Confirm Pickup
-                      </Link>
-                    )}
+                      {isNext ? "● Keyingi Bekat" : "Rejalashtirilgan"}
+                    </span>
                   </div>
+                  <h3 className="font-bold text-base text-white">{stop.locationName}</h3>
+                  <div className="text-xs text-white/50">{stop.address}</div>
                 </div>
               </div>
-            );
-          })}
-        </section>
 
-      </div>
+              <div className="flex flex-wrap items-center gap-6 sm:gap-8">
+                <div>
+                  <div className="text-[11px] text-white/40 uppercase font-semibold">Partiya Kodi</div>
+                  <div className="font-mono font-bold text-sm text-[#00d3e0]">
+                    {stop.batchNumber}
+                  </div>
+                </div>
+
+                <div>
+                  <div className="text-[11px] text-white/40 uppercase font-semibold">Yuklanadigan Hajm</div>
+                  <div className="font-mono font-bold text-base text-[#00ffc8]">
+                    {stop.volumeLiters.toLocaleString()} L
+                  </div>
+                </div>
+
+                <div>
+                  <div className="text-[11px] text-white/40 uppercase font-semibold">Mas'ul Shaxs</div>
+                  <div className="text-xs font-semibold text-white">{stop.contactName}</div>
+                  <div className="text-xs font-mono text-white/50">{stop.contactPhone}</div>
+                </div>
+
+                <div className="flex items-center gap-2.5">
+                  <Link
+                    href="/dashboard/driver/route"
+                    className="px-4 py-2 rounded-full border border-white/15 bg-white/5 hover:border-[#00d3e0] text-xs font-bold text-white hover:text-[#00ffc8] transition"
+                  >
+                    Xarita →
+                  </Link>
+                  {isNext && (
+                    <Link
+                      href="/dashboard/driver/confirm-pickup"
+                      className="px-5 py-2 rounded-full bg-gradient-to-r from-[#00ffc8] to-[#0099ff] text-[#070B14] font-black text-xs uppercase tracking-wider shadow-md hover:opacity-95 transition"
+                    >
+                      Yuklashni Tasdiqlash
+                    </Link>
+                  )}
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </section>
     </div>
   );
 }

@@ -78,7 +78,7 @@ export default function ContactUsSection({ isDark = false }: ContactUsSectionPro
   return (
     <section
       id="contact"
-      className="relative w-full py-20 sm:py-28 overflow-hidden select-none transition-colors duration-500"
+      className="relative w-full py-20 sm:py-28 overflow-hidden select-none transition-colors duration-500 scroll-mt-24"
     >
       <div className="max-w-[760px] mx-auto px-4 sm:px-6 lg:px-8">
         {/* 1. SECTION HEADER (Centered Overline) */}

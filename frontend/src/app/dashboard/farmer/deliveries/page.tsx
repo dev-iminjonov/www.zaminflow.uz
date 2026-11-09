@@ -2,26 +2,15 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import ZaminFlowLogo from "@/components/ZaminFlowLogo";
-import { useRouter } from "next/navigation";
-import { signOut } from "@/lib/auth";
 import { getFarmerBatches, MilkBatch } from "@/lib/farmerStore";
 
 export default function DeliveriesPage() {
-  const router = useRouter();
   const [batches, setBatches] = useState<MilkBatch[]>([]);
   const [selectedPlant, setSelectedPlant] = useState<string>("all");
-  const [isSigningOut, setIsSigningOut] = useState(false);
 
   useEffect(() => {
     setBatches(getFarmerBatches());
   }, []);
-
-  const handleSignOut = async () => {
-    setIsSigningOut(true);
-    await signOut();
-    router.push("/signin");
-  };
 
   const deliveryBatches = batches.filter((b) => {
     const isDelivery = b.status !== "stored";
@@ -31,231 +20,187 @@ export default function DeliveriesPage() {
   });
 
   return (
-    <div className="min-h-[940px] bg-[linear-gradient(160deg,#f6f9f8_0%,#e4f6ec_100%)] text-[#17352c] font-[family-name:var(--font-inter,sans-serif)]">
-      <div className="max-w-[1180px] mx-auto px-6 pt-6 pb-14 flex flex-col gap-7">
-        
-        {/* Floating Top Pill Nav */}
-        <nav className="bg-white rounded-[40px] px-8 py-3.5 flex flex-wrap items-center justify-between gap-4 shadow-[0_10px_40px_rgba(20,80,60,0.08)]">
-          <Link href="/dashboard/farmer" className="flex items-center shrink-0">
-            <ZaminFlowLogo mode="light" size="md" />
-          </Link>
-          <div className="flex flex-wrap items-center gap-7 text-[15px] font-semibold">
-            <Link href="/dashboard/farmer" className="text-[#17352c] hover:text-[#087a3c] transition pb-0.5">
-              Overview
-            </Link>
-            <Link href="/dashboard/farmer/my-milk" className="text-[#17352c] hover:text-[#087a3c] transition pb-0.5">
-              My milk
-            </Link>
-            <Link href="/dashboard/farmer/deliveries" className="text-[#087a3c] border-b-2 border-[#22d36b] pb-0.5">
-              Deliveries
-            </Link>
-            <Link href="/dashboard/farmer/payouts" className="text-[#17352c] hover:text-[#087a3c] transition pb-0.5">
-              Payouts
-            </Link>
+    <div className="flex flex-col gap-6 w-full">
+      {/* 1. HEADER ROW */}
+      <header className="flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <div className="text-[11px] font-black tracking-widest bg-gradient-to-r from-[#00ffc8] to-[#00d3e0] bg-clip-text text-transparent uppercase mb-1">
+            LOGISTIKA VA REYS KUZATUVI
           </div>
-          <div className="flex items-center gap-3">
-            <span className="text-xs font-bold bg-[#d9f7e5] text-[#087a3c] rounded-lg px-2 py-1 whitespace-nowrap">
-              Farmer
+          <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-white">
+            Yetkazib Berish &{" "}
+            <span className="bg-gradient-to-r from-[#00ffc8] via-[#00d3e0] to-[#0099ff] bg-clip-text text-transparent">
+              Tranzit Telematikasi
             </span>
+          </h1>
+          <p className="text-xs text-white/50 mt-0.5">
+            IoT sovuq zanjir datchiklari, GPS marshruti va qabul qilish punktlari
+          </p>
+        </div>
+
+        {/* Plant Filter */}
+        <div className="flex items-center gap-2">
+          <span className="text-xs font-semibold text-white/50">Zavod:</span>
+          {["all", "Tashkent", "Samarqand", "Fergana"].map((plant) => (
             <button
-              onClick={handleSignOut}
-              disabled={isSigningOut}
-              className="bg-white text-[#12303a] border-[1.5px] border-[#12303a] rounded-full px-5 min-h-[44px] font-bold text-[15px] hover:bg-[#12303a] hover:text-white transition cursor-pointer"
+              key={plant}
+              type="button"
+              onClick={() => setSelectedPlant(plant)}
+              className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition cursor-pointer ${
+                selectedPlant === plant
+                  ? "bg-gradient-to-r from-[#00ffc8] to-[#0099ff] text-[#070B14] shadow-md font-black"
+                  : "bg-white/5 border border-white/10 text-white/70 hover:text-white hover:bg-white/10"
+              }`}
             >
-              {isSigningOut ? "..." : "Sign out"}
+              {plant === "all" ? "Barcha zavodlar" : plant}
             </button>
-          </div>
-        </nav>
+          ))}
+        </div>
+      </header>
 
-        {/* Header Row */}
-        <header className="flex flex-wrap items-end justify-between gap-5 pt-4">
-          <div>
-            <h1 className="m-0 text-4xl sm:text-5xl font-extrabold tracking-[-0.03em] leading-[1.05] text-[#17352c]">
-              Deliveries & <span className="text-[#087a3c]">Transit Tracking</span>
-            </h1>
-          </div>
-          <div className="flex items-center gap-3">
-            <span className="text-xs font-bold text-[#4d6a60]">Plant Filter:</span>
-            {["all", "Tashkent", "Samarqand", "Fergana"].map((plant) => (
-              <button
-                key={plant}
-                onClick={() => setSelectedPlant(plant)}
-                className={`px-4 py-1.5 rounded-full text-xs font-bold transition cursor-pointer ${
-                  selectedPlant === plant
-                    ? "bg-[#12303a] text-white"
-                    : "bg-white text-[#17352c] border border-white hover:bg-white"
-                }`}
-              >
-                {plant === "all" ? "All Plants" : plant}
-              </button>
-            ))}
-          </div>
-        </header>
+      {/* 2. DELIVERIES LIST */}
+      <section className="flex flex-col gap-4">
+        {deliveryBatches.map((delivery) => {
+          const isReleased = delivery.status === "released";
+          const isTesting = delivery.status === "testing";
+          const isTransit = delivery.status === "in_transit";
 
-        {/* Deliveries List */}
-        <section className="flex flex-col gap-5">
-          {deliveryBatches.map((delivery) => {
-            const isReleased = delivery.status === "released";
-            const isTesting = delivery.status === "testing";
-            const isTransit = delivery.status === "in_transit";
-
-            return (
-              <div
-                key={delivery.id}
-                className="bg-[rgba(255,255,255,0.76)] border border-white rounded-[24px] shadow-[0_10px_40px_rgba(20,80,60,0.08)] p-6 sm:p-7 flex flex-col gap-6"
-              >
-                {/* Header of Card */}
-                <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-[#17352c]/10">
-                  <div>
-                    <div className="flex items-center gap-3 mb-1">
-                      <span className="font-[family-name:var(--font-jetbrains-mono,monospace)] text-xl font-bold text-[#12303a]">
-                        {delivery.batchNumber}
-                      </span>
-                      <span className="text-xs font-bold bg-[#d9f7e5] text-[#087a3c] rounded-lg px-2.5 py-0.5">
-                        Grade {delivery.qualityGrade}
-                      </span>
-                      <span className="text-xs text-[#4d6a60]">
-                        Milked {delivery.milkingDate}
-                      </span>
-                    </div>
-                    <div className="text-base font-semibold text-[#17352c]">
-                      Destination: {delivery.destinationPlant}
-                    </div>
+          return (
+            <div
+              key={delivery.id}
+              className="rounded-[28px] p-6 bg-white/[0.03] border border-white/10 hover:border-[#00d3e0]/40 shadow-lg flex flex-col gap-5 transition-all"
+            >
+              {/* Header of Card */}
+              <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-white/10">
+                <div>
+                  <div className="flex items-center gap-2.5 mb-1">
+                    <span className="font-mono text-xl font-bold text-white">
+                      {delivery.batchNumber}
+                    </span>
+                    <span className="text-[10px] font-bold bg-[#00ffc8]/15 border border-[#00ffc8]/30 text-[#00ffc8] rounded-full px-2.5 py-0.5">
+                      Sinf: {delivery.qualityGrade}
+                    </span>
+                    <span className="text-xs text-white/50">
+                      Sog'ilgan sana: {delivery.milkingDate}
+                    </span>
                   </div>
-
-                  <div className="flex flex-wrap items-center gap-4">
-                    <div className="text-right">
-                      <div className="text-xs text-[#4d6a60]">Volume</div>
-                      <div className="font-[family-name:var(--font-jetbrains-mono,monospace)] font-bold text-lg text-[#17352c]">
-                        {delivery.volumeLiters.toLocaleString()} L
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <div className="text-xs text-[#4d6a60]">Cold Chain</div>
-                      <div className="font-[family-name:var(--font-jetbrains-mono,monospace)] font-bold text-lg text-[#087a3c]">
-                        {delivery.tankerTempC || 3.2}°C
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <div className="text-xs text-[#4d6a60]">Escrow Amount</div>
-                      <div className="font-[family-name:var(--font-jetbrains-mono,monospace)] font-bold text-lg text-[#12303a]">
-                        {delivery.totalEstimatedPayout.toLocaleString()} UZS
-                      </div>
-                    </div>
+                  <div className="text-sm font-semibold text-white/90">
+                    Qabul qiluvchi zavod: <span className="text-[#00d3e0]">{delivery.destinationPlant}</span>
                   </div>
                 </div>
 
-                {/* 5-Step Milestone Stepper */}
-                <div className="py-2">
-                  <div className="grid grid-cols-5 gap-2 text-center text-xs">
-                    
-                    {/* Step 1: Dispatched */}
-                    <div className="flex flex-col items-center gap-1.5">
-                      <div className="w-8 h-8 rounded-full bg-[#12303a] text-white font-bold flex items-center justify-center text-xs">
-                        ✓
-                      </div>
-                      <span className="font-bold text-[#12303a]">Dispatched</span>
-                      <span className="text-[11px] text-[#4d6a60] font-[family-name:var(--font-jetbrains-mono,monospace)]">07:30</span>
+                <div className="flex flex-wrap items-center gap-6">
+                  <div className="text-right">
+                    <div className="text-[11px] text-white/40 uppercase font-semibold">Hajm</div>
+                    <div className="font-mono font-bold text-lg text-white">
+                      {delivery.volumeLiters.toLocaleString()} <span className="text-xs text-[#00d3e0]">L</span>
                     </div>
-
-                    {/* Step 2: Farm Pickup */}
-                    <div className="flex flex-col items-center gap-1.5">
-                      <div className="w-8 h-8 rounded-full bg-[#12303a] text-white font-bold flex items-center justify-center text-xs">
-                        ✓
-                      </div>
-                      <span className="font-bold text-[#12303a]">Farm Handover</span>
-                      <span className="text-[11px] text-[#4d6a60] font-[family-name:var(--font-jetbrains-mono,monospace)]">08:15</span>
-                    </div>
-
-                    {/* Step 3: In Transit */}
-                    <div className="flex flex-col items-center gap-1.5">
-                      <div
-                        className={`w-8 h-8 rounded-full font-bold flex items-center justify-center text-xs ${
-                          isTransit
-                            ? "bg-[#22d36b] text-[#12303a] animate-pulse ring-4 ring-[#22d36b]/30"
-                            : "bg-[#12303a] text-white"
-                        }`}
-                      >
-                        {isTransit ? "●" : "✓"}
-                      </div>
-                      <span className="font-bold text-[#12303a]">GPS Cold Transit</span>
-                      <span className="text-[11px] text-[#4d6a60] font-[family-name:var(--font-jetbrains-mono,monospace)]">3.2°C Locked</span>
-                    </div>
-
-                    {/* Step 4: Gate Lab Titration */}
-                    <div className="flex flex-col items-center gap-1.5">
-                      <div
-                        className={`w-8 h-8 rounded-full font-bold flex items-center justify-center text-xs ${
-                          isTesting
-                            ? "bg-[#f59e0b] text-white animate-pulse ring-4 ring-[#f59e0b]/30"
-                            : isReleased
-                            ? "bg-[#12303a] text-white"
-                            : "bg-[#e3efe9] text-[#4d6a60]"
-                        }`}
-                      >
-                        {isTesting ? "●" : isReleased ? "✓" : "4"}
-                      </div>
-                      <span className={`font-bold ${isTesting ? "text-[#b45309]" : "text-[#12303a]"}`}>
-                        Lab Titration
-                      </span>
-                      <span className="text-[11px] text-[#4d6a60]">
-                        {isTesting ? "Testing Fat/SNF" : isReleased ? "Grade A+ Pass" : "Pending Arrival"}
-                      </span>
-                    </div>
-
-                    {/* Step 5: Escrow Released */}
-                    <div className="flex flex-col items-center gap-1.5">
-                      <div
-                        className={`w-8 h-8 rounded-full font-bold flex items-center justify-center text-xs ${
-                          isReleased
-                            ? "bg-[#087a3c] text-white ring-4 ring-[#22d36b]/30"
-                            : "bg-[#e3efe9] text-[#4d6a60]"
-                        }`}
-                      >
-                        {isReleased ? "✓" : "5"}
-                      </div>
-                      <span className={`font-bold ${isReleased ? "text-[#087a3c]" : "text-[#4d6a60]"}`}>
-                        Bank Payout
-                      </span>
-                      <span className="text-[11px] text-[#4d6a60]">
-                        {isReleased ? "Direct IBAN Sent" : "Auto-Release"}
-                      </span>
-                    </div>
-
                   </div>
-                </div>
-
-                {/* Footer with Driver details and Actions */}
-                <div className="flex flex-wrap items-center justify-between gap-4 pt-3 border-t border-[#17352c]/10 text-sm">
-                  <div className="flex items-center gap-4 text-xs text-[#4d6a60]">
-                    <span>Driver: <strong className="text-[#17352c]">{delivery.driverName || "Assigned Driver"}</strong></span>
-                    <span>Plate: <strong className="font-[family-name:var(--font-jetbrains-mono,monospace)] text-[#17352c]">{delivery.truckPlate || "01 772 AAA"}</strong></span>
-                    <span>Phone: <strong className="font-[family-name:var(--font-jetbrains-mono,monospace)] text-[#17352c]">{delivery.driverPhone || "+998 90 123 45 67"}</strong></span>
+                  <div className="text-right">
+                    <div className="text-[11px] text-white/40 uppercase font-semibold">Sovuq Zanjir</div>
+                    <div className="font-mono font-bold text-lg text-[#00ffc8] flex items-center justify-end gap-1">
+                      <span className="w-2 h-2 rounded-full bg-[#00ffc8] animate-pulse" />
+                      {delivery.tankerTempC || 3.2}°C
+                    </div>
                   </div>
-
-                  <div className="flex items-center gap-3">
-                    <Link
-                      href={`/dashboard/farmer/batches/${delivery.batchNumber}`}
-                      className="bg-[#12303a] text-white rounded-full px-5 min-h-[40px] font-bold text-xs inline-flex items-center justify-center hover:bg-[#087a3c] transition shadow-sm"
-                    >
-                      Live Route & IoT Telemetry →
-                    </Link>
-                    {isTesting && (
-                      <Link
-                        href={`/dashboard/farmer/dispute?batch=${delivery.batchNumber}`}
-                        className="bg-[#fdf0d2] text-[#7a4b00] rounded-full px-4 min-h-[40px] font-bold text-xs inline-flex items-center justify-center hover:bg-[#fde68a] transition"
-                      >
-                        Contest Grade
-                      </Link>
-                    )}
+                  <div className="text-right">
+                    <div className="text-[11px] text-white/40 uppercase font-semibold">Eskrou Bloklangan</div>
+                    <div className="font-mono font-bold text-lg text-[#00d3e0]">
+                      {delivery.totalEstimatedPayout.toLocaleString()} <span className="text-xs text-white/50 font-normal">UZS</span>
+                    </div>
                   </div>
                 </div>
               </div>
-            );
-          })}
-        </section>
 
-      </div>
+              {/* Progress Steps / Stepper */}
+              <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 py-2">
+                <div className="p-3 rounded-2xl bg-white/[0.02] border border-white/5 flex items-center gap-2.5">
+                  <span className="w-6 h-6 rounded-full bg-[#00ffc8]/20 text-[#00ffc8] font-mono text-xs font-bold flex items-center justify-center">
+                    ✓
+                  </span>
+                  <div className="text-xs">
+                    <div className="font-bold text-white">1. Fermada yuklandi</div>
+                    <div className="text-[10px] text-white/40">QR tasdiqlangan</div>
+                  </div>
+                </div>
+
+                <div
+                  className={`p-3 rounded-2xl border flex items-center gap-2.5 ${
+                    isTransit || isTesting || isReleased
+                      ? "bg-[#00d3e0]/10 border-[#00d3e0]/30"
+                      : "bg-white/[0.02] border-white/5 opacity-50"
+                  }`}
+                >
+                  <span className="w-6 h-6 rounded-full bg-[#00d3e0]/20 text-[#00d3e0] font-mono text-xs font-bold flex items-center justify-center">
+                    {isTransit ? "●" : "✓"}
+                  </span>
+                  <div className="text-xs">
+                    <div className="font-bold text-white">2. Tanker yo'lda</div>
+                    <div className="text-[10px] text-[#00d3e0]">GPS 250m radius</div>
+                  </div>
+                </div>
+
+                <div
+                  className={`p-3 rounded-2xl border flex items-center gap-2.5 ${
+                    isTesting || isReleased
+                      ? "bg-amber-400/10 border-amber-400/30"
+                      : "bg-white/[0.02] border-white/5 opacity-50"
+                  }`}
+                >
+                  <span className="w-6 h-6 rounded-full bg-amber-400/20 text-amber-300 font-mono text-xs font-bold flex items-center justify-center">
+                    {isTesting ? "●" : isReleased ? "✓" : "3"}
+                  </span>
+                  <div className="text-xs">
+                    <div className="font-bold text-white">3. Laboratoriya</div>
+                    <div className="text-[10px] text-amber-300">Yog' & SNF titratsiya</div>
+                  </div>
+                </div>
+
+                <div
+                  className={`p-3 rounded-2xl border flex items-center gap-2.5 ${
+                    isReleased
+                      ? "bg-[#00ffc8]/10 border-[#00ffc8]/30"
+                      : "bg-white/[0.02] border-white/5 opacity-50"
+                  }`}
+                >
+                  <span className="w-6 h-6 rounded-full bg-[#00ffc8]/20 text-[#00ffc8] font-mono text-xs font-bold flex items-center justify-center">
+                    {isReleased ? "✓" : "4"}
+                  </span>
+                  <div className="text-xs">
+                    <div className="font-bold text-white">4. Bank Eskrou</div>
+                    <div className="text-[10px] text-[#00ffc8]">Hisobga o'tkazildi</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Actions Footer */}
+              <div className="flex flex-wrap items-center justify-between gap-4 pt-2">
+                <div className="text-xs text-white/50 flex items-center gap-2">
+                  <span>Tanker haydovchisi:</span>
+                  <strong className="text-white">Bobur Rahimov (01 A 777 AA)</strong>
+                </div>
+
+                <div className="flex items-center gap-2.5">
+                  <Link
+                    href={`/dashboard/farmer/batches/${delivery.batchNumber}`}
+                    className="px-4 py-2 rounded-full border border-white/15 bg-white/5 hover:border-[#00d3e0] text-xs font-bold text-white hover:text-[#00ffc8] transition"
+                  >
+                    Batafsil Telematika →
+                  </Link>
+                  {isTesting && (
+                    <Link
+                      href={`/dashboard/farmer/dispute?batch=${delivery.batchNumber}`}
+                      className="px-4 py-2 rounded-full border border-amber-400/30 bg-amber-400/10 hover:bg-amber-400/20 text-xs font-bold text-amber-300 transition"
+                    >
+                      Nizo ochish
+                    </Link>
+                  )}
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </section>
     </div>
   );
 }

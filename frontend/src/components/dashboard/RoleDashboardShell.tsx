@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import ZaminFlowLogo from "@/components/ZaminFlowLogo";
 import { useLanguage } from "@/context/LanguageContext";
-import { ThemeToggleButton } from "@/context/ThemeContext";
+import { useTheme, ThemeToggleButton } from "@/context/ThemeContext";
 import { AuthSession, getStoredSession, signOut } from "@/lib/auth";
 import { resolveUserAvatar } from "@/lib/userAvatar";
 
@@ -26,6 +26,7 @@ export default function RoleDashboardShell({
   const pathname = usePathname() || "";
   const router = useRouter();
   const { locale, setLocale, dashT: t } = useLanguage();
+  const { themeMode, isDark } = useTheme();
   const [session, setSession] = useState<AuthSession | null>(null);
   const [isSigningOut, setIsSigningOut] = useState(false);
 
@@ -284,7 +285,10 @@ export default function RoleDashboardShell({
       {
         href: "/dashboard/admin/verification",
         label: t.nav.verification,
-        matchPrefixes: ["/dashboard/admin/verification"],
+        matchPrefixes: [
+          "/dashboard/admin/verification",
+          "/dashboard/admin/verifications",
+        ],
         icon: (
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
@@ -298,6 +302,26 @@ export default function RoleDashboardShell({
         icon: (
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" />
+          </svg>
+        ),
+      },
+      {
+        href: "/dashboard/admin/audit",
+        label: "Audit Vault",
+        matchPrefixes: ["/dashboard/admin/audit"],
+        icon: (
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+        ),
+      },
+      {
+        href: "/dashboard/admin/analytics",
+        label: "Analytics",
+        matchPrefixes: ["/dashboard/admin/analytics"],
+        icon: (
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
           </svg>
         ),
       },
@@ -316,18 +340,55 @@ export default function RoleDashboardShell({
   };
 
   return (
-    <div className="min-h-screen bg-[#EAEFF0] dark:bg-[#0A1318] py-5 px-3 sm:px-6 transition-colors font-sans antialiased">
-      {/* Unified Floating Master Canvas (matches FarmerOverview / DairyOverview / DriverOverview / AdminOverview) */}
-      <div className="max-w-[1380px] mx-auto bg-white dark:bg-[#101E27] rounded-[36px] shadow-[0_20px_50px_rgba(15,40,30,0.06)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.4)] border border-slate-100 dark:border-white/5 p-4 sm:p-8 flex flex-col gap-6">
+    <div className={`min-h-screen py-5 px-3 sm:px-6 relative overflow-x-hidden font-sans antialiased select-none transition-colors duration-300 ${
+      isDark ? "bg-[#070b0e] text-white" : "bg-[#f8fafc] text-slate-900"
+    }`}>
+      {/* 1. AMBIENT DREAMLAND BACKDROP AURORAS */}
+      <div className="absolute top-10 -left-40 w-[550px] h-[550px] pointer-events-none z-0">
+        <div
+          className={`w-full h-full rounded-full blur-[140px] animate-pulse ${
+            isDark ? "opacity-20" : "opacity-12"
+          }`}
+          style={{ background: isDark ? "radial-gradient(circle, #00ffc8 0%, #00d3e0 40%, transparent 70%)" : "radial-gradient(circle, #34d399 0%, #38bdf8 40%, transparent 70%)" }}
+        />
+      </div>
+      <div className="absolute bottom-10 -right-40 w-[550px] h-[550px] pointer-events-none z-0">
+        <div
+          className={`w-full h-full rounded-full blur-[140px] animate-pulse ${
+            isDark ? "opacity-20" : "opacity-10"
+          }`}
+          style={{ background: isDark ? "radial-gradient(circle, #00d3e0 0%, #0099ff 50%, transparent 70%)" : "radial-gradient(circle, #38bdf8 0%, #818cf8 50%, transparent 70%)" }}
+        />
+      </div>
+
+      {/* Subtle Dot Grid Background */}
+      <div
+        className="absolute inset-0 opacity-10 pointer-events-none"
+        style={{
+          backgroundImage: isDark ? "radial-gradient(#00d3e0 1px, transparent 1px)" : "radial-gradient(#059669 1px, transparent 1px)",
+          backgroundSize: "28px 28px",
+        }}
+      />
+
+      {/* Unified Luxury Floating Master Canvas */}
+      <div className={`relative z-10 max-w-[1380px] mx-auto rounded-[36px] border p-4 sm:p-8 flex flex-col gap-6 transition-colors duration-300 ${
+        isDark
+          ? "bg-[#14181d]/90 backdrop-blur-2xl shadow-[0_25px_80px_rgba(0,153,255,0.18)] border-white/10 text-white"
+          : "bg-white backdrop-blur-2xl shadow-[0_20px_60px_-15px_rgba(15,23,42,0.07)] border-slate-200 text-slate-900"
+      }`}>
         {/* 1. TOP NAV BAR */}
-        <header className="flex flex-wrap items-center justify-between gap-4 pb-3 border-b border-slate-100 dark:border-white/5">
+        <header className={`flex flex-wrap items-center justify-between gap-4 pb-4 border-b ${
+          isDark ? "border-white/10" : "border-slate-200"
+        }`}>
           {/* Brand Logo */}
-          <Link href={`/dashboard/${role}`} className="flex items-center shrink-0">
-            <ZaminFlowLogo size="md" />
+          <Link href={`/dashboard/${role}`} className="flex items-center shrink-0 transition-transform hover:scale-105">
+            <ZaminFlowLogo mode={themeMode} size="md" />
           </Link>
 
           {/* Navigation Pill Tabs */}
-          <nav className="hidden lg:flex items-center gap-1.5 p-1 rounded-full bg-slate-50 dark:bg-white/5 border border-slate-200/60 dark:border-white/10 text-xs font-semibold">
+          <nav className={`hidden lg:flex items-center gap-1.5 p-1 rounded-full border text-xs font-semibold backdrop-blur-md ${
+            isDark ? "bg-white/5 border-white/10" : "bg-slate-100 border-slate-200"
+          }`}>
             {navItems.map((item) => {
               const active = isNavItemActive(item);
               return (
@@ -336,8 +397,10 @@ export default function RoleDashboardShell({
                   href={item.href}
                   className={
                     active
-                      ? "px-4 py-1.5 rounded-full bg-[#087a3c] text-white shadow-xs font-bold transition"
-                      : "px-4 py-1.5 rounded-full text-slate-600 dark:text-slate-300 hover:text-black dark:hover:text-white transition"
+                      ? "px-4 py-1.5 rounded-full bg-gradient-to-r from-[#00ffc8] to-[#0099ff] text-[#070B14] shadow-md font-black transition"
+                      : isDark
+                      ? "px-4 py-1.5 rounded-full text-white/70 hover:text-white hover:bg-white/5 transition"
+                      : "px-4 py-1.5 rounded-full text-slate-700 hover:text-slate-900 hover:bg-white shadow-xs transition"
                   }
                 >
                   {item.label}
@@ -346,7 +409,9 @@ export default function RoleDashboardShell({
             })}
             <Link
               href={`/dashboard/${role}/profile`}
-              className="px-4 py-1.5 rounded-full text-slate-600 dark:text-slate-300 hover:text-black dark:hover:text-white transition"
+              className={`px-4 py-1.5 rounded-full transition ${
+                isDark ? "text-white/70 hover:text-white hover:bg-white/5" : "text-slate-700 hover:text-slate-900 hover:bg-white shadow-xs"
+              }`}
             >
               Profile
             </Link>
@@ -355,24 +420,29 @@ export default function RoleDashboardShell({
           {/* Right Section: Search, Language Switcher, User Menu */}
           <div className="flex items-center gap-3">
             {/* Search Pill */}
-            <div className="hidden sm:flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-50 dark:bg-white/5 border border-slate-200/60 dark:border-white/10 text-xs text-slate-400">
-              <svg className="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className={`hidden sm:flex items-center gap-2 px-3.5 py-1.5 rounded-full border text-xs transition ${
+              isDark ? "bg-white/5 border-white/10 text-white/50 focus-within:border-[#00d3e0]/60" : "bg-slate-100 border-slate-200 text-slate-700 focus-within:border-emerald-500 focus-within:ring-2 focus-within:ring-emerald-500/20"
+            }`}>
+              <svg className={`w-3.5 h-3.5 ${isDark ? "text-[#00d3e0]" : "text-emerald-600"}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
-              <span className="text-slate-400">{searchPlaceholders[role]}</span>
+              <span className={isDark ? "text-white/40" : "text-slate-500"}>{searchPlaceholders[role]}</span>
             </div>
 
             {/* Language Selector */}
-            <div className="flex rounded-full p-0.5 border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-[11px] font-bold">
+            <div className={`flex rounded-full p-1 border text-[11px] font-bold ${
+              isDark ? "border-white/10 bg-white/5" : "border-slate-200 bg-slate-100"
+            }`} role="group" aria-label="Language selector">
               {(["uz", "ru", "en"] as const).map((loc) => (
                 <button
                   key={loc}
                   type="button"
                   onClick={() => setLocale(loc)}
-                  className={`px-2 py-0.5 rounded-full uppercase transition cursor-pointer ${
+                  aria-label={`Select language ${loc.toUpperCase()}`}
+                  className={`px-2.5 py-0.5 rounded-full uppercase transition cursor-pointer ${
                     locale === loc
-                      ? "bg-[#12303a] text-white dark:bg-[#1B98E0] dark:text-[#13293D]"
-                      : "text-slate-500 hover:text-black dark:hover:text-white"
+                      ? "bg-gradient-to-r from-[#00ffc8] to-[#0099ff] text-[#070B14] font-black shadow-xs"
+                      : isDark ? "text-white/60 hover:text-white" : "text-slate-600 hover:text-slate-900"
                   }`}
                 >
                   {loc}
@@ -387,7 +457,7 @@ export default function RoleDashboardShell({
             <Link
               href={`/dashboard/${role}/profile`}
               title="View Trading Profile"
-              className="flex items-center gap-2 pl-2 hover:opacity-85 transition group"
+              className="flex items-center gap-2 pl-2 hover:opacity-90 transition group"
             >
               {(() => {
                 const avatar = resolveUserAvatar(
@@ -395,7 +465,7 @@ export default function RoleDashboardShell({
                   session?.user?.email
                 );
                 return (
-                  <div className="w-8 h-8 rounded-full overflow-hidden bg-gradient-to-tr from-emerald-600 to-teal-500 text-white font-bold text-xs flex items-center justify-center shadow-xs group-hover:ring-2 ring-emerald-500/50">
+                  <div className="w-8 h-8 rounded-full overflow-hidden bg-gradient-to-tr from-[#00ffc8] to-[#0099ff] text-[#070B14] font-black text-xs flex items-center justify-center shadow-xs ring-2 ring-[#00ffc8]/50">
                     {avatar ? (
                       <img
                         src={avatar}
@@ -409,10 +479,14 @@ export default function RoleDashboardShell({
                 );
               })()}
               <div className="hidden md:flex flex-col text-left">
-                <span className="text-xs font-bold text-slate-800 dark:text-white leading-tight group-hover:text-emerald-700 dark:group-hover:text-emerald-400">
+                <span className={`text-xs font-bold leading-tight transition ${
+                  isDark ? "text-white group-hover:text-[#00ffc8]" : "text-slate-900 group-hover:text-emerald-700"
+                }`}>
                   {firstName}
                 </span>
-                <span className="text-[10px] text-emerald-700 dark:text-emerald-400 font-mono">
+                <span className={`text-[10px] font-mono ${
+                  isDark ? "text-[#00d3e0]" : "text-emerald-700 font-bold"
+                }`}>
                   {roleBadgeLabels[role]}
                 </span>
               </div>
@@ -423,7 +497,9 @@ export default function RoleDashboardShell({
               onClick={handleSignOut}
               disabled={isSigningOut}
               title={t.nav.signOut}
-              className="p-2 rounded-full border border-slate-200 dark:border-white/10 text-slate-500 hover:text-red-600 hover:border-red-300 transition cursor-pointer"
+              className={`p-2 rounded-full border transition cursor-pointer ${
+                isDark ? "border-white/10 text-white/50 hover:text-red-400 hover:border-red-400/40 hover:bg-red-500/10" : "border-slate-200 text-slate-400 hover:text-red-600 hover:border-red-200 hover:bg-red-50"
+              }`}
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
@@ -434,7 +510,9 @@ export default function RoleDashboardShell({
 
         {/* 2. PORTAL EYEBROW + MOBILE PILL NAV */}
         <div className="flex flex-wrap items-center justify-between gap-2 -mb-2">
-          <div className="text-[11px] font-bold tracking-widest text-[#087a3c] dark:text-[#22d36b] uppercase">
+          <div className={`text-[11px] font-black tracking-widest uppercase ${
+            isDark ? "bg-gradient-to-r from-[#00ffc8] to-[#00d3e0] bg-clip-text text-transparent" : "text-emerald-800 font-extrabold"
+          }`}>
             {portalEyebrows[role]}
           </div>
           <div className="flex lg:hidden flex-wrap items-center gap-1.5">
@@ -446,8 +524,10 @@ export default function RoleDashboardShell({
                   href={item.href}
                   className={
                     active
-                      ? "px-3 py-1 rounded-full bg-[#087a3c] text-white text-xs font-bold"
-                      : "px-3 py-1 rounded-full bg-slate-100 dark:bg-white/10 text-slate-600 dark:text-slate-300 text-xs font-semibold"
+                      ? "px-3 py-1 rounded-full bg-gradient-to-r from-[#00ffc8] to-[#0099ff] text-[#070B14] text-xs font-black shadow-xs"
+                      : isDark
+                      ? "px-3 py-1 rounded-full bg-white/5 border border-white/10 text-white/70 text-xs font-semibold"
+                      : "px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-slate-700 text-xs font-semibold"
                   }
                 >
                   {item.label}
@@ -460,7 +540,9 @@ export default function RoleDashboardShell({
         {/* 3. MAIN DASHBOARD CONTENT WITH LEFT FLOATING DOCK */}
         <div className="flex gap-6 items-start">
           {/* Left Vertical Icon Dock */}
-          <aside className="hidden xl:flex flex-col items-center gap-4 py-5 px-2.5 rounded-full bg-slate-50 dark:bg-white/5 border border-slate-200/80 dark:border-white/10 shrink-0 select-none shadow-xs">
+          <aside className={`hidden xl:flex flex-col items-center gap-4 py-5 px-2.5 rounded-full border shrink-0 select-none shadow-xs backdrop-blur-md ${
+            isDark ? "bg-white/[0.03] border-white/10" : "bg-white border-slate-200 shadow-sm"
+          }`}>
             {navItems.map((item) => {
               const active = isNavItemActive(item);
               return (
@@ -469,8 +551,10 @@ export default function RoleDashboardShell({
                   href={item.href}
                   className={
                     active
-                      ? "w-10 h-10 rounded-full bg-[#087a3c] text-white flex items-center justify-center shadow-xs transition"
-                      : "w-10 h-10 rounded-full text-slate-500 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/50 dark:hover:bg-white/10 flex items-center justify-center transition"
+                      ? "w-10 h-10 rounded-full bg-gradient-to-r from-[#00ffc8] to-[#0099ff] text-[#070B14] flex items-center justify-center shadow-md font-black transition"
+                      : isDark
+                      ? "w-10 h-10 rounded-full text-white/50 hover:text-white hover:bg-white/10 flex items-center justify-center transition"
+                      : "w-10 h-10 rounded-full text-slate-500 hover:text-slate-900 hover:bg-slate-100 flex items-center justify-center transition"
                   }
                   title={item.label}
                 >
@@ -479,11 +563,13 @@ export default function RoleDashboardShell({
               );
             })}
 
-            <div className="w-6 h-px bg-slate-200 dark:bg-white/10 my-1" />
+            <div className={`w-6 h-px my-1 ${isDark ? "bg-white/10" : "bg-slate-200"}`} />
 
             <button
               onClick={handleSignOut}
-              className="w-10 h-10 rounded-full text-slate-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/20 flex items-center justify-center transition cursor-pointer"
+              className={`w-10 h-10 rounded-full flex items-center justify-center transition cursor-pointer ${
+                isDark ? "text-white/40 hover:text-red-400 hover:bg-red-500/10" : "text-slate-400 hover:text-red-600 hover:bg-red-50"
+              }`}
               title="Sign Out"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -499,7 +585,7 @@ export default function RoleDashboardShell({
         </div>
       </div>
 
-      {/* Unified Sub-Page Style Normalization (Light + Dark Mode) */}
+      {/* Unified Sub-Page Style Normalization (Adaptive Dark & Light) */}
       <style jsx global>{`
         /* 1. Strip the legacy outer light-green gradient wrapper & duplicate top pill nav */
         .zf-unified-subpage > div {
@@ -517,82 +603,117 @@ export default function RoleDashboardShell({
         .zf-unified-subpage > div > div > header:first-of-type {
           padding-top: 0 !important;
         }
-        .zf-unified-subpage h1 {
+
+        /* 2. Dark Mode Specific Normalization */
+        html.dark .zf-unified-subpage h1 {
           font-size: clamp(1.5rem, 2.4vw, 2rem) !important;
           line-height: 1.15 !important;
-        }
-
-        /* 2. Light Mode card & surface normalization (match Overview bg-slate-50 border-slate-200/70) */
-        .zf-unified-subpage [class*="bg-[rgba(255,255,255"] {
-          background-color: #f8fafc !important;
-          border-color: rgba(226, 232, 240, 0.85) !important;
-          box-shadow: 0 4px 20px rgba(15, 40, 30, 0.03) !important;
-        }
-
-        /* 3. Dark Mode card, typography, input, badge, and table normalization */
-        html.dark .zf-unified-subpage [class*="bg-[rgba(255,255,255"],
-        html.dark .zf-unified-subpage [class*="bg-white/80"],
-        html.dark .zf-unified-subpage [class*="bg-white/90"] {
-          background-color: rgba(255, 255, 255, 0.04) !important;
-          border-color: rgba(255, 255, 255, 0.09) !important;
-          box-shadow: none !important;
-          color: #f1f5f9 !important;
-        }
-
-        html.dark .zf-unified-subpage .bg-white {
-          background-color: rgba(255, 255, 255, 0.06) !important;
-          border-color: rgba(255, 255, 255, 0.14) !important;
-          color: #f1f5f9 !important;
-        }
-
-        html.dark .zf-unified-subpage [class*="text-[#17352c]"],
-        html.dark .zf-unified-subpage [class*="text-[#12303a]"] {
-          color: #f8fafc !important;
-        }
-
-        html.dark .zf-unified-subpage [class*="text-[#4d6a60]"],
-        html.dark .zf-unified-subpage [class*="text-[#33473f]"] {
-          color: #94a3b8 !important;
-        }
-
-        html.dark .zf-unified-subpage [class*="text-[#087a3c]"] {
-          color: #34d399 !important;
-        }
-
-        html.dark .zf-unified-subpage [class*="bg-[#12303a]"] {
-          background-color: #087a3c !important;
-          border-color: #10b981 !important;
           color: #ffffff !important;
         }
-
-        html.dark .zf-unified-subpage [class*="bg-[#d9f7e5]"] {
-          background-color: rgba(16, 185, 129, 0.16) !important;
-          color: #6ee7b7 !important;
+        html.dark .zf-unified-subpage [class*="bg-[rgba(255,255,255"],
+        html.dark .zf-unified-subpage [class*="bg-white/80"],
+        html.dark .zf-unified-subpage [class*="bg-white/90"],
+        html.dark .zf-unified-subpage .bg-white {
+          background-color: rgba(255, 255, 255, 0.03) !important;
+          border-color: rgba(255, 255, 255, 0.1) !important;
+          color: #f1f5f9 !important;
         }
-
-        html.dark .zf-unified-subpage [class*="bg-[#fdf0d2]"] {
-          background-color: rgba(245, 158, 11, 0.16) !important;
-          color: #fcd34d !important;
+        html.dark .zf-unified-subpage [class*="text-[#17352c]"],
+        html.dark .zf-unified-subpage [class*="text-[#12303a]"],
+        html.dark .zf-unified-subpage [class*="text-slate-900"],
+        html.dark .zf-unified-subpage [class*="text-slate-800"] {
+          color: #f8fafc !important;
         }
-
-        html.dark .zf-unified-subpage [class*="bg-[#e6ecea]"],
-        html.dark .zf-unified-subpage [class*="bg-[#f0f7f4]"] {
-          background-color: rgba(255, 255, 255, 0.06) !important;
-          color: #cbd5e1 !important;
+        html.dark .zf-unified-subpage [class*="text-[#4d6a60]"],
+        html.dark .zf-unified-subpage [class*="text-[#33473f]"],
+        html.dark .zf-unified-subpage [class*="text-slate-500"],
+        html.dark .zf-unified-subpage [class*="text-slate-600"] {
+          color: rgba(255, 255, 255, 0.6) !important;
         }
-
         html.dark .zf-unified-subpage input,
         html.dark .zf-unified-subpage select,
         html.dark .zf-unified-subpage textarea {
-          background-color: rgba(15, 23, 42, 0.65) !important;
-          border-color: rgba(255, 255, 255, 0.14) !important;
+          background-color: rgba(255, 255, 255, 0.05) !important;
+          border-color: rgba(255, 255, 255, 0.12) !important;
           color: #f8fafc !important;
         }
-
+        html.dark .zf-unified-subpage input:focus,
+        html.dark .zf-unified-subpage select:focus,
+        html.dark .zf-unified-subpage textarea:focus {
+          border-color: #00d3e0 !important;
+          box-shadow: 0 0 15px rgba(0, 211, 224, 0.25) !important;
+        }
         html.dark .zf-unified-subpage table th,
         html.dark .zf-unified-subpage table td,
         html.dark .zf-unified-subpage tr {
           border-color: rgba(255, 255, 255, 0.08) !important;
+        }
+
+        /* 3. Light Mode Specific Normalization */
+        html.light .zf-unified-subpage h1 {
+          font-size: clamp(1.5rem, 2.4vw, 2rem) !important;
+          line-height: 1.15 !important;
+          color: #081c15 !important;
+        }
+        html.light .zf-unified-subpage [class*="bg-[rgba(255,255,255"],
+        html.light .zf-unified-subpage [class*="bg-white/80"],
+        html.light .zf-unified-subpage [class*="bg-white/90"],
+        html.light .zf-unified-subpage .bg-white,
+        html.light .zf-unified-subpage [class*="bg-white/[0.03]"],
+        html.light .zf-unified-subpage [class*="bg-white/[0.02]"] {
+          background-color: #ffffff !important;
+          border-color: #b7e4c7 !important;
+          color: #081c15 !important;
+          box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03) !important;
+        }
+        html.light .zf-unified-subpage [class*="text-white"] {
+          color: #081c15 !important;
+        }
+        html.light .zf-unified-subpage [class*="text-white/80"],
+        html.light .zf-unified-subpage [class*="text-white/70"] {
+          color: #2d6a4f !important;
+        }
+        html.light .zf-unified-subpage [class*="text-white/50"],
+        html.light .zf-unified-subpage [class*="text-white/40"] {
+          color: #52b788 !important;
+        }
+        html.light .zf-unified-subpage input,
+        html.light .zf-unified-subpage select,
+        html.light .zf-unified-subpage textarea {
+          background-color: #ffffff !important;
+          border-color: #b7e4c7 !important;
+          color: #081c15 !important;
+        }
+        html.light .zf-unified-subpage input:focus,
+        html.light .zf-unified-subpage select:focus,
+        html.light .zf-unified-subpage textarea:focus {
+          border-color: #2d6a4f !important;
+          box-shadow: 0 0 12px rgba(45, 106, 79, 0.2) !important;
+        }
+        html.light .zf-unified-subpage table th,
+        html.light .zf-unified-subpage table td,
+        html.light .zf-unified-subpage tr {
+          border-color: #b7e4c7 !important;
+          color: #081c15 !important;
+        }
+
+        /* 4. Common Brand Gradients */
+        .zf-unified-subpage [class*="bg-[#087a3c]"],
+        .zf-unified-subpage [class*="bg-emerald-600"] {
+          background: linear-gradient(135deg, #00ffc8 0%, #00d3e0 50%, #0099ff 100%) !important;
+          color: #070B14 !important;
+          font-weight: 800 !important;
+          border: none !important;
+        }
+        .zf-unified-subpage [class*="bg-[#d9f7e5]"],
+        .zf-unified-subpage [class*="bg-emerald-100"] {
+          background-color: rgba(0, 255, 200, 0.12) !important;
+          color: #00876c !important;
+          border-color: rgba(0, 255, 200, 0.25) !important;
+        }
+        .zf-unified-subpage [class*="bg-[#fdf0d2]"] {
+          background-color: rgba(245, 158, 11, 0.16) !important;
+          color: #b45309 !important;
         }
       `}</style>
     </div>

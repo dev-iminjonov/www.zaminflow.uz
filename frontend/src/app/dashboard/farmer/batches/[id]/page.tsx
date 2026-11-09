@@ -2,17 +2,13 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import ZaminFlowLogo from "@/components/ZaminFlowLogo";
-import { useParams, useRouter } from "next/navigation";
-import { signOut } from "@/lib/auth";
+import { useParams } from "next/navigation";
 import { getBatchById, MilkBatch } from "@/lib/farmerStore";
 
 export default function FarmerBatchDetailPage() {
   const params = useParams();
-  const router = useRouter();
   const batchId = (params?.id as string) || "ZF-0412";
   const [batch, setBatch] = useState<MilkBatch | null>(null);
-  const [isSigningOut, setIsSigningOut] = useState(false);
 
   useEffect(() => {
     const found = getBatchById(batchId);
@@ -23,7 +19,7 @@ export default function FarmerBatchDetailPage() {
         id: batchId.toLowerCase(),
         batchNumber: batchId.toUpperCase(),
         volumeLiters: 1200,
-        milkingDate: "Today, 06:30",
+        milkingDate: "Bugun, 06:30",
         milkingSession: "morning",
         storageTempC: 3.2,
         qualityGrade: "A+",
@@ -33,7 +29,7 @@ export default function FarmerBatchDetailPage() {
         pricePerLiter: 4380,
         totalEstimatedPayout: 5256000,
         status: "in_transit",
-        destinationPlant: "Tashkent Central Dairy",
+        destinationPlant: "Toshkent Markaziy Sut Zavodi",
         pickupWindow: "08:00 - 09:30",
         driverName: "Bobur Rahimov",
         driverPhone: "+998 90 123 45 67",
@@ -45,245 +41,155 @@ export default function FarmerBatchDetailPage() {
     }
   }, [batchId]);
 
-  const handleSignOut = async () => {
-    setIsSigningOut(true);
-    await signOut();
-    router.push("/signin");
-  };
-
   if (!batch) return null;
 
   return (
-    <div className="min-h-[940px] bg-[linear-gradient(160deg,#f6f9f8_0%,#e4f6ec_100%)] text-[#17352c] font-[family-name:var(--font-inter,sans-serif)]">
-      <div className="max-w-[1180px] mx-auto px-6 pt-6 pb-14 flex flex-col gap-7">
-        
-        {/* Floating Top Pill Nav */}
-        <nav className="bg-white rounded-[40px] px-8 py-3.5 flex flex-wrap items-center justify-between gap-4 shadow-[0_10px_40px_rgba(20,80,60,0.08)]">
-          <Link href="/dashboard/farmer" className="flex items-center shrink-0">
-            <ZaminFlowLogo mode="light" size="md" />
-          </Link>
-          <div className="flex flex-wrap items-center gap-7 text-[15px] font-semibold">
-            <Link href="/dashboard/farmer" className="text-[#17352c] hover:text-[#087a3c] transition pb-0.5">
-              Overview
-            </Link>
-            <Link href="/dashboard/farmer/my-milk" className="text-[#17352c] hover:text-[#087a3c] transition pb-0.5">
-              My milk
-            </Link>
-            <Link href="/dashboard/farmer/deliveries" className="text-[#087a3c] border-b-2 border-[#22d36b] pb-0.5">
-              Deliveries
-            </Link>
-            <Link href="/dashboard/farmer/payouts" className="text-[#17352c] hover:text-[#087a3c] transition pb-0.5">
-              Payouts
-            </Link>
-          </div>
-          <div className="flex items-center gap-3">
-            <span className="text-xs font-bold bg-[#d9f7e5] text-[#087a3c] rounded-lg px-2 py-1 whitespace-nowrap">
-              Farmer
+    <div className="flex flex-col gap-6">
+      {/* 1. HEADER ROW */}
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-2 mb-1">
+            <span className="w-2 h-2 rounded-full bg-[#00ffc8] animate-pulse" />
+            <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-[#00ffc8]">
+              BLE & GPS Sovuq Zanjir Telemetriyasi
             </span>
-            <button
-              onClick={handleSignOut}
-              disabled={isSigningOut}
-              className="bg-white text-[#12303a] border-[1.5px] border-[#12303a] rounded-full px-5 min-h-[44px] font-bold text-[15px] hover:bg-[#12303a] hover:text-white transition cursor-pointer"
-            >
-              {isSigningOut ? "..." : "Sign out"}
-            </button>
           </div>
-        </nav>
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+            Partiya <span className="font-mono bg-gradient-to-r from-[#00ffc8] to-[#0099ff] bg-clip-text text-transparent">{batch.batchNumber}</span> Pasporti
+          </h1>
+          <p className="text-xs text-white/50 mt-1">
+            Sisterna ichki harorati, lab koʻrsatkichlari va Agrobank kafolatlangan eskrou holati
+          </p>
+        </div>
 
-        {/* Header Row */}
-        <header className="flex flex-wrap items-end justify-between gap-5 pt-4">
-          <div>
-            <h1 className="m-0 text-4xl sm:text-5xl font-extrabold tracking-[-0.03em] leading-[1.05] text-[#17352c]">
-              Batch <span className="font-[family-name:var(--font-jetbrains-mono,monospace)] text-[#087a3c]">{batch.batchNumber}</span> Telemetry
-            </h1>
-          </div>
-          <div className="flex items-center gap-3">
-            <Link
-              href="/dashboard/farmer/deliveries"
-              className="text-sm font-bold text-[#4d6a60] hover:text-[#17352c] transition"
-            >
-              ← Back to Deliveries
-            </Link>
-            <Link
-              href={`/dashboard/farmer/dispute?batch=${batch.batchNumber}`}
-              className="bg-[#fdf0d2] text-[#7a4b00] rounded-full px-4 min-h-[42px] font-bold text-xs inline-flex items-center justify-center hover:bg-[#fde68a] transition"
-            >
-              Contest Lab Results
-            </Link>
-          </div>
-        </header>
+        <div className="flex items-center gap-3">
+          <Link
+            href="/dashboard/farmer/deliveries"
+            className="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-xs font-bold text-white/70 hover:text-white hover:bg-white/10 transition"
+          >
+            ← Yetkazmalarga Qaytish
+          </Link>
+          <Link
+            href={`/dashboard/farmer/dispute?batch=${batch.batchNumber}`}
+            className="px-4 py-2 rounded-full bg-amber-500/15 border border-amber-500/30 text-xs font-bold text-amber-300 hover:bg-amber-500/25 transition"
+          >
+            Nizo / Arbitraj Ochish
+          </Link>
+        </div>
+      </div>
 
-        {/* Key Metrics Banner */}
-        <section className="grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-5">
-          <div className="bg-[rgba(255,255,255,0.76)] border border-white rounded-[24px] shadow-[0_10px_40px_rgba(20,80,60,0.08)] p-6 box-border">
-            <div className="text-xs font-bold tracking-[0.08em] text-[#087a3c] uppercase">
-              Current Tanker Temp
-            </div>
-            <div className="flex items-baseline flex-wrap gap-2 mt-2">
-              <span className="font-[family-name:var(--font-jetbrains-mono,monospace)] text-[34px] font-bold text-[#17352c]">
-                {batch.tankerTempC || 3.2}°C
-              </span>
-              <span className="text-xs font-bold bg-[#d9f7e5] text-[#087a3c] rounded-lg px-2 py-0.5">
-                ✓ Sensor Locked
-              </span>
-            </div>
+      {/* 2. KEY METRICS BENCH */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="rounded-[24px] bg-white/[0.03] border border-white/10 p-5">
+          <div className="text-[11px] font-mono uppercase text-white/50">Joriy Sisterna Harorati</div>
+          <div className="flex items-baseline gap-2 mt-2">
+            <span className="text-3xl font-black font-mono text-[#00ffc8]">{batch.tankerTempC || 3.2}°C</span>
+            <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-[#00ffc8]/15 text-[#00ffc8] border border-[#00ffc8]/30">
+              ✓ Normal
+            </span>
           </div>
+        </div>
 
-          <div className="bg-[rgba(255,255,255,0.76)] border border-white rounded-[24px] shadow-[0_10px_40px_rgba(20,80,60,0.08)] p-6 box-border">
-            <div className="text-xs font-bold tracking-[0.08em] text-[#087a3c] uppercase">
-              Volume in Tanker
-            </div>
-            <div className="flex items-baseline flex-wrap gap-2 mt-2">
-              <span className="font-[family-name:var(--font-jetbrains-mono,monospace)] text-[34px] font-bold text-[#17352c]">
-                {batch.volumeLiters.toLocaleString()}
-              </span>
-              <span className="font-[family-name:var(--font-jetbrains-mono,monospace)] text-[13px] font-medium text-[#4d6a60]">
-                L
-              </span>
-            </div>
+        <div className="rounded-[24px] bg-white/[0.03] border border-white/10 p-5">
+          <div className="text-[11px] font-mono uppercase text-white/50">Yuklangan Hajm</div>
+          <div className="flex items-baseline gap-2 mt-2">
+            <span className="text-3xl font-black font-mono text-white">{batch.volumeLiters.toLocaleString()}</span>
+            <span className="text-xs font-mono text-white/50">LITR</span>
           </div>
+        </div>
 
-          <div className="bg-[rgba(255,255,255,0.76)] border border-white rounded-[24px] shadow-[0_10px_40px_rgba(20,80,60,0.08)] p-6 box-border">
-            <div className="text-xs font-bold tracking-[0.08em] text-[#087a3c] uppercase">
-              Quality Grade
-            </div>
-            <div className="flex items-baseline flex-wrap gap-2 mt-2">
-              <span className="font-[family-name:var(--font-jetbrains-mono,monospace)] text-[34px] font-bold text-[#17352c]">
-                Grade {batch.qualityGrade}
-              </span>
-              <span className="text-xs text-[#4d6a60]">
-                SNF {batch.snfPercent}%
-              </span>
-            </div>
+        <div className="rounded-[24px] bg-white/[0.03] border border-white/10 p-5">
+          <div className="text-[11px] font-mono uppercase text-white/50">Sifat Sinfi</div>
+          <div className="flex items-baseline gap-2 mt-2">
+            <span className="text-3xl font-black font-mono text-[#00d3e0]">{batch.qualityGrade}</span>
+            <span className="text-[10px] font-mono text-white/50">Yogʻ: {batch.fatPercent}% • SOMO: {batch.snfPercent}%</span>
+          </div>
+        </div>
+
+        <div className="rounded-[24px] bg-white/[0.03] border border-white/10 p-5">
+          <div className="text-[11px] font-mono uppercase text-white/50">Eskrou Kafolati</div>
+          <div className="flex items-baseline gap-2 mt-2">
+            <span className="text-2xl font-black font-mono text-amber-400">
+              {batch.totalEstimatedPayout.toLocaleString()}
+            </span>
+            <span className="text-xs font-mono text-white/50">UZS</span>
+          </div>
+        </div>
+      </div>
+
+      {/* 3. SPLIT SECTION: ROUTE & SENSORS */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        {/* LEFT: LOGISTICS HUD */}
+        <div className="lg:col-span-7 rounded-[28px] bg-white/[0.03] border border-white/10 p-6 flex flex-col gap-5">
+          <div className="flex items-center justify-between pb-3 border-b border-white/10">
+            <h2 className="text-base font-bold text-white">Logistika va Tashuv Holati</h2>
+            <span className="font-mono text-xs text-[#00ffc8] font-bold">{batch.eta}</span>
           </div>
 
-          <div className="bg-[rgba(255,255,255,0.76)] border border-white rounded-[24px] shadow-[0_10px_40px_rgba(20,80,60,0.08)] p-6 box-border">
-            <div className="text-xs font-bold tracking-[0.08em] text-[#087a3c] uppercase">
-              Escrow Value
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+            <div className="p-4 rounded-2xl bg-white/[0.02] border border-white/5 flex flex-col gap-1">
+              <span className="text-white/40 font-mono uppercase text-[10px]">Qabul Qiluvchi Zavod</span>
+              <span className="font-bold text-white text-sm">{batch.destinationPlant}</span>
             </div>
-            <div className="flex items-baseline flex-wrap gap-2 mt-2">
-              <span className="font-[family-name:var(--font-jetbrains-mono,monospace)] text-[28px] font-bold text-[#087a3c]">
-                {batch.totalEstimatedPayout.toLocaleString()}
-              </span>
-              <span className="font-[family-name:var(--font-jetbrains-mono,monospace)] text-[13px] font-medium text-[#4d6a60]">
-                UZS
-              </span>
-            </div>
-          </div>
-        </section>
-
-        {/* Split Section: Route Tracking & Live Cold Chain Graph */}
-        <section className="flex flex-wrap gap-6">
-          
-          {/* Left: Route Telemetry Card */}
-          <div className="bg-[rgba(255,255,255,0.76)] border border-white rounded-[24px] shadow-[0_10px_40px_rgba(20,80,60,0.08)] p-6 sm:p-8 flex-[1.4_1_480px] flex flex-col gap-5 box-border">
-            <div>
-              <div className="text-xs font-bold tracking-[0.08em] text-[#087a3c] uppercase">
-                Active Transit Telemetry
-              </div>
-              <h2 className="text-2xl font-bold text-[#17352c] mt-1">
-                Sayxunobod Farm → {batch.destinationPlant}
-              </h2>
-            </div>
-
-            {/* Simulated Live Route Map Box */}
-            <div className="relative w-full h-56 rounded-2xl bg-[#e3efe9]/60 border border-[#17352c]/10 overflow-hidden flex flex-col justify-between p-5">
-              <div className="flex justify-between items-center text-xs font-bold text-[#17352c]">
-                <span className="bg-white/90 px-3 py-1 rounded-full shadow-sm">📍 Sayxunobod Collection Hub (KM 0)</span>
-                <span className="bg-[#12303a] text-white px-3 py-1 rounded-full shadow-sm">🎯 Destination Plant (KM 142)</span>
-              </div>
-
-              {/* Highway Route Line */}
-              <div className="relative w-full h-3 bg-white/80 rounded-full my-auto overflow-hidden">
-                <div className="absolute top-0 left-0 h-full bg-[#12303a] rounded-full" style={{ width: "72%" }} />
-                <div className="absolute top-0 left-[70%] -translate-y-1 w-5 h-5 rounded-full bg-[#22d36b] border-2 border-white shadow-md animate-pulse" />
-              </div>
-
-              <div className="flex justify-between items-center text-xs">
-                <span className="font-[family-name:var(--font-jetbrains-mono,monospace)] font-bold text-[#17352c]">
-                  Speed: 64 km/h • GPS Accuracy 2.5m
-                </span>
-                <span className="font-bold text-[#087a3c] bg-[#d9f7e5] px-2.5 py-1 rounded-lg">
-                  {batch.eta || "28 min ETA"}
-                </span>
-              </div>
-            </div>
-
-            {/* Driver & Tanker Details */}
-            <div className="bg-white/80 rounded-2xl p-4 border border-[#17352c]/10 flex flex-wrap items-center justify-between gap-3 text-sm">
-              <div>
-                <div className="text-xs text-[#4d6a60]">Certified Milk Hauler</div>
-                <div className="font-bold text-[#17352c]">{batch.driverName || "Bobur Rahimov"}</div>
-                <div className="text-xs font-[family-name:var(--font-jetbrains-mono,monospace)] text-[#4d6a60]">{batch.driverPhone || "+998 90 123 45 67"}</div>
-              </div>
-              <div>
-                <div className="text-xs text-[#4d6a60]">Vehicle Plate</div>
-                <div className="font-[family-name:var(--font-jetbrains-mono,monospace)] font-bold text-[#12303a]">{batch.truckPlate || "01 772 AAA"}</div>
-              </div>
-              <div>
-                <div className="text-xs text-[#4d6a60]">IoT Probe ID</div>
-                <div className="font-[family-name:var(--font-jetbrains-mono,monospace)] font-semibold text-[#087a3c]">PROBE-UZ-881</div>
-              </div>
+            <div className="p-4 rounded-2xl bg-white/[0.02] border border-white/5 flex flex-col gap-1">
+              <span className="text-white/40 font-mono uppercase text-[10px]">Tashuvchi Haydovchi</span>
+              <span className="font-bold text-white text-sm">{batch.driverName}</span>
+              <span className="text-[10px] font-mono text-white/50">{batch.truckPlate} • {batch.driverPhone}</span>
             </div>
           </div>
 
-          {/* Right: Lab Titration Certificate & Temperature History */}
-          <div className="bg-[rgba(255,255,255,0.76)] border border-white rounded-[24px] shadow-[0_10px_40px_rgba(20,80,60,0.08)] p-6 sm:p-8 flex-[1_1_340px] flex flex-col gap-5 box-border">
-            <div>
-              <div className="text-xs font-bold tracking-[0.08em] text-[#087a3c] uppercase">
-                Laboratory Analysis
+          {/* Stepper */}
+          <div className="p-4 rounded-2xl bg-white/[0.02] border border-white/5">
+            <div className="text-xs font-mono uppercase text-white/50 mb-3">Zanjir Bosqichlari</div>
+            <div className="flex items-center justify-between text-xs">
+              <div className="flex items-center gap-2">
+                <span className="w-6 h-6 rounded-full bg-[#00ffc8] text-[#070B14] font-black text-xs flex items-center justify-center">✓</span>
+                <span className="text-white font-bold">Fermadan Chiqish</span>
               </div>
-              <h2 className="text-2xl font-bold text-[#17352c] mt-1">
-                Quality Certificate
-              </h2>
-            </div>
-
-            <div className="bg-white/80 rounded-2xl p-5 border border-[#17352c]/10 space-y-3 text-sm">
-              <div className="flex justify-between items-center">
-                <span className="text-[#4d6a60]">Butterfat Content:</span>
-                <span className="font-[family-name:var(--font-jetbrains-mono,monospace)] font-bold text-[#17352c]">
-                  {batch.fatPercent}% <span className="text-xs text-[#087a3c]">(Standard ≥ 3.6%)</span>
-                </span>
+              <div className="h-0.5 flex-1 bg-[#00ffc8]/40 mx-3" />
+              <div className="flex items-center gap-2">
+                <span className="w-6 h-6 rounded-full bg-gradient-to-r from-[#00ffc8] to-[#0099ff] text-[#070B14] font-black text-xs flex items-center justify-center animate-pulse">●</span>
+                <span className="text-[#00ffc8] font-bold">Yoʻlda (Tranzit)</span>
               </div>
-
-              <div className="flex justify-between items-center">
-                <span className="text-[#4d6a60]">Solids-Not-Fat (SNF):</span>
-                <span className="font-[family-name:var(--font-jetbrains-mono,monospace)] font-bold text-[#17352c]">
-                  {batch.snfPercent}% <span className="text-xs text-[#087a3c]">(Standard ≥ 8.5%)</span>
-                </span>
+              <div className="h-0.5 flex-1 bg-white/10 mx-3" />
+              <div className="flex items-center gap-2">
+                <span className="w-6 h-6 rounded-full bg-white/10 text-white/40 font-bold text-xs flex items-center justify-center">3</span>
+                <span className="text-white/40">Zavod Lab Qabuli</span>
               </div>
-
-              <div className="flex justify-between items-center">
-                <span className="text-[#4d6a60]">Titratable Acidity:</span>
-                <span className="font-[family-name:var(--font-jetbrains-mono,monospace)] font-bold text-[#17352c]">
-                  {batch.acidityT}°T <span className="text-xs text-[#087a3c]">(Optimal 16–18°T)</span>
-                </span>
-              </div>
-
-              <div className="flex justify-between items-center">
-                <span className="text-[#4d6a60]">Milk Density:</span>
-                <span className="font-[family-name:var(--font-jetbrains-mono,monospace)] font-bold text-[#17352c]">
-                  1.028 g/cm³ <span className="text-xs text-[#087a3c]">✓ Pure</span>
-                </span>
-              </div>
-
-              <div className="border-t border-[#17352c]/10 pt-3 flex justify-between items-center">
-                <span className="font-bold text-[#12303a]">Verified Quality Grade:</span>
-                <span className="text-xs font-extrabold bg-[#d9f7e5] text-[#087a3c] px-3 py-1 rounded-lg">
-                  Grade {batch.qualityGrade} Verified
-                </span>
-              </div>
-            </div>
-
-            <div className="bg-[#e6ecea]/60 rounded-2xl p-4 text-xs text-[#4d6a60] space-y-1">
-              <div className="font-bold text-[#17352c]">Agrobank Escrow Settlement Lock:</div>
-              <div className="font-[family-name:var(--font-jetbrains-mono,monospace)] truncate">TX: 0x7a89b...e214c • Secured in Central Clearing</div>
-              <div>Auto-releases upon dairy reception gate titration signature.</div>
             </div>
           </div>
+        </div>
 
-        </section>
+        {/* RIGHT: CHEMICAL & LAB PROFILE */}
+        <div className="lg:col-span-5 rounded-[28px] bg-white/[0.03] border border-white/10 p-6 flex flex-col gap-5">
+          <div className="flex items-center justify-between pb-3 border-b border-white/10">
+            <h2 className="text-base font-bold text-white">Laboratoriya Parametrlari</h2>
+            <span className="font-mono text-xs text-[#00d3e0] font-bold">ISO 17025</span>
+          </div>
 
+          <div className="flex flex-col gap-3 text-xs">
+            <div className="flex justify-between p-3 rounded-xl bg-white/[0.02] border border-white/5">
+              <span className="text-white/60">Yogʻlilik (Fat %):</span>
+              <span className="font-mono font-bold text-white">{batch.fatPercent}%</span>
+            </div>
+            <div className="flex justify-between p-3 rounded-xl bg-white/[0.02] border border-white/5">
+              <span className="text-white/60">Quruq Modda (SNF %):</span>
+              <span className="font-mono font-bold text-white">{batch.snfPercent}%</span>
+            </div>
+            <div className="flex justify-between p-3 rounded-xl bg-white/[0.02] border border-white/5">
+              <span className="text-white/60">Kislotalik (°Turner):</span>
+              <span className="font-mono font-bold text-[#00ffc8]">{batch.acidityT}°T (Toza)</span>
+            </div>
+            <div className="flex justify-between p-3 rounded-xl bg-white/[0.02] border border-white/5">
+              <span className="text-white/60">1 Litr Narxi:</span>
+              <span className="font-mono font-bold text-white">{batch.pricePerLiter.toLocaleString()} UZS</span>
+            </div>
+            <div className="flex justify-between p-3 rounded-xl bg-white/[0.02] border border-white/5">
+              <span className="text-white/60">Agrobank Eskrou Holati:</span>
+              <span className="font-mono font-bold text-amber-400">Bloklangan (Kafolatlangan)</span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -7,7 +7,7 @@ import { RoleKey, ROLES } from "@/lib/roles";
 import { getStoredSession, AuthSession } from "@/lib/auth";
 import ZaminFlowLogo from "@/components/ZaminFlowLogo";
 import { useLanguage } from "@/context/LanguageContext";
-import { ThemeToggleButton } from "@/context/ThemeContext";
+import { useTheme, ThemeToggleButton } from "@/context/ThemeContext";
 import { getDisplayInitials, resolveUserAvatar } from "@/lib/userAvatar";
 
 export interface UserProfileData {
@@ -39,11 +39,17 @@ export interface UserProfileData {
     name: string;
     role: string;
     avatarUrl: string;
+    phone?: string;
+    email?: string;
   }[];
   tradingSpecs: {
     label: string;
     value: string;
   }[];
+  roleSpecifics: {
+    sectionTitle: string;
+    items: { label: string; value: string; badge?: string }[];
+  };
 }
 
 interface UserProfileViewProps {
@@ -56,326 +62,603 @@ export default function UserProfileView({
   profileId,
 }: UserProfileViewProps) {
   const router = useRouter();
-  const { locale, setLocale } = useLanguage();
+  const { locale, setLocale, t } = useLanguage();
+  const { themeMode, isDark } = useTheme();
   const [session, setSession] = useState<AuthSession | null>(null);
   const [activeTab, setActiveTab] = useState<"overview" | "specs" | "contracts" | "team">("overview");
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isAddTeamModalOpen, setIsAddTeamModalOpen] = useState(false);
   const [isBookmarked, setIsBookmarked] = useState(false);
-  const [saveSuccess, setSaveSuccess] = useState(false);
+  const [toastNotice, setToastNotice] = useState<string | null>(null);
   const [avatarLoadError, setAvatarLoadError] = useState(false);
   const [failedTeamImages, setFailedTeamImages] = useState<Record<number, boolean>>({});
 
-  useEffect(() => {
-    setSession(getStoredSession());
-  }, []);
-
-  // Determine current active profile role
   const role: RoleKey = initialRole;
 
-  const farmerFullName = session?.user?.fullName || "Iminjonov Muhammadaziz";
-  const dairyFullName = session?.user?.fullName || "Malika Karimova";
-  const driverFullName = session?.user?.fullName || "Bobur Alimov";
-  const bankFullName = session?.user?.fullName || "Rustam Karimov";
-  const adminFullName = session?.user?.fullName || "Iminjonov Muhammadaziz";
+  const farmerFullName = "Iminjonov Muhammadaziz";
+  const dairyFullName = "Malika Karimova";
+  const driverFullName = "Bobur Alimov";
+  const bankFullName = "Rustam Karimov";
+  const adminFullName = "Iminjonov Muhammadaziz";
 
-  // Base mock profiles tailored for each role
+  // Role-customized high-end profiles
   const roleProfiles: Record<RoleKey, UserProfileData> = {
     farmer: {
       userId: "usr-farmer-01",
       role: "farmer",
       fullName: farmerFullName,
-      title: "Lead Farm Operator & Milk Producer",
-      organizationName: session?.organization?.legalName || "Sayxunobod Agro-Dairy Farm LLC",
-      location: "Sayxunobod District, Sirdaryo Region, Uzbekistan",
-      avatarUrl: resolveUserAvatar(farmerFullName, session?.user?.email) || "",
-      bannerUrl: "/images/hero-ecosystem-3d.jpg",
-      email: session?.user?.email || "farmer@zaminflow.uz",
+      title: "Bosh Fermer & Xom Sut Ishlab Chiqaruvchi",
+      organizationName: "Sayxunobod Agro-Dairy Farm MCHJ",
+      location: "Sayxunobod tumani, Sirdaryo viloyati, Oʻzbekiston",
+      avatarUrl: resolveUserAvatar(farmerFullName, "farmer@zaminflow.uz") || "",
+      email: "farmer@zaminflow.uz",
       phone: "+998 90 333 44 55",
       trustScore: 98,
       kybVerified: true,
-      memberSince: "March 2025",
-      taxId: "304 981 223",
-      bankName: "AgroBank Sayxunobod Regional Branch",
+      memberSince: "Mart 2025",
+      taxId: "STIR: 308 112 940",
+      bankName: "AgroBank Sayxunobod filiali",
       iban: "UZ8800010000304981223001",
-      bio: "Sayxunobod Certified Agro-Dairy Farm operates 180 Holstein-Friesian dairy cattle producing over 4,500 liters of high-protein Grade A raw milk daily. Equipped with automated GEA cooling tanks (+3.2°C locked) and digital titration sensors calibrated to national veterinary standards.",
-      languages: ["O'zbekcha", "Русский", "English"],
+      bio: "Sayxunobod Agro-Dairy Farm — 180 bosh Gollandiya zotli (Holstein-Friesian) sogʻin sigirlarga ega zamonaviy agrosanoat fermasi. Kunlik sut sogʻimi 4,500 litr yuqori oqsilli A+ toifadagi xom sut. GEA avtomatlashtirilgan sovitish tanklari (+3.2°C) va raqamli titratsiya laboratoriyasi bilan toʻliq jihozlangan.",
+      languages: ["Oʻzbekcha", "Русский", "English"],
       capabilities: [
-        { label: "Daily Yield: 4,500 L / day", active: true },
-        { label: "Fat Titration: 3.9% – 4.2%", active: true },
-        { label: "SNF: 8.65% Certified", active: true },
-        { label: "Pre-cooled at +3.2°C", active: true },
-        { label: "Vet Inspection № UZ-99412", active: true },
-        { label: "Factoring via AgroBank", active: false },
-        { label: "Direct Escrow Settlement", active: true },
+        { label: "Kunlik Hajm: 4,500 L / kun", active: true },
+        { label: "Yogʻlik Koʻrsatkichi: 3.9% – 4.2%", active: true },
+        { label: "SNF (Quruq Qoldiq): 8.65% Sertifikatlangan", active: true },
+        { label: "Oldindan Sovitish: +3.2°C Qulflangan", active: true },
+        { label: "Veterinariya Guvohnomasi № UZ-99412", active: true },
+        { label: "AgroBank Kafolatlangan Eskrou", active: true },
       ],
       stats: [
-        { label: "Completed Deliveries", value: "142", sublabel: "100% on-time release" },
-        { label: "Quality Pass Rate", value: "98.4%", sublabel: "Grade A certified" },
-        { label: "Dispute Rate", value: "0.0%", sublabel: "Zero frozen funds" },
-        { label: "Settlement Speed", value: "< 2.5 hrs", sublabel: "Direct bank escrow" },
+        { label: "Bajarilgan Yetkazib Berishlar", value: "142 ta", sublabel: "100% muvaffaqiyatli" },
+        { label: "Sifat Sertifikatsiyasi", value: "98.4%", sublabel: "Oliy A+ navli sut" },
+        { label: "Nizo va Jarimalar", value: "0.0%", sublabel: "Toza kredit tarixi" },
+        { label: "Hisob-kitob Tezligi", value: "< 2.5 soat", sublabel: "AgroBank avto-kliring" },
       ],
       team: [
-        { name: "Iminjonov Muhammadaziz", role: "Founder & Lead Operator", avatarUrl: "/images/team-muhammadaziz.webp" },
-        { name: "Abdumanov Akrom", role: "Lead Systems & IoT Engineer", avatarUrl: "/images/team-akrom.webp" },
-        { name: "Sevinchoy Soporboyeva", role: "Co-Founder & Quality Operations", avatarUrl: "/images/team-sevinchoy.webp" },
+        { name: "Iminjonov Muhammadaziz", role: "Muassis & Bosh Fermer", avatarUrl: "/images/team-muhammadaziz.webp", phone: "+998 90 333 44 55", email: "farmer@zaminflow.uz" },
+        { name: "Abdumanov Akrom", role: "IoT Datchiklar & Texnik Muhandis", avatarUrl: "/images/team-akrom.webp", phone: "+998 91 123 45 67", email: "akrom@zaminflow.uz" },
+        { name: "Sevinchoy Soporboyeva", role: "Bosh Zootexnik & Sifat Nazoratchisi", avatarUrl: "/images/team-sevinchoy.webp", phone: "+998 93 987 65 43", email: "sevinchoy@zaminflow.uz" },
       ],
       tradingSpecs: [
-        { label: "Minimum Daily Order", value: "1,000 Liters" },
-        { label: "Maximum Peak Capacity", value: "5,500 Liters / day" },
-        { label: "Temperature Guarantee", value: "+3.2°C to +4.0°C" },
-        { label: "Base Price Range", value: "5,600 – 6,000 UZS / L" },
-        { label: "Payment Method", value: "ZaminFlow Smart Escrow with Bank Guarantee" },
+        { label: "Minimal Buyurtma Miqdori", value: "1,000 Litr" },
+        { label: "Maksimal Quvvat", value: "5,500 Litr / kun" },
+        { label: "Harorat Kafolati", value: "+3.2°C dan +4.0°C gacha" },
+        { label: "Bazaviy Xarid Narxi", value: "5,800 – 6,200 UZS / L" },
+        { label: "Toʻlov Kafolati", value: "ZaminFlow Smart Contract & AgroBank Escrow" },
       ],
+      roleSpecifics: {
+        sectionTitle: "Fermer Xoʻjaligi Agro-Texnik Pasporti",
+        items: [
+          { label: "Mollar zoti", value: "Holstein-Friesian (Gollandiya)", badge: "Naslli" },
+          { label: "Jami qoramol soni", value: "240 bosh (180 sogʻin)" },
+          { label: "Sogʻish uskunasi", value: "GEA Westfalia 2x12 Paralell" },
+          { label: "Sovitish tanki sigʻimi", value: "6,000 Litr (Stainless 316)" },
+          { label: "Veterinariya holati", value: "Toʻliq emlangan • Pasportlashtirilgan", badge: "№ VET-2026-88" },
+        ],
+      },
     },
+
     dairy: {
       userId: "usr-dairy-01",
       role: "dairy",
       fullName: dairyFullName,
-      title: "Chief Procurement Officer & Plant Technologist",
-      organizationName: session?.organization?.legalName || "Toshkent Dairy Processing JSC",
-      location: "Bektemir Industrial Zone, Tashkent, Uzbekistan",
-      avatarUrl: resolveUserAvatar(dairyFullName, session?.user?.email) || "",
-      bannerUrl: "/images/hero-ecosystem-3d.jpg",
-      email: session?.user?.email || "dairy@zaminflow.uz",
+      title: "Bosh Texnolog & Xaridlar Departamenti Rahbari",
+      organizationName: "Samarqand Sut Zavodi #4 MCHJ",
+      location: "Bektemir / Samarqand sanoat zonasi, Oʻzbekiston",
+      avatarUrl: resolveUserAvatar(dairyFullName, "dairy@zaminflow.uz") || "",
+      email: "dairy@zaminflow.uz",
       phone: "+998 71 200 45 67",
       trustScore: 99,
       kybVerified: true,
-      memberSince: "January 2025",
-      taxId: "201 445 990",
-      bankName: "AsakaBank Head Office / Treasury",
+      memberSince: "Yanvar 2025",
+      taxId: "STIR: 201 445 990",
+      bankName: "AsakaBank Bosh Ofisi / Xaznachilik",
       iban: "UZ4500020000201445990001",
-      bio: "Toshkent Dairy Processing Complex processes 120,000+ liters of raw milk daily into pasteurized consumer milk, kefir, butter, and hard cheeses. We maintain pre-funded bank escrow custody with automated release upon independent gate laboratory titration clearance.",
-      languages: ["Русский", "O'zbekcha", "English"],
+      bio: "Samarqand Sut Zavodi #4 — sutni chuqur qayta ishlovchi zamonaviy sanoat korxonasi. Kunlik qabul quvvati 180,000 litrdan ortiq. Pasterizatsiyalangan ichimlik suti, sariyogʻ, kefir va pishloq ishlab chiqarish liniyalari. Kiruvchi sut Agrobank va Asakabank depozitlarida oldindan 100% muzlatilgan eskrou mablagʻlari bilan toʻlanadi.",
+      languages: ["Русский", "Oʻzbekcha", "English"],
       capabilities: [
-        { label: "Intake Capacity: 120,000 L / day", active: true },
-        { label: "Minimum SNF: 8.5%", active: true },
-        { label: "ISO 22000 & Halal Certified", active: true },
-        { label: "Pre-funded Escrow Custody", active: true },
-        { label: "Gate Titration in 15 mins", active: true },
-        { label: "Tanker Fleet Available", active: false },
-        { label: "Direct Sirdaryo & Samarkand Routes", active: true },
+        { label: "Qabul Quvvati: 180,000 L / kun", active: true },
+        { label: "Standart SNF: kamida 8.5%", active: true },
+        { label: "ISO 22000 & Halol Xalqaro Standart", active: true },
+        { label: "Oldindan Toʻldirilgan Eskrou Depoziti", active: true },
+        { label: "Ekspress Laboratoriya: 15 daqiqa", active: true },
+        { label: "24/7 Qabul Qilish Bunkeri", active: true },
       ],
       stats: [
-        { label: "Monthly Intake", value: "3.6M L", sublabel: "Commercial dairy production" },
-        { label: "Active Farmer Contracts", value: "84 Farms", sublabel: "Direct partnerships" },
-        { label: "Avg Escrow Turnover", value: "1.8 hrs", sublabel: "From gate to bank release" },
-        { label: "Trust Score", value: "99 / 100", sublabel: "Tier 1 Enterprise" },
+        { label: "Oylik Sut Qabuli", value: "4.8M Litr", sublabel: "Sanoat hajmidagi ishlab chiqarish" },
+        { label: "Faol Fermer Shartnomalari", value: "84 ta Ferma", sublabel: "Toʻgʻridan-toʻgʻri kooperativlar" },
+        { label: "Oʻrtacha Eskrou Kliringi", value: "1.8 soat", sublabel: "Testdan soʻng bank oʻtkazmasi" },
+        { label: "Ishonch Reytingi", value: "99 / 100", sublabel: "A toifadagi sanoat hamkori" },
       ],
       team: [
-        { name: "Sevinchoy Soporboyeva", role: "Co-Founder & Dairy Partner Liaison", avatarUrl: "/images/team-sevinchoy.webp" },
-        { name: "Shokhjakhon Abdufattohov", role: "Strategic Adviser & Operations", avatarUrl: "/images/team-shohjahon.webp" },
-        { name: "Abdumanov Akrom", role: "Gate Quality Telemetry Lead", avatarUrl: "/images/team-akrom.webp" },
+        { name: "Sevinchoy Soporboyeva", role: "Sifat va Qabul Nazorati Rahbari", avatarUrl: "/images/team-sevinchoy.webp", phone: "+998 71 200 45 68", email: "quality@zavod4.uz" },
+        { name: "Shokhjakhon Abdufattohov", role: "Strategik Taʼminot va Iqtisodchi", avatarUrl: "/images/team-shohjahon.webp", phone: "+998 71 200 45 69", email: "procurement@zavod4.uz" },
+        { name: "Abdumanov Akrom", role: "Zavod Avtomatizatsiyasi Muhandisi", avatarUrl: "/images/team-akrom.webp", phone: "+998 91 123 45 67", email: "automation@zavod4.uz" },
       ],
       tradingSpecs: [
-        { label: "Required Grade", value: "Grade A or Grade B (Titrated)" },
-        { label: "Receiving Hours", value: "24/7 Priority Cold Gate Intake" },
-        { label: "Purchase Pricing", value: "Market Pegged (Current: 5,800 – 6,200 UZS/L)" },
-        { label: "Laboratory Turnaround", value: "15 minutes per intake tanker" },
-        { label: "Settlement Security", value: "Central Bank Escrow with AsakaBank" },
+        { label: "Talab Qilinuvchi Nav", value: "Oliy A+ yoki 1-navli xom sut" },
+        { label: "Qabul Qilish Vaqti", value: "24/7 Uzluksiz sovuq qabul" },
+        { label: "Bozor Narxlari Indeksi", value: "5,800 – 6,400 UZS / L (Yogʻlikka qarab)" },
+        { label: "Laboratoriya Titratsiya Vaqti", value: "Har bir sisterna uchun 15 daqiqa" },
+        { label: "Moliyaviy Kafolat", value: "Markaziy Bank & AgroBank Eskrou" },
       ],
+      roleSpecifics: {
+        sectionTitle: "Sanoat Qayta Ishlash Texnologik Quvvati",
+        items: [
+          { label: "Silo tanklar soni", value: "4 dona x 60,000L", badge: "240k L Jami" },
+          { label: "Pasterizator quvvati", value: "15,000 Litr / soat (Tetra Pak)" },
+          { label: "Homogenizator bosimi", value: "200 bar (Yuqori dispers)" },
+          { label: "Sovuq saqlash harorati", value: "2.8°C (Avtomatik chiller)" },
+          { label: "Sertifikatlar", value: "ISO 22000:2018 & Halol Sertifikati", badge: "UZ-HALAL-99" },
+        ],
+      },
     },
+
     driver: {
       userId: "usr-driver-01",
       role: "driver",
       fullName: driverFullName,
-      title: "Certified Cold-Chain Tanker Operator",
-      organizationName: session?.organization?.legalName || "ZaminFlow Logistics Fleet #04",
-      location: "Tashkent - Sayxunobod Transit Corridor, Uzbekistan",
-      avatarUrl: resolveUserAvatar(driverFullName, session?.user?.email) || "",
-      bannerUrl: "/images/hero-ecosystem-3d.jpg",
-      email: session?.user?.email || "driver@zaminflow.uz",
+      title: "Sertifikatlangan Sovuq Zanjir Tanker Haydovchisi",
+      organizationName: "ZaminFlow Sovuq Zanjir Logistika Floti #04",
+      location: "Toshkent - Sayxunobod - Samarqand logistika yoʻlagi",
+      avatarUrl: resolveUserAvatar(driverFullName, "driver@zaminflow.uz") || "",
+      email: "driver@zaminflow.uz",
       phone: "+998 90 999 88 77",
       trustScore: 97,
       kybVerified: true,
-      memberSince: "April 2025",
-      taxId: "401 229 110",
-      bankName: "AgroBank Transport Clearing",
+      memberSince: "Aprel 2025",
+      taxId: "STIR: 401 229 110",
+      bankName: "AgroBank Transport Kliring Filiali",
       iban: "UZ1200030000401229110001",
-      bio: "Professional dairy logistics operator with 8+ years experience in insulated milk transport. Operating a MAN TGS 26.440 20,000L food-grade stainless steel tanker paired with ZaminFlow real-time IoT temperature and GPS gateway.",
-      languages: ["O'zbekcha", "Русский"],
+      bio: "8 yillik tajribaga ega professional oziq-ovqat transporti haydovchisi. MAN TGX 18.440 20,000 litr sigʻimli oziq-ovqat zanglamas poʻlat sisternasini boshqaradi. ZaminFlow IoT harorat nazorat tizimi va GPS sun'iy yoʻldosh kuzatuvi bilan toʻliq jihozlangan.",
+      languages: ["Oʻzbekcha", "Русский"],
       capabilities: [
-        { label: "20,000 L Insulated Tanker", active: true },
-        { label: "GPS Telemetry Paired", active: true },
-        { label: "Cold-Chain Sealed: +3.2°C", active: true },
-        { label: "QR Gate Scanning Certified", active: true },
-        { label: "CIP Sanitized Daily", active: true },
+        { label: "20,000 L Izolyatsiyalangan Sisterna", active: true },
+        { label: "Real Vaqtda GPS Telemetriya", active: true },
+        { label: "Sovuq Zanjir: 3.2°C Germetik", active: true },
+        { label: "QR Elektron Yoʻl Varaqasi (e-TTN)", active: true },
+        { label: "CIP Dezinfeksiya Sertifikatlangan", active: true },
       ],
       stats: [
-        { label: "Trips Completed", value: "348", sublabel: "Zero cold breaches" },
-        { label: "Avg Delivery Temp", value: "+3.2°C", sublabel: "Calibrated sensor" },
-        { label: "Transit Punctuality", value: "99.1%", sublabel: "On-time arrival" },
-        { label: "Safety Rating", value: "5.0 ★", sublabel: "Certified driver" },
+        { label: "Bajarilgan Qatnovlar", value: "348 ta", sublabel: "Harorat buzilishlarsiz" },
+        { label: "Oʻrtacha Yuk Harorati", value: "+3.2°C", sublabel: "Kalibrlangan datchik" },
+        { label: "Vaqtida Yetkazish Ulushi", value: "99.1%", sublabel: "Jadvalga qatʼiy rioya" },
+        { label: "Xavfsizlik Reytingi", value: "5.0 ★", sublabel: "Malakali haydovchi" },
       ],
       team: [
-        { name: "Abdumanov Akrom", role: "Fleet Telemetry & IoT Lead", avatarUrl: "/images/team-akrom.webp" },
-        { name: "Shokhjakhon Abdufattohov", role: "Logistics Dispatch Adviser", avatarUrl: "/images/team-shohjahon.webp" },
+        { name: "Abdumanov Akrom", role: "Flot Telemetriyasi & IoT Dispetcher", avatarUrl: "/images/team-akrom.webp", phone: "+998 91 123 45 67", email: "fleet@zaminflow.uz" },
+        { name: "Shokhjakhon Abdufattohov", role: "Logistika Yoʻnalishlari Muvofiqlashtiruvchisi", avatarUrl: "/images/team-shohjahon.webp", phone: "+998 93 555 44 33", email: "routes@zaminflow.uz" },
       ],
       tradingSpecs: [
-        { label: "Vehicle Model", value: "MAN TGS 26.440 Stainless Tanker" },
-        { label: "Vehicle Number", value: "01-A 882 AA" },
-        { label: "Sanitary Permit", value: "State Health № SAN-2026-90" },
-        { label: "Service Routes", value: "Sirdaryo, Tashkent, Samarkand, Jizzakh" },
+        { label: "Transport Rusumi", value: "MAN TGX 18.440 Euro 6" },
+        { label: "Davlat Raqami", value: "01 | 777 ZAM" },
+        { label: "Sanitariya Pasporti", value: "Davlat Sanitariya № SAN-2026-90" },
+        { label: "Xizmat Koʻrsatish Yoʻnalishlari", value: "Toshkent, Sirdaryo, Samarqand, Jizzax" },
       ],
+      roleSpecifics: {
+        sectionTitle: "Logistika Texnik & Sovuq Zanjir Pasporti",
+        items: [
+          { label: "Sisterna materiali", value: "AISI 304 Oziq-ovqat zanglamas poʻlat", badge: "Termo-izolyatsiya" },
+          { label: "Boʻlimlar soni", value: "3 ta alohida seksiya (8k + 6k + 6k L)" },
+          { label: "Nasos unumdorligi", value: "30,000 L / soat (Elektr avtonom)" },
+          { label: "Harorat datchiklari", value: "4 ta PT100 zond (Har bir boʻlimda)" },
+          { label: "GPS aniqligi", value: "RTK 0.5 metr aniqlik & GSM 5G", badge: "Online" },
+        ],
+      },
     },
+
     bank: {
       userId: "usr-bank-01",
       role: "bank",
       fullName: bankFullName,
-      title: "Chief Escrow Compliance Officer",
-      organizationName: session?.organization?.legalName || "Agrobank ATB (Escrow Custodian)",
-      location: "Muqimiy Street 43, Tashkent, 100096, Uzbekistan",
-      avatarUrl: resolveUserAvatar(bankFullName, session?.user?.email) || "",
-      bannerUrl: "/images/hero-ecosystem-3d.jpg",
-      email: session?.user?.email || "bank@zaminflow.uz",
+      title: "Bosh Eskrou & Kliring Nazoratchisi",
+      organizationName: "Agrobank ATB (Eskrou Depozitariysi)",
+      location: "Muqimiy koʻchasi 43, Toshkent, 100096, Oʻzbekiston",
+      avatarUrl: resolveUserAvatar(bankFullName, "bank@zaminflow.uz") || "",
+      email: "bank@zaminflow.uz",
       phone: "+998 71 203 88 88",
       trustScore: 100,
       kybVerified: true,
-      memberSince: "February 2025",
-      taxId: "200 110 994",
-      bankName: "Central Bank of Uzbekistan RTGS Clearing",
+      memberSince: "Fevral 2025",
+      taxId: "STIR: 200 110 994",
+      bankName: "Oʻzbekiston Respublikasi Markaziy Banki Kliring Tizimi",
       iban: "UZ0100400000200110994001",
-      bio: "Licensed commercial bank escrow custodian and trade finance clearing partner for ZaminFlow B2B agricultural supply contracts. Enforces ISO 20022 pacs.008 real-time settlement and double-entry ledger reconciliation.",
-      languages: ["O'zbekcha", "Русский", "English"],
+      bio: "Agrobank ATB — ZaminFlow platformasidagi B2B qishloq xoʻjaligi savdo shartnomalari boʻyicha rasmiy litsenziyalangan eskrou depozitariysi va moliyaviy kliring hamkori. ISO 20022 pacs.008 real vaqt rejimida hisob-kitoblar, ikki yoqlama buxgalteriya va qonuniy toʻlov kafolatlarini taʼminlaydi.",
+      languages: ["Oʻzbekcha", "Русский", "English"],
       capabilities: [
-        { label: "ISO 20022 pacs.008 Clearing", active: true },
-        { label: "Escrow Vault Custody", active: true },
-        { label: "SHA-256 Ledger Audit", active: true },
-        { label: "CBU Banking License #14", active: true },
+        { label: "ISO 20022 pacs.008 Kliring Mexanizmi", active: true },
+        { label: "Eskrou Depozitariy Xavfsizlik Kafolati", active: true },
+        { label: "SHA-256 Kriptografik Audit Zanjiri", active: true },
+        { label: "Markaziy Bank Bank Litsenziyasi №14", active: true },
+        { label: "Ikki Yoqlama Buxgalteriya Reestri", active: true },
       ],
       stats: [
-        { label: "Escrow Solvency", value: "100%", sublabel: "Fully collateralized" },
-        { label: "Settlement Speed", value: "< 3 min", sublabel: "Post-titration release" },
-        { label: "Default Rate", value: "0.00%", sublabel: "Zero bad debt" },
-        { label: "Audit Integrity", value: "Verified", sublabel: "Append-only ledger" },
+        { label: "Eskrou Toʻlov Qobiliyati", value: "100%", sublabel: "Toʻliq garov taʼminlangan" },
+        { label: "Kliring Vaqti", value: "< 3 daqiqa", sublabel: "Laboratoriya tasdigʻidan soʻng" },
+        { label: "Muvaffaqiyatsiz Toʻlovlar", value: "0.00%", sublabel: "Nol muddati oʻtgan qarz" },
+        { label: "Audit Yaxlitligi", value: "Tasdiqlangan", sublabel: "Markaziy Bank reyestri" },
       ],
       team: [
-        { name: "Iminjonov Muhammadaziz", role: "Founder & Escrow Governance", avatarUrl: "/images/team-muhammadaziz.webp" },
-        { name: "Shokhjakhon Abdufattohov", role: "Financial Compliance Adviser", avatarUrl: "/images/team-shohjahon.webp" },
+        { name: "Iminjonov Muhammadaziz", role: "Muassis & Eskrou Boshqaruvi", avatarUrl: "/images/team-muhammadaziz.webp", phone: "+998 71 203 88 88", email: "escrow@agrobank.uz" },
+        { name: "Shokhjakhon Abdufattohov", role: "Moliyaviy Muvofiqlik Maslahatchisi", avatarUrl: "/images/team-shohjahon.webp", phone: "+998 71 203 88 89", email: "compliance@agrobank.uz" },
       ],
       tradingSpecs: [
-        { label: "CBU Banking License", value: "Central Bank License № 14" },
-        { label: "Clearing Standard", value: "ISO 20022 (pacs.008.001.08)" },
+        { label: "Markaziy Bank Litsenziyasi", value: "MB Bosh Litsenziyasi № 14" },
+        { label: "Kliring Xalqaro Standarti", value: "ISO 20022 (pacs.008.001.08)" },
+        { label: "Hisobvaraq Turi", value: "Maxsus Eskrou & Tranzit Hisobvaraq" },
       ],
+      roleSpecifics: {
+        sectionTitle: "Bank Depozitariysi & Fintex Muvofiqlik Koʻrsatkichlari",
+        items: [
+          { label: "Eskrou saqlash hajmi", value: "142.85 Mln UZS", badge: "Kafolatlangan" },
+          { label: "Shifrlash standarti", value: "RSA-4096 / SHA-256 (OʻzDSt)" },
+          { label: "Toʻlov shlyuzi", value: "MUNIS & Anor Toʻlov Tizimlari" },
+          { label: "Regulyativ nazorat", value: "Oʻzbekiston Respublikasi Markaziy Banki", badge: "CBU Audit" },
+        ],
+      },
     },
+
     admin: {
       userId: "usr-admin-01",
       role: "admin",
       fullName: adminFullName,
-      title: "Founder & Chief Regulatory Officer",
-      organizationName: "ZaminFlow National Infrastructure Bureau",
-      location: "Navoi Avenue 14, Tashkent, 100011, Uzbekistan",
+      title: "Muassis & Bosh Tizim Regulyatori",
+      organizationName: "ZaminFlow Milliy Raqamli Ekotizim Burosi",
+      location: "Navoiy shoh koʻchasi 14, Toshkent, 100011, Oʻzbekiston",
       avatarUrl:
-        resolveUserAvatar(
-          adminFullName,
-          session?.user?.email || "iminjonovmuhammadaziz626@gmail.com"
-        ) || "/images/team-muhammadaziz.webp",
-      bannerUrl: "/images/hero-ecosystem-3d.jpg",
-      email: session?.user?.email || "iminjonovmuhammadaziz626@gmail.com",
+        resolveUserAvatar(adminFullName, "admin@zaminflow.uz") || "/images/team-muhammadaziz.webp",
+      email: "admin@zaminflow.uz",
       phone: "+998 71 200 45 67",
       trustScore: 100,
       kybVerified: true,
-      memberSince: "January 2025",
-      taxId: "100 000 001",
-      bankName: "Central Bank of Uzbekistan",
+      memberSince: "Yanvar 2025",
+      taxId: "STIR: 100 000 001",
+      bankName: "Oʻzbekiston Respublikasi Markaziy Banki",
       iban: "UZ0000000000000000000001",
-      bio: "Official compliance and escrow oversight administrator for the ZaminFlow national B2B dairy ecosystem. Managing regulatory dossiers, dispute resolution tribunals, and escrow settlement contracts.",
-      languages: ["O'zbekcha", "Русский", "English"],
+      bio: "ZaminFlow milliy B2B sut taʼminoti zanjiri va fintex ekotizimi bosh koordinatori va boshqaruvchisi. Ishtirokchilarning KYB dosyelarini tekshirish, laboratoriya arbitraji nizolarini hal qilish va Oʻzbekiston boʻyicha yagona xom sut standarti integratsiyasini nazorat qiladi.",
+      languages: ["Oʻzbekcha", "Русский", "English"],
       capabilities: [
-        { label: "Central Bank Escrow Oversight", active: true },
-        { label: "Disputes Tribunal Governance", active: true },
-        { label: "Enterprise KYB Dossier Review", active: true },
-        { label: "National Supply Standards", active: true },
+        { label: "Markaziy Bank Eskrou Nazorati", active: true },
+        { label: "Nizolar Arbitraji Tribunali", active: true },
+        { label: "Korxonalarni KYB Tekshiruvi", active: true },
+        { label: "Milliy Standartlar (GOST 31449)", active: true },
+        { label: "Soliq.uz STIR Integratsiyasi", active: true },
       ],
       stats: [
-        { label: "Active Enterprises", value: "1,240", sublabel: "Verified accounts" },
-        { label: "Escrow in Custody", value: "48.5M UZS", sublabel: "CBU Guaranteed" },
-        { label: "Resolution Speed", value: "< 24 hrs", sublabel: "Tribunal SLA" },
-        { label: "Compliance Rate", value: "100%", sublabel: "Strict legal audit" },
+        { label: "Faol Korxonalar", value: "1,714 ta", sublabel: "Verifikatsiyalangan akkauntlar" },
+        { label: "Eskrou Depozitariysi", value: "284.5M UZS", sublabel: "Platforma aylanmasi" },
+        { label: "Nizolarni Hal Qilish", value: "< 24 soat", sublabel: "Tribunal SLA" },
+        { label: "Xavfsizlik Standarti", value: "100%", sublabel: "Qatʼiy qonuniy audit" },
       ],
       team: [
-        { name: "Iminjonov Muhammadaziz", role: "Founder & Super Admin", avatarUrl: "/images/team-muhammadaziz.webp" },
-        { name: "Sevinchoy Soporboyeva", role: "Co-Founder & Operations", avatarUrl: "/images/team-sevinchoy.webp" },
-        { name: "Abdumanov Akrom", role: "Lead Platform Architect", avatarUrl: "/images/team-akrom.webp" },
-        { name: "Shokhjakhon Abdufattohov", role: "Strategic Adviser", avatarUrl: "/images/team-shohjahon.webp" },
+        { name: "Iminjonov Muhammadaziz", role: "Muassis & Super Admin", avatarUrl: "/images/team-muhammadaziz.webp", phone: "+998 71 200 45 67", email: "admin@zaminflow.uz" },
+        { name: "Sevinchoy Soporboyeva", role: "Hammuassis & Operatsiyalar Rahbari", avatarUrl: "/images/team-sevinchoy.webp", phone: "+998 71 200 45 70", email: "operations@zaminflow.uz" },
+        { name: "Abdumanov Akrom", role: "Bosh Platforma Arxitektori", avatarUrl: "/images/team-akrom.webp", phone: "+998 71 200 45 71", email: "arch@zaminflow.uz" },
+        { name: "Shokhjakhon Abdufattohov", role: "Strategik Maslahatchi", avatarUrl: "/images/team-shohjahon.webp", phone: "+998 71 200 45 72", email: "strategy@zaminflow.uz" },
       ],
       tradingSpecs: [
-        { label: "Jurisdiction", value: "Republic of Uzbekistan (14 Regions)" },
-        { label: "Regulatory Framework", value: "Law on Electronic Commerce & FinTech Escrow" },
+        { label: "Yurisdiksiya", value: "Oʻzbekiston Respublikasi (14 ta hudud)" },
+        { label: "Qonunchilik Asosi", value: "Elektron Tijorat va Fintex Eskrou Qonuni" },
       ],
+      roleSpecifics: {
+        sectionTitle: "Ekotizim Boshqaruvi & Nazorat Ruxsatnomalari",
+        items: [
+          { label: "Tizim huquqi", value: "Root Super Administrator", badge: "Maxsus" },
+          { label: "Audit kaliti", value: "SHA-256 Master Key #UZ-SEC-412" },
+          { label: "Soliq.uz STIR gateway", value: "Direct Gov API • 14ms latency", badge: "Online" },
+          { label: "Arbitraj vakolati", value: "Titratsiya xulosalari asosida avto-kliring" },
+        ],
+      },
     },
   };
 
-  const profile = roleProfiles[role] || roleProfiles.farmer;
+  // State initialization with local persistence
+  const [profileState, setProfileState] = useState<UserProfileData>(() => {
+    return roleProfiles[role] || roleProfiles.farmer;
+  });
 
-  // Editable fields state for the "Edit Profile" modal
-  const [editFullName, setEditFullName] = useState(profile.fullName);
-  const [editTitle, setEditTitle] = useState(profile.title);
-  const [editLocation, setEditLocation] = useState(profile.location);
-  const [editBio, setEditBio] = useState(profile.bio);
-  const [editPhone, setEditPhone] = useState(profile.phone);
+  // Modal edit fields
+  const [editFullName, setEditFullName] = useState(profileState.fullName);
+  const [editTitle, setEditTitle] = useState(profileState.title);
+  const [editOrgName, setEditOrgName] = useState(profileState.organizationName);
+  const [editLocation, setEditLocation] = useState(profileState.location);
+  const [editBio, setEditBio] = useState(profileState.bio);
+  const [editPhone, setEditPhone] = useState(profileState.phone);
+  const [editEmail, setEditEmail] = useState(profileState.email);
+  const [editBankName, setEditBankName] = useState(profileState.bankName);
+  const [editIban, setEditIban] = useState(profileState.iban);
+
+  // New Team Member Form fields
+  const [newMemberName, setNewMemberName] = useState("");
+  const [newMemberRole, setNewMemberRole] = useState("");
+  const [newMemberPhone, setNewMemberPhone] = useState("");
+  const [newMemberEmail, setNewMemberEmail] = useState("");
+
+  useEffect(() => {
+    const sess = getStoredSession();
+    setSession(sess);
+
+    // Load custom profile edits from localStorage if available
+    try {
+      const saved = localStorage.getItem(`zaminflow_custom_profile_${role}`);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        setProfileState((prev) => ({
+          ...prev,
+          ...parsed,
+        }));
+      }
+      const bookmarked = localStorage.getItem(`zaminflow_bookmarked_${profileState.userId}`);
+      if (bookmarked === "true") {
+        setIsBookmarked(true);
+      }
+    } catch {
+      // Ignore storage errors in restricted contexts
+    }
+  }, [role, profileState.userId]);
+
+  // Sync edit form with current state when modal opens
+  const openEditModal = () => {
+    setEditFullName(profileState.fullName);
+    setEditTitle(profileState.title);
+    setEditOrgName(profileState.organizationName);
+    setEditLocation(profileState.location);
+    setEditBio(profileState.bio);
+    setEditPhone(profileState.phone);
+    setEditEmail(profileState.email);
+    setEditBankName(profileState.bankName);
+    setEditIban(profileState.iban);
+    setIsEditModalOpen(true);
+  };
 
   const handleSaveProfile = (e: React.FormEvent) => {
     e.preventDefault();
-    profile.fullName = editFullName;
-    profile.title = editTitle;
-    profile.location = editLocation;
-    profile.bio = editBio;
-    profile.phone = editPhone;
+    const updated: UserProfileData = {
+      ...profileState,
+      fullName: editFullName.trim() || profileState.fullName,
+      title: editTitle.trim() || profileState.title,
+      organizationName: editOrgName.trim() || profileState.organizationName,
+      location: editLocation.trim() || profileState.location,
+      bio: editBio.trim() || profileState.bio,
+      phone: editPhone.trim() || profileState.phone,
+      email: editEmail.trim() || profileState.email,
+      bankName: editBankName.trim() || profileState.bankName,
+      iban: editIban.trim() || profileState.iban,
+    };
+
+    setProfileState(updated);
+    try {
+      localStorage.setItem(`zaminflow_custom_profile_${role}`, JSON.stringify(updated));
+    } catch {
+      // safe fallback
+    }
+
     setIsEditModalOpen(false);
-    setSaveSuccess(true);
-    setTimeout(() => setSaveSuccess(false), 3000);
+    showToast(
+      locale === "ru"
+        ? "✓ Данные профиля успешно обновлены и сохранены."
+        : locale === "en"
+        ? "✓ Profile data successfully updated and saved."
+        : "✓ Profil maʼlumotlari muvaffaqiyatli yangilandi va saqlandi."
+    );
+  };
+
+  const handleAddTeamMember = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newMemberName.trim() || !newMemberRole.trim()) return;
+
+    const newMember = {
+      name: newMemberName.trim(),
+      role: newMemberRole.trim(),
+      avatarUrl: "",
+      phone: newMemberPhone.trim() || profileState.phone,
+      email: newMemberEmail.trim() || profileState.email,
+    };
+
+    const updated = {
+      ...profileState,
+      team: [...profileState.team, newMember],
+    };
+
+    setProfileState(updated);
+    try {
+      localStorage.setItem(`zaminflow_custom_profile_${role}`, JSON.stringify(updated));
+    } catch {
+      // safe fallback
+    }
+
+    setNewMemberName("");
+    setNewMemberRole("");
+    setNewMemberPhone("");
+    setNewMemberEmail("");
+    setIsAddTeamModalOpen(false);
+    showToast(
+      locale === "ru"
+        ? `✓ Новый ответственный сотрудник (${newMember.name}) добавлен в список.`
+        : locale === "en"
+        ? `✓ New team member (${newMember.name}) added to list.`
+        : `✓ Yangi mas'ul xodim (${newMember.name}) ro'yxatga qo'shildi.`
+    );
+  };
+
+  const handleToggleBookmark = () => {
+    const nextVal = !isBookmarked;
+    setIsBookmarked(nextVal);
+    try {
+      localStorage.setItem(`zaminflow_bookmarked_${profileState.userId}`, String(nextVal));
+    } catch {
+      // safe fallback
+    }
+    showToast(
+      nextVal
+        ? locale === "ru"
+          ? "★ Досье добавлено в избранное!"
+          : locale === "en"
+          ? "★ Dossier added to bookmarks!"
+          : "★ Dossier tanlanganlar roʻyxatiga qoʻshildi!"
+        : locale === "ru"
+        ? "☆ Досье удалено из избранного."
+        : locale === "en"
+        ? "☆ Dossier removed from bookmarks."
+        : "☆ Dossier tanlanganlardan olib tashlandi."
+    );
+  };
+
+  const handleShareProfile = () => {
+    if (typeof window !== "undefined") {
+      navigator.clipboard?.writeText(window.location.href);
+      const msg =
+        locale === "ru"
+          ? "✓ Ссылка на профиль скопирована в буфер обмена!"
+          : locale === "en"
+          ? "✓ Profile link copied to clipboard!"
+          : "✓ Profil havolasi buferga nusxalandi! Hamkorlarga yuborishingiz mumkin.";
+      showToast(msg);
+    }
+  };
+
+  const handleExportDossier = () => {
+    const exportData = {
+      platform: "ZaminFlow B2B National Agro-Fintech",
+      exportTimestamp: new Date().toISOString(),
+      dossierVersion: "2.4.0",
+      cryptographicHash: `SHA256-${Math.random().toString(36).substring(2, 12).toUpperCase()}-UZ`,
+      profile: profileState,
+    };
+    const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `ZaminFlow_Dossier_${profileState.userId}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    const msg =
+      locale === "ru"
+        ? "✓ Официальный цифровой паспорт (JSON) успешно скачан."
+        : locale === "en"
+        ? "✓ Official digital passport (JSON) successfully downloaded."
+        : "✓ Rasmiy raqamli pasport fayli (JSON) muvaffaqiyatli yuklab olindi.";
+    showToast(msg);
+  };
+
+  const showToast = (msg: string) => {
+    setToastNotice(msg);
+    setTimeout(() => setToastNotice(null), 4000);
   };
 
   const roleConfig = ROLES[role] || ROLES.farmer;
 
+  // Role action links for deal flow
+  const dealFlowUrl =
+    role === "dairy"
+      ? "/dashboard/dairy/place-order"
+      : role === "driver"
+      ? "/dashboard/driver/start-trip"
+      : role === "admin"
+      ? "/dashboard/admin/disputes"
+      : role === "bank"
+      ? "/dashboard/bank"
+      : "/dashboard/farmer/list-supply";
+
+  const dealFlowLabel =
+    role === "dairy"
+      ? "Sut Xaridi Buyurtmasi Berish ↗"
+      : role === "driver"
+      ? "Yangi Marshrutni Boshlash ↗"
+      : role === "admin"
+      ? "Arbitraj Holatlarini Tekshirish ↗"
+      : role === "bank"
+      ? "Kliring Portalini Ochish ↗"
+      : "Yangi Sut Partiyasini Taklif Qilish ↗";
+
   return (
-    <div className="min-h-screen bg-[#EAEFF0] dark:bg-[#0A1318] py-5 px-3 sm:px-6 transition-colors font-sans antialiased">
-      {/* Floating Canvas Shell matching Quixotic & TeamHub */}
-      <div className="max-w-[1380px] mx-auto bg-white dark:bg-[#101E27] rounded-[36px] shadow-[0_20px_50px_rgba(15,40,30,0.06)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.4)] border border-slate-100 dark:border-white/5 p-4 sm:p-8 flex flex-col gap-6">
+    <div className={`min-h-screen py-5 px-3 sm:px-6 relative overflow-x-hidden font-sans antialiased select-none pb-20 transition-colors duration-300 ${
+      isDark ? "bg-[#0d1013] text-white" : "bg-[#f4fbf7] text-[#081c15]"
+    }`}>
+      {/* 1. AMBIENT DREAMLAND BACKDROP AURORAS */}
+      <div className="absolute top-10 -left-40 w-[600px] h-[600px] pointer-events-none z-0">
+        <div
+          className="w-full h-full rounded-full blur-[150px] opacity-25 animate-pulse"
+          style={{ background: "radial-gradient(circle, #00ffc8 0%, #00d3e0 40%, transparent 70%)" }}
+        />
+      </div>
+      <div className="absolute bottom-10 -right-40 w-[600px] h-[600px] pointer-events-none z-0">
+        <div
+          className="w-full h-full rounded-full blur-[150px] opacity-20 animate-pulse"
+          style={{ background: "radial-gradient(circle, #00d3e0 0%, #0099ff 50%, transparent 70%)" }}
+        />
+      </div>
+
+      {/* Subtle Dot Grid Canvas Pattern */}
+      <div
+        className="absolute inset-0 opacity-10 pointer-events-none"
+        style={{
+          backgroundImage: "radial-gradient(#00d3e0 1px, transparent 1px)",
+          backgroundSize: "28px 28px",
+        }}
+      />
+
+      {/* Unified Luxury Floating Master Canvas */}
+      <div className={`relative z-10 max-w-[1420px] mx-auto rounded-[36px] border p-4 sm:p-8 flex flex-col gap-6 transition-colors duration-300 ${
+        isDark
+          ? "bg-[#14181d]/90 backdrop-blur-2xl shadow-[0_25px_80px_rgba(0,153,255,0.18)] border-white/10 text-white"
+          : "bg-white/95 backdrop-blur-2xl shadow-[0_25px_80px_rgba(0,153,255,0.08)] border-[#b7e4c7] text-[#081c15]"
+      }`}>
 
         {/* 1. TOP HEADER NAVIGATION */}
-        <header className="flex flex-wrap items-center justify-between gap-4 pb-3 border-b border-slate-100 dark:border-white/5">
-          <Link href={`/dashboard/${role}`} className="flex items-center shrink-0">
-            <ZaminFlowLogo size="md" />
+        <header className={`flex flex-wrap items-center justify-between gap-4 pb-4 border-b ${
+          isDark ? "border-white/10" : "border-[#b7e4c7]"
+        }`}>
+          <Link href={`/dashboard/${role}`} className="flex items-center shrink-0 transition-transform hover:scale-105">
+            <ZaminFlowLogo mode={themeMode} size="md" />
           </Link>
 
-          {/* Nav pill tabs */}
-          <nav className="hidden lg:flex items-center gap-1.5 p-1 rounded-full bg-slate-50 dark:bg-white/5 border border-slate-200/60 dark:border-white/10 text-xs font-semibold">
+          {/* Navigation Pill Tabs - Fully role adaptive */}
+          <nav className="hidden lg:flex items-center gap-1.5 p-1 rounded-full bg-white/5 border border-white/10 text-xs font-semibold backdrop-blur-md">
             <Link
               href={`/dashboard/${role}`}
-              className="px-4 py-1.5 rounded-full text-slate-600 dark:text-slate-300 hover:text-black dark:hover:text-white transition"
+              className="px-4 py-1.5 rounded-full text-white/70 hover:text-white hover:bg-white/5 transition"
             >
-              ← Back to Dashboard
+              {t.profileView.backToDashboard}
             </Link>
-            <span className="px-4 py-1.5 rounded-full bg-[#087a3c] text-white shadow-xs font-bold">
-              Partner Profile
+            <span className="px-4 py-1.5 rounded-full bg-gradient-to-r from-[#00ffc8] to-[#0099ff] text-[#070B14] shadow-md font-black">
+              {roleConfig.label} {t.profileView.dossierLabel}
             </span>
             <Link
-              href={role === "dairy" ? "/dashboard/dairy/orders" : "/dashboard/farmer/my-milk"}
-              className="px-4 py-1.5 rounded-full text-slate-600 dark:text-slate-300 hover:text-black dark:hover:text-white transition"
+              href={dealFlowUrl}
+              className="px-4 py-1.5 rounded-full text-white/70 hover:text-white hover:bg-white/5 transition"
             >
-              Trading Pipeline
+              {t.profileView.dealFlow}
             </Link>
             <Link
-              href={role === "dairy" ? "/dashboard/dairy/escrow" : "/dashboard/farmer/payouts"}
-              className="px-4 py-1.5 rounded-full text-slate-600 dark:text-slate-300 hover:text-black dark:hover:text-white transition"
+              href={
+                role === "dairy"
+                  ? "/dashboard/dairy/escrow"
+                  : role === "bank"
+                  ? "/dashboard/bank"
+                  : role === "admin"
+                  ? "/dashboard/admin/audit"
+                  : "/dashboard/farmer/payouts"
+              }
+              className="px-4 py-1.5 rounded-full text-white/70 hover:text-white hover:bg-white/5 transition"
             >
-              Escrow Custody
+              {t.profileView.escrowDepository}
             </Link>
           </nav>
 
-          {/* Right Action: Locale, Theme Mode Toggle & Role Badge */}
+          {/* Right Action Controls */}
           <div className="flex items-center gap-3">
-            <div className="flex rounded-full p-0.5 border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-[11px] font-bold">
+            <div className="flex rounded-full p-1 border border-white/10 bg-white/5 text-[11px] font-bold">
               {(["uz", "ru", "en"] as const).map((loc) => (
                 <button
                   key={loc}
                   type="button"
                   onClick={() => setLocale(loc)}
-                  className={`px-2 py-0.5 rounded-full uppercase transition cursor-pointer ${
+                  className={`px-2.5 py-0.5 rounded-full uppercase transition cursor-pointer ${
                     locale === loc
-                      ? "bg-[#12303a] text-white dark:bg-[#1B98E0] dark:text-[#13293D]"
-                      : "text-slate-500 hover:text-black dark:hover:text-white"
+                      ? "bg-gradient-to-r from-[#00ffc8] to-[#0099ff] text-[#070B14] font-black shadow-xs"
+                      : "text-white/60 hover:text-white"
                   }`}
                 >
                   {loc}
@@ -385,35 +668,37 @@ export default function UserProfileView({
 
             <ThemeToggleButton size="sm" />
 
-            <span className="text-xs font-bold bg-[#d9f7e5] text-[#087a3c] rounded-lg px-2.5 py-1 whitespace-nowrap">
+            <span className="text-xs font-bold bg-[#00ffc8]/15 border border-[#00ffc8]/30 text-[#00ffc8] rounded-full px-3.5 py-1 whitespace-nowrap">
               {roleConfig.label}
             </span>
           </div>
         </header>
 
-        {/* Success toast */}
-        {saveSuccess && (
-          <div className="bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-300 dark:border-emerald-800 text-emerald-800 dark:text-emerald-200 px-4 py-3 rounded-2xl text-xs font-bold flex items-center justify-between animate-in fade-in">
-            <span>✓ Partner profile information saved successfully. Updated in trading directory.</span>
-            <button onClick={() => setSaveSuccess(false)} className="text-emerald-700">✕</button>
+        {/* Global Toast Alert */}
+        {toastNotice && (
+          <div className="bg-[#00ffc8]/15 border border-[#00ffc8]/40 text-[#00ffc8] px-4 py-3 rounded-2xl text-xs font-bold flex items-center justify-between shadow-lg animate-in fade-in slide-in-from-top-1">
+            <span>{toastNotice}</span>
+            <button onClick={() => setToastNotice(null)} className="text-[#00ffc8] cursor-pointer ml-3 font-bold hover:opacity-80">✕</button>
           </div>
         )}
 
-        {/* 2. HERO COVER BANNER & PROFILE CARD (Matching uploaded image media_1794076111136_441a2250.jpg) */}
-        <div className="bg-slate-50 dark:bg-white/5 rounded-[30px] border border-slate-200/70 dark:border-white/10 overflow-hidden shadow-xs">
+        {/* 2. HERO COVER BANNER & PROFILE CARD */}
+        <div className="bg-white/[0.03] rounded-[30px] border border-white/10 overflow-hidden shadow-xs">
           
           {/* Cover Landscape Banner */}
-          <div className="h-44 sm:h-56 w-full relative overflow-hidden bg-gradient-to-r from-emerald-800 via-teal-700 to-emerald-950">
-            <img
-              src="/images/hero-ecosystem-3d.jpg"
-              alt="Agritech Ecosystem Cover"
-              className="w-full h-full object-cover opacity-60 mix-blend-overlay"
+          <div className="h-44 sm:h-56 w-full relative overflow-hidden bg-gradient-to-r from-[#0c2e28] via-[#093a38] to-[#081a28]">
+            <div
+              className="w-full h-full opacity-30"
+              style={{
+                backgroundImage: "radial-gradient(#00ffc8 1px, transparent 1px)",
+                backgroundSize: "20px 20px",
+              }}
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#14181d] via-transparent to-transparent" />
             <div className="absolute top-4 right-4 flex items-center gap-2">
-              <span className="px-3 py-1 rounded-full bg-black/40 backdrop-blur-md text-white font-mono text-[11px] font-semibold flex items-center gap-1.5 border border-white/20">
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
-                Live on ZaminFlow Directory
+              <span className="px-3.5 py-1 rounded-full bg-black/60 backdrop-blur-md text-[#00ffc8] font-mono text-[11px] font-bold flex items-center gap-1.5 border border-[#00ffc8]/30 shadow-xs">
+                <span className="w-2 h-2 rounded-full bg-[#00ffc8] animate-ping" />
+                ZaminFlow Tasdiqlangan Milliy Ishtirokchi
               </span>
             </div>
           </div>
@@ -425,64 +710,87 @@ export default function UserProfileView({
               {/* Left: Avatar + Identity */}
               <div className="flex flex-col sm:flex-row sm:items-end gap-5">
                 <div className="relative inline-block">
-                  <div className="w-28 sm:w-32 h-28 sm:h-32 rounded-full border-4 border-white dark:border-slate-900 shadow-xl overflow-hidden bg-gradient-to-tr from-emerald-700 to-teal-500 flex items-center justify-center">
-                    {profile.avatarUrl && !avatarLoadError ? (
+                  <div className="w-28 sm:w-32 h-28 sm:h-32 rounded-full border-4 border-[#14181d] shadow-2xl overflow-hidden bg-gradient-to-tr from-[#00ffc8] to-[#0099ff] flex items-center justify-center ring-4 ring-[#00ffc8]/30">
+                    {profileState.avatarUrl && !avatarLoadError ? (
                       <img
-                        src={profile.avatarUrl}
-                        alt={profile.fullName}
+                        src={profileState.avatarUrl}
+                        alt={profileState.fullName}
                         className="w-full h-full object-cover object-[center_18%]"
                         onError={() => setAvatarLoadError(true)}
                       />
                     ) : (
-                      <span className="text-3xl font-extrabold text-white tracking-wider">
-                        {getDisplayInitials(profile.fullName)}
+                      <span className="text-3xl font-black text-[#070B14] tracking-wider">
+                        {getDisplayInitials(profileState.fullName)}
                       </span>
                     )}
                   </div>
                   {/* Verified check badge */}
-                  <div className="absolute bottom-1 right-1 w-7 h-7 rounded-full bg-emerald-600 text-white flex items-center justify-center border-2 border-white dark:border-slate-900 shadow-xs" title="Certified KYB Partner">
+                  <div className="absolute bottom-1 right-1 w-7 h-7 rounded-full bg-[#00ffc8] text-[#070B14] font-black flex items-center justify-center border-2 border-[#14181d] shadow-xs" title="Certified KYB Partner">
                     ✓
                   </div>
                 </div>
 
                 <div className="pt-2">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
-                      {profile.fullName}
+                  <div className="flex items-center gap-2.5 flex-wrap">
+                    <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+                      {profileState.fullName}
                     </h1>
-                    <span className="text-[10px] font-bold uppercase tracking-wider bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 rounded-full px-2.5 py-0.5">
-                      {profile.kybVerified ? "Verified Partner" : "Verification In Progress"}
+                    <span className="text-[11px] font-mono font-bold uppercase bg-[#00ffc8]/15 border border-[#00ffc8]/30 text-[#00ffc8] rounded-full px-3 py-0.5">
+                      {profileState.kybVerified ? "✓ KYB Verifikatsiyalangan" : "Tekshiruvda"}
                     </span>
                   </div>
-                  <p className="text-sm font-semibold text-emerald-700 dark:text-emerald-400 mt-0.5">
-                    {profile.title} &bull; <strong className="text-slate-700 dark:text-slate-300">{profile.organizationName}</strong>
+                  <p className="text-sm font-semibold text-[#00d3e0] mt-0.5">
+                    {profileState.title} &bull; <strong className="text-white">{profileState.organizationName}</strong>
                   </p>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1 mt-1 font-medium">
-                    <svg className="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <p className="text-xs text-white/50 flex items-center gap-1.5 mt-1 font-medium">
+                    <svg className="w-3.5 h-3.5 text-[#00ffc8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                     </svg>
-                    <span>{profile.location}</span>
+                    <span>{profileState.location}</span>
                   </p>
                 </div>
               </div>
 
               {/* Right: Action Buttons & Communication Icons */}
-              <div className="flex items-center gap-2.5 self-start sm:self-end pt-2">
+              <div className="flex flex-wrap items-center gap-2.5 self-start sm:self-end pt-2">
                 <button
-                  onClick={() => setIsEditModalOpen(true)}
-                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-slate-300 dark:border-white/20 bg-white dark:bg-white/5 text-slate-800 dark:text-white font-bold text-xs hover:bg-slate-50 dark:hover:bg-white/10 transition shadow-xs cursor-pointer"
+                  type="button"
+                  onClick={openEditModal}
+                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-white/20 bg-white/5 hover:bg-white/10 text-white font-bold text-xs transition shadow-xs cursor-pointer active:scale-95"
                 >
-                  <svg className="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-3.5 h-3.5 text-[#00ffc8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                   </svg>
-                  <span>Edit Profile</span>
+                  <span>{t.profileView.editProfile}</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleShareProfile}
+                  className="p-2.5 rounded-full bg-white/5 border border-white/10 text-white/80 hover:text-[#00ffc8] hover:border-[#00ffc8]/40 transition cursor-pointer active:scale-95"
+                  title={t.profileView.shareTooltip}
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+                  </svg>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleExportDossier}
+                  className="p-2.5 rounded-full bg-white/5 border border-white/10 text-white/80 hover:text-[#00ffc8] hover:border-[#00ffc8]/40 transition cursor-pointer active:scale-95"
+                  title={t.profileView.exportTooltip}
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                  </svg>
                 </button>
 
                 <a
-                  href={`tel:${profile.phone}`}
-                  className="p-2.5 rounded-full bg-slate-100 dark:bg-white/5 text-slate-700 dark:text-slate-200 hover:text-emerald-700 transition cursor-pointer"
-                  title="Call Hotline"
+                  href={`tel:${profileState.phone}`}
+                  className="p-2.5 rounded-full bg-white/5 border border-white/10 text-white/80 hover:text-[#00ffc8] hover:border-[#00ffc8]/40 transition cursor-pointer active:scale-95"
+                  title={`${t.profileView.callTooltip}: ${profileState.phone}`}
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
@@ -490,9 +798,9 @@ export default function UserProfileView({
                 </a>
 
                 <a
-                  href={`mailto:${profile.email}`}
-                  className="p-2.5 rounded-full bg-slate-100 dark:bg-white/5 text-slate-700 dark:text-slate-200 hover:text-emerald-700 transition cursor-pointer"
-                  title="Send Verified Inquiry"
+                  href={`mailto:${profileState.email}`}
+                  className="p-2.5 rounded-full bg-white/5 border border-white/10 text-white/80 hover:text-[#00ffc8] hover:border-[#00ffc8]/40 transition cursor-pointer active:scale-95"
+                  title={`${t.profileView.emailTooltip}: ${profileState.email}`}
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
@@ -500,13 +808,14 @@ export default function UserProfileView({
                 </a>
 
                 <button
-                  onClick={() => setIsBookmarked(!isBookmarked)}
-                  className={`p-2.5 rounded-full border transition cursor-pointer ${
+                  type="button"
+                  onClick={handleToggleBookmark}
+                  className={`p-2.5 rounded-full border transition cursor-pointer active:scale-95 ${
                     isBookmarked
-                      ? "bg-emerald-600 text-white border-emerald-600"
-                      : "bg-slate-100 dark:bg-white/5 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-white/10"
+                      ? "bg-[#00ffc8] text-[#070B14] border-[#00ffc8] shadow-md shadow-[#00ffc8]/30"
+                      : "bg-white/5 text-white/80 border-white/10 hover:border-white/20"
                   }`}
-                  title={isBookmarked ? "Saved in Preferred Partners" : "Bookmark Partner"}
+                  title={isBookmarked ? "Tanlanganlar roʻyxatida" : "Tanlanganlarga qoʻshish"}
                 >
                   <svg className="w-4 h-4" fill={isBookmarked ? "currentColor" : "none"} stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
@@ -516,47 +825,58 @@ export default function UserProfileView({
 
             </div>
 
-            {/* Profile Navigation Tabs (Matching image) */}
-            <div className="flex items-center gap-6 mt-8 pt-4 border-t border-slate-200/60 dark:border-white/10 text-xs font-bold overflow-x-auto">
+            {/* Profile Navigation Tabs - Real switching */}
+            <div className="flex items-center gap-6 mt-8 pt-4 border-t border-white/10 text-xs font-bold overflow-x-auto">
               <button
+                type="button"
                 onClick={() => setActiveTab("overview")}
-                className={`pb-2 transition whitespace-nowrap cursor-pointer ${
+                className={`pb-2 transition whitespace-nowrap cursor-pointer flex items-center gap-1.5 ${
                   activeTab === "overview"
-                    ? "text-[#087a3c] dark:text-[#22d36b] border-b-2 border-[#087a3c] dark:border-[#22d36b]"
-                    : "text-slate-500 hover:text-black dark:hover:text-white"
+                    ? "text-[#00ffc8] border-b-2 border-[#00ffc8] font-black"
+                    : "text-white/50 hover:text-white"
                 }`}
               >
-                Overview & Operations
+                <span>📋</span>
+                <span>{t.profileView.tabs.overview}</span>
               </button>
               <button
+                type="button"
                 onClick={() => setActiveTab("specs")}
-                className={`pb-2 transition whitespace-nowrap cursor-pointer ${
+                className={`pb-2 transition whitespace-nowrap cursor-pointer flex items-center gap-1.5 ${
                   activeTab === "specs"
-                    ? "text-[#087a3c] dark:text-[#22d36b] border-b-2 border-[#087a3c] dark:border-[#22d36b]"
-                    : "text-slate-500 hover:text-black dark:hover:text-white"
+                    ? "text-[#00ffc8] border-b-2 border-[#00ffc8] font-black"
+                    : "text-white/50 hover:text-white"
                 }`}
               >
-                Trading Specs & Quality Benchmark
+                <span>⚙️</span>
+                <span>{t.profileView.tabs.specs}</span>
               </button>
               <button
+                type="button"
                 onClick={() => setActiveTab("contracts")}
-                className={`pb-2 transition whitespace-nowrap cursor-pointer ${
+                className={`pb-2 transition whitespace-nowrap cursor-pointer flex items-center gap-1.5 ${
                   activeTab === "contracts"
-                    ? "text-[#087a3c] dark:text-[#22d36b] border-b-2 border-[#087a3c] dark:border-[#22d36b]"
-                    : "text-slate-500 hover:text-black dark:hover:text-white"
+                    ? "text-[#00ffc8] border-b-2 border-[#00ffc8] font-black"
+                    : "text-white/50 hover:text-white"
                 }`}
               >
-                Escrow Track Record
+                <span>🏦</span>
+                <span>{t.profileView.tabs.contracts}</span>
               </button>
               <button
+                type="button"
                 onClick={() => setActiveTab("team")}
-                className={`pb-2 transition whitespace-nowrap cursor-pointer ${
+                className={`pb-2 transition whitespace-nowrap cursor-pointer flex items-center gap-1.5 ${
                   activeTab === "team"
-                    ? "text-[#087a3c] dark:text-[#22d36b] border-b-2 border-[#087a3c] dark:border-[#22d36b]"
-                    : "text-slate-500 hover:text-black dark:hover:text-white"
+                    ? "text-[#00ffc8] border-b-2 border-[#00ffc8] font-black"
+                    : "text-white/50 hover:text-white"
                 }`}
               >
-                Management & Operations Team
+                <span>👥</span>
+                <span>{t.profileView.tabs.team}</span>
+                <span className="px-1.5 py-0.2 rounded-full bg-white/10 text-[10px] text-white/70">
+                  {profileState.team.length}
+                </span>
               </button>
             </div>
 
@@ -564,123 +884,424 @@ export default function UserProfileView({
 
         </div>
 
-        {/* 3. MAIN CONTENT: 2 COLUMNS (Matching layout of media_1794076111136_441a2250.jpg) */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-          
-          {/* LEFT COLUMN: Summary, Offerings ("Ask Me About"), & Track Record (cols 8) */}
-          <div className="lg:col-span-8 flex flex-col gap-6">
-            
-            {/* CARD 1: Operational Summary / About */}
-            <div className="bg-slate-50 dark:bg-white/5 rounded-[28px] p-6 sm:p-7 border border-slate-200/70 dark:border-white/10">
-              <div className="flex items-center justify-between pb-3 border-b border-slate-200/60 dark:border-white/10 mb-4">
-                <h2 className="text-base font-bold text-slate-900 dark:text-white">
-                  Operational Summary & Facility
-                </h2>
-                <span className="text-[11px] font-mono font-semibold text-emerald-700 dark:text-emerald-400">
-                  Certified Active
-                </span>
-              </div>
-              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed font-normal">
-                {profile.bio}
-              </p>
-            </div>
+        {/* 3. DYNAMIC TAB VIEWS WITH LUXURY ACCURACY */}
 
-            {/* CARD 2: Offerings & Capabilities ("Ask Me About" style tags from image) */}
-            <div className="bg-slate-50 dark:bg-white/5 rounded-[28px] p-6 sm:p-7 border border-slate-200/70 dark:border-white/10">
-              <div className="flex items-center justify-between pb-3 border-b border-slate-200/60 dark:border-white/10 mb-4">
-                <div>
-                  <h2 className="text-base font-bold text-slate-900 dark:text-white">
-                    Verified Capabilities & Offerings
+        {/* TAB 1: OVERVIEW & CAPACITY */}
+        {activeTab === "overview" && (
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start animate-in fade-in duration-300">
+            {/* Left 8 cols: Bio, KPI cards, Offerings */}
+            <div className="lg:col-span-8 flex flex-col gap-6">
+              
+              {/* CARD 1: Operational Summary */}
+              <div className="bg-white/[0.03] rounded-[28px] p-6 sm:p-7 border border-white/10 hover:border-[#00d3e0]/30 transition-all shadow-xs">
+                <div className="flex items-center justify-between pb-3 border-b border-white/10 mb-4">
+                  <h2 className="text-base font-bold text-white flex items-center gap-2">
+                    <span>🏢</span>
+                    <span>Operatsion Faoliyat va Qisqacha Tavsif</span>
                   </h2>
-                  <span className="text-[11px] text-slate-400">
-                    What we supply and operational standards for trading partners
+                  <span className="text-[11px] font-mono font-semibold text-[#00ffc8] bg-[#00ffc8]/10 border border-[#00ffc8]/20 px-2.5 py-0.5 rounded-full">
+                    Soliq.uz STIR Tasdiqlangan
                   </span>
                 </div>
-                <span className="text-xs font-bold bg-[#087a3c] text-white px-2.5 py-0.5 rounded-full">
-                  {profile.capabilities.length} Verified
-                </span>
-              </div>
+                <p className="text-xs sm:text-sm text-white/80 leading-relaxed font-normal">
+                  {profileState.bio}
+                </p>
 
-              <div className="flex flex-wrap gap-2.5">
-                {profile.capabilities.map((cap, idx) => (
-                  <div
-                    key={idx}
-                    className="inline-flex items-center gap-2 px-3.5 py-2 rounded-2xl bg-white dark:bg-slate-900/60 border border-slate-200/80 dark:border-white/10 text-xs font-semibold text-slate-800 dark:text-slate-200 shadow-xs"
+                {/* Direct Action Callout Banner */}
+                <div className="mt-5 p-4 rounded-2xl bg-gradient-to-r from-[#00ffc8]/10 via-[#00d3e0]/10 to-transparent border border-[#00ffc8]/20 flex flex-col sm:flex-row items-center justify-between gap-3">
+                  <div>
+                    <div className="text-xs font-bold text-white">B2B Savdo Bitimini Boshlash</div>
+                    <div className="text-[11px] text-white/50">Agrobank kafolatlangan eskrou depozitariysi orqali xavfsiz hisob-kitob</div>
+                  </div>
+                  <Link
+                    href={dealFlowUrl}
+                    className="px-4 py-2 rounded-full bg-gradient-to-r from-[#00ffc8] to-[#0099ff] text-[#070B14] font-black text-xs hover:opacity-95 transition shadow-md shadow-[#00ffc8]/20 whitespace-nowrap"
                   >
-                    <span className="w-2 h-2 rounded-full bg-emerald-500" />
-                    <span>{cap.label}</span>
-                  </div>
-                ))}
+                    {dealFlowLabel}
+                  </Link>
+                </div>
               </div>
+
+              {/* CARD 2: Historical Trading & Clearing Track Record */}
+              <div className="bg-white/[0.03] rounded-[28px] p-6 sm:p-7 border border-white/10 hover:border-[#00d3e0]/30 transition-all shadow-xs">
+                <div className="flex items-center justify-between pb-3 border-b border-white/10 mb-4">
+                  <h2 className="text-base font-bold text-white flex items-center gap-2">
+                    <span>📊</span>
+                    <span>Tarixiy Savdo & Kliring Koʻrsatkichlari</span>
+                  </h2>
+                  <span className="text-xs font-bold text-[#00ffc8] font-mono">
+                    Ishonch Indeksi: {profileState.trustScore} / 100
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                  {profileState.stats.map((st, i) => (
+                    <div
+                      key={i}
+                      className="p-4 rounded-2xl bg-black/40 border border-white/5 hover:border-[#00ffc8]/30 transition"
+                    >
+                      <span className="text-[10px] font-bold text-white/40 uppercase tracking-wider block font-mono">
+                        {st.label}
+                      </span>
+                      <span className="text-xl sm:text-2xl font-black text-white font-mono mt-1 block">
+                        {st.value}
+                      </span>
+                      <span className="text-[10px] text-[#00ffc8] font-semibold block mt-0.5">
+                        {st.sublabel}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* CARD 3: Active Capabilities & Standards */}
+              <div className="bg-white/[0.03] rounded-[28px] p-6 sm:p-7 border border-white/10 hover:border-[#00d3e0]/30 transition-all shadow-xs">
+                <div className="flex items-center justify-between pb-3 border-b border-white/10 mb-4">
+                  <div>
+                    <h2 className="text-base font-bold text-white flex items-center gap-2">
+                      <span>✓</span>
+                      <span>Tasdiqlangan Imkoniyatlar & Standartlar</span>
+                    </h2>
+                    <span className="text-[11px] text-white/50">
+                      Hamkorlar bilan savdo qilish rasmiy shartlari
+                    </span>
+                  </div>
+                  <span className="text-xs font-bold bg-[#00ffc8] text-[#070B14] px-2.5 py-0.5 rounded-full font-mono">
+                    {profileState.capabilities.length} Ta Faol
+                  </span>
+                </div>
+
+                <div className="flex flex-wrap gap-2.5">
+                  {profileState.capabilities.map((cap, idx) => (
+                    <div
+                      key={idx}
+                      className="inline-flex items-center gap-2 px-3.5 py-2 rounded-2xl bg-black/40 border border-white/10 text-xs font-semibold text-white/90 shadow-xs"
+                    >
+                      <span className="w-2 h-2 rounded-full bg-[#00ffc8] animate-pulse" />
+                      <span>{cap.label}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
             </div>
 
-            {/* CARD 3: Trading Track Record (Performance Grid) */}
-            <div className="bg-slate-50 dark:bg-white/5 rounded-[28px] p-6 sm:p-7 border border-slate-200/70 dark:border-white/10">
-              <div className="flex items-center justify-between pb-3 border-b border-slate-200/60 dark:border-white/10 mb-4">
-                <h2 className="text-base font-bold text-slate-900 dark:text-white">
-                  Historical Trading & Settlement Performance
-                </h2>
-                <span className="text-xs font-bold text-emerald-700 dark:text-emerald-400">
-                  Trust Score: {profile.trustScore} / 100
-                </span>
-              </div>
+            {/* Right 4 cols: Bank & Quick Contacts */}
+            <div className="lg:col-span-4 flex flex-col gap-6">
+              
+              {/* CARD: Bank & Tax Credentials */}
+              <div className="bg-white/[0.03] rounded-[28px] p-6 border border-white/10 hover:border-[#00d3e0]/30 transition-all shadow-xs">
+                <div className="flex items-center justify-between pb-3 border-b border-white/10 mb-4">
+                  <h3 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
+                    <span>🏦</span>
+                    <span>Bank & Soliq Rekvizitlari</span>
+                  </h3>
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-[#00ffc8]/15 text-[#00ffc8] font-bold">
+                    Sinxron
+                  </span>
+                </div>
 
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                {profile.stats.map((st, i) => (
-                  <div
-                    key={i}
-                    className="p-4 rounded-2xl bg-white dark:bg-slate-900/60 border border-slate-200/60 dark:border-white/10"
-                  >
-                    <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
-                      {st.label}
+                <div className="space-y-3.5 text-xs">
+                  <div>
+                    <span className="text-[10px] uppercase font-bold text-white/40 block font-mono">
+                      Soliq ID (STIR)
                     </span>
-                    <span className="text-2xl font-black text-slate-900 dark:text-white font-mono mt-1 block">
-                      {st.value}
-                    </span>
-                    <span className="text-[10px] text-emerald-700 dark:text-emerald-400 font-semibold block mt-0.5">
-                      {st.sublabel}
-                    </span>
+                    <span className="font-mono text-white font-bold">{profileState.taxId}</span>
                   </div>
-                ))}
-              </div>
-            </div>
 
-            {/* CARD 4: Trading Specifications Table */}
-            <div className="bg-slate-50 dark:bg-white/5 rounded-[28px] p-6 sm:p-7 border border-slate-200/70 dark:border-white/10">
-              <h2 className="text-base font-bold text-slate-900 dark:text-white pb-3 border-b border-slate-200/60 dark:border-white/10 mb-3">
-                Commercial Contract Specifications
-              </h2>
-              <div className="divide-y divide-slate-200/60 dark:divide-white/5">
-                {profile.tradingSpecs.map((spec, idx) => (
-                  <div key={idx} className="py-2.5 flex items-center justify-between text-xs">
-                    <span className="text-slate-500 dark:text-slate-400 font-semibold">{spec.label}</span>
-                    <span className="font-mono font-bold text-slate-900 dark:text-white">{spec.value}</span>
+                  <div>
+                    <span className="text-[10px] uppercase font-bold text-white/40 block font-mono">
+                      Xizmat Koʻrsatuvchi Bank
+                    </span>
+                    <span className="text-white font-medium">{profileState.bankName}</span>
                   </div>
-                ))}
+
+                  <div>
+                    <span className="text-[10px] uppercase font-bold text-white/40 block font-mono">
+                      Hisobvaraq (IBAN)
+                    </span>
+                    <span className="font-mono text-[#00ffc8] text-[11px] break-all">{profileState.iban}</span>
+                  </div>
+
+                  <div>
+                    <span className="text-[10px] uppercase font-bold text-white/40 block font-mono">
+                      A'zolik Sanasi
+                    </span>
+                    <span className="text-white/70 font-mono">{profileState.memberSince}</span>
+                  </div>
+                </div>
+
+                <div className="mt-5 pt-3 border-t border-white/10 flex items-center justify-between text-[11px]">
+                  <span className="text-white/40">Eskrou Regulyatsiyasi</span>
+                  <span className="text-[#00ffc8] font-bold">CBU №412</span>
+                </div>
               </div>
-            </div>
 
-          </div>
-
-          {/* RIGHT COLUMN: Team Hierarchy & Additional Credentials (cols 4) */}
-          <div className="lg:col-span-4 flex flex-col gap-6">
-            
-            {/* CARD: Operations & Key Management Team (Matching "My Manager" from image) */}
-            <div className="bg-slate-50 dark:bg-white/5 rounded-[28px] p-6 border border-slate-200/70 dark:border-white/10">
-              <div className="flex items-center justify-between pb-3 border-b border-slate-200/60 dark:border-white/10 mb-4">
-                <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">
-                  Key Operations Contacts
+              {/* CARD: Quick Action Dossier Tools */}
+              <div className="bg-white/[0.03] rounded-[28px] p-6 border border-white/10 hover:border-[#00d3e0]/30 transition-all shadow-xs">
+                <h3 className="text-sm font-bold text-white uppercase tracking-wider mb-3">
+                  Tezkor Dosye Amallari
                 </h3>
-                <span className="text-[11px] text-slate-400 font-mono">3 Liaisons</span>
+                <div className="flex flex-col gap-2.5">
+                  <button
+                    type="button"
+                    onClick={handleShareProfile}
+                    className="w-full py-2.5 px-3.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-bold text-white text-left flex items-center justify-between transition cursor-pointer"
+                  >
+                    <span>🔗 Profil Havolasini Nusxalash</span>
+                    <span className="text-white/40 text-[10px]">Ulashish</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleExportDossier}
+                    className="w-full py-2.5 px-3.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-bold text-[#00ffc8] text-left flex items-center justify-between transition cursor-pointer"
+                  >
+                    <span>📥 Sertifikatlangan Pasport (JSON)</span>
+                    <span className="text-[10px] bg-[#00ffc8]/20 px-2 py-0.5 rounded-md">Yuklab olish</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={openEditModal}
+                    className="w-full py-2.5 px-3.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-bold text-white/80 text-left flex items-center justify-between transition cursor-pointer"
+                  >
+                    <span>✏️ Ma'lumotlarni Yangilash</span>
+                    <span className="text-white/40 text-[10px]">Tahrir</span>
+                  </button>
+                </div>
               </div>
 
-              <div className="space-y-3.5">
-                {profile.team.map((member, idx) => (
-                  <div
-                    key={idx}
-                    className="flex items-center gap-3 p-2.5 rounded-2xl bg-white dark:bg-slate-900/60 border border-slate-200/60 dark:border-white/10 transition hover:border-emerald-300"
-                  >
-                    <div className="w-10 h-10 rounded-full overflow-hidden bg-gradient-to-tr from-emerald-700 to-teal-500 flex items-center justify-center shrink-0">
+            </div>
+          </div>
+        )}
+
+        {/* TAB 2: SPECIFICATIONS & TECHNICAL PASSPORT */}
+        {activeTab === "specs" && (
+          <div className="flex flex-col gap-6 animate-in fade-in duration-300">
+            {/* Row 1: Technical Passport + Quality Titration Bench */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              
+              {/* Role-Specific Technical Passport */}
+              <div className="bg-white/[0.03] rounded-[28px] p-6 sm:p-7 border border-white/10 shadow-xs">
+                <div className="flex items-center justify-between pb-3 border-b border-white/10 mb-4">
+                  <div>
+                    <h2 className="text-base font-bold text-white">
+                      {profileState.roleSpecifics.sectionTitle}
+                    </h2>
+                    <span className="text-[11px] text-white/50">
+                      Texnik jihozlanish va agrosanoat parametrlar pasporti
+                    </span>
+                  </div>
+                  <span className="text-xs font-mono font-bold bg-[#00ffc8]/15 text-[#00ffc8] border border-[#00ffc8]/30 px-3 py-0.5 rounded-full">
+                    Sertifikatlangan
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 gap-3">
+                  {profileState.roleSpecifics.items.map((item, idx) => (
+                    <div
+                      key={idx}
+                      className="p-3.5 rounded-2xl bg-black/30 border border-white/5 flex items-center justify-between gap-3"
+                    >
+                      <span className="text-[11px] text-white/50 uppercase font-mono">{item.label}</span>
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold text-white text-xs sm:text-sm">{item.value}</span>
+                        {item.badge && (
+                          <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-md bg-[#00ffc8]/15 text-[#00ffc8] border border-[#00ffc8]/30 whitespace-nowrap">
+                            {item.badge}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Quality Titration & Standards Bench */}
+              <div className="bg-white/[0.03] rounded-[28px] p-6 sm:p-7 border border-white/10 shadow-xs">
+                <div className="flex items-center justify-between pb-3 border-b border-white/10 mb-4">
+                  <div>
+                    <h2 className="text-base font-bold text-white">
+                      Laboratoriya Titratsiyasi & Sifat Normalari
+                    </h2>
+                    <span className="text-[11px] text-white/50">
+                      O'zDSt 31449-2026 talablari bo'yicha laboratoriya sinovlari
+                    </span>
+                  </div>
+                  <span className="text-xs font-mono font-bold bg-[#00d3e0]/15 text-[#00d3e0] border border-[#00d3e0]/30 px-3 py-0.5 rounded-full">
+                    A+ Oliy Sinf
+                  </span>
+                </div>
+
+                <div className="space-y-3.5">
+                  <div className="p-3.5 rounded-2xl bg-black/40 border border-white/5">
+                    <div className="flex justify-between text-xs mb-1">
+                      <span className="text-white/60">Yog'lilik Ko'rsatkichi (Fat)</span>
+                      <span className="font-bold text-[#00ffc8] font-mono">4.15% (Talab: &gt; 3.2%)</span>
+                    </div>
+                    <div className="w-full h-2 rounded-full bg-white/10 overflow-hidden">
+                      <div className="h-full bg-gradient-to-r from-[#00ffc8] to-[#0099ff] w-[88%]" />
+                    </div>
+                  </div>
+
+                  <div className="p-3.5 rounded-2xl bg-black/40 border border-white/5">
+                    <div className="flex justify-between text-xs mb-1">
+                      <span className="text-white/60">Quruq Moddalar Qoldig'i (SNF)</span>
+                      <span className="font-bold text-[#00d3e0] font-mono">8.65% (Talab: &gt; 8.2%)</span>
+                    </div>
+                    <div className="w-full h-2 rounded-full bg-white/10 overflow-hidden">
+                      <div className="h-full bg-gradient-to-r from-[#00d3e0] to-[#0099ff] w-[92%]" />
+                    </div>
+                  </div>
+
+                  <div className="p-3.5 rounded-2xl bg-black/40 border border-white/5">
+                    <div className="flex justify-between text-xs mb-1">
+                      <span className="text-white/60">Sovuq Saqlash Harorati</span>
+                      <span className="font-bold text-white font-mono">+3.2°C (Maksimal: +4.0°C)</span>
+                    </div>
+                    <div className="w-full h-2 rounded-full bg-white/10 overflow-hidden">
+                      <div className="h-full bg-[#00ffc8] w-[96%]" />
+                    </div>
+                  </div>
+
+                  <div className="p-3.5 rounded-2xl bg-black/40 border border-white/5">
+                    <div className="flex justify-between text-xs mb-1">
+                      <span className="text-white/60">Somatik Hujayralar Soni</span>
+                      <span className="font-bold text-[#00ffc8] font-mono">&lt; 180k / sm³ (Sinf A+)</span>
+                    </div>
+                    <div className="w-full h-2 rounded-full bg-white/10 overflow-hidden">
+                      <div className="h-full bg-[#00ffc8] w-[95%]" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            {/* Row 2: Trading Specifications Table */}
+            <div className="bg-white/[0.03] rounded-[28px] p-6 sm:p-7 border border-white/10 shadow-xs">
+              <h2 className="text-base font-bold text-white pb-3 border-b border-white/10 mb-3">
+                Shartnoma & Tijoriy Bitim Parametrlari
+              </h2>
+              <div className="divide-y divide-white/5">
+                {profileState.tradingSpecs.map((spec, idx) => (
+                  <div key={idx} className="py-3 flex items-center justify-between text-xs sm:text-sm">
+                    <span className="text-white/50 font-semibold">{spec.label}</span>
+                    <span className="font-mono font-bold text-white">{spec.value}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* TAB 3: CONTRACTS & ESCROW CLEARING */}
+        {activeTab === "contracts" && (
+          <div className="flex flex-col gap-6 animate-in fade-in duration-300">
+            {/* Top Escrow Credentials Banner */}
+            <div className="p-6 rounded-[28px] bg-gradient-to-r from-[#00ffc8]/15 via-[#0099ff]/15 to-transparent border border-[#00ffc8]/30 flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div className="flex items-center gap-4">
+                <div className="w-14 h-14 rounded-2xl bg-[#00ffc8] text-[#070B14] flex items-center justify-center text-2xl font-black shadow-lg">
+                  🏦
+                </div>
+                <div>
+                  <h3 className="text-lg font-black text-white">AgroBank & CBU Rasmiy Eskrou Kafolati</h3>
+                  <p className="text-xs text-white/60 mt-0.5">
+                    Mablagʻlar Markaziy Bankning №412 litsenziyasi asosida maxsus depozitariyda muzlatiladi va laboratoriya tasdigʻidan soʻng 15 daqiqada oʻtkaziladi.
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3 shrink-0">
+                <span className="px-3.5 py-1.5 rounded-full bg-black/40 border border-white/10 font-mono text-xs font-bold text-[#00ffc8]">
+                  ISO 20022 pacs.008
+                </span>
+              </div>
+            </div>
+
+            {/* Financial Ledger Table */}
+            <div className="bg-white/[0.03] rounded-[28px] p-6 sm:p-7 border border-white/10 shadow-xs">
+              <div className="flex items-center justify-between pb-3 border-b border-white/10 mb-4">
+                <div>
+                  <h2 className="text-base font-bold text-white">Soʻnggi Bajarilgan Shartnomalar & Kliring Tarixi</h2>
+                  <span className="text-[11px] text-white/50">Smart kontrakt audit zanjiridagi tranzaksiyalar</span>
+                </div>
+                <span className="text-xs font-bold text-[#00ffc8] font-mono">0 ta Nizo (100% Toza)</span>
+              </div>
+
+              <div className="overflow-x-auto">
+                <table className="w-full text-left border-collapse text-xs">
+                  <thead>
+                    <tr className="border-b border-white/10 text-white/50 uppercase font-mono text-[10px]">
+                      <th className="py-2.5 px-3">Shartnoma №</th>
+                      <th className="py-2.5 px-3">Kontragent</th>
+                      <th className="py-2.5 px-3">Hajm</th>
+                      <th className="py-2.5 px-3">Sifat / Nav</th>
+                      <th className="py-2.5 px-3">Eskrou Holati</th>
+                      <th className="py-2.5 px-3 text-right">Hujjat</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-white/5">
+                    <tr className="hover:bg-white/[0.02] transition">
+                      <td className="py-3 px-3 font-mono text-[#00ffc8] font-bold">#CNT-2026-991</td>
+                      <td className="py-3 px-3 text-white font-semibold">Toshkent Sut Zavodi #4</td>
+                      <td className="py-3 px-3 font-mono">12,000 Litr</td>
+                      <td className="py-3 px-3"><span className="text-[#00ffc8]">Oliy A+ (4.2%)</span></td>
+                      <td className="py-3 px-3"><span className="px-2 py-0.5 rounded-full bg-[#00ffc8]/15 text-[#00ffc8] border border-[#00ffc8]/30 font-bold text-[10px]">✓ Kliring Bajarildi</span></td>
+                      <td className="py-3 px-3 text-right">
+                        <button onClick={() => showToast("✓ ISO 20022 Kliring hujjati yuklab olindi.")} className="underline text-white/60 hover:text-white cursor-pointer">Sertifikat ↓</button>
+                      </td>
+                    </tr>
+                    <tr className="hover:bg-white/[0.02] transition">
+                      <td className="py-3 px-3 font-mono text-[#00ffc8] font-bold">#CNT-2026-984</td>
+                      <td className="py-3 px-3 text-white font-semibold">Samarqand Sut Kombinati LLC</td>
+                      <td className="py-3 px-3 font-mono">8,500 Litr</td>
+                      <td className="py-3 px-3"><span className="text-[#00ffc8]">Oliy A+ (4.1%)</span></td>
+                      <td className="py-3 px-3"><span className="px-2 py-0.5 rounded-full bg-[#00ffc8]/15 text-[#00ffc8] border border-[#00ffc8]/30 font-bold text-[10px]">✓ Kliring Bajarildi</span></td>
+                      <td className="py-3 px-3 text-right">
+                        <button onClick={() => showToast("✓ ISO 20022 Kliring hujjati yuklab olindi.")} className="underline text-white/60 hover:text-white cursor-pointer">Sertifikat ↓</button>
+                      </td>
+                    </tr>
+                    <tr className="hover:bg-white/[0.02] transition">
+                      <td className="py-3 px-3 font-mono text-[#00ffc8] font-bold">#CNT-2026-972</td>
+                      <td className="py-3 px-3 text-white font-semibold">Jizzax Organik Sut Zavodi</td>
+                      <td className="py-3 px-3 font-mono">15,000 Litr</td>
+                      <td className="py-3 px-3"><span className="text-[#00d3e0]">1-Sinf (3.9%)</span></td>
+                      <td className="py-3 px-3"><span className="px-2 py-0.5 rounded-full bg-[#00ffc8]/15 text-[#00ffc8] border border-[#00ffc8]/30 font-bold text-[10px]">✓ Kliring Bajarildi</span></td>
+                      <td className="py-3 px-3 text-right">
+                        <button onClick={() => showToast("✓ ISO 20022 Kliring hujjati yuklab olindi.")} className="underline text-white/60 hover:text-white cursor-pointer">Sertifikat ↓</button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* TAB 4: TEAM & LEADERSHIP DIRECTORY */}
+        {activeTab === "team" && (
+          <div className="flex flex-col gap-6 animate-in fade-in duration-300">
+            <div className="flex flex-wrap items-center justify-between gap-4">
+              <div>
+                <h2 className="text-base font-bold text-white">Boshqaruv & Mas'ul Mutaxassislar Ro'yxati</h2>
+                <p className="text-xs text-white/50 mt-0.5">Tezkor aloqa va buyurtmalar ijrosiga javobgar vakillar</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsAddTeamModalOpen(true)}
+                className="px-4 py-2 rounded-full bg-gradient-to-r from-[#00ffc8] to-[#0099ff] text-[#070B14] font-black text-xs hover:opacity-90 transition shadow-md cursor-pointer active:scale-95"
+              >
+                + Yangi Mas'ul Xodim Qo'shish
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {profileState.team.map((member, idx) => (
+                <div
+                  key={idx}
+                  className="bg-white/[0.03] rounded-[24px] p-5 border border-white/10 hover:border-[#00ffc8]/40 transition flex flex-col justify-between gap-4 shadow-xs"
+                >
+                  <div className="flex items-center gap-3.5">
+                    <div className="w-14 h-14 rounded-full overflow-hidden bg-gradient-to-tr from-[#00ffc8] to-[#0099ff] flex items-center justify-center shrink-0 shadow-md">
                       {member.avatarUrl && !failedTeamImages[idx] ? (
                         <img
                           src={member.avatarUrl}
@@ -691,202 +1312,261 @@ export default function UserProfileView({
                           }
                         />
                       ) : (
-                        <span className="text-xs font-bold text-white">
+                        <span className="text-sm font-black text-[#070B14]">
                           {getDisplayInitials(member.name)}
                         </span>
                       )}
                     </div>
                     <div>
-                      <h4 className="text-xs font-bold text-slate-900 dark:text-white">
-                        {member.name}
-                      </h4>
-                      <p className="text-[11px] text-slate-500 dark:text-slate-400">
-                        {member.role}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* CARD: Additional Entity Details (Matching "Additional Details" from image) */}
-            <div className="bg-slate-50 dark:bg-white/5 rounded-[28px] p-6 border border-slate-200/70 dark:border-white/10">
-              <div className="flex items-center justify-between pb-3 border-b border-slate-200/60 dark:border-white/10 mb-4">
-                <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">
-                  Additional Credentials
-                </h3>
-                <span className="text-[11px] font-mono text-emerald-700">Verified</span>
-              </div>
-
-              <div className="space-y-4 text-xs">
-                <div>
-                  <span className="text-[11px] uppercase font-bold text-slate-400 block">
-                    Verified Business Email
-                  </span>
-                  <a href={`mailto:${profile.email}`} className="font-mono text-emerald-700 dark:text-emerald-400 hover:underline">
-                    {profile.email}
-                  </a>
-                </div>
-
-                <div>
-                  <span className="text-[11px] uppercase font-bold text-slate-400 block">
-                    Languages Spoken
-                  </span>
-                  <span className="text-slate-800 dark:text-slate-200 font-semibold">
-                    {profile.languages.join(", ")}
-                  </span>
-                </div>
-
-                <div>
-                  <span className="text-[11px] uppercase font-bold text-slate-400 block">
-                    Taxpayer Identification (INN)
-                  </span>
-                  <span className="font-mono font-bold text-slate-900 dark:text-white">
-                    {profile.taxId}
-                  </span>
-                </div>
-
-                <div>
-                  <span className="text-[11px] uppercase font-bold text-slate-400 block">
-                    Designated Settlement Bank
-                  </span>
-                  <span className="text-slate-800 dark:text-slate-200 font-semibold">
-                    {profile.bankName}
-                  </span>
-                  <span className="font-mono text-[10px] text-slate-400 block mt-0.5">
-                    {profile.iban}
-                  </span>
-                </div>
-
-                <div>
-                  <span className="text-[11px] uppercase font-bold text-slate-400 block">
-                    ZaminFlow Member Since
-                  </span>
-                  <span className="text-slate-800 dark:text-slate-200 font-semibold">
-                    {profile.memberSince}
-                  </span>
-                </div>
-
-                <div className="pt-2 border-t border-slate-200/60 dark:border-white/10">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <span className="text-[10px] uppercase font-bold text-slate-400 block">
-                        Verified KYB Status
-                      </span>
-                      <span className="text-xs font-bold text-emerald-700 dark:text-emerald-400">
-                        Tier 1 Approved
+                      <h4 className="text-sm font-bold text-white">{member.name}</h4>
+                      <p className="text-xs text-[#00d3e0] font-mono mt-0.5">{member.role}</p>
+                      <span className="inline-block mt-1 text-[10px] bg-white/5 border border-white/10 text-white/60 px-2 py-0.5 rounded-md font-mono">
+                        Tasdiqlangan Vakil
                       </span>
                     </div>
-                    <span className="text-2xl font-black font-mono text-[#087a3c] dark:text-[#22d36b]">
-                      {profile.trustScore}
-                    </span>
+                  </div>
+
+                  <div className="pt-3 border-t border-white/10 flex items-center justify-between text-xs">
+                    {member.phone ? (
+                      <a
+                        href={`tel:${member.phone}`}
+                        className="px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-white font-semibold text-[11px] transition flex items-center gap-1.5"
+                      >
+                        <span>📞</span>
+                        <span>{member.phone}</span>
+                      </a>
+                    ) : (
+                      <span className="text-white/40 text-[11px]">Aloqa mavjud</span>
+                    )}
+
+                    {member.email && (
+                      <a
+                        href={`mailto:${member.email}`}
+                        className="p-2 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-white/70 hover:text-[#00ffc8] transition"
+                        title="Email yuborish"
+                      >
+                        ✉️
+                      </a>
+                    )}
                   </div>
                 </div>
-
-              </div>
+              ))}
             </div>
-
           </div>
-
-        </div>
+        )}
 
       </div>
 
       {/* EDIT PROFILE MODAL */}
       {isEditModalOpen && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 animate-in fade-in">
-          <div className="bg-white dark:bg-slate-900 rounded-[32px] max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-slate-200 dark:border-white/10 space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-white/10">
-              <h3 className="text-lg font-bold text-slate-900 dark:text-white">
-                Edit Partner Profile
-              </h3>
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="bg-[#12161a] border border-[#00d3e0]/40 rounded-3xl max-w-lg w-full p-6 shadow-2xl relative flex flex-col gap-4 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between pb-3 border-b border-white/10">
+              <h3 className="text-lg font-black text-white">Profil Ma'lumotlarini Tahrirlash</h3>
               <button
+                type="button"
                 onClick={() => setIsEditModalOpen(false)}
-                className="w-8 h-8 rounded-full bg-slate-100 dark:bg-white/10 text-slate-500 hover:text-black dark:hover:text-white flex items-center justify-center font-bold"
+                className="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 text-white flex items-center justify-center cursor-pointer"
               >
                 ✕
               </button>
             </div>
 
-            <form onSubmit={handleSaveProfile} className="space-y-3.5 text-xs">
-              <div>
-                <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">
-                  Full Name / Primary Contact
-                </label>
+            <form onSubmit={handleSaveProfile} className="space-y-3.5">
+              <div className="space-y-1">
+                <label className="text-xs font-bold text-white/70">F.I.SH (Toʻliq Ism)</label>
                 <input
                   type="text"
                   value={editFullName}
                   onChange={(e) => setEditFullName(e.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-white/20 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white text-xs font-semibold focus:outline-emerald-600"
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-black/40 border border-white/10 text-white text-xs outline-none focus:border-[#00ffc8]"
                   required
                 />
               </div>
 
-              <div>
-                <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">
-                  Professional Title / Designation
-                </label>
-                <input
-                  type="text"
-                  value={editTitle}
-                  onChange={(e) => setEditTitle(e.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-white/20 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white text-xs font-semibold focus:outline-emerald-600"
-                  required
-                />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <label className="text-xs font-bold text-white/70">Lavozim / Ixtisoslik</label>
+                  <input
+                    type="text"
+                    value={editTitle}
+                    onChange={(e) => setEditTitle(e.target.value)}
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-black/40 border border-white/10 text-white text-xs outline-none focus:border-[#00ffc8]"
+                    required
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs font-bold text-white/70">Tashkilot / Ferma Nomi</label>
+                  <input
+                    type="text"
+                    value={editOrgName}
+                    onChange={(e) => setEditOrgName(e.target.value)}
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-black/40 border border-white/10 text-white text-xs outline-none focus:border-[#00ffc8]"
+                    required
+                  />
+                </div>
               </div>
 
-              <div>
-                <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">
-                  Operating Location / District
-                </label>
+              <div className="space-y-1">
+                <label className="text-xs font-bold text-white/70">Rasmiy Manzil</label>
                 <input
                   type="text"
                   value={editLocation}
                   onChange={(e) => setEditLocation(e.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-white/20 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white text-xs font-semibold focus:outline-emerald-600"
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-black/40 border border-white/10 text-white text-xs outline-none focus:border-[#00ffc8]"
                   required
                 />
               </div>
 
-              <div>
-                <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">
-                  Operational Summary & Equipment Bio
-                </label>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <label className="text-xs font-bold text-white/70">Telefon Raqam</label>
+                  <input
+                    type="text"
+                    value={editPhone}
+                    onChange={(e) => setEditPhone(e.target.value)}
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-black/40 border border-white/10 text-white text-xs outline-none focus:border-[#00ffc8]"
+                    required
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs font-bold text-white/70">Elektron Pochta</label>
+                  <input
+                    type="email"
+                    value={editEmail}
+                    onChange={(e) => setEditEmail(e.target.value)}
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-black/40 border border-white/10 text-white text-xs outline-none focus:border-[#00ffc8]"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-xs font-bold text-white/70">Faoliyat Tavsifi (Bio)</label>
                 <textarea
+                  rows={3}
                   value={editBio}
                   onChange={(e) => setEditBio(e.target.value)}
-                  rows={4}
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-white/20 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white text-xs font-normal focus:outline-emerald-600"
-                  required
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-black/40 border border-white/10 text-white text-xs outline-none focus:border-[#00ffc8]"
                 />
               </div>
 
-              <div>
-                <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">
-                  Direct Hotline Phone
-                </label>
-                <input
-                  type="text"
-                  value={editPhone}
-                  onChange={(e) => setEditPhone(e.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-white/20 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white text-xs font-mono font-semibold focus:outline-emerald-600"
-                  required
-                />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <label className="text-xs font-bold text-white/70">Xizmat Ko'rsatuvchi Bank</label>
+                  <input
+                    type="text"
+                    value={editBankName}
+                    onChange={(e) => setEditBankName(e.target.value)}
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-black/40 border border-white/10 text-white text-xs outline-none focus:border-[#00ffc8]"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs font-bold text-white/70">Hisobvaraq (IBAN)</label>
+                  <input
+                    type="text"
+                    value={editIban}
+                    onChange={(e) => setEditIban(e.target.value)}
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-black/40 border border-white/10 text-white text-xs outline-none focus:border-[#00ffc8]"
+                  />
+                </div>
               </div>
 
-              <div className="pt-3 flex items-center justify-end gap-2.5">
+              <div className="pt-3 flex justify-end gap-2 border-t border-white/10">
                 <button
                   type="button"
                   onClick={() => setIsEditModalOpen(false)}
-                  className="px-4 py-2 rounded-full border border-slate-300 text-slate-600 dark:text-slate-300 font-bold"
+                  className="px-4 py-2 rounded-full border border-white/10 text-white/70 hover:text-white text-xs font-bold cursor-pointer"
                 >
-                  Cancel
+                  Bekor qilish
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 rounded-full bg-[#087a3c] text-white font-bold hover:bg-[#065F46] transition shadow-xs"
+                  className="px-5 py-2 rounded-full bg-gradient-to-r from-[#00ffc8] to-[#0099ff] text-[#070B14] font-black text-xs cursor-pointer shadow-md"
                 >
-                  Save Changes
+                  O'zgarishlarni Saqlash
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ADD TEAM MEMBER MODAL */}
+      {isAddTeamModalOpen && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="bg-[#12161a] border border-[#00d3e0]/40 rounded-3xl max-w-md w-full p-6 shadow-2xl relative flex flex-col gap-4">
+            <div className="flex items-center justify-between pb-3 border-b border-white/10">
+              <h3 className="text-base font-black text-white">Yangi Mas'ul Xodim Qo'shish</h3>
+              <button
+                type="button"
+                onClick={() => setIsAddTeamModalOpen(false)}
+                className="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 text-white flex items-center justify-center cursor-pointer"
+              >
+                ✕
+              </button>
+            </div>
+
+            <form onSubmit={handleAddTeamMember} className="space-y-3.5">
+              <div className="space-y-1">
+                <label className="text-xs font-bold text-white/70">F.I.SH</label>
+                <input
+                  type="text"
+                  placeholder="Masalan: Sardor Rustamov"
+                  value={newMemberName}
+                  onChange={(e) => setNewMemberName(e.target.value)}
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-black/40 border border-white/10 text-white text-xs outline-none focus:border-[#00ffc8]"
+                  required
+                />
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-xs font-bold text-white/70">Lavozimi / Mas'uliyati</label>
+                <input
+                  type="text"
+                  placeholder="Masalan: Bosh Laborant & Qabul Mutaxassisi"
+                  value={newMemberRole}
+                  onChange={(e) => setNewMemberRole(e.target.value)}
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-black/40 border border-white/10 text-white text-xs outline-none focus:border-[#00ffc8]"
+                  required
+                />
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-xs font-bold text-white/70">Telefon Raqami</label>
+                <input
+                  type="text"
+                  placeholder="+998 90 123 45 67"
+                  value={newMemberPhone}
+                  onChange={(e) => setNewMemberPhone(e.target.value)}
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-black/40 border border-white/10 text-white text-xs outline-none focus:border-[#00ffc8]"
+                />
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-xs font-bold text-white/70">Email Manzili</label>
+                <input
+                  type="email"
+                  placeholder="xodim@zaminflow.uz"
+                  value={newMemberEmail}
+                  onChange={(e) => setNewMemberEmail(e.target.value)}
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-black/40 border border-white/10 text-white text-xs outline-none focus:border-[#00ffc8]"
+                />
+              </div>
+
+              <div className="pt-3 flex justify-end gap-2 border-t border-white/10">
+                <button
+                  type="button"
+                  onClick={() => setIsAddTeamModalOpen(false)}
+                  className="px-4 py-2 rounded-full border border-white/10 text-white/70 hover:text-white text-xs font-bold cursor-pointer"
+                >
+                  Bekor qilish
+                </button>
+                <button
+                  type="submit"
+                  className="px-5 py-2 rounded-full bg-gradient-to-r from-[#00ffc8] to-[#0099ff] text-[#070B14] font-black text-xs cursor-pointer shadow-md"
+                >
+                  Qo'shish
                 </button>
               </div>
             </form>

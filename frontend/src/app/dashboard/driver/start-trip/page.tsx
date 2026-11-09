@@ -2,13 +2,10 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import ZaminFlowLogo from "@/components/ZaminFlowLogo";
 import { useRouter } from "next/navigation";
-import { signOut } from "@/lib/auth";
 
 export default function StartTripPage() {
   const router = useRouter();
-  const [isSigningOut, setIsSigningOut] = useState(false);
 
   // Checkbox states
   const [sanitized, setSanitized] = useState(true);
@@ -21,12 +18,6 @@ export default function StartTripPage() {
   const [initialTempC, setInitialTempC] = useState<number>(3.1);
   const [isActivated, setIsActivated] = useState(false);
 
-  const handleSignOut = async () => {
-    setIsSigningOut(true);
-    await signOut();
-    router.push("/signin");
-  };
-
   const handleStartTrip = (e: React.FormEvent) => {
     e.preventDefault();
     setIsActivated(true);
@@ -35,237 +26,153 @@ export default function StartTripPage() {
     }, 2000);
   };
 
+  const allChecked = sanitized && preChilled && sensorCalibrated && sealsInspected;
+
   return (
-    <div className="min-h-[940px] bg-[linear-gradient(160deg,#f6f9f8_0%,#e4f6ec_100%)] text-[#17352c] font-[family-name:var(--font-inter,sans-serif)]">
-      <div className="max-w-[1180px] mx-auto px-6 pt-6 pb-14 flex flex-col gap-7">
-        
-        {/* Floating Top Pill Nav */}
-        <nav className="bg-white rounded-[40px] px-8 py-3.5 flex flex-wrap items-center justify-between gap-4 shadow-[0_10px_40px_rgba(20,80,60,0.08)]">
-          <Link href="/dashboard/driver" className="flex items-center shrink-0">
-            <ZaminFlowLogo mode="light" size="md" />
-          </Link>
-          <div className="flex flex-wrap items-center gap-7 text-[15px] font-semibold">
-            <Link href="/dashboard/driver" className="text-[#17352c] hover:text-[#087a3c] transition pb-0.5">
-              Overview
-            </Link>
-            <Link href="/dashboard/driver/my-trips" className="text-[#17352c] hover:text-[#087a3c] transition pb-0.5">
-              My trips
-            </Link>
-            <Link href="/dashboard/driver/route" className="text-[#17352c] hover:text-[#087a3c] transition pb-0.5">
-              Route
-            </Link>
-            <Link href="/dashboard/driver/history" className="text-[#17352c] hover:text-[#087a3c] transition pb-0.5">
-              History
-            </Link>
-          </div>
-          <div className="flex items-center gap-3">
-            <span className="text-xs font-bold bg-[#d9f7e5] text-[#087a3c] rounded-lg px-2 py-1 whitespace-nowrap">
-              Driver
+    <div className="flex flex-col gap-6">
+      {/* 1. HEADER ROW */}
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-2 mb-1">
+            <span className="w-2 h-2 rounded-full bg-[#00ffc8] animate-pulse" />
+            <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-[#00ffc8]">
+              Reysdan Oldingi Texnik Nazorat va Sanitar Koʻrik
             </span>
-            <button
-              onClick={handleSignOut}
-              disabled={isSigningOut}
-              className="bg-white text-[#12303a] border-[1.5px] border-[#12303a] rounded-full px-5 min-h-[44px] font-bold text-[15px] hover:bg-[#12303a] hover:text-white transition cursor-pointer"
-            >
-              {isSigningOut ? "..." : "Sign out"}
-            </button>
           </div>
-        </nav>
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+            Yangi Reysni <span className="bg-gradient-to-r from-[#00ffc8] to-[#0099ff] bg-clip-text text-transparent">Boshlash</span>
+          </h1>
+          <p className="text-xs text-white/50 mt-1">
+            Sisterna sanitar holati, sovitkich agregati va GPS telemetriya kalibratsiyasini tasdiqlash
+          </p>
+        </div>
 
-        {/* Header Row */}
-        <header className="flex flex-wrap items-end justify-between gap-5 pt-4">
-          <div>
-            <h1 className="m-0 text-4xl sm:text-5xl font-extrabold tracking-[-0.03em] leading-[1.05] text-[#17352c]">
-              Start Next Trip: <span className="text-[#087a3c]">Pre-Trip Inspection</span>
-            </h1>
-          </div>
-          <Link
-            href="/dashboard/driver"
-            className="text-sm font-bold text-[#4d6a60] hover:text-[#17352c] transition"
-          >
-            ← Cancel
-          </Link>
-        </header>
-
-        {isActivated ? (
-          <div className="bg-[rgba(255,255,255,0.76)] border border-white rounded-[24px] shadow-[0_10px_40px_rgba(20,80,60,0.08)] p-8 sm:p-12 text-center flex flex-col items-center gap-4 max-w-xl mx-auto">
-            <div className="w-16 h-16 rounded-full bg-[#d9f7e5] text-[#087a3c] flex items-center justify-center text-3xl font-extrabold">
-              🛰
-            </div>
-            <h2 className="text-3xl font-extrabold text-[#17352c]">
-              Dispatch Activated & Telemetry Locked!
-            </h2>
-            <p className="text-base text-[#4d6a60]">
-              GPS tracking and cold-chain temperature broadcasting are live. Redirecting to your turn-by-turn route...
-            </p>
-          </div>
-        ) : (
-          <form onSubmit={handleStartTrip} className="flex flex-wrap gap-7">
-            
-            {/* Checklist */}
-            <div className="bg-[rgba(255,255,255,0.76)] border border-white rounded-[24px] shadow-[0_10px_40px_rgba(20,80,60,0.08)] p-6 sm:p-8 flex-[1.6_1_520px] flex flex-col gap-6 box-border">
-              <div>
-                <h3 className="text-xs font-bold tracking-[0.08em] text-[#087a3c] uppercase mb-4">
-                  1. Mandatory Cold-Chain & Tanker Sanitization Checklist
-                </h3>
-
-                <div className="space-y-4">
-                  <label className="flex items-start gap-3 p-4 rounded-2xl bg-white/80 border border-[#17352c]/10 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={sanitized}
-                      onChange={(e) => setSanitized(e.target.checked)}
-                      className="mt-1 w-5 h-5 accent-[#087a3c]"
-                      required
-                    />
-                    <div>
-                      <div className="font-bold text-sm text-[#17352c]">
-                        CIP Chemical Wash & Steam Sanitization Verified
-                      </div>
-                      <div className="text-xs text-[#4d6a60]">
-                        Cleaned within the last 24 hours; certificate valid for Grade A raw milk haulage.
-                      </div>
-                    </div>
-                  </label>
-
-                  <label className="flex items-start gap-3 p-4 rounded-2xl bg-white/80 border border-[#17352c]/10 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={preChilled}
-                      onChange={(e) => setPreChilled(e.target.checked)}
-                      className="mt-1 w-5 h-5 accent-[#087a3c]"
-                      required
-                    />
-                    <div>
-                      <div className="font-bold text-sm text-[#17352c]">
-                        Internal Tank Pre-Chilled to ≤ 4.0°C
-                      </div>
-                      <div className="text-xs text-[#4d6a60]">
-                        Refrigeration compressor operating at steady-state without thermal alarms.
-                      </div>
-                    </div>
-                  </label>
-
-                  <label className="flex items-start gap-3 p-4 rounded-2xl bg-white/80 border border-[#17352c]/10 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={sensorCalibrated}
-                      onChange={(e) => setSensorCalibrated(e.target.checked)}
-                      className="mt-1 w-5 h-5 accent-[#087a3c]"
-                      required
-                    />
-                    <div>
-                      <div className="font-bold text-sm text-[#17352c]">
-                        IoT Digital Probe Synced &amp; Battery &gt; 80%
-                      </div>
-                      <div className="text-xs text-[#4d6a60]">
-                        Telemetry sensor paired with ZaminFlow platform Gateway.
-                      </div>
-                    </div>
-                  </label>
-
-                  <label className="flex items-start gap-3 p-4 rounded-2xl bg-white/80 border border-[#17352c]/10 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={sealsInspected}
-                      onChange={(e) => setSealsInspected(e.target.checked)}
-                      className="mt-1 w-5 h-5 accent-[#087a3c]"
-                      required
-                    />
-                    <div>
-                      <div className="font-bold text-sm text-[#17352c]">
-                        Manifold Valves & Anti-Tamper Seals Secure
-                      </div>
-                      <div className="text-xs text-[#4d6a60]">
-                        Rubber gaskets intact; no leakages or residue at intake manifolds.
-                      </div>
-                    </div>
-                  </label>
-                </div>
-              </div>
-
-              <div className="pt-4 border-t border-[#17352c]/10">
-                <h3 className="text-xs font-bold tracking-[0.08em] text-[#087a3c] uppercase mb-4">
-                  2. Vehicle Starting Odometer & Temperature Reading
-                </h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-bold text-[#4d6a60] uppercase mb-1">
-                      Current Odometer (km)
-                    </label>
-                    <input
-                      type="number"
-                      value={odometerKm}
-                      onChange={(e) => setOdometerKm(Number(e.target.value))}
-                      className="w-full h-12 rounded-xl border border-[#17352c]/20 px-4 font-[family-name:var(--font-jetbrains-mono,monospace)] text-lg font-bold text-[#17352c] bg-white focus:outline-none focus:ring-2 focus:ring-[#22d36b]"
-                      required
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-bold text-[#4d6a60] uppercase mb-1">
-                      Pre-Chilled Internal Temp (°C)
-                    </label>
-                    <input
-                      type="number"
-                      step={0.1}
-                      max={4.0}
-                      value={initialTempC}
-                      onChange={(e) => setInitialTempC(Number(e.target.value))}
-                      className="w-full h-12 rounded-xl border border-[#17352c]/20 px-4 font-[family-name:var(--font-jetbrains-mono,monospace)] text-lg font-bold text-[#17352c] bg-white focus:outline-none focus:ring-2 focus:ring-[#22d36b]"
-                      required
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Right Card: Dispatch Summary */}
-            <div className="bg-[rgba(255,255,255,0.76)] border border-white rounded-[24px] shadow-[0_10px_40px_rgba(20,80,60,0.08)] p-6 sm:p-8 flex-[1_1_340px] flex flex-col justify-between gap-6 box-border">
-              <div>
-                <div className="text-xs font-bold tracking-[0.08em] text-[#087a3c] uppercase">
-                  Dispatch Route
-                </div>
-                <h3 className="text-2xl font-bold text-[#17352c] mt-1 mb-4">
-                  Sayxunobod → Tashkent
-                </h3>
-
-                <div className="bg-white/80 rounded-2xl p-5 border border-[#17352c]/10 space-y-3 text-sm">
-                  <div className="flex justify-between items-center">
-                    <span className="text-[#4d6a60]">Stops on Run:</span>
-                    <span className="font-bold text-[#17352c]">3 Collection Points</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-[#4d6a60]">Estimated Run Time:</span>
-                    <span className="font-bold text-[#17352c]">4 hr 30 min</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-[#4d6a60]">Total Batch Volume:</span>
-                    <span className="font-[family-name:var(--font-jetbrains-mono,monospace)] font-bold text-[#087a3c]">
-                      2,150 L
-                    </span>
-                  </div>
-                  <div className="border-t border-[#17352c]/10 pt-2 flex justify-between items-center">
-                    <span className="text-[#4d6a60]">Driver Payout:</span>
-                    <span className="font-[family-name:var(--font-jetbrains-mono,monospace)] font-bold text-[#12303a]">
-                      650,000 UZS
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              <button
-                type="submit"
-                className="w-full bg-[#12303a] text-white rounded-full min-h-[52px] font-bold text-base hover:bg-[#087a3c] transition shadow-lg cursor-pointer flex items-center justify-center gap-2"
-              >
-                <span>Activate Dispatch & Route →</span>
-              </button>
-            </div>
-
-          </form>
-        )}
-
+        <Link
+          href="/dashboard/driver/my-trips"
+          className="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-xs font-bold text-white/70 hover:text-white hover:bg-white/10 transition"
+        >
+          ← Safarlarimga Qaytish
+        </Link>
       </div>
+
+      {isActivated ? (
+        <div className="rounded-[32px] bg-gradient-to-br from-[#00ffc8]/10 via-white/[0.03] to-[#0099ff]/10 border border-[#00ffc8]/30 p-8 sm:p-12 text-center flex flex-col items-center max-w-xl mx-auto shadow-2xl">
+          <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-[#00ffc8] to-[#0099ff] text-[#070B14] text-2xl font-black flex items-center justify-center shadow-lg shadow-[#00ffc8]/25 mb-4">
+            ✓
+          </div>
+          <h2 className="text-2xl font-black text-white mb-2">Reys Muvaffaqiyatli Faollashtirildi!</h2>
+          <p className="text-xs text-white/70 max-w-md leading-relaxed mb-4">
+            IoT telemetriya datchiklari dispetcherlik markaziga ulandi. Sayxunobod fermasiga yoʻnalish ochilmoqda...
+          </p>
+          <span className="text-[11px] font-mono text-[#00ffc8] animate-pulse">Jonli xarita yuklanmoqda...</span>
+        </div>
+      ) : (
+        <form
+          onSubmit={handleStartTrip}
+          className="max-w-2xl mx-auto w-full rounded-[28px] bg-white/[0.03] border border-white/10 p-6 sm:p-8 flex flex-col gap-6"
+        >
+          <div className="border-b border-white/10 pb-4">
+            <h2 className="text-lg font-bold text-white">Reys Oldi Nazorat Roʻyxati</h2>
+            <p className="text-xs text-white/50">HACCP va sovuq zanjir xavfsizlik talablari</p>
+          </div>
+
+          {/* CHECKLIST */}
+          <div className="flex flex-col gap-3">
+            {[
+              {
+                id: "sanitized",
+                label: "CIP Sanitar yuvish amalga oshirilgan",
+                desc: "Sisternaning ichki yuzasi dezinfeksiya qilingan va hidsiz",
+                state: sanitized,
+                set: setSanitized,
+              },
+              {
+                id: "preChilled",
+                label: "Sovitish tizimi oldindan sovutilgan",
+                desc: "Kompressor barqaror 3.0°C – 4.0°C oraligʻiga yetkazilgan",
+                state: preChilled,
+                set: setPreChilled,
+              },
+              {
+                id: "sensorCalibrated",
+                label: "IoT datchiklar va GPS faol",
+                desc: "BLE termodatchiklar va yoʻldosh aloqasi dispetcherlikka ulangan",
+                state: sensorCalibrated,
+                set: setSensorCalibrated,
+              },
+              {
+                id: "sealsInspected",
+                label: "Raqamli muhrlar butunligi tekshirildi",
+                desc: "Klapanlar va lyuklar qulflangan holatda",
+                state: sealsInspected,
+                set: setSealsInspected,
+              },
+            ].map((chk) => (
+              <label
+                key={chk.id}
+                className={`p-4 rounded-2xl border transition-all cursor-pointer flex items-start gap-3.5 select-none ${
+                  chk.state
+                    ? "bg-[#00ffc8]/10 border-[#00ffc8]/40 text-white"
+                    : "bg-white/5 border-white/10 text-white/60 hover:border-white/20"
+                }`}
+              >
+                <input
+                  type="checkbox"
+                  checked={chk.state}
+                  onChange={(e) => chk.set(e.target.checked)}
+                  className="mt-0.5 w-4 h-4 rounded accent-[#00ffc8] cursor-pointer"
+                />
+                <div className="flex flex-col">
+                  <span className="font-bold text-xs text-white">{chk.label}</span>
+                  <span className="text-[11px] text-white/50">{chk.desc}</span>
+                </div>
+              </label>
+            ))}
+          </div>
+
+          {/* ODOMETER & START TEMP */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs font-mono uppercase text-white/70 mb-2">
+                Odomatr Koʻrsatkichi (km)
+              </label>
+              <input
+                type="number"
+                value={odometerKm}
+                onChange={(e) => setOdometerKm(Number(e.target.value))}
+                className="w-full h-12 rounded-2xl bg-white/5 border border-white/15 px-4 font-mono text-sm font-bold text-white focus:border-[#00ffc8] outline-none"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-mono uppercase text-white/70 mb-2">
+                Dastlabki Harorat (°C)
+              </label>
+              <input
+                type="number"
+                step="0.1"
+                value={initialTempC}
+                onChange={(e) => setInitialTempC(Number(e.target.value))}
+                className="w-full h-12 rounded-2xl bg-white/5 border border-white/15 px-4 font-mono text-sm font-bold text-white focus:border-[#00ffc8] outline-none"
+                required
+              />
+            </div>
+          </div>
+
+          <button
+            type="submit"
+            disabled={!allChecked}
+            className={`w-full h-13 rounded-2xl font-black text-sm tracking-wide transition cursor-pointer shadow-xl ${
+              allChecked
+                ? "bg-gradient-to-r from-[#00ffc8] via-[#00d3e0] to-[#0099ff] text-[#070B14] shadow-[#00ffc8]/25 hover:shadow-[#00ffc8]/40 hover:scale-[1.01]"
+                : "bg-white/10 text-white/30 cursor-not-allowed"
+            }`}
+          >
+            Reysni Faollashtirish va Marshrutni Boshlash →
+          </button>
+        </form>
+      )}
     </div>
   );
 }

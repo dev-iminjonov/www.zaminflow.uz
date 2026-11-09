@@ -258,7 +258,7 @@ export default function LandingLiveStatistics({
       <section
         id="stats"
         aria-labelledby="live-stats-heading"
-        className="max-w-[1180px] mx-auto py-20 px-6 flex flex-wrap items-center gap-14 w-full box-border"
+        className="max-w-[1240px] mx-auto py-20 sm:py-28 px-4 sm:px-6 lg:px-8 flex flex-wrap items-center gap-14 w-full box-border scroll-mt-24"
       >
         {/* Left Column: Heading, Subtitle, CTA */}
         <div className="flex-1 basis-[360px] max-w-full">

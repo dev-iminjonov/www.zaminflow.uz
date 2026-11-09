@@ -5,10 +5,30 @@
 
 export type Locale = "uz" | "ru" | "en";
 
+export interface SimulatorStepTranslation {
+  step: number;
+  roleKey: string;
+  roleTitle: string;
+  title: string;
+  subtitle: string;
+  icon: string;
+  badge: string;
+  badgeColor: string;
+  details: Array<{
+    label: string;
+    value: string;
+    highlight?: boolean;
+  }>;
+  systemLog: string;
+  actionText: string;
+}
+
 export interface Translations {
   nav: {
     brand: string;
     company: string;
+    benefits: string;
+    demo: string;
     team: string;
     stats: string;
     contact: string;
@@ -18,6 +38,9 @@ export interface Translations {
     dashboard: string;
   };
   hero: {
+    headlineLine1: string;
+    headlineLine2: string;
+    headlineLine3: string;
     headlineStart: string;
     headlineAccent: string;
     subheadline: string;
@@ -36,7 +59,59 @@ export interface Translations {
       autoRelease: string;
     };
   };
+  statsBar: {
+    regionsTitle: string;
+    regionsSub: string;
+    milkTitle: string;
+    milkSub: string;
+    partnersTitle: string;
+    partnersSub: string;
+    escrowTitle: string;
+    escrowSub: string;
+  };
+  benefitsSection: {
+    badge: string;
+    title1: string;
+    title2: string;
+    subtitle: string;
+    cards: Array<{
+      icon: string;
+      badge: string;
+      title: string;
+      description: string;
+      gradient: string;
+    }>;
+  };
+  simulatorSection: {
+    badge: string;
+    titleStart: string;
+    titleAccent: string;
+    subtitle: string;
+    stepBadge: string;
+    actionComplete: string;
+    nextStepBtn: string;
+    restartBtn: string;
+    steps: SimulatorStepTranslation[];
+  };
+  mapSection: {
+    badge: string;
+    titleStart: string;
+    titleAccent: string;
+    titleEnd: string;
+    subtitle: string;
+    activeRegionLabel: string;
+    monthlyVolumeLabel: string;
+    avgPriceLabel: string;
+    fatSnfLabel: string;
+    gradeText: string;
+    coldStorageLabel: string;
+    certifiedFarmsSuffix: string;
+    viewLotBtn: string;
+  };
   team: {
+    badge: string;
+    titleStart: string;
+    titleAccent: string;
     title: string;
     subtitle: string;
     roles: {
@@ -44,6 +119,77 @@ export interface Translations {
       coFounder: string;
       leadDev: string;
       adviser: string;
+    };
+    badges: {
+      founder: string;
+      coFounder: string;
+      leadDev: string;
+      adviser: string;
+    };
+  };
+  testimonialsSection: {
+    badge: string;
+    titleStart: string;
+    titleAccent: string;
+    subtitle: string;
+    items: Array<{
+      quote: string;
+      name: string;
+      role: string;
+      company: string;
+      rating: number;
+      initials: string;
+    }>;
+  };
+  faqSection: {
+    badge: string;
+    titleStart: string;
+    titleAccent: string;
+    subtitle: string;
+    emailPlaceholder: string;
+    sendBtn: string;
+    sending: string;
+    successMsg: string;
+    errorEmailMsg: string;
+    items: Array<{
+      question: string;
+      answer: string;
+    }>;
+  };
+  footerSection: {
+    mission: string;
+    companyCol: string;
+    about: string;
+    benefits: string;
+    team: string;
+    liveStats: string;
+    ecosystemCol: string;
+    forFarmers: string;
+    forDairies: string;
+    forLogistics: string;
+    forBanks: string;
+    legalCol: string;
+    stir: string;
+    legalText: string;
+    allRightsReserved: string;
+    privacyPolicy: string;
+    termsOfUse: string;
+  };
+  profileView: {
+    backToDashboard: string;
+    dossierLabel: string;
+    dealFlow: string;
+    escrowDepository: string;
+    editProfile: string;
+    shareTooltip: string;
+    exportTooltip: string;
+    callTooltip: string;
+    emailTooltip: string;
+    tabs: {
+      overview: string;
+      specs: string;
+      contracts: string;
+      team: string;
     };
   };
   stats: {
@@ -148,7 +294,9 @@ export const translations: Record<Locale, Translations> = {
   uz: {
     nav: {
       brand: "ZaminFlow",
-      company: "Bizning kompaniya",
+      company: "Biz haqimizda",
+      benefits: "Afzalliklar",
+      demo: "Jonli Demo",
       team: "Bizning jamoa",
       stats: "Jonli statistika",
       contact: "Bog'lanish",
@@ -158,6 +306,9 @@ export const translations: Record<Locale, Translations> = {
       dashboard: "Boshqaruv paneli",
     },
     hero: {
+      headlineLine1: "Kichik Fermerlarni",
+      headlineLine2: "Yirik Xaridorlar Bilan",
+      headlineLine3: "Bog'laymiz!",
       headlineStart: "Kichik fermerlarni yirik ",
       headlineAccent: "xaridorlar bilan bog'laymiz",
       subheadline:
@@ -177,14 +328,311 @@ export const translations: Record<Locale, Translations> = {
         autoRelease: "Titrlash tekshiruvidan so'ng avto-chiqarish",
       },
     },
+    statsBar: {
+      regionsTitle: "Viloyat Qamrovi",
+      regionsSub: "O'zbekiston bo'ylab to'liq tarmoq",
+      milkTitle: "Kafolatlangan Sut",
+      milkSub: "Oylik yetkazib berish (litr)",
+      partnersTitle: "Tasdiqlangan Hamkor",
+      partnersSub: "Fermer, zavod va tankerlar",
+      escrowTitle: "Eskrou Kafolati",
+      escrowSub: "Bank darajasidagi xavfsiz to'lov",
+    },
+    benefitsSection: {
+      badge: "AFZALLIKLARIMIZ",
+      title1: "Sut Bozorida Yangi Davrni ",
+      title2: "Biz Bilan Boshlang!",
+      subtitle:
+        "An'anaviy sut yetkazib berishdagi yo'qotishlar va kechikkan to'lovlarga chek qo'ying. ZaminFlow barcha jarayonlarni raqamlashtiradi.",
+      cards: [
+        {
+          icon: "🌐",
+          badge: "To'g'ridan-to'g'ri B2B",
+          title: "Keng Tanlov & Shaffof Narx",
+          description:
+            "O'rtakashlarsiz 450+ tekshirilgan sut fermalari va qayta ishlovchi zavodlar bilan to'g'ridan-to'g'ri savdo qiling.",
+          gradient: "from-[#00ffc8]/20 via-[#00d3e0]/10 to-transparent",
+        },
+        {
+          icon: "🚛",
+          badge: "IoT Telematika",
+          title: "Aqlli Sovuq Zanjir",
+          description:
+            "Har bir sut tashuvchi tankerning +3.2°C harorati va GPS marshruti IoT datchiklar orqali uzluksiz monitoring qilinadi.",
+          gradient: "from-[#00d3e0]/20 via-[#0099ff]/10 to-transparent",
+        },
+        {
+          icon: "🛡️",
+          badge: "Bank Eskrou",
+          title: "Kafolatlangan To'lov",
+          description:
+            "Mablag' bank eskrou hisobida saqlanadi va faqat zavod laboratoriyasi sifatni tasdiqlaganidan so'ng avtomatik chiqariladi.",
+          gradient: "from-[#0099ff]/20 via-[#00ffc8]/10 to-transparent",
+        },
+      ],
+    },
+    simulatorSection: {
+      badge: "INTERAKTIV TIZIM",
+      titleStart: "Shartnomadan To'lovgacha: ",
+      titleAccent: "To'liq Jarayon Simulyatsiyasi",
+      subtitle:
+        "5 bosqichli interaktiv demo orqali xom sut partiyasi qanday yaratilishi, bankda bloklanishi, sovuq zanjirda yetkazilishi va to'lov chiqishini ko'ring.",
+      stepBadge: "Bosqich",
+      actionComplete: "Bajarildi ✓",
+      nextStepBtn: "Keyingi Bosqichga O'tish →",
+      restartBtn: "Simulyatsiyani Qaytadan Boshlash ↺",
+      steps: [
+        {
+          step: 1,
+          roleKey: "farmer",
+          roleTitle: "Fermer (Ishlab Chiqaruvchi)",
+          title: "Xom Sut Partiyasini Eʼlon Qilish",
+          subtitle: "Sayxunobod Agro-Dairy Farm yangi sogʻilgan 5,000 L sutni tizimga joylaydi",
+          icon: "🌾",
+          badge: "Partiya Yaratildi",
+          badgeColor: "#00ffc8",
+          details: [
+            { label: "Ferma Nomi", value: "Sayxunobod Agro MCHJ (№ UZ-99412)" },
+            { label: "Sut Hajmi", value: "5,000 Litr", highlight: true },
+            { label: "Sifat Koʻrsatkichi", value: "4.15% Yogʻ • 8.65% SNF" },
+            { label: "Boshlangʻich Sovutish", value: "+3.2°C (GEA Tankida)" },
+            { label: "Taklif Narxi", value: "4,450 UZS / Litr" },
+            { label: "Jami Shartnoma Qiymati", value: "22,250,000 UZS", highlight: true },
+          ],
+          systemLog: "HASH-01: Smart-kontrakt partiya #ZF-9042 uchun muvaffaqiyatli yaratildi.",
+          actionText: "Zavod Buyurtmasiga Oʻtish",
+        },
+        {
+          step: 2,
+          roleKey: "bank",
+          roleTitle: "Bank & Eskrou Depozitariysi",
+          title: "100% Kafolatlangan Eskrou Bloklash",
+          subtitle: "Samarqand Sut Zavodi buyurtma beradi, AgroBank toʻlovni tranzit depozitga oladi",
+          icon: "🏦",
+          badge: "Eskrou Qulflangan",
+          badgeColor: "#0099ff",
+          details: [
+            { label: "Xaridor Zavod", value: "Samarqand Sut Zavodi #4 MCHJ" },
+            { label: "Depozitariy Hamkor", value: "AgroBank ATB (MB Litsenziyasi №14)" },
+            { label: "Muzlatilgan Summa", value: "22,250,000 UZS", highlight: true },
+            { label: "Kriptografik Protokol", value: "ISO 20022 (pacs.008 kliring)" },
+            { label: "Fermer Kafolati", value: "100% Depozit Taʼminlangan" },
+            { label: "Toʻlov Kafillik Kodi", value: "ESCROW-AGRO-2026-X89", highlight: true },
+          ],
+          systemLog: "HASH-02: Mablagʻ tranzit hisobvaraqda qulflangan. Logistika yuklashga ruxsat berildi.",
+          actionText: "Tanker Logistikasini Boshlash",
+        },
+        {
+          step: 3,
+          roleKey: "driver",
+          roleTitle: "Sovuq Zanjir Logistika Floti",
+          title: "Tanker Yuklash & IoT Telemetriya",
+          subtitle: "MAN TGX 18.440 sisternasi e-TTN QR orqali partiyani qabul qiladi",
+          icon: "🚛",
+          badge: "Tranzitda: +3.2°C",
+          badgeColor: "#00d3e0",
+          details: [
+            { label: "Transport & Haydovchi", value: "MAN TGX 18.440 (01 | 777 ZAM) • Bobur A." },
+            { label: "Elektron Yoʻl Varaqasi", value: "e-TTN QR № TTN-2026-4412" },
+            { label: "Termo-Sensorlar (PT100)", value: "+3.2°C (Barqaror sovutilgan)", highlight: true },
+            { label: "GPS Sunʼiy Yoʻldosh", value: "RTK 0.5m aniqlik (Toshkent yoʻlagi)" },
+            { label: "Klapan Qulflari", value: "Elektron germetik plomba FAOL" },
+            { label: "Taxminiy Yetib Borish", value: "1 soat 45 daqiqa (98 km)", highlight: true },
+          ],
+          systemLog: "HASH-03: Real-vaqt telemetriya maʼlumotlari zanjirga yozilmoqda. Harorat normada.",
+          actionText: "Zavod Darvoza Laboratoriyasiga Yetkazish",
+        },
+        {
+          step: 4,
+          roleKey: "dairy",
+          roleTitle: "Zavod Ekspress Laboratoriyasi",
+          title: "15 Daqiqalik Ekspress Sifat Tahlili",
+          subtitle: "Zavod qabulxonasida titratsiya, Gerber sentrifugasi va antibiotik tekshiruvi",
+          icon: "🔬",
+          badge: "Oliy A+ Tasdiqlandi",
+          badgeColor: "#00ffc8",
+          details: [
+            { label: "Haqiqiy Yogʻlilik (Gerber)", value: "4.18% (Talab: > 3.8%) ✓", highlight: true },
+            { label: "Quruq Qoldiq (SNF)", value: "8.68% (Meʼyorida) ✓" },
+            { label: "Zichlik (Laktometr)", value: "1.028 g/sm³ ✓" },
+            { label: "Antibiotik Tahlili", value: "NOL (Toza sut) ✓", highlight: true },
+            { label: "Qabul Harorati", value: "+3.3°C (Sovuq zanjir buzilmagan)" },
+            { label: "Qabul Dalolatnomasi", value: "Elektron E-IMZO bilan tasdiqlandi", highlight: true },
+          ],
+          systemLog: "HASH-04: Laboratoriya natijalari ISO 20022 protokoliga yuklandi. Eskrouga signal berildi.",
+          actionText: "Eskrou Toʻlovini Fermerga Chiqarish",
+        },
+        {
+          step: 5,
+          roleKey: "bank",
+          roleTitle: "Avtomatik Hisob-Kitob",
+          title: "Tezkor Eskrou Toʻlovi & Faktoring",
+          subtitle: "Mablagʻ fermer hisobiga 1 daqiqada tushadi, hech qanday qarzdorliksiz",
+          icon: "⚡",
+          badge: "Toʻlov Amalga Oshirildi",
+          badgeColor: "#00ffc8",
+          details: [
+            { label: "Chiqarilgan Summa", value: "22,250,000 UZS", highlight: true },
+            { label: "Tranzaksiya Turi", value: "Avtomatik Bank Kliringi (RTGS)" },
+            { label: "Komissiya", value: "0% (Xaridor tomonidan toʻlangan)" },
+            { label: "Fermer Balansi", value: "+22,250,000 UZS (Mablagʻ tushdi)" },
+            { label: "Faktoring Imkoniyati", value: "Tasdiqlangan shartnoma boʻyicha ochiq" },
+            { label: "Audit va Soliq Hujjati", value: "E-Faktura № EF-99412 yaratildi", highlight: true },
+          ],
+          systemLog: "HASH-05: Shartnoma toʻliq yakunlandi. Fermerga SMS-xabarnoma yuborildi.",
+          actionText: "Jarayon Muvaffaqiyatli Yakunlandi",
+        },
+      ],
+    },
+    mapSection: {
+      badge: "OʻZBEKISTON MILLIY SUT AGROSANOAT XARITASI",
+      titleStart: "Hududingizdagi Eng Maqbul ",
+      titleAccent: "Sut Partiyalarini ",
+      titleEnd: "Toping",
+      subtitle:
+        "14 ta maʼmuriy hudud boʻylab real vaqt rejimida sertifikatlangan xom sut narxlari, hajmlari va sovuq zanjir tanker logistikasi telemetriyasi.",
+      activeRegionLabel: "FAOL HUDUD",
+      monthlyVolumeLabel: "Oylik Hajm:",
+      avgPriceLabel: "O'rtacha Narx:",
+      fatSnfLabel: "Yog'lilik (SNF):",
+      gradeText: "(A+ nav)",
+      coldStorageLabel: "Sovuq Saqlash:",
+      certifiedFarmsSuffix: "ta tasdiqlangan fermer",
+      viewLotBtn: "Partiyani Ko'rish →",
+    },
     team: {
+      badge: "FIDOYI MUTAXASSISLAR",
+      titleStart: "Bizning ",
+      titleAccent: "Jamoa",
       title: "Bizning jamoa",
-      subtitle: "O'zbekistonning raqamli sut infratuzilmasi ortidagi fidoyi mutaxassislar.",
+      subtitle: "O'zbekistonning raqamli sut infratuzilmasi va fintex ekotizimi ortidagi mutaxassislar.",
       roles: {
-        founder: "Asoschi",
-        coFounder: "Hammuassis",
-        leadDev: "Yetakchi dasturchi",
-        adviser: "Maslahatchi",
+        founder: "Asoschi & Bosh Direktor",
+        coFounder: "Hammuassis & Operatsiyalar",
+        leadDev: "Yetakchi Muhandis",
+        adviser: "Strategik Maslahatchi",
+      },
+      badges: {
+        founder: "Boshqaruvchi",
+        coFounder: "Operatsiyalar",
+        leadDev: "Yetakchi Muhandis",
+        adviser: "Strategik Maslahatchi",
+      },
+    },
+    testimonialsSection: {
+      badge: "ISHLAB CHIQARUVCHILAR FIKRI",
+      titleStart: "Biznes Hamkorlarimiz ",
+      titleAccent: "Nima Deydi?",
+      subtitle: "Fermerlar, sutni qayta ishlovchi zavodlar va logistika operatorlarining real tajribalari.",
+      items: [
+        {
+          quote:
+            "ZaminFlow platformasi tufayli oylik 120,000 litr sutimizni kafolatlangan narxda va bir kun ham kechikmagan to'lov bilan sotyapmiz.",
+          name: "Alisher Qodirov",
+          role: "Bosh Fermer",
+          company: "Sayxunobod Baraka Chorva MCHJ",
+          rating: 5,
+          initials: "AQ",
+        },
+        {
+          quote:
+            "Zavodimizga kelayotgan har bir tankerning harorati va yog'lilik darajasi yo'ldayoq ma'lum. Qabuldagi nizolar 90% ga kamaydi.",
+          name: "Nodira Karimova",
+          role: "Bosh Texnolog",
+          company: "Toshkent Sut Kombinati",
+          rating: 5,
+          initials: "NK",
+        },
+        {
+          quote:
+            "Izolyatsiyalangan sisterna harorati datchiklar orqali mobil ilovamda ko'rinadi. Shaffof reyslar tufayli buyurtmalarim 3 barobar oshdi.",
+          name: "Rustam Mahmudov",
+          role: "Logistika Operatori",
+          company: "O'zTrans Sovuq Zanjir",
+          rating: 5,
+          initials: "RM",
+        },
+        {
+          quote:
+            "Eskrou kafolati orqali bank fermerlarga ham, yirik xaridorlarga ham foizsiz faktoring va likvidlik taqdim etish imkoniga ega bo'ldi.",
+          name: "Sardor Valiev",
+          role: "Savdo Moliyasi Rahbari",
+          company: "AgroBank Hamkor",
+          rating: 5,
+          initials: "SV",
+        },
+      ],
+    },
+    faqSection: {
+      badge: "SAVOLLAR VA ALOQA",
+      titleStart: "Savollaringiz Bormi? ",
+      titleAccent: "Bizga Yozing!",
+      subtitle:
+        "Platformaga ulanish, laboratoriya integratsiyasi yoki eskrou to'lovlari bo'yicha mutaxassislarimiz har doim yordamga tayyor.",
+      emailPlaceholder: "Elektron pochtangizni kiriting...",
+      sendBtn: "Yuborish",
+      sending: "Yuborilmoqda...",
+      successMsg: "Rahmat! Mutaxassisimiz tez orada siz bilan bog'lanadi.",
+      errorEmailMsg: "Iltimos, to'g'ri elektron pochta manzilini kiriting.",
+      items: [
+        {
+          question: "ZaminFlow orqali sut qanday sotiladi yoki xarid qilinadi?",
+          answer:
+            "Fermer o'z fermasi va sut hajmini tizimga kiritadi. Yirik xaridorlar (zavodlar) taklifni ko'rib, buyurtma beradi. Tizim avtomatik tarzda eng yaqin izolyatsiyalangan sovutilgan tankerni biriktiradi va bank eskrou to'lovini bloklaydi.",
+        },
+        {
+          question: "Sut sifatining laboratoriya tekshiruvi qanday amalga oshiriladi?",
+          answer:
+            "Tanker fermadan yuklanganda va zavod darvozasiga yetib kelganda Raqamli Gate-Lab moduli orqali yog'lilik (kamida 3.6%), QYSQ (kamida 8.2%), harorat (+4°C gacha) va titrlash nordonligi tekshirilib, dalolatnoma elektron imzolanadi.",
+        },
+        {
+          question: "Eskrou hisobidagi to'lov fermerga qachon yetib boradi?",
+          answer:
+            "Zavod laboratoriyasi qabul dalolatnomasini tasdiqlagan zahoti bank eskrou hisobidagi mablag' avtomatik ravishda fermerning hisob raqamiga o'tkaziladi. Odatda bu 15 daqiqadan oshmaydi.",
+        },
+        {
+          question: "Platformada ro'yxatdan o'tish fermerlar uchun bepulmi?",
+          answer:
+            "Ha, barcha kichik va o'rta sut fermerlari platformadan ro'yxatdan o'tish va birinchi shartnomalarini rasmiylashtirish mutlaqo bepul amalga oshiriladi.",
+        },
+      ],
+    },
+    footerSection: {
+      mission:
+        "O'zbekiston milliy B2B sut ta'minot zanjiri, IoT sovuq zanjir monitoringi va bank tomonidan kafolatlangan eskrou to'lovlari platformasi.",
+      companyCol: "Kompaniya",
+      about: "Biz haqimizda",
+      benefits: "Afzalliklar",
+      team: "Bizning jamoa",
+      liveStats: "Jonli statistika",
+      ecosystemCol: "Ekotizim & Rollar",
+      forFarmers: "Fermerlar uchun",
+      forDairies: "Sutni qayta ishlovchi zavodlar",
+      forLogistics: "Sovuq zanjir logistika parki",
+      forBanks: "Hamkor banklar va eskrou",
+      legalCol: "Yuridik & Bog'lanish",
+      stir: "“ZaminFlow” MCHJ • STIR: 309 845 120",
+      legalText:
+        "O'zbekiston Respublikasi \"Elektron tijorat to'g'risida\"gi ZRU-792-son Qonuniga muvofiq.",
+      allRightsReserved: "Barcha huquqlar himoyalangan.",
+      privacyPolicy: "Maxfiylik siyosati",
+      termsOfUse: "Foydalanish shartlari",
+    },
+    profileView: {
+      backToDashboard: "← Boshqaruv Paneliga Qaytish",
+      dossierLabel: "Dosyesi",
+      dealFlow: "Savdo & Operatsiyalar",
+      escrowDepository: "Eskrou Depozitariysi",
+      editProfile: "Profilni Tahrirlash",
+      shareTooltip: "Profil havolasini ulashish (nusxalash)",
+      exportTooltip: "Rasmiy Raqamli Pasportni Yuklab Olish (JSON)",
+      callTooltip: "Qoʻngʻiroq qilish",
+      emailTooltip: "Email yuborish",
+      tabs: {
+        overview: "Umumiy Tavsif & Quvvat",
+        specs: "Savdo & Texnik Standartlar",
+        contracts: "Eskrou & Ishonch Koʻrsatkichlari",
+        team: "Boshqaruv & Mas'ullar",
       },
     },
     stats: {
@@ -287,9 +735,11 @@ export const translations: Record<Locale, Translations> = {
   ru: {
     nav: {
       brand: "ZaminFlow",
-      company: "О компании",
+      company: "О нас",
+      benefits: "Преимущества",
+      demo: "Демо-симулятор",
       team: "Команда",
-      stats: "Живая статистика",
+      stats: "Статистика",
       contact: "Контакты",
       signIn: "Войти",
       signUp: "Регистрация",
@@ -297,6 +747,9 @@ export const translations: Record<Locale, Translations> = {
       dashboard: "Панель управления",
     },
     hero: {
+      headlineLine1: "Объединяем фермеров",
+      headlineLine2: "С крупными покупателями",
+      headlineLine3: "Надежно и честно!",
       headlineStart: "Объединяем фермеров с ",
       headlineAccent: "коммерческими переработчиками",
       subheadline:
@@ -316,14 +769,311 @@ export const translations: Record<Locale, Translations> = {
         autoRelease: "Автовыплата после проверки титрования",
       },
     },
+    statsBar: {
+      regionsTitle: "Охват регионов",
+      regionsSub: "Полная сеть по всему Узбекистану",
+      milkTitle: "Гарантия сырья",
+      milkSub: "Ежемесячные поставки (литры)",
+      partnersTitle: "Проверенные партнеры",
+      partnersSub: "Фермы, заводы и цистерны",
+      escrowTitle: "Эскроу-гарантия",
+      escrowSub: "Безопасные банковские платежи",
+    },
+    benefitsSection: {
+      badge: "НАШИ ПРЕИМУЩЕСТВА",
+      title1: "Новая эра на рынке молока — ",
+      title2: "Вместе с ZaminFlow!",
+      subtitle:
+        "Забудьте о потерях сырья и задержках выплат при традиционных поставках. ZaminFlow переводит всю цепочку в прозрачный цифровой формат.",
+      cards: [
+        {
+          icon: "🌐",
+          badge: "Прямой B2B",
+          title: "Широкий выбор и честные цены",
+          description:
+            "Торгуйте напрямую без посредников с более чем 450 проверенными фермами и перерабатывающими заводами.",
+          gradient: "from-[#00ffc8]/20 via-[#00d3e0]/10 to-transparent",
+        },
+        {
+          icon: "🚛",
+          badge: "IoT-телематика",
+          title: "Умная холодовая цепь",
+          description:
+            "Температура +3.2°C и GPS-маршрут каждого молоковоза непрерывно контролируются высокоточными датчиками.",
+          gradient: "from-[#00d3e0]/20 via-[#0099ff]/10 to-transparent",
+        },
+        {
+          icon: "🛡️",
+          badge: "Банковский эскроу",
+          title: "100% гарантия выплат",
+          description:
+            "Средства блокируются на эскроу-счете и выплачиваются фермеру сразу после подтверждения качества заводской лабораторией.",
+          gradient: "from-[#0099ff]/20 via-[#00ffc8]/10 to-transparent",
+        },
+      ],
+    },
+    simulatorSection: {
+      badge: "ИНТЕРАКТИВНЫЙ СИМУЛЯТОР",
+      titleStart: "От заявки до расчетной выплаты: ",
+      titleAccent: "Полная симуляция цепочки",
+      subtitle:
+        "Наглядная 5-шаговая интерактивная демонстрация: создание партии молока, блокировка средств в эскроу, транспортировка в холодовой цепи и автоматическая выплата.",
+      stepBadge: "Этап",
+      actionComplete: "Выполнено ✓",
+      nextStepBtn: "Перейти к следующему этапу →",
+      restartBtn: "Запустить симуляцию снова ↺",
+      steps: [
+        {
+          step: 1,
+          roleKey: "farmer",
+          roleTitle: "Фермер (Производитель)",
+          title: "Публикация партии сырого молока",
+          subtitle: "Агроферма Sayxunobod размещает в системе 5 000 литров свежего охлажденного молока",
+          icon: "🌾",
+          badge: "Партия создана",
+          badgeColor: "#00ffc8",
+          details: [
+            { label: "Наименование фермы", value: "ООО Sayxunobod Agro (№ UZ-99412)" },
+            { label: "Объем молока", value: "5 000 литров", highlight: true },
+            { label: "Качественные параметры", value: "4.15% Жирность • 8.65% СОМО" },
+            { label: "Температура хранения", value: "+3.2°C (Танк GEA)" },
+            { label: "Цена предложения", value: "4 450 UZS / литр" },
+            { label: "Сумма контракта", value: "22 250 000 UZS", highlight: true },
+          ],
+          systemLog: "HASH-01: Смарт-контракт для партии #ZF-9042 успешно зарегистрирован в реестре.",
+          actionText: "Перейти к заказу завода",
+        },
+        {
+          step: 2,
+          roleKey: "bank",
+          roleTitle: "Банк и эскроу-депозитарий",
+          title: "100% защищенная блокировка в эскроу",
+          subtitle: "Самаркандский молочный комбинат размещает заказ, АгроБанк резервирует депозит",
+          icon: "🏦",
+          badge: "Эскроу заблокирован",
+          badgeColor: "#0099ff",
+          details: [
+            { label: "Покупатель (Завод)", value: "ООО Самаркандский молокозавод №4" },
+            { label: "Банк-депозитарий", value: "АКБ АгроБанк (Лицензия ЦБ №14)" },
+            { label: "Зарезервированная сумма", value: "22 250 000 UZS", highlight: true },
+            { label: "Протокол расчетов", value: "ISO 20022 (клиринг pacs.008)" },
+            { label: "Гарантия фермеру", value: "100% покрытие депозитом" },
+            { label: "Код гарантии платежа", value: "ESCROW-AGRO-2026-X89", highlight: true },
+          ],
+          systemLog: "HASH-02: Средства заблокированы на транзитном счете. Логистическая отгрузка разрешена.",
+          actionText: "Начать транспортировку молоковозом",
+        },
+        {
+          step: 3,
+          roleKey: "driver",
+          roleTitle: "Холодовая логистика",
+          title: "Погрузка в цистерну и IoT-телеметрия",
+          subtitle: "Молоковоз MAN TGX 18.440 принимает партию по электронному QR e-TTN",
+          icon: "🚛",
+          badge: "В пути: +3.2°C",
+          badgeColor: "#00d3e0",
+          details: [
+            { label: "Транспорт и водитель", value: "MAN TGX 18.440 (01 | 777 ZAM) • Бобур А." },
+            { label: "Электронная накладная", value: "e-TTN QR № TTN-2026-4412" },
+            { label: "Датчики температуры", value: "+3.2°C (Холодовая цепь соблюдена)", highlight: true },
+            { label: "GPS-навигация", value: "RTK точность 0.5м (Ташкентский коридор)" },
+            { label: "Электронные пломбы", value: "Герметичные смарт-замки АКТИВНЫ" },
+            { label: "Расчетное прибытие", value: "1 час 45 минут (98 км)", highlight: true },
+          ],
+          systemLog: "HASH-03: Данные телеметрии передаются в систему в реальном времени. Температура в норме.",
+          actionText: "Доставить в лабораторию завода",
+        },
+        {
+          step: 4,
+          roleKey: "dairy",
+          roleTitle: "Экспресс-лаборатория завода",
+          title: "15-минутный экспресс-анализ качества",
+          subtitle: "Проверка на приемке: титрование, центрифуга Гербера и тест на антибиотики",
+          icon: "🔬",
+          badge: "Высший сорт A+ подтвержден",
+          badgeColor: "#00ffc8",
+          details: [
+            { label: "Фактическая жирность", value: "4.18% (Норматив: > 3.8%) ✓", highlight: true },
+            { label: "Сухой остаток (СОМО)", value: "8.68% (В пределах нормы) ✓" },
+            { label: "Плотность (Лактометр)", value: "1.028 г/см³ ✓" },
+            { label: "Тест на антибиотики", value: "НОЛЬ (Чистое молоко) ✓", highlight: true },
+            { label: "Температура приемки", value: "+3.3°C (Цепь не нарушена)" },
+            { label: "Акт приемки-передачи", value: "Подписан цифровой подписью ЭЦП", highlight: true },
+          ],
+          systemLog: "HASH-04: Лабораторный протокол валидирован. Направлен сигнал в эскроу-депозитарий.",
+          actionText: "Перечислить оплату фермеру",
+        },
+        {
+          step: 5,
+          roleKey: "bank",
+          roleTitle: "Мгновенный расчет",
+          title: "Автоматическая выплата и факторинг",
+          subtitle: "Средства зачисляются на счет фермера за 1 минуту без задержек и кассовых разрывов",
+          icon: "⚡",
+          badge: "Выплата завершена",
+          badgeColor: "#00ffc8",
+          details: [
+            { label: "Выплаченная сумма", value: "22 250 000 UZS", highlight: true },
+            { label: "Способ выплаты", value: "Мгновенный межбанковский клиринг" },
+            { label: "Комиссия фермеру", value: "0% (Оплачено покупателем)" },
+            { label: "Баланс фермера", value: "+22 250 000 UZS (Зачислено)" },
+            { label: "Факторинговый лимит", value: "Доступен по подтвержденному контракту" },
+            { label: "Налоговый документ", value: "Электронный счет-фактура № EF-99412", highlight: true },
+          ],
+          systemLog: "HASH-05: Сделка полностью закрыта. Фермер получил SMS-уведомление о выплате.",
+          actionText: "Сделка успешно завершена",
+        },
+      ],
+    },
+    mapSection: {
+      badge: "НАЦИОНАЛЬНАЯ КАРТА МОЛОЧНОЙ АГРОИНДУСТРИИ УЗБЕКИСТАНА",
+      titleStart: "Найдите лучшие партии сырого ",
+      titleAccent: "молока в вашем ",
+      titleEnd: "регионе",
+      subtitle:
+        "Телеметрия цен, объемов сертифицированного сырого молока и холодовой логистики в режиме реального времени по 14 регионам.",
+      activeRegionLabel: "АКТИВНЫЙ РЕГИОН",
+      monthlyVolumeLabel: "Объем в месяц:",
+      avgPriceLabel: "Средняя цена:",
+      fatSnfLabel: "Жирность (СОМО):",
+      gradeText: "(Высший сорт A+)",
+      coldStorageLabel: "Холодовая цепь:",
+      certifiedFarmsSuffix: "проверенных ферм",
+      viewLotBtn: "Смотреть партии →",
+    },
     team: {
+      badge: "ПРЕДАННЫЕ ЭКСПЕРТЫ",
+      titleStart: "Наша ",
+      titleAccent: "Команда",
       title: "Наша команда",
-      subtitle: "Команда создателей цифровой молочной инфраструктуры Узбекистана.",
+      subtitle: "Специалисты, создающие цифровую молочную инфраструктуру и агро-финтех экосистему Узбекистана.",
       roles: {
-        founder: "Основатель",
-        coFounder: "Сооснователь",
-        leadDev: "Ведущий разработчик",
-        adviser: "Советник",
+        founder: "Основатель и генеральный директор",
+        coFounder: "Сооснователь и операционный директор",
+        leadDev: "Ведущий инженер-разработчик",
+        adviser: "Стратегический советник",
+      },
+      badges: {
+        founder: "Руководитель",
+        coFounder: "Операции",
+        leadDev: "Ведущий инженер",
+        adviser: "Стратегический советник",
+      },
+    },
+    testimonialsSection: {
+      badge: "ОТЗЫВЫ ПАРТНЕРОВ",
+      titleStart: "Что говорят наши ",
+      titleAccent: "бизнес-партнеры?",
+      subtitle: "Реальный опыт фермеров, молочных комбинатов и операторов холодовой логистики.",
+      items: [
+        {
+          quote:
+            "Благодаря платформе ZaminFlow мы продаем 120 000 литров молока ежемесячно по фиксированной прозрачной цене и без единого дня задержки оплаты.",
+          name: "Алишер Кадыров",
+          role: "Главный фермер",
+          company: "ООО Sayxunobod Baraka Chorva",
+          rating: 5,
+          initials: "АК",
+        },
+        {
+          quote:
+            "Температура и жирность каждого молоковоза видны онлайн еще до прибытия на завод. Споры при приемке сырья снизились на 90%.",
+          name: "Нодира Каримова",
+          role: "Главный технолог",
+          company: "Ташкентский молочный комбинат",
+          rating: 5,
+          initials: "НК",
+        },
+        {
+          quote:
+            "Температура изотермической цистерны постоянно отображается на экране смартфона. Благодаря прозрачности рейсов количество моих заказов выросло в 3 раза.",
+          name: "Рустам Махмудов",
+          role: "Оператор логистики",
+          company: "O'zTrans Холодовая Цепь",
+          rating: 5,
+          initials: "РМ",
+        },
+        {
+          quote:
+            "Банковский эскроу дал нам возможность безопасно предоставлять факторинговое финансирование фермерам и стабильную ликвидность переработчикам.",
+          name: "Сардор Валиев",
+          role: "Руководитель торгового финансирования",
+          company: "Партнер АКБ АгроБанк",
+          rating: 5,
+          initials: "СВ",
+        },
+      ],
+    },
+    faqSection: {
+      badge: "ВОПРОСЫ И СВЯЗЬ",
+      titleStart: "Остались вопросы? ",
+      titleAccent: "Напишите нам!",
+      subtitle:
+        "Наши специалисты всегда готовы помочь вам по вопросам подключения к платформе, интеграции лабораторий или эскроу-выплат.",
+      emailPlaceholder: "Введите ваш email адрес...",
+      sendBtn: "Отправить",
+      sending: "Отправка...",
+      successMsg: "Спасибо! Наш специалист свяжется с вами в ближайшее время.",
+      errorEmailMsg: "Пожалуйста, введите корректный адрес электронной почты.",
+      items: [
+        {
+          question: "Как продать или купить сырое молоко через ZaminFlow?",
+          answer:
+            "Фермер указывает характеристики и объем партии в личном кабинете. Перерабатывающий завод оформляет заказ. Система автоматически назначает ближайший изотермический молоковоз с контролем температуры и блокирует оплату на эскроу-счете.",
+        },
+        {
+          question: "Как осуществляется лабораторный контроль качества молока?",
+          answer:
+            "При погрузке на ферме и на въезде на завод модуль Digital Gate-Lab фиксирует жирность (от 3.6%), СОМО (от 8.2%), кислотность и температуру (+3.2°C). Электронный протокол подписывается цифровой подписью.",
+        },
+        {
+          question: "Когда фермер получает выплату с эскроу-счета?",
+          answer:
+            "Сразу после того как лаборатория завода утверждает электронный акт приемки, эскроу-депозитарий автоматически отправляет средства на расчетный счет фермера. Обычно это занимает не более 15 минут.",
+        },
+        {
+          question: "Бесплатна ли регистрация для фермерских хозяйств?",
+          answer:
+            "Да, регистрация, размещение партий и оформление первых сделок для малых и средних молочных хозяйств абсолютно бесплатны.",
+        },
+      ],
+    },
+    footerSection: {
+      mission:
+        "Национальная B2B платформа цепочек поставок сырого молока в Узбекистане: IoT-мониторинг холодовой цепи и защищенные банковские эскроу-платежи.",
+      companyCol: "Компания",
+      about: "О нас",
+      benefits: "Преимущества",
+      team: "Команда",
+      liveStats: "Живая статистика",
+      ecosystemCol: "Экосистема и роли",
+      forFarmers: "Для фермеров",
+      forDairies: "Молокозаводы",
+      forLogistics: "Холодовая логистика",
+      forBanks: "Банки-партнеры и эскроу",
+      legalCol: "Юридическая информация",
+      stir: "ООО “ZaminFlow” • ИНН: 309 845 120",
+      legalText:
+        "В полном соответствии с Законом Республики Узбекистан «Об электронной коммерции» № ЗРУ-792.",
+      allRightsReserved: "Все права защищены.",
+      privacyPolicy: "Политика конфиденциальности",
+      termsOfUse: "Условия использования",
+    },
+    profileView: {
+      backToDashboard: "← Вернуться в панель управления",
+      dossierLabel: "Досье",
+      dealFlow: "Торги и операции",
+      escrowDepository: "Эскроу-депозитарий",
+      editProfile: "Редактировать профиль",
+      shareTooltip: "Поделиться ссылкой на профиль (скопировать)",
+      exportTooltip: "Скачать официальный цифровой паспорт (JSON)",
+      callTooltip: "Позвонить",
+      emailTooltip: "Отправить email",
+      tabs: {
+        overview: "Обзор и мощности",
+        specs: "Стандарты и спецификации",
+        contracts: "Эскроу и показатели надежности",
+        team: "Руководство и команда",
       },
     },
     stats: {
@@ -426,16 +1176,21 @@ export const translations: Record<Locale, Translations> = {
   en: {
     nav: {
       brand: "ZaminFlow",
-      company: "Our Company",
+      company: "About Us",
+      benefits: "Benefits",
+      demo: "Live Demo",
       team: "Our Team",
-      stats: "Live statistics",
-      contact: "Contact us",
+      stats: "Live Stats",
+      contact: "Contact Us",
       signIn: "Sign in",
       signUp: "Sign up",
       signOut: "Sign out",
       dashboard: "Dashboard",
     },
     hero: {
+      headlineLine1: "Connecting Small Farmers",
+      headlineLine2: "With Commercial Buyers",
+      headlineLine3: "Seamlessly!",
       headlineStart: "Connecting smallholder farmers with ",
       headlineAccent: "commercial buyers",
       subheadline:
@@ -455,14 +1210,311 @@ export const translations: Record<Locale, Translations> = {
         autoRelease: "Auto-release upon titration",
       },
     },
+    statsBar: {
+      regionsTitle: "Regional Coverage",
+      regionsSub: "Nationwide network across Uzbekistan",
+      milkTitle: "Guaranteed Volume",
+      milkSub: "Monthly milk delivered (litres)",
+      partnersTitle: "Verified Partners",
+      partnersSub: "Farms, dairy plants & tankers",
+      escrowTitle: "Escrow Guarantee",
+      escrowSub: "Bank-grade protected settlements",
+    },
+    benefitsSection: {
+      badge: "OUR ADVANTAGES",
+      title1: "A New Era in Raw Milk Trading — ",
+      title2: "Starts With ZaminFlow!",
+      subtitle:
+        "Eliminate supply-chain losses and delayed payouts. ZaminFlow provides transparency and digital accountability for every litre.",
+      cards: [
+        {
+          icon: "🌐",
+          badge: "Direct B2B",
+          title: "Wide Choice & Transparent Pricing",
+          description:
+            "Trade directly without middlemen across 450+ verified dairy farms and commercial processing plants.",
+          gradient: "from-[#00ffc8]/20 via-[#00d3e0]/10 to-transparent",
+        },
+        {
+          icon: "🚛",
+          badge: "IoT Telemetry",
+          title: "Smart Cold Chain",
+          description:
+            "Real-time +3.2°C temperature tracking and GPS routing powered by onboard IoT telemetry sensors.",
+          gradient: "from-[#00d3e0]/20 via-[#0099ff]/10 to-transparent",
+        },
+        {
+          icon: "🛡️",
+          badge: "Bank Escrow",
+          title: "Guaranteed Payouts",
+          description:
+            "Buyer funds are locked in bank escrow and auto-released as soon as the factory laboratory verifies raw milk specs.",
+          gradient: "from-[#0099ff]/20 via-[#00ffc8]/10 to-transparent",
+        },
+      ],
+    },
+    simulatorSection: {
+      badge: "INTERACTIVE DEMO",
+      titleStart: "From Listing to Settlement: ",
+      titleAccent: "End-to-End Workflow Simulation",
+      subtitle:
+        "Follow this 5-stage interactive journey showing how raw milk lots are published, escrow-secured, cold-shipped, and automatically paid.",
+      stepBadge: "Stage",
+      actionComplete: "Completed ✓",
+      nextStepBtn: "Proceed to Next Stage →",
+      restartBtn: "Restart Simulation ↺",
+      steps: [
+        {
+          step: 1,
+          roleKey: "farmer",
+          roleTitle: "Farmer (Producer)",
+          title: "Listing Fresh Raw Milk Batch",
+          subtitle: "Sayxunobod Agro-Dairy Farm lists 5,000 litres of freshly chilled morning milk",
+          icon: "🌾",
+          badge: "Batch Created",
+          badgeColor: "#00ffc8",
+          details: [
+            { label: "Farm Enterprise", value: "Sayxunobod Agro LLC (№ UZ-99412)" },
+            { label: "Batch Volume", value: "5,000 Litres", highlight: true },
+            { label: "Quality Specs", value: "4.15% Fat • 8.65% SNF" },
+            { label: "Chilling Temperature", value: "+3.2°C (GEA Tank)" },
+            { label: "Asking Price", value: "4,450 UZS / Litre" },
+            { label: "Contract Value", value: "22,250,000 UZS", highlight: true },
+          ],
+          systemLog: "HASH-01: Smart contract successfully created for batch #ZF-9042.",
+          actionText: "Proceed to Dairy Order",
+        },
+        {
+          step: 2,
+          roleKey: "bank",
+          roleTitle: "Bank & Escrow Depository",
+          title: "100% Guaranteed Escrow Lock",
+          subtitle: "Samarkand Dairy Plant places purchase order; AgroBank locks funds in transit escrow",
+          icon: "🏦",
+          badge: "Escrow Locked",
+          badgeColor: "#0099ff",
+          details: [
+            { label: "Buyer Dairy", value: "Samarkand Milk Processing Plant #4 LLC" },
+            { label: "Depository Bank", value: "JSCB AgroBank (Central Bank License #14)" },
+            { label: "Locked Escrow Amount", value: "22,250,000 UZS", highlight: true },
+            { label: "Settlement Protocol", value: "ISO 20022 (pacs.008 clearing)" },
+            { label: "Farmer Guarantee", value: "100% Collateralized in Escrow" },
+            { label: "Escrow Guarantee Code", value: "ESCROW-AGRO-2026-X89", highlight: true },
+          ],
+          systemLog: "HASH-02: Funds locked in transit vault. Logistics pickup authorized.",
+          actionText: "Authorize Tanker Dispatch",
+        },
+        {
+          step: 3,
+          roleKey: "driver",
+          roleTitle: "Cold-Chain Logistics Fleet",
+          title: "Tanker Loading & IoT Telemetry",
+          subtitle: "MAN TGX 18.440 insulated tanker takes custody via digital e-TTN QR",
+          icon: "🚛",
+          badge: "In Transit: +3.2°C",
+          badgeColor: "#00d3e0",
+          details: [
+            { label: "Vehicle & Driver", value: "MAN TGX 18.440 (01 | 777 ZAM) • Bobur A." },
+            { label: "Electronic Waybill", value: "e-TTN QR № TTN-2026-4412" },
+            { label: "Thermal Sensors (PT100)", value: "+3.2°C (Strict Cold-Chain Active)", highlight: true },
+            { label: "Satellite GPS", value: "RTK 0.5m precision (Tashkent Corridor)" },
+            { label: "Valve Locks", value: "Electronic tamper-proof seal ACTIVE" },
+            { label: "Estimated Arrival", value: "1 hr 45 min (98 km remaining)", highlight: true },
+          ],
+          systemLog: "HASH-03: Real-time telemetry feed streaming to chain. Temperatures strictly nominal.",
+          actionText: "Deliver to Dairy Gate Lab",
+        },
+        {
+          step: 4,
+          roleKey: "dairy",
+          roleTitle: "Plant Gate Laboratory",
+          title: "15-Minute Express Quality Analysis",
+          subtitle: "Automated titration, Gerber centrifuge fat check, and rapid antibiotic screening",
+          icon: "🔬",
+          badge: "Grade A+ Verified",
+          badgeColor: "#00ffc8",
+          details: [
+            { label: "Verified Fat (Gerber)", value: "4.18% (Target: > 3.8%) ✓", highlight: true },
+            { label: "Solids-Non-Fat (SNF)", value: "8.68% (Target: > 8.2%) ✓" },
+            { label: "Density (Lactometer)", value: "1.028 g/cm³ ✓" },
+            { label: "Antibiotic Screening", value: "ZERO (Clean milk) ✓", highlight: true },
+            { label: "Delivery Temperature", value: "+3.3°C (Cold-chain intact)" },
+            { label: "Acceptance Act", value: "Digitally signed via national E-IMZO", highlight: true },
+          ],
+          systemLog: "HASH-04: Lab metrics validated against ISO 20022 contract. Escrow release triggered.",
+          actionText: "Release Escrow Payout to Farmer",
+        },
+        {
+          step: 5,
+          roleKey: "bank",
+          roleTitle: "Instant Bank Clearing",
+          title: "Instant Escrow Payout & Factoring",
+          subtitle: "Funds credited to the farmer's account in under 60 seconds with zero payment delay",
+          icon: "⚡",
+          badge: "Settlement Completed",
+          badgeColor: "#00ffc8",
+          details: [
+            { label: "Settled Amount", value: "22,250,000 UZS", highlight: true },
+            { label: "Clearing Method", value: "Automated Bank RTGS Clearing" },
+            { label: "Farmer Fee", value: "0% (Absorbed by buyer)" },
+            { label: "Farmer Balance", value: "+22,250,000 UZS (Credited)" },
+            { label: "Factoring Facility", value: "Available on verified contract" },
+            { label: "Tax & Fiscal Invoice", value: "E-Faktura № EF-99412 generated", highlight: true },
+          ],
+          systemLog: "HASH-05: Contract cycle closed. Farmer SMS notification delivered.",
+          actionText: "Workflow Successfully Completed",
+        },
+      ],
+    },
+    mapSection: {
+      badge: "UZBEKISTAN NATIONAL DAIRY AGRO-MAP",
+      titleStart: "Discover Optimal Raw ",
+      titleAccent: "Milk Lots in Your ",
+      titleEnd: "Region",
+      subtitle:
+        "Real-time telemetry across 14 administrative regions: certified raw milk spot prices, available volumes, and refrigerated tanker routes.",
+      activeRegionLabel: "ACTIVE REGION",
+      monthlyVolumeLabel: "Monthly Volume:",
+      avgPriceLabel: "Avg. Price:",
+      fatSnfLabel: "Fat (SNF):",
+      gradeText: "(Grade A+)",
+      coldStorageLabel: "Cold Storage:",
+      certifiedFarmsSuffix: "verified dairy farms",
+      viewLotBtn: "Explore Lots →",
+    },
     team: {
+      badge: "DEDICATED EXPERTS",
+      titleStart: "Our ",
+      titleAccent: "Team",
       title: "Our Team",
-      subtitle: "The dedicated builders behind Uzbekistan's digital dairy infrastructure.",
+      subtitle: "The visionary builders powering Uzbekistan's digital dairy infrastructure and fintech ecosystem.",
       roles: {
-        founder: "Founder",
-        coFounder: "Co-Founder",
-        leadDev: "Lead Software Developer",
-        adviser: "Adviser",
+        founder: "Founder & Chief Executive Officer",
+        coFounder: "Co-Founder & Chief Operating Officer",
+        leadDev: "Lead Software Engineer",
+        adviser: "Strategic Adviser",
+      },
+      badges: {
+        founder: "Executive",
+        coFounder: "Operations",
+        leadDev: "Lead Engineer",
+        adviser: "Strategic Adviser",
+      },
+    },
+    testimonialsSection: {
+      badge: "PRODUCER TESTIMONIALS",
+      titleStart: "What Our Business ",
+      titleAccent: "Partners Say",
+      subtitle: "Real verified stories from smallholder farmers, industrial dairies, and refrigerated transport fleets.",
+      items: [
+        {
+          quote:
+            "Thanks to ZaminFlow, we sell 120,000 litres of milk every month at guaranteed prices with payments that have never been late by a single day.",
+          name: "Alisher Qodirov",
+          role: "Lead Farmer",
+          company: "Sayxunobod Baraka Dairy LLC",
+          rating: 5,
+          initials: "AQ",
+        },
+        {
+          quote:
+            "We can see the temperature and fat content of every incoming tanker while it's still on the highway. Reception disputes dropped by 90%.",
+          name: "Nodira Karimova",
+          role: "Chief Technologist",
+          company: "Tashkent Dairy Combine",
+          rating: 5,
+          initials: "NK",
+        },
+        {
+          quote:
+            "Live tanker temperatures are displayed on my smartphone. Complete trip transparency has tripled my transport bookings across regions.",
+          name: "Rustam Mahmudov",
+          role: "Logistics Operator",
+          company: "O'zTrans Cold Chain",
+          rating: 5,
+          initials: "RM",
+        },
+        {
+          quote:
+            "Bank-backed escrow enables us to offer interest-free factoring to farmers and robust liquidity guarantees to commercial dairy processors.",
+          name: "Sardor Valiev",
+          role: "Head of Trade Finance",
+          company: "AgroBank Partner",
+          rating: 5,
+          initials: "SV",
+        },
+      ],
+    },
+    faqSection: {
+      badge: "FAQ & CONTACT",
+      titleStart: "Have Questions? ",
+      titleAccent: "Get in Touch!",
+      subtitle:
+        "Our agritech and escrow specialists are here to assist with platform onboarding, laboratory integration, and automated settlements.",
+      emailPlaceholder: "Enter your email address...",
+      sendBtn: "Send",
+      sending: "Sending...",
+      successMsg: "Thank you! Our regional specialist will reach out shortly.",
+      errorEmailMsg: "Please enter a valid email address.",
+      items: [
+        {
+          question: "How do farmers and dairies trade raw milk via ZaminFlow?",
+          answer:
+            "Farmers list batch volume and quality parameters on the platform. Dairies review and place orders. The system automatically books the nearest cold-chain tanker and secures payment in bank escrow.",
+        },
+        {
+          question: "How is milk quality verified during transit?",
+          answer:
+            "At pickup and plant arrival, Digital Gate-Lab modules measure fat (min 3.6%), SNF (min 8.2%), acidity, and temperature (+3.2°C), issuing a cryptographic electronic acceptance act.",
+        },
+        {
+          question: "When does the farmer receive escrow payment?",
+          answer:
+            "The moment the receiving laboratory verifies quality specs and signs the digital delivery act, escrow funds are automatically credited to the farmer's account—usually within 15 minutes.",
+        },
+        {
+          question: "Is registration free for smallholder dairy farmers?",
+          answer:
+            "Yes, onboarding, listing milk batches, and drafting initial contracts are completely free for all small and medium-sized dairy producers.",
+        },
+      ],
+    },
+    footerSection: {
+      mission:
+        "Uzbekistan's national B2B raw milk supply chain platform: IoT cold-chain telemetry and bank-guaranteed escrow settlements.",
+      companyCol: "Company",
+      about: "About Us",
+      benefits: "Benefits",
+      team: "Our Team",
+      liveStats: "Live Statistics",
+      ecosystemCol: "Ecosystem & Roles",
+      forFarmers: "For Farmers",
+      forDairies: "For Dairy Plants",
+      forLogistics: "Cold-Chain Logistics",
+      forBanks: "Partner Banks & Escrow",
+      legalCol: "Legal & Inquiries",
+      stir: "“ZaminFlow” LLC • TIN: 309 845 120",
+      legalText:
+        "Operating in full compliance with the Law of the Republic of Uzbekistan \"On Electronic Commerce\" No. ZRU-792.",
+      allRightsReserved: "All rights reserved.",
+      privacyPolicy: "Privacy Policy",
+      termsOfUse: "Terms of Use",
+    },
+    profileView: {
+      backToDashboard: "← Back to Dashboard",
+      dossierLabel: "Dossier",
+      dealFlow: "Trading & Operations",
+      escrowDepository: "Escrow Depository",
+      editProfile: "Edit Profile",
+      shareTooltip: "Share profile link (copy)",
+      exportTooltip: "Download Official Digital Dossier (JSON)",
+      callTooltip: "Call",
+      emailTooltip: "Send email",
+      tabs: {
+        overview: "Overview & Capacity",
+        specs: "Trading & Tech Specs",
+        contracts: "Escrow & Trust Metrics",
+        team: "Management & Team",
       },
     },
     stats: {
@@ -548,17 +1600,17 @@ export const translations: Record<Locale, Translations> = {
     regions: {
       all: "All regions",
       tashkent: "Tashkent City & Region",
-      samarqand: "Samarqand Region",
+      samarqand: "Samarkand Region",
       fergana: "Fergana Region",
       namangan: "Namangan Region",
       andijan: "Andijan Region",
-      qashqadaryo: "Qashqadaryo Region",
+      qashqadaryo: "Kashkadarya Region",
       syrdarya: "Syrdarya Region",
       bukhara: "Bukhara Region",
       khorezm: "Khorezm Region",
-      navoiy: "Navoiy Region",
+      navoiy: "Navoi Region",
       jizzakh: "Jizzakh Region",
-      surxondaryo: "Surxondaryo Region",
+      surxondaryo: "Surkhandarya Region",
       karakalpakstan: "Republic of Karakalpakstan",
     },
   },

@@ -23,6 +23,8 @@ export interface DriverTripStop {
   status: "next" | "scheduled" | "completed";
 }
 
+export type DriverStop = DriverTripStop;
+
 export interface DriverHistoryRecord {
   id: string;
   date: string;
@@ -33,6 +35,11 @@ export interface DriverHistoryRecord {
   avgTempC: number;
   coldChainPassed: boolean;
   driverEarningsUZS: number;
+  tripId?: string;
+  completedDate?: string;
+  fromLocation?: string;
+  toLocation?: string;
+  avgTemperatureC?: number;
 }
 
 export const INITIAL_DRIVER_STOPS: DriverTripStop[] = [
@@ -140,3 +147,6 @@ export function getDriverHistory(): DriverHistoryRecord[] {
     return INITIAL_DRIVER_HISTORY;
   }
 }
+
+export const getDriverManifest = getDriverStops;
+

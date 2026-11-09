@@ -35,6 +35,16 @@ const config: Config = {
           200: "#A7D9C8",
           50: "#EAF6F5",
         },
+        turquoise: {
+          mint: "#00ffc8",
+          DEFAULT: "#00f0d0",
+          2: "#00e2d8",
+          cyan: "#00d3e0",
+          aqua: "#00c5e7",
+          sky: "#00b6ef",
+          fresh: "#00a8f7",
+          blue: "#0099ff",
+        },
         brandGreen: {
           DEFAULT: "#087a3c",
           text: "#087a3c",

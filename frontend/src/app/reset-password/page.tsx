@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useState, Suspense } from "react";
-import Button from "@/components/ui/Button";
 import ZaminFlowLogo from "@/components/ZaminFlowLogo";
 import { ThemeToggleButton } from "@/context/ThemeContext";
 
@@ -29,12 +28,12 @@ function ResetPasswordContent() {
     setErrorMsg(null);
 
     if (!hasLength || !hasLetter || !hasDigit) {
-      setErrorMsg("Password must be at least 10 characters with a letter and a digit.");
+      setErrorMsg("Parol kamida 10 ta belgi, harf va raqamdan iborat boʻlishi kerak.");
       return;
     }
 
     if (password !== confirmPassword) {
-      setErrorMsg("Passwords do not match.");
+      setErrorMsg("Parollar bir-biriga mos kelmadi.");
       return;
     }
 
@@ -49,143 +48,166 @@ function ResetPasswordContent() {
 
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
-        throw new Error(err.detail || "Reset token expired or invalid.");
+        throw new Error(err.detail || "Tiklash tokeni yaroqsiz yoki muddati oʻtgan.");
       }
 
       setIsSuccess(true);
       setTimeout(() => {
-        router.push("/sign-in");
+        router.push("/signin");
       }, 1500);
     } catch (err: any) {
-      setErrorMsg(err.message || "Failed to reset password.");
+      setErrorMsg(err.message || "Parolni yangilashda xatolik yuz berdi.");
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen grid grid-cols-1 lg:grid-cols-2 bg-[#F8FAFC]">
-      {/* Left Cinematic Panel */}
-      <div className="bg-[#070B14] p-8 lg:p-14 text-white flex flex-col justify-between relative overflow-hidden select-none">
-        <div className="absolute top-1/3 left-1/4 w-96 h-96 bg-emerald-500/10 blur-[100px] rounded-full pointer-events-none animate-breathing-glow" />
-        <div className="relative z-10">
-          <Link href="/" className="inline-flex items-center">
-            <ZaminFlowLogo mode="dark" size="md" />
+    <div className="min-h-screen bg-[#0d1013] text-white flex flex-col justify-center items-center py-10 px-4 relative overflow-hidden font-sans select-none">
+      {/* Ambient Auroras */}
+      <div className="absolute top-10 -left-40 w-[600px] h-[600px] pointer-events-none z-0">
+        <div
+          className="w-full h-full rounded-full blur-[150px] opacity-25 animate-pulse"
+          style={{ background: "radial-gradient(circle, #00ffc8 0%, #00d3e0 40%, transparent 70%)" }}
+        />
+      </div>
+      <div className="absolute bottom-10 -right-40 w-[600px] h-[600px] pointer-events-none z-0">
+        <div
+          className="w-full h-full rounded-full blur-[150px] opacity-20 animate-pulse"
+          style={{ background: "radial-gradient(circle, #00d3e0 0%, #0099ff 50%, transparent 70%)" }}
+        />
+      </div>
+
+      <div
+        className="absolute inset-0 opacity-10 pointer-events-none"
+        style={{
+          backgroundImage: "radial-gradient(#00d3e0 1px, transparent 1px)",
+          backgroundSize: "28px 28px",
+        }}
+      />
+
+      {/* Header */}
+      <div className="w-full max-w-[920px] flex items-center justify-between mb-6 relative z-10 px-2">
+        <Link href="/" className="inline-flex items-center transition-transform hover:scale-105">
+          <ZaminFlowLogo mode="dark" size="md" />
+        </Link>
+        <div className="flex items-center gap-3">
+          <ThemeToggleButton size="sm" />
+          <Link
+            href="/signin"
+            className="text-xs font-bold text-white/70 hover:text-white px-3.5 py-1.5 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 transition"
+          >
+            ← Kirish sahifasiga
           </Link>
-        </div>
-        <div className="relative z-10 my-8 lg:my-auto max-w-md space-y-4">
-          <h2 className="text-3xl font-black text-white tracking-tight leading-tight">
-            Set your new credentials.
-          </h2>
-          <p className="text-xs text-slate-400 leading-relaxed font-sans">
-            Choose a strong password with at least 10 characters, including letters and numbers.
-          </p>
-        </div>
-        <div className="relative z-10 hidden lg:block text-xs text-slate-500">
-          © 2026 ZaminFlow LLC.
         </div>
       </div>
 
-      {/* Right Form Panel */}
-      <div className="flex items-center justify-center p-6 sm:p-10 lg:p-12 bg-white dark:bg-[#101E27] relative transition-colors">
-        <div className="absolute top-6 right-6 z-20">
-          <ThemeToggleButton />
-        </div>
-        <div className="w-full max-w-[400px] space-y-6">
-          <div>
-            <h1 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
-              Create new password
-            </h1>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-              Your new password will replace existing session credentials across all devices.
+      {/* Central Card */}
+      <div className="relative z-10 max-w-[920px] w-full bg-[#12161a] rounded-[36px] shadow-[0_25px_80px_rgba(0,153,255,0.22)] border border-white/10 overflow-hidden grid grid-cols-1 md:grid-cols-12 min-h-[460px]">
+        {/* Left Hero */}
+        <div className="md:col-span-5 bg-gradient-to-br from-[#00ffc8] to-[#00b4d8] text-[#070B14] p-8 sm:p-10 flex flex-col justify-between relative overflow-hidden">
+          <div className="relative z-10">
+            <div className="w-12 h-12 rounded-2xl bg-black/10 backdrop-blur-md flex items-center justify-center text-2xl mb-6 shadow-sm">
+              🛡️
+            </div>
+            <h2 className="text-2xl sm:text-3xl font-black tracking-tight leading-tight">
+              Yangi Parol Oʻrnatish
+            </h2>
+            <p className="text-xs font-bold text-black/75 mt-3 leading-relaxed">
+              Kamida 10 ta belgidan iborat, harf va raqam qatnashgan kuchli parol tanlang.
             </p>
           </div>
 
-          {errorMsg && (
-            <div className="p-3.5 bg-red-50 border border-red-200 rounded-xl text-xs text-red-700 font-medium">
-              {errorMsg}
-              <div className="mt-2">
-                <Link href="/forgot-password" className="font-bold underline text-red-800">
-                  Request a new link &rarr;
-                </Link>
-              </div>
-            </div>
-          )}
+          <div className="relative z-10 pt-6">
+            <Link
+              href="/signin"
+              className="inline-flex items-center justify-center w-full py-2.5 px-6 rounded-full border-2 border-black text-black font-extrabold text-xs uppercase tracking-wider hover:bg-black hover:text-white transition"
+            >
+              Kirish sahifasiga qaytish
+            </Link>
+          </div>
+        </div>
 
+        {/* Right Form */}
+        <div className="md:col-span-7 p-8 sm:p-12 flex flex-col justify-center">
           {isSuccess ? (
-            <div className="rounded-xl border border-emerald-200 bg-emerald-50/60 p-4 space-y-2 text-center">
-              <div className="w-8 h-8 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-sm mx-auto">
+            <div className="space-y-4 text-center">
+              <div className="w-14 h-14 rounded-full bg-[#00ffc8]/15 border border-[#00ffc8]/30 text-[#00ffc8] text-2xl flex items-center justify-center mx-auto mb-2">
                 ✓
               </div>
-              <p className="text-xs text-emerald-950 font-bold">
-                Password updated successfully.
-              </p>
-              <p className="text-[11px] text-slate-500 font-mono">
-                Redirecting to sign in...
+              <h3 className="text-xl font-black text-white">Parol yangilandi!</h3>
+              <p className="text-xs text-white/60 leading-relaxed max-w-sm mx-auto">
+                Yangi parolingiz muvaffaqiyatli saqlandi. Kirish sahifasiga yoʻnaltirilmoqdasiz...
               </p>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <div className="flex justify-between items-center mb-1">
-                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
-                    New Password *
-                  </label>
+                <h3 className="text-xl sm:text-2xl font-black text-white tracking-tight">
+                  Parolni oʻzgartirish
+                </h3>
+                <p className="text-xs text-white/50 mt-1">
+                  Yangi xavfsiz parolni kiriting va tasdiqlang
+                </p>
+              </div>
+
+              {errorMsg && (
+                <div className="p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-300 text-xs">
+                  {errorMsg}
+                </div>
+              )}
+
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-white/70 block">Yangi parol</label>
+                <div className="relative">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    required
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="••••••••••••"
+                    className="w-full px-4 py-3 rounded-2xl bg-black/40 border border-white/10 text-white placeholder-white/30 text-sm focus:border-[#00ffc8] outline-none transition"
+                  />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="text-[11px] text-teal-700 font-semibold hover:underline"
+                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs text-white/50 hover:text-white"
                   >
-                    {showPassword ? "Hide" : "Show"}
+                    {showPassword ? "Yashirish" : "Koʻrish"}
                   </button>
                 </div>
-                <input
-                  type={showPassword ? "text" : "password"}
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full h-11 px-3.5 text-xs rounded-[10px] border border-slate-200 text-slate-900 focus:outline-none focus:border-emerald-600"
-                />
-
-                <div className="mt-2 space-y-1">
-                  <div className="grid grid-cols-4 gap-1.5 h-1">
-                    {[1, 2, 3, 4].map((seg) => (
-                      <div
-                        key={seg}
-                        className={`rounded-full h-1 transition ${
-                          strengthScore >= seg ? "bg-emerald-600" : "bg-slate-200"
-                        }`}
-                      />
-                    ))}
-                  </div>
-                  <span className="text-[10px] text-slate-500 block">
-                    At least 10 characters with a letter and a digit
-                  </span>
+                {/* Strength meter */}
+                <div className="flex gap-1 pt-1">
+                  {[1, 2, 3, 4].map((step) => (
+                    <div
+                      key={step}
+                      className={`h-1 flex-1 rounded-full transition-all ${
+                        step <= strengthScore ? "bg-[#00ffc8]" : "bg-white/10"
+                      }`}
+                    />
+                  ))}
                 </div>
               </div>
 
-              <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                  Confirm Password *
-                </label>
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-white/70 block">Parolni tasdiqlang</label>
                 <input
                   type={showPassword ? "text" : "password"}
                   required
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="w-full h-11 px-3.5 text-xs rounded-[10px] border border-slate-200 text-slate-900 focus:outline-none focus:border-emerald-600"
+                  placeholder="••••••••••••"
+                  className="w-full px-4 py-3 rounded-2xl bg-black/40 border border-white/10 text-white placeholder-white/30 text-sm focus:border-[#00ffc8] outline-none transition"
                 />
               </div>
 
-              <Button
+              <button
                 type="submit"
-                variant="primary"
-                size="md"
-                loading={isLoading}
-                className="w-full mt-2"
+                disabled={isLoading}
+                className="w-full py-3.5 rounded-full bg-gradient-to-r from-[#00ffc8] to-[#00b4d8] hover:opacity-95 text-[#070B14] font-black text-xs sm:text-sm shadow-[0_10px_30px_rgba(0,255,200,0.3)] transition cursor-pointer uppercase tracking-wider"
               >
-                Update password &rarr;
-              </Button>
+                {isLoading ? "Saqlanmoqda..." : "Parolni Saqlash →"}
+              </button>
             </form>
           )}
         </div>
@@ -196,7 +218,7 @@ function ResetPasswordContent() {
 
 export default function ResetPasswordPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-slate-50 flex items-center justify-center text-xs text-slate-500">Loading...</div>}>
+    <Suspense fallback={<div className="min-h-screen bg-[#0d1013]" />}>
       <ResetPasswordContent />
     </Suspense>
   );

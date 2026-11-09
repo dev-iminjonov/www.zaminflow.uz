@@ -170,7 +170,7 @@ export default function SignUpCard() {
   };
 
   return (
-    <div className="min-h-screen w-full flex flex-col justify-center items-center pt-20 sm:pt-24 pb-12 px-4 bg-[linear-gradient(160deg,#d8f3dc_0%,#b7e4c7_100%)] dark:bg-[linear-gradient(160deg,#13293D_0%,#006494_100%)] text-[#081c15] dark:text-[#E8F1F2] transition-colors duration-300 relative">
+    <div className="min-h-screen w-full flex flex-col justify-center items-center pt-8 sm:pt-12 pb-8 px-4 max-w-[540px] mx-auto bg-[linear-gradient(160deg,#d8f3dc_0%,#b7e4c7_100%)] dark:bg-[linear-gradient(160deg,#13293D_0%,#006494_100%)] text-[#081c15] dark:text-[#E8F1F2] transition-colors duration-300 relative">
       
       {/* Top Navigation Bar: Home Icon (Top-Left) & Locale Picker (Top-Right) */}
       <header className="fixed top-4 left-4 right-4 sm:top-6 sm:left-8 sm:right-8 flex items-center justify-between z-30 pointer-events-none">

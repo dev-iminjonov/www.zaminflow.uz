@@ -1,214 +1,427 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import ZaminFlowLogo from "@/components/ZaminFlowLogo";
-import { useRouter } from "next/navigation";
-import { signOut } from "@/lib/auth";
+
+interface RouteWaypoint {
+  name: string;
+  distance: string;
+  time: string;
+  passed: boolean;
+  active: boolean;
+  desc: string;
+}
 
 export default function DriverRoutePage() {
-  const router = useRouter();
-  const [isSigningOut, setIsSigningOut] = useState(false);
+  // Live driving simulation state
+  const [isDriving, setIsDriving] = useState(true);
+  const [speedKmH, setSpeedKmH] = useState(68);
+  const [routeProgress, setRouteProgress] = useState(72); // percentage along route
+  const [tempProbe1, setTempProbe1] = useState(3.2);
+  const [tempProbe2, setTempProbe2] = useState(3.1);
+  const [tempProbe3, setTempProbe3] = useState(3.3);
+  const [distanceRemainingKm, setDistanceRemainingKm] = useState(34);
+  const [etaMinutes, setEtaMinutes] = useState(28);
 
-  const handleSignOut = async () => {
-    setIsSigningOut(true);
-    await signOut();
-    router.push("/signin");
-  };
+  // Fluctuating telematic telemetry
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    if (isDriving) {
+      interval = setInterval(() => {
+        setSpeedKmH(Math.floor(64 + Math.random() * 8));
+        setTempProbe1(Number((3.15 + Math.random() * 0.2).toFixed(1)));
+        setTempProbe2(Number((3.05 + Math.random() * 0.2).toFixed(1)));
+        setTempProbe3(Number((3.25 + Math.random() * 0.2).toFixed(1)));
+        
+        setRouteProgress((prev) => {
+          if (prev >= 98) return 98;
+          return prev + 0.3;
+        });
 
-  const steps = [
+        setDistanceRemainingKm((prev) => Math.max(1, Number((prev - 0.2).toFixed(1))));
+        setEtaMinutes((prev) => Math.max(2, Math.round((distanceRemainingKm / 68) * 60)));
+      }, 2500);
+    }
+    return () => clearInterval(interval);
+  }, [isDriving, distanceRemainingKm]);
+
+  const waypoints: RouteWaypoint[] = [
     {
-      instruction: "Head northeast on M39 Highway toward Sirdaryo / Tashkent",
-      distance: "62 km",
-      time: "48 min",
+      name: "Sayxunobod Agro Ferma",
+      desc: "5,000 L Oliy A+ xom sut yuklandi. e-TTN QR yaratildi",
+      distance: "0 km",
+      time: "11:20",
+      passed: true,
+      active: false,
+    },
+    {
+      name: "M39 Sirdaryo Nazorat Bepul Yo'lagi",
+      desc: "Avtomatik tarozi nazorati: 38.4 tonna yalpi vazn",
+      distance: "42 km",
+      time: "12:05",
+      passed: true,
+      active: false,
+    },
+    {
+      name: "Chinoz Ko'prigi / Toshkent Kirish",
+      desc: "Magistral oqimida harakat. Harorat +3.2°C me'yorda",
+      distance: "78 km",
+      time: "12:45",
+      passed: false,
       active: true,
     },
     {
-      instruction: "Take the exit ramp onto Tashkent Ring Road (TKAD)",
-      distance: "14 km",
-      time: "18 min",
+      name: "Toshkent Halqa Yo'li (THAY Sergeli)",
+      desc: "Zavod qabul bo'limiga burilish yo'nalishi",
+      distance: "112 km",
+      time: "13:15",
+      passed: false,
       active: false,
     },
     {
-      instruction: "Turn right onto Yangi Sergeli Street toward Tashkent Central Dairy Plant Gate #2",
-      distance: "4.2 km",
-      time: "10 min",
-      active: false,
-    },
-    {
-      instruction: "Arrive at Reception Bay #3 (Raw Milk Intake Metering)",
-      distance: "0.2 km",
-      time: "Destination",
+      name: "Bektemir / Samarqand Sut Zavodi #4",
+      desc: "3-Boks qabul bunkeri va ekspress gate-lab tahlili",
+      distance: "124 km",
+      time: "13:30 (ETA)",
+      passed: false,
       active: false,
     },
   ];
 
   return (
-    <div className="min-h-[940px] bg-[linear-gradient(160deg,#f6f9f8_0%,#e4f6ec_100%)] text-[#17352c] font-[family-name:var(--font-inter,sans-serif)]">
-      <div className="max-w-[1180px] mx-auto px-6 pt-6 pb-14 flex flex-col gap-7">
-        
-        {/* Floating Top Pill Nav */}
-        <nav className="bg-white rounded-[40px] px-8 py-3.5 flex flex-wrap items-center justify-between gap-4 shadow-[0_10px_40px_rgba(20,80,60,0.08)]">
-          <Link href="/dashboard/driver" className="flex items-center shrink-0">
-            <ZaminFlowLogo mode="light" size="md" />
-          </Link>
-          <div className="flex flex-wrap items-center gap-7 text-[15px] font-semibold">
-            <Link href="/dashboard/driver" className="text-[#17352c] hover:text-[#087a3c] transition pb-0.5">
-              Overview
-            </Link>
-            <Link href="/dashboard/driver/my-trips" className="text-[#17352c] hover:text-[#087a3c] transition pb-0.5">
-              My trips
-            </Link>
-            <Link href="/dashboard/driver/route" className="text-[#087a3c] border-b-2 border-[#22d36b] pb-0.5">
-              Route
-            </Link>
-            <Link href="/dashboard/driver/history" className="text-[#17352c] hover:text-[#087a3c] transition pb-0.5">
-              History
-            </Link>
-          </div>
-          <div className="flex items-center gap-3">
-            <span className="text-xs font-bold bg-[#d9f7e5] text-[#087a3c] rounded-lg px-2 py-1 whitespace-nowrap">
-              Driver
+    <div className="flex flex-col gap-6 w-full select-none font-sans">
+      
+      {/* 1. HEADER ROW */}
+      <header className="flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-2 mb-1">
+            <span className="w-2.5 h-2.5 rounded-full bg-[#00ffc8] animate-ping" />
+            <span className="text-[11px] font-mono font-black tracking-widest text-[#00d3e0] uppercase">
+              RTK 0.5M GPS TELEMETRIYA & SOVUQ ZANJIR HUD
             </span>
-            <button
-              onClick={handleSignOut}
-              disabled={isSigningOut}
-              className="bg-white text-[#12303a] border-[1.5px] border-[#12303a] rounded-full px-5 min-h-[44px] font-bold text-[15px] hover:bg-[#12303a] hover:text-white transition cursor-pointer"
-            >
-              {isSigningOut ? "..." : "Sign out"}
-            </button>
           </div>
-        </nav>
+          <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-white">
+            Jonli Reys Telematikasi:{" "}
+            <span className="bg-gradient-to-r from-[#00ffc8] via-[#00d3e0] to-[#0099ff] bg-clip-text text-transparent">
+              Sayxunobod ➔ Bektemir
+            </span>
+          </h1>
+          <p className="text-xs text-white/50 mt-0.5">
+            MAN TGX 18.440 (01 | 777 ZAM) • 20,000L AISI 304 sisterna • PT100 4x datchiklar zanjiri
+          </p>
+        </div>
 
-        {/* Header Row */}
-        <header className="flex flex-wrap items-end justify-between gap-5 pt-4">
-          <div>
-            <h1 className="m-0 text-4xl sm:text-5xl font-extrabold tracking-[-0.03em] leading-[1.05] text-[#17352c]">
-              Route Navigation & <span className="text-[#087a3c]">Waypoints</span>
-            </h1>
-          </div>
-          <div className="flex items-center gap-3">
-            <a
-              href="https://yandex.com/maps"
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex items-center justify-center bg-[#12303a] text-white rounded-full px-6 min-h-[44px] font-bold text-xs hover:bg-[#087a3c] transition shadow-md"
-            >
-              Open in Yandex Navigator ↗
-            </a>
-          </div>
-        </header>
+        <div className="flex items-center gap-2.5">
+          <button
+            onClick={() => setIsDriving(!isDriving)}
+            className={`px-4 py-2 rounded-full text-xs font-black transition-all border flex items-center gap-2 ${
+              isDriving
+                ? "bg-[#00ffc8] text-[#070B14] border-[#00ffc8] shadow-[0_0_15px_rgba(0,255,200,0.4)]"
+                : "bg-white/10 text-white border-white/15"
+            }`}
+          >
+            <span>{isDriving ? "⏸ Pauza" : "▶ Jonli Telemetriya"}</span>
+          </button>
 
-        {/* Map & Live Route split */}
-        <section className="flex flex-wrap gap-6">
+          <a
+            href="https://yandex.com/maps"
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-[#14181d] border border-white/15 hover:border-[#00d3e0] text-white hover:text-[#00ffc8] font-bold text-xs shadow-md transition-all"
+          >
+            <span>Yandex Navigator ↗</span>
+          </a>
+        </div>
+      </header>
+
+      {/* 2. STATS OVERVIEW CARDS */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+        <div className="p-4 rounded-2xl bg-[#14181d]/90 border border-white/10 flex flex-col justify-between">
+          <div className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Hozirgi Tezlik</div>
+          <div className="text-2xl sm:text-3xl font-black font-mono text-white mt-1">
+            {speedKmH} <span className="text-xs text-[#00ffc8] font-bold">km/soat</span>
+          </div>
+          <div className="text-[10px] text-emerald-400 font-semibold mt-1">✓ M39 Magistrali (Tezlik normada)</div>
+        </div>
+
+        <div className="p-4 rounded-2xl bg-[#14181d]/90 border border-white/10 flex flex-col justify-between">
+          <div className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Qolgan Masofa</div>
+          <div className="text-2xl sm:text-3xl font-black font-mono text-[#00d3e0] mt-1">
+            {distanceRemainingKm} <span className="text-xs text-gray-400 font-bold">km</span>
+          </div>
+          <div className="text-[10px] text-gray-400 font-semibold mt-1">Jami reys: 124 km</div>
+        </div>
+
+        <div className="p-4 rounded-2xl bg-[#14181d]/90 border border-white/10 flex flex-col justify-between">
+          <div className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Taxminiy Yetib Borish (ETA)</div>
+          <div className="text-2xl sm:text-3xl font-black font-mono text-[#00ffc8] mt-1">
+            {etaMinutes} <span className="text-xs text-gray-400 font-bold">daqiqa</span>
+          </div>
+          <div className="text-[10px] text-[#00ffc8] font-semibold mt-1">Jadvalga muvofiq: 13:30</div>
+        </div>
+
+        <div className="p-4 rounded-2xl bg-[#14181d]/90 border border-[#00ffc8]/30 flex flex-col justify-between">
+          <div className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Sovuq Zanjir Holati</div>
+          <div className="text-2xl sm:text-3xl font-black font-mono text-[#00ffc8] mt-1 flex items-center gap-1.5">
+            <span>+{tempProbe1}°C</span>
+            <span className="w-2 h-2 rounded-full bg-[#00ffc8] animate-pulse" />
+          </div>
+          <div className="text-[10px] text-gray-300 font-semibold mt-1">AISI-304 Termo-germetik</div>
+        </div>
+      </div>
+
+      {/* 3. INTERACTIVE SIMULATED GIS ROUTE MAP & THERMAL MATRIX */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        
+        {/* Left Column (8 cols): Visual Highway Route & Thermal Graph */}
+        <div className="lg:col-span-8 flex flex-col gap-6">
           
-          {/* Simulated Interactive Map Display */}
-          <div className="bg-[rgba(255,255,255,0.76)] border border-white rounded-[24px] shadow-[0_10px_40px_rgba(20,80,60,0.08)] p-6 sm:p-8 flex-[1.6_1_520px] flex flex-col justify-between gap-6 box-border">
-            <div>
-              <div className="flex justify-between items-center mb-4">
-                <span className="text-xs font-bold text-[#087a3c] uppercase tracking-wider">
-                  Active Dispatch: Sayxunobod → Tashkent
+          {/* Animated Route HUD Box */}
+          <div className="relative rounded-[32px] p-6 sm:p-8 bg-gradient-to-br from-[#131920]/95 via-[#0e141a]/95 to-[#090d10]/95 border border-white/10 shadow-2xl overflow-hidden backdrop-blur-xl">
+            
+            {/* Ambient Back Glow */}
+            <div className="absolute top-0 right-0 w-80 h-80 bg-[#00ffc8]/10 rounded-full blur-[100px] pointer-events-none" />
+
+            <div className="flex flex-wrap items-center justify-between gap-2 mb-6">
+              <div className="flex items-center gap-2">
+                <span className="px-3 py-1 rounded-full text-xs font-black bg-[#00ffc8]/15 border border-[#00ffc8]/30 text-[#00ffc8]">
+                  Jonli Trassirovka
                 </span>
-                <span className="text-xs font-bold bg-[#d9f7e5] text-[#087a3c] px-3 py-1 rounded-full">
-                  28 min ETA
+                <span className="text-xs font-bold text-gray-300">
+                  M39 Xalqaro Magistral Yoʻlagi
+                </span>
+              </div>
+              <span className="text-xs font-mono font-bold text-[#00d3e0] bg-black/40 px-3 py-1 rounded-full border border-white/10">
+                GPS: 40.8241° N, 68.9112° E
+              </span>
+            </div>
+
+            {/* Interactive Vector GIS Road Corridor */}
+            <div className="relative w-full h-48 sm:h-56 rounded-2xl bg-[#090d11] border border-white/10 p-4 overflow-hidden shadow-inner flex flex-col justify-between">
+              
+              {/* Road Grid Lines */}
+              <div
+                className="absolute inset-0 opacity-15 pointer-events-none"
+                style={{
+                  backgroundImage: "radial-gradient(#00d3e0 1.2px, transparent 1.2px)",
+                  backgroundSize: "20px 20px",
+                }}
+              />
+
+              {/* Waypoint Endpoint Badges */}
+              <div className="relative z-10 flex justify-between items-center text-xs font-bold">
+                <div className="px-3 py-1.5 rounded-xl bg-[#14181d]/90 border border-white/15 text-white flex items-center gap-1.5 shadow-md">
+                  <span>🌾</span> Sayxunobod Ferma (5,000 L)
+                </div>
+                <div className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-[#00ffc8] to-[#0099ff] text-[#070B14] font-black flex items-center gap-1.5 shadow-md">
+                  <span>🏭</span> Samarqand Zavod #4
+                </div>
+              </div>
+
+              {/* Curving SVG Road with Animated Traveling Tanker */}
+              <div className="relative z-10 w-full my-auto">
+                <svg className="w-full h-16 overflow-visible" viewBox="0 0 600 60" preserveAspectRatio="none">
+                  {/* Road Shadow */}
+                  <path
+                    d="M 10 30 Q 150 55, 300 25 T 590 30"
+                    fill="none"
+                    stroke="#1a222d"
+                    strokeWidth="12"
+                    strokeLinecap="round"
+                  />
+                  {/* Road Center Dashes */}
+                  <path
+                    d="M 10 30 Q 150 55, 300 25 T 590 30"
+                    fill="none"
+                    stroke="rgba(255,255,255,0.15)"
+                    strokeWidth="2"
+                    strokeDasharray="6 6"
+                  />
+                  {/* Completed Green Progress Track */}
+                  <path
+                    d="M 10 30 Q 150 55, 300 25 T 590 30"
+                    fill="none"
+                    stroke="url(#tankerRouteGrad)"
+                    strokeWidth="6"
+                    strokeDasharray="600"
+                    strokeDashoffset={600 - (600 * (routeProgress / 100))}
+                    strokeLinecap="round"
+                  />
+                  <defs>
+                    <linearGradient id="tankerRouteGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%" stopColor="#00ffc8" />
+                      <stop offset="50%" stopColor="#00d3e0" />
+                      <stop offset="100%" stopColor="#0099ff" />
+                    </linearGradient>
+                  </defs>
+                </svg>
+
+                {/* Animated Tanker Pulse Pin */}
+                <div
+                  className="absolute top-1/2 -translate-y-1/2 -mt-1 transform -translate-x-1/2 transition-all duration-500 z-20 cursor-pointer"
+                  style={{ left: `${routeProgress}%` }}
+                >
+                  <div className="relative flex items-center justify-center">
+                    <span className="absolute w-8 h-8 rounded-full bg-[#00ffc8]/40 animate-ping" />
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-[#00ffc8] to-[#0099ff] text-[#070B14] font-black text-sm flex items-center justify-center shadow-[0_0_20px_#00ffc8]">
+                      🚛
+                    </div>
+                  </div>
+                  <div className="absolute top-9 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full bg-black/80 backdrop-blur-md border border-[#00ffc8]/50 text-[9px] font-black text-[#00ffc8] whitespace-nowrap shadow-md">
+                    +{tempProbe1}°C
+                  </div>
+                </div>
+              </div>
+
+              {/* Bottom Road Stats */}
+              <div className="relative z-10 flex justify-between items-center text-[11px] font-bold text-gray-400">
+                <span>Trassa: M39 Magistral</span>
+                <span className="text-[#00ffc8] font-mono">
+                  {routeProgress.toFixed(0)}% Marshrut Bajarildi
+                </span>
+                <span>Yoʻl Qoplamasi: Quruq • Ochiq</span>
+              </div>
+            </div>
+
+            {/* Multi-Section PT100 Thermal Sensor Matrix */}
+            <div className="mt-6 pt-6 border-t border-white/10">
+              <div className="flex items-center justify-between mb-3">
+                <div className="text-xs font-bold text-white flex items-center gap-2">
+                  <span>❄</span> 4x PT100 Boʻlimli Termo-Monitoring
+                </div>
+                <span className="text-[10px] font-bold text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded-full border border-emerald-500/30">
+                  Kafolatlangan Sovuq Zanjir
                 </span>
               </div>
 
-              {/* Graphical Route Map Box */}
-              <div className="relative w-full h-80 rounded-2xl bg-[#e3efe9]/80 border border-[#17352c]/15 overflow-hidden p-6 flex flex-col justify-between">
-                <div className="flex justify-between items-center text-xs font-bold">
-                  <div className="bg-white/95 px-3 py-1.5 rounded-xl shadow-sm text-[#17352c]">
-                    📍 Sayxunobod Farm (Picked up 1,200 L)
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                {/* Section 1 */}
+                <div className="p-3.5 rounded-2xl bg-white/[0.03] border border-white/10">
+                  <div className="flex justify-between items-center text-[10px] text-gray-400 mb-1">
+                    <span>1-Boʻlim (Oldi)</span>
+                    <span className="text-[#00ffc8] font-bold">8,000 L</span>
                   </div>
-                  <div className="bg-[#12303a] text-white px-3 py-1.5 rounded-xl shadow-sm">
-                    🎯 Tashkent Central Dairy
+                  <div className="text-xl font-black font-mono text-white">
+                    +{tempProbe1}°C
                   </div>
+                  <div className="text-[9px] text-[#00ffc8] font-bold mt-1">Norma: +3.0°C – +3.5°C</div>
                 </div>
 
-                {/* Animated Waypoint Path */}
-                <div className="relative w-full h-4 bg-white/90 rounded-full my-auto overflow-hidden">
-                  <div className="h-full bg-[#12303a] rounded-full" style={{ width: "72%" }} />
-                  <div className="absolute top-0 left-[70%] -translate-y-1 w-6 h-6 rounded-full bg-[#22d36b] border-2 border-white shadow-lg animate-pulse" />
+                {/* Section 2 */}
+                <div className="p-3.5 rounded-2xl bg-white/[0.03] border border-white/10">
+                  <div className="flex justify-between items-center text-[10px] text-gray-400 mb-1">
+                    <span>2-Boʻlim (Oʻrta)</span>
+                    <span className="text-[#00d3e0] font-bold">6,000 L</span>
+                  </div>
+                  <div className="text-xl font-black font-mono text-white">
+                    +{tempProbe2}°C
+                  </div>
+                  <div className="text-[9px] text-[#00d3e0] font-bold mt-1">Norma: +3.0°C – +3.5°C</div>
                 </div>
 
-                <div className="flex justify-between items-center text-xs font-bold text-[#17352c]">
-                  <span>Speed: 64 km/h • Optimal Route M39</span>
-                  <span className="font-[family-name:var(--font-jetbrains-mono,monospace)] text-[#087a3c]">
-                    Cold Chain: 3.2°C Locked
-                  </span>
+                {/* Section 3 */}
+                <div className="p-3.5 rounded-2xl bg-white/[0.03] border border-white/10">
+                  <div className="flex justify-between items-center text-[10px] text-gray-400 mb-1">
+                    <span>3-Boʻlim (Orqa)</span>
+                    <span className="text-[#0099ff] font-bold">6,000 L</span>
+                  </div>
+                  <div className="text-xl font-black font-mono text-white">
+                    +{tempProbe3}°C
+                  </div>
+                  <div className="text-[9px] text-[#0099ff] font-bold mt-1">Norma: +3.0°C – +3.5°C</div>
                 </div>
               </div>
             </div>
 
-            <div className="grid grid-cols-3 gap-4 text-center">
-              <div className="bg-white/80 p-4 rounded-2xl border border-[#17352c]/10">
-                <div className="text-xs text-[#4d6a60]">Remaining Distance</div>
-                <div className="font-[family-name:var(--font-jetbrains-mono,monospace)] font-bold text-xl text-[#17352c] mt-1">
-                  38 km
-                </div>
-              </div>
-              <div className="bg-white/80 p-4 rounded-2xl border border-[#17352c]/10">
-                <div className="text-xs text-[#4d6a60]">Estimated Arrival</div>
-                <div className="font-[family-name:var(--font-jetbrains-mono,monospace)] font-bold text-xl text-[#17352c] mt-1">
-                  13:30
-                </div>
-              </div>
-              <div className="bg-white/80 p-4 rounded-2xl border border-[#17352c]/10">
-                <div className="text-xs text-[#4d6a60]">Cargo Volume</div>
-                <div className="font-[family-name:var(--font-jetbrains-mono,monospace)] font-bold text-xl text-[#087a3c] mt-1">
-                  2,150 L
-                </div>
-              </div>
-            </div>
           </div>
 
-          {/* Turn-by-Turn Directions */}
-          <div className="bg-[rgba(255,255,255,0.76)] border border-white rounded-[24px] shadow-[0_10px_40px_rgba(20,80,60,0.08)] p-6 sm:p-8 flex-[1_1_340px] flex flex-col justify-between gap-5 box-border">
-            <div>
-              <div className="text-xs font-bold tracking-[0.08em] text-[#087a3c] uppercase mb-1">
-                Navigation Instructions
+          {/* Electronic Seals & e-TTN Verification */}
+          <div className="rounded-[28px] p-6 bg-[#14181d]/80 border border-white/10 flex flex-wrap items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-[#00ffc8]/20 to-[#0099ff]/20 text-[#00ffc8] border border-[#00ffc8]/30 flex items-center justify-center text-xl">
+                🔒
               </div>
-              <h3 className="text-xl font-bold text-[#17352c] mb-4">
-                Upcoming Turns
-              </h3>
+              <div>
+                <div className="text-xs font-black text-white">Elektron Klapan Plombalari Faol</div>
+                <div className="text-[10px] text-gray-400 font-mono">
+                  SEAL-UZ-4401 (Germetik) • SEAL-UZ-4402 (Tranzit qulflangan)
+                </div>
+              </div>
+            </div>
 
-              <div className="space-y-4">
-                {steps.map((st, i) => (
+            <div className="flex items-center gap-2">
+              <Link
+                href="/dashboard/driver/scan"
+                className="px-4 py-2 rounded-full bg-[#00ffc8] text-[#070B14] font-black text-xs hover:opacity-90 transition shadow-md shadow-[#00ffc8]/20"
+              >
+                e-TTN QR Skanerlash ➔
+              </Link>
+            </div>
+          </div>
+        </div>
+
+        {/* Right Column (4 cols): Turn-by-Turn Waypoints & Emergency Dispatch */}
+        <div className="lg:col-span-4 flex flex-col gap-5">
+          <div className="rounded-[32px] p-6 bg-[#14181d]/90 border border-white/10 shadow-2xl backdrop-blur-xl flex flex-col justify-between gap-5">
+            <div>
+              <div className="flex items-center justify-between mb-4 pb-3 border-b border-white/10">
+                <span className="text-xs font-black uppercase tracking-wider text-[#00d3e0]">
+                  Nazorat Nuqtalari
+                </span>
+                <span className="text-[10px] font-mono text-gray-400">5 ta Waypoint</span>
+              </div>
+
+              <div className="space-y-3">
+                {waypoints.map((wp, i) => (
                   <div
                     key={i}
-                    className={`p-4 rounded-2xl border text-xs flex gap-3 ${
-                      st.active
-                        ? "bg-[#d9f7e5]/60 border-[#22d36b] text-[#17352c]"
-                        : "bg-white/60 border-transparent text-[#4d6a60]"
+                    className={`p-3.5 rounded-2xl border text-xs flex gap-3 transition-all ${
+                      wp.active
+                        ? "bg-[#00ffc8]/10 border-[#00ffc8]/40 shadow-sm"
+                        : wp.passed
+                        ? "bg-white/[0.02] border-white/5 opacity-70"
+                        : "bg-white/[0.01] border-white/5 opacity-50"
                     }`}
                   >
-                    <span className="font-bold text-base font-[family-name:var(--font-jetbrains-mono,monospace)] text-[#12303a]">
-                      {i + 1}
-                    </span>
+                    <div
+                      className={`w-6 h-6 rounded-full flex items-center justify-center font-mono font-black text-[10px] shrink-0 ${
+                        wp.active
+                          ? "bg-[#00ffc8] text-[#070B14] shadow-[0_0_10px_#00ffc8]"
+                          : wp.passed
+                          ? "bg-emerald-500/30 text-emerald-300"
+                          : "bg-white/10 text-gray-400"
+                      }`}
+                    >
+                      {wp.passed ? "✓" : i + 1}
+                    </div>
+
                     <div className="flex-1">
-                      <div className="font-semibold text-sm leading-snug">{st.instruction}</div>
-                      <div className="text-[11px] font-[family-name:var(--font-jetbrains-mono,monospace)] mt-1 font-bold">
-                        {st.distance} • {st.time}
+                      <div className="flex items-center justify-between">
+                        <span className="font-extrabold text-white text-xs">{wp.name}</span>
+                        <span className="font-mono text-[10px] text-[#00d3e0]">{wp.time}</span>
                       </div>
+                      <p className="text-[10px] text-gray-400 mt-1 leading-relaxed">
+                        {wp.desc}
+                      </p>
                     </div>
                   </div>
                 ))}
               </div>
             </div>
 
-            <div className="flex gap-3 pt-4 border-t border-[#17352c]/10">
+            <div className="pt-3 border-t border-white/10 space-y-2">
               <Link
                 href="/dashboard/driver/report-issue"
-                className="w-full bg-white text-[#12303a] border-[1.5px] border-[#12303a] rounded-full min-h-[44px] font-bold text-xs inline-flex items-center justify-center hover:bg-[#12303a] hover:text-white transition"
+                className="w-full py-3 rounded-full border border-red-500/30 bg-red-500/10 hover:bg-red-500/20 text-red-300 font-bold text-xs flex items-center justify-center gap-1.5 transition"
               >
-                Report Route Issue / Delay
+                <span>⚠ Nosozlik / Kechikish haqida xabar berish</span>
               </Link>
             </div>
           </div>
-
-        </section>
+        </div>
 
       </div>
+
     </div>
   );
 }

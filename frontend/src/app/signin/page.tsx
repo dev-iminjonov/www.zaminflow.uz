@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import SignInCard from "@/components/auth/SignInCard";
+import SlidingAuthCard from "@/components/auth/SlidingAuthCard";
 
 export const metadata = {
   title: "Sign in | ZaminFlow",
@@ -8,8 +8,8 @@ export const metadata = {
 
 export default function SignInPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-[#f6f9f8] animate-pulse" />}>
-      <SignInCard />
+    <Suspense fallback={<div className="min-h-screen bg-[#181818] animate-pulse" />}>
+      <SlidingAuthCard initialMode="signin" />
     </Suspense>
   );
 }

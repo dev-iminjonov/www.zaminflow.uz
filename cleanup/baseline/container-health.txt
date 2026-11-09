@@ -1,5 +1,0 @@
-﻿NAMES            STATUS                  PORTS
-dairy_frontend   Up Less than a second   0.0.0.0:3000->3000/tcp, [::]:3000->3000/tcp
-dairy_backend    Up Less than a second   0.0.0.0:8000->8000/tcp, [::]:8000->8000/tcp
-dairy_caddy      Up 42 hours             0.0.0.0:80->80/tcp, [::]:80->80/tcp, 0.0.0.0:443->443/tcp, [::]:443->443/tcp
-dairy_db         Up 42 hours (healthy)   0.0.0.0:5432->5432/tcp, [::]:5432->5432/tcp

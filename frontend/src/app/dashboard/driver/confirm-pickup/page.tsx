@@ -2,14 +2,12 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import ZaminFlowLogo from "@/components/ZaminFlowLogo";
 import { useRouter } from "next/navigation";
-import { signOut, authenticatedFetch } from "@/lib/auth";
+import { authenticatedFetch } from "@/lib/auth";
 import { enqueueDriverEvent, flushDriverOfflineQueue } from "@/lib/offlineDriverQueue";
 
 export default function ConfirmPickupPage() {
   const router = useRouter();
-  const [isSigningOut, setIsSigningOut] = useState(false);
 
   // Form states
   const [meterLiters, setMeterLiters] = useState<number>(1200);
@@ -17,12 +15,6 @@ export default function ConfirmPickupPage() {
   const [sealNumber, setSealNumber] = useState<string>("SEAL-UZ-99214");
   const [farmerOtp, setFarmerOtp] = useState<string>("8492");
   const [isConfirmed, setIsConfirmed] = useState(false);
-
-  const handleSignOut = async () => {
-    setIsSigningOut(true);
-    await signOut();
-    router.push("/signin");
-  };
 
   const handleConfirm = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -62,186 +54,137 @@ export default function ConfirmPickupPage() {
     setIsConfirmed(true);
     setTimeout(() => {
       router.push("/dashboard/driver");
-    }, 2500);
+    }, 2200);
   };
 
   return (
-    <div className="min-h-[940px] bg-[linear-gradient(160deg,#f6f9f8_0%,#e4f6ec_100%)] text-[#17352c] font-[family-name:var(--font-inter,sans-serif)]">
-      <div className="max-w-[1180px] mx-auto px-6 pt-6 pb-14 flex flex-col gap-7">
-        
-        {/* Floating Top Pill Nav */}
-        <nav className="bg-white rounded-[40px] px-8 py-3.5 flex flex-wrap items-center justify-between gap-4 shadow-[0_10px_40px_rgba(20,80,60,0.08)]">
-          <Link href="/dashboard/driver" className="flex items-center shrink-0">
-            <ZaminFlowLogo mode="light" size="md" />
-          </Link>
-          <div className="flex flex-wrap items-center gap-7 text-[15px] font-semibold">
-            <Link href="/dashboard/driver" className="text-[#17352c] hover:text-[#087a3c] transition pb-0.5">
-              Overview
-            </Link>
-            <Link href="/dashboard/driver/my-trips" className="text-[#17352c] hover:text-[#087a3c] transition pb-0.5">
-              My trips
-            </Link>
-            <Link href="/dashboard/driver/route" className="text-[#17352c] hover:text-[#087a3c] transition pb-0.5">
-              Route
-            </Link>
-            <Link href="/dashboard/driver/history" className="text-[#17352c] hover:text-[#087a3c] transition pb-0.5">
-              History
-            </Link>
-          </div>
-          <div className="flex items-center gap-3">
-            <span className="text-xs font-bold bg-[#d9f7e5] text-[#087a3c] rounded-lg px-2 py-1 whitespace-nowrap">
-              Driver
+    <div className="flex flex-col gap-6">
+      {/* 1. HEADER ROW */}
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-2 mb-1">
+            <span className="w-2 h-2 rounded-full bg-[#00ffc8] animate-pulse" />
+            <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-[#00ffc8]">
+              Raqamli Qabul Qilish va Muhrlash Protokoli
             </span>
-            <button
-              onClick={handleSignOut}
-              disabled={isSigningOut}
-              className="bg-white text-[#12303a] border-[1.5px] border-[#12303a] rounded-full px-5 min-h-[44px] font-bold text-[15px] hover:bg-[#12303a] hover:text-white transition cursor-pointer"
-            >
-              {isSigningOut ? "..." : "Sign out"}
-            </button>
           </div>
-        </nav>
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+            Sut Qabulini <span className="bg-gradient-to-r from-[#00ffc8] to-[#0099ff] bg-clip-text text-transparent">Tasdiqlash</span>
+          </h1>
+          <p className="text-xs text-white/50 mt-1">
+            Sayxunobod qabul punktida sut hajmini oʻlchash, haroratni tekshirish va raqamli plomba oʻrnatish
+          </p>
+        </div>
 
-        {/* Header Row */}
-        <header className="flex flex-wrap items-end justify-between gap-5 pt-4">
-          <div>
-            <h1 className="m-0 text-4xl sm:text-5xl font-extrabold tracking-[-0.03em] leading-[1.05] text-[#17352c]">
-              Confirm Milk Pickup: <span className="text-[#087a3c]">Sayxunobod Farm</span>
-            </h1>
-          </div>
-          <Link
-            href="/dashboard/driver"
-            className="text-sm font-bold text-[#4d6a60] hover:text-[#17352c] transition"
-          >
-            ← Back to Overview
-          </Link>
-        </header>
-
-        {isConfirmed ? (
-          <div className="bg-[rgba(255,255,255,0.76)] border border-white rounded-[24px] shadow-[0_10px_40px_rgba(20,80,60,0.08)] p-8 sm:p-12 text-center flex flex-col items-center gap-4 max-w-xl mx-auto">
-            <div className="w-16 h-16 rounded-full bg-[#d9f7e5] text-[#087a3c] flex items-center justify-center text-3xl font-extrabold">
-              ✓
-            </div>
-            <h2 className="text-3xl font-extrabold text-[#17352c]">
-              Handover Confirmed & Batch In Transit!
-            </h2>
-            <p className="text-base text-[#4d6a60]">
-              1,200 Litres transferred from Sayxunobod bulk tank into tanker. Farmer OTP verified and manifold seal registered. Redirecting to dashboard...
-            </p>
-          </div>
-        ) : (
-          <form onSubmit={handleConfirm} className="flex flex-wrap gap-7">
-            
-            {/* Form Fields */}
-            <div className="bg-[rgba(255,255,255,0.76)] border border-white rounded-[24px] shadow-[0_10px_40px_rgba(20,80,60,0.08)] p-6 sm:p-8 flex-[1.6_1_520px] flex flex-col gap-6 box-border">
-              
-              <div className="bg-white/80 rounded-2xl p-4 border border-[#17352c]/10 text-sm space-y-1">
-                <div>Batch: <strong className="font-[family-name:var(--font-jetbrains-mono,monospace)] text-[#12303a]">ZF-0412</strong></div>
-                <div>Farm: <strong>Sayxunobod Dairy Cooperative</strong></div>
-                <div>Manager: <strong>Muhammadaziz Iminjonov (+998 90 123 45 67)</strong></div>
-              </div>
-
-              <div>
-                <h3 className="text-xs font-bold tracking-[0.08em] text-[#087a3c] uppercase mb-4">
-                  Flow Meter & Handover Readings
-                </h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-bold text-[#4d6a60] uppercase mb-1">
-                      Pump Flow Meter (Litres)
-                    </label>
-                    <input
-                      type="number"
-                      value={meterLiters}
-                      onChange={(e) => setMeterLiters(Number(e.target.value))}
-                      className="w-full h-12 rounded-xl border border-[#17352c]/20 px-4 font-[family-name:var(--font-jetbrains-mono,monospace)] text-xl font-bold text-[#17352c] bg-white focus:outline-none focus:ring-2 focus:ring-[#22d36b]"
-                      required
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-bold text-[#4d6a60] uppercase mb-1">
-                      Milk Temp at Handover (°C)
-                    </label>
-                    <input
-                      type="number"
-                      step={0.1}
-                      max={4.0}
-                      value={milkTempC}
-                      onChange={(e) => setMilkTempC(Number(e.target.value))}
-                      className="w-full h-12 rounded-xl border border-[#17352c]/20 px-4 font-[family-name:var(--font-jetbrains-mono,monospace)] text-xl font-bold text-[#17352c] bg-white focus:outline-none focus:ring-2 focus:ring-[#22d36b]"
-                      required
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <div className="pt-4 border-t border-[#17352c]/10">
-                <h3 className="text-xs font-bold tracking-[0.08em] text-[#087a3c] uppercase mb-4">
-                  Security Seal & Farmer OTP Verification
-                </h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-bold text-[#4d6a60] uppercase mb-1">
-                      Anti-Tamper Seal Number
-                    </label>
-                    <input
-                      type="text"
-                      value={sealNumber}
-                      onChange={(e) => setSealNumber(e.target.value)}
-                      className="w-full h-12 rounded-xl border border-[#17352c]/20 px-4 font-[family-name:var(--font-jetbrains-mono,monospace)] text-base font-bold text-[#17352c] bg-white focus:outline-none focus:ring-2 focus:ring-[#22d36b]"
-                      required
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-bold text-[#4d6a60] uppercase mb-1">
-                      Farmer 4-Digit Handover OTP
-                    </label>
-                    <input
-                      type="text"
-                      maxLength={4}
-                      value={farmerOtp}
-                      onChange={(e) => setFarmerOtp(e.target.value)}
-                      className="w-full h-12 rounded-xl border border-[#17352c]/20 px-4 font-[family-name:var(--font-jetbrains-mono,monospace)] text-xl tracking-widest text-center font-extrabold text-[#12303a] bg-white focus:outline-none focus:ring-2 focus:ring-[#22d36b]"
-                      required
-                    />
-                  </div>
-                </div>
-              </div>
-
-            </div>
-
-            {/* Right Card: Confirmation CTA */}
-            <div className="bg-[rgba(255,255,255,0.76)] border border-white rounded-[24px] shadow-[0_10px_40px_rgba(20,80,60,0.08)] p-6 sm:p-8 flex-[1_1_340px] flex flex-col justify-between gap-6 box-border">
-              <div>
-                <div className="text-xs font-bold tracking-[0.08em] text-[#087a3c] uppercase">
-                  Digital Bill of Lading
-                </div>
-                <h3 className="text-2xl font-bold text-[#17352c] mt-1 mb-4">
-                  Transfer Custody
-                </h3>
-
-                <div className="bg-white/80 rounded-2xl p-5 border border-[#17352c]/10 space-y-2 text-xs">
-                  <div>Target Destination: <strong>Tashkent Central Dairy</strong></div>
-                  <div>Loaded Litres: <strong className="font-[family-name:var(--font-jetbrains-mono,monospace)] text-sm">{meterLiters.toLocaleString()} L</strong></div>
-                  <div>Handover Chilled Temp: <strong className="font-[family-name:var(--font-jetbrains-mono,monospace)] text-sm text-[#087a3c]">{milkTempC}°C</strong></div>
-                  <div>Lock Status: <strong>GPS Telemetry Active</strong></div>
-                </div>
-              </div>
-
-              <button
-                type="submit"
-                className="w-full bg-[#12303a] text-white rounded-full min-h-[52px] font-bold text-base hover:bg-[#087a3c] transition shadow-lg cursor-pointer flex items-center justify-center gap-2"
-              >
-                <span>Confirm Handover & Resume Route →</span>
-              </button>
-            </div>
-
-          </form>
-        )}
-
+        <Link
+          href="/dashboard/driver"
+          className="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-xs font-bold text-white/70 hover:text-white hover:bg-white/10 transition"
+        >
+          ← Marshrutga Qaytish
+        </Link>
       </div>
+
+      {isConfirmed ? (
+        <div className="rounded-[32px] bg-gradient-to-br from-[#00ffc8]/10 via-white/[0.03] to-[#0099ff]/10 border border-[#00ffc8]/30 p-8 sm:p-12 text-center flex flex-col items-center max-w-xl mx-auto shadow-2xl">
+          <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-[#00ffc8] to-[#0099ff] text-[#070B14] text-2xl font-black flex items-center justify-center shadow-lg shadow-[#00ffc8]/25 mb-4">
+            ✓
+          </div>
+          <h2 className="text-2xl font-black text-white mb-2">Qabul Muvaffaqiyatli Tasdiqlandi!</h2>
+          <div className="font-mono text-sm px-4 py-1.5 rounded-full bg-[#00ffc8]/15 border border-[#00ffc8]/30 text-[#00ffc8] font-bold mb-4">
+            Plomba: {sealNumber}
+          </div>
+          <p className="text-xs text-white/70 max-w-md leading-relaxed mb-4">
+            Fermer bilan raqamli OTP qoʻl berish yakunlandi. {meterLiters} litr xom sut sisternaga quyildi va IoT harorat datchigi 3.2°C rejimida faollashtirildi.
+          </p>
+          <span className="text-[11px] text-white/40">Yoʻl xaritasiga yoʻnaltirilmoqda...</span>
+        </div>
+      ) : (
+        <form
+          onSubmit={handleConfirm}
+          className="max-w-2xl mx-auto w-full rounded-[28px] bg-white/[0.03] border border-white/10 p-6 sm:p-8 flex flex-col gap-6"
+        >
+          <div className="border-b border-white/10 pb-4">
+            <h2 className="text-lg font-bold text-white">Qabul Punktidagi Ma'lumotlar</h2>
+            <p className="text-xs text-white/50">Fermer hisoblagich koʻrsatkichlari va xavfsizlik muhr raqami</p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs font-mono uppercase text-white/70 mb-2">
+                Oʻlchangan Hajm (Litr)
+              </label>
+              <div className="relative">
+                <input
+                  type="number"
+                  step="10"
+                  value={meterLiters}
+                  onChange={(e) => setMeterLiters(Number(e.target.value))}
+                  className="w-full h-12 rounded-2xl bg-white/5 border border-white/15 px-4 font-mono text-base font-bold text-white focus:border-[#00ffc8] outline-none"
+                  required
+                />
+                <span className="absolute right-4 top-3 text-xs font-mono text-white/40">LITR</span>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-mono uppercase text-white/70 mb-2">
+                Sisterna Harorati (°C)
+              </label>
+              <div className="relative">
+                <input
+                  type="number"
+                  step="0.1"
+                  value={milkTempC}
+                  onChange={(e) => setMilkTempC(Number(e.target.value))}
+                  className="w-full h-12 rounded-2xl bg-white/5 border border-white/15 px-4 font-mono text-base font-bold text-white focus:border-[#00ffc8] outline-none"
+                  required
+                />
+                <span className="absolute right-4 top-3 text-xs font-mono text-white/40">°C</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs font-mono uppercase text-white/70 mb-2">
+                Raqamli Plomba Raqami
+              </label>
+              <input
+                type="text"
+                value={sealNumber}
+                onChange={(e) => setSealNumber(e.target.value)}
+                className="w-full h-12 rounded-2xl bg-white/5 border border-white/15 px-4 font-mono text-xs font-bold text-white focus:border-[#00ffc8] outline-none"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-mono uppercase text-white/70 mb-2">
+                Fermer Tasdiqlash Kori (OTP)
+              </label>
+              <input
+                type="text"
+                maxLength={6}
+                value={farmerOtp}
+                onChange={(e) => setFarmerOtp(e.target.value)}
+                className="w-full h-12 rounded-2xl bg-white/5 border border-white/15 px-4 font-mono text-center tracking-widest text-base font-black text-[#00ffc8] focus:border-[#00ffc8] outline-none"
+                required
+              />
+            </div>
+          </div>
+
+          <div className="p-4 rounded-2xl bg-white/[0.02] border border-white/5 text-xs text-white/60 leading-relaxed">
+            ℹ Ma'lumotlarni tasdiqlash orqali siz sut qabul qilinganini va sisterna muhrlanganini tasdiqlaysiz. ZaminFlow platformasi GPS va harorat monitoringini avtomatik faollashtiradi.
+          </div>
+
+          <button
+            type="submit"
+            className="w-full h-13 rounded-2xl bg-gradient-to-r from-[#00ffc8] via-[#00d3e0] to-[#0099ff] text-[#070B14] font-black text-sm tracking-wide shadow-xl shadow-[#00ffc8]/25 hover:shadow-[#00ffc8]/40 hover:scale-[1.01] transition cursor-pointer"
+          >
+            Qabulni Tasdiqlash va Marshrutni Boshlash →
+          </button>
+        </form>
+      )}
     </div>
   );
 }

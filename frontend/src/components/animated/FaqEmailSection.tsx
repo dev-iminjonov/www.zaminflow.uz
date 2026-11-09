@@ -1,0 +1,169 @@
+"use client";
+
+import React, { useState } from "react";
+import { SplashDoodle } from "./DoodleAccents";
+import { useLanguage } from "@/context/LanguageContext";
+
+export default function FaqEmailSection({ isDark = false }: { isDark?: boolean }) {
+  const { t, locale } = useLanguage();
+  const faqs = t.faqSection.items;
+  const [openIdx, setOpenIdx] = useState<number | null>(0);
+  const [email, setEmail] = useState("");
+  const [honeypot, setHoneypot] = useState("");
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [message, setMessage] = useState("");
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (honeypot) return; // bot
+    if (!email || !email.includes("@")) {
+      setStatus("error");
+      setMessage(t.faqSection.errorEmailMsg);
+      return;
+    }
+
+    setStatus("loading");
+    setTimeout(() => {
+      setStatus("success");
+      setMessage(t.faqSection.successMsg);
+      setEmail("");
+    }, 900);
+  };
+
+  return (
+    <section id="contact" className="relative w-full py-20 sm:py-28 overflow-hidden select-none scroll-mt-24">
+      <div className="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-14 items-start">
+          
+          {/* Left Column (5 cols): Heading + Fused Email Dispatch */}
+          <div className="lg:col-span-5">
+            <div className="flex items-center gap-2 mb-3">
+              <span className="text-xs font-black tracking-widest uppercase text-[#00d3e0]">
+                {t.faqSection.badge}
+              </span>
+              <SplashDoodle size={24} color="#00ffc8" />
+            </div>
+
+            <h2
+              className={`text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-tight mb-4 ${
+                isDark ? "text-white" : "text-[#081c15]"
+              }`}
+            >
+              {t.faqSection.titleStart}{" "}
+              <span className="bg-gradient-to-r from-[#00ffc8] via-[#00d3e0] to-[#0099ff] bg-clip-text text-transparent">
+                {t.faqSection.titleAccent}
+              </span>
+            </h2>
+
+            <p
+              className={`text-sm sm:text-base leading-relaxed mb-8 ${
+                isDark ? "text-[#E8F1F2]/70" : "text-[#2d6a4f]"
+              }`}
+            >
+              {t.faqSection.subtitle}
+            </p>
+
+            {/* Fused Pill Email Input Form (Reference 2.9) */}
+            <form onSubmit={handleSubmit} className="relative">
+              {/* Honeypot anti-spam field */}
+              <input
+                type="text"
+                name="website_hp"
+                value={honeypot}
+                onChange={(e) => setHoneypot(e.target.value)}
+                className="hidden"
+                tabIndex={-1}
+                autoComplete="off"
+              />
+
+              <div
+                className={`rounded-full p-2 border flex items-center shadow-lg transition-all ${
+                  isDark
+                    ? "bg-[#14181d]/90 backdrop-blur-xl border-white/15 focus-within:border-[#00d3e0]"
+                    : "bg-white/95 backdrop-blur-xl border-[#b7e4c7] focus-within:border-[#00d3e0] shadow-[0_10px_35px_rgba(0,153,255,0.12)]"
+                }`}
+              >
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder={t.faqSection.emailPlaceholder}
+                  className="w-full px-5 py-2.5 bg-transparent text-xs sm:text-sm font-semibold outline-hidden placeholder:opacity-50"
+                />
+                <button
+                  type="submit"
+                  disabled={status === "loading"}
+                  className="px-6 py-3 rounded-full text-xs sm:text-sm font-extrabold text-[#070B14] bg-gradient-to-r from-[#00ffc8] to-[#0099ff] hover:opacity-90 active:scale-95 transition-all shadow-md shrink-0 cursor-pointer"
+                >
+                  {status === "loading" ? t.faqSection.sending : `${t.faqSection.sendBtn} →`}
+                </button>
+              </div>
+
+              {message && (
+                <div
+                  className={`mt-3 text-xs font-bold ${
+                    status === "success" ? "text-[#00ffc8]" : "text-red-400"
+                  }`}
+                >
+                  {message}
+                </div>
+              )}
+            </form>
+          </div>
+
+          {/* Right Column (7 cols): Smooth Expanding Accordions (Reference 2.9) */}
+          <div className="lg:col-span-7 flex flex-col gap-3">
+            <div className="text-xs font-bold uppercase tracking-wider text-[#00d3e0] mb-2 px-1">
+              {locale === "ru"
+                ? "Часто задаваемые вопросы"
+                : locale === "en"
+                ? "Frequently Asked Questions"
+                : "Eng ko'p so'raladigan savollar"}
+            </div>
+
+            {faqs.map((faq, idx) => {
+              const isOpen = openIdx === idx;
+              return (
+                <div
+                  key={idx}
+                  className={`rounded-[24px] border transition-all duration-300 overflow-hidden ${
+                    isDark
+                      ? "bg-[#14181d]/80 border-white/10"
+                      : "bg-white/90 border-[#b7e4c7] shadow-[0_4px_16px_rgba(0,0,0,0.02)]"
+                  }`}
+                >
+                  <button
+                    type="button"
+                    onClick={() => setOpenIdx(isOpen ? null : idx)}
+                    aria-expanded={isOpen}
+                    className="w-full p-5 sm:p-6 text-left flex items-center justify-between gap-4 font-bold text-sm sm:text-base cursor-pointer"
+                  >
+                    <span className={isDark ? "text-white" : "text-[#081c15]"}>
+                      {faq.question}
+                    </span>
+                    <span
+                      className={`w-8 h-8 rounded-full border border-white/10 flex items-center justify-center text-sm transition-transform duration-300 shrink-0 ${
+                        isOpen
+                          ? "rotate-180 bg-[#00ffc8] text-[#070B14] font-black"
+                          : "text-gray-400"
+                      }`}
+                    >
+                      ↓
+                    </span>
+                  </button>
+
+                  {isOpen && (
+                    <div className="px-5 sm:px-6 pb-6 pt-1 text-xs sm:text-sm text-gray-400 leading-relaxed border-t border-black/5 dark:border-white/5 animate-in fade-in duration-300">
+                      {faq.answer}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+
+        </div>
+      </div>
+    </section>
+  );
+}

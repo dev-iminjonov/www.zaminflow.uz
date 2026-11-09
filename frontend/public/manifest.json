@@ -1,0 +1,27 @@
+{
+  "name": "ZaminFlow AgriTech Platform",
+  "short_name": "ZaminFlow",
+  "description": "Milliy B2B Sut Savdosi, Sovuq Zanjir Telemetriyasi va Agrobank Eskrou Kliring Tizimi",
+  "start_url": "/",
+  "id": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0d1013",
+  "theme_color": "#00ffc8",
+  "icons": [
+    {
+      "src": "/icon.png",
+      "sizes": "225x212",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/images/zaminflow-logo-dark.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "categories": ["business", "finance", "productivity"],
+  "screenshots": []
+}

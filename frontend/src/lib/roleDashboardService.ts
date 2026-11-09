@@ -22,7 +22,7 @@ export interface FarmerDashboardData {
   todayPrice: { value: string; unit: string; delta: string };
   suppliedThisMonth: { value: string; unit: string };
   nextPayout: { value: string; unit: string };
-  qualityGrade: { grade: string; snf: string };
+  qualityGrade: { grade: string; snf: string; fat?: string; density?: string };
   recentDeliveries: Array<{
     id: string;
     destination: string;

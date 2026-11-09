@@ -2,26 +2,15 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import ZaminFlowLogo from "@/components/ZaminFlowLogo";
-import { useRouter } from "next/navigation";
-import { signOut } from "@/lib/auth";
 import { getFarmerBatches, MilkBatch } from "@/lib/farmerStore";
 
 export default function MyMilkPage() {
-  const router = useRouter();
   const [batches, setBatches] = useState<MilkBatch[]>([]);
   const [filter, setFilter] = useState<string>("all");
-  const [isSigningOut, setIsSigningOut] = useState(false);
 
   useEffect(() => {
     setBatches(getFarmerBatches());
   }, []);
-
-  const handleSignOut = async () => {
-    setIsSigningOut(true);
-    await signOut();
-    router.push("/signin");
-  };
 
   const filteredBatches = batches.filter((b) => {
     if (filter === "all") return true;
@@ -40,242 +29,226 @@ export default function MyMilkPage() {
     .reduce((acc, curr) => acc + curr.volumeLiters, 0);
 
   return (
-    <div className="min-h-[940px] bg-[linear-gradient(160deg,#f6f9f8_0%,#e4f6ec_100%)] text-[#17352c] font-[family-name:var(--font-inter,sans-serif)]">
-      <div className="max-w-[1180px] mx-auto px-6 pt-6 pb-14 flex flex-col gap-7">
-        
-        {/* Floating Top Pill Nav */}
-        <nav className="bg-white rounded-[40px] px-8 py-3.5 flex flex-wrap items-center justify-between gap-4 shadow-[0_10px_40px_rgba(20,80,60,0.08)]">
-          <Link href="/dashboard/farmer" className="flex items-center shrink-0">
-            <ZaminFlowLogo mode="light" size="md" />
-          </Link>
-          <div className="flex flex-wrap items-center gap-7 text-[15px] font-semibold">
-            <Link href="/dashboard/farmer" className="text-[#17352c] hover:text-[#087a3c] transition pb-0.5">
-              Overview
-            </Link>
-            <Link href="/dashboard/farmer/my-milk" className="text-[#087a3c] border-b-2 border-[#22d36b] pb-0.5">
-              My milk
-            </Link>
-            <Link href="/dashboard/farmer/deliveries" className="text-[#17352c] hover:text-[#087a3c] transition pb-0.5">
-              Deliveries
-            </Link>
-            <Link href="/dashboard/farmer/payouts" className="text-[#17352c] hover:text-[#087a3c] transition pb-0.5">
-              Payouts
-            </Link>
+    <div className="flex flex-col gap-6 w-full">
+      {/* 1. HEADER ROW */}
+      <header className="flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <div className="text-[11px] font-black tracking-widest bg-gradient-to-r from-[#00ffc8] to-[#00d3e0] bg-clip-text text-transparent uppercase mb-1">
+            SUT OMBORI TELEMATIKASI
           </div>
-          <div className="flex items-center gap-3">
-            <span className="text-xs font-bold bg-[#d9f7e5] text-[#087a3c] rounded-lg px-2 py-1 whitespace-nowrap">
-              Farmer
+          <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-white">
+            Mening Sut Zaxiralarim{" "}
+            <span className="bg-gradient-to-r from-[#00ffc8] via-[#00d3e0] to-[#0099ff] bg-clip-text text-transparent">
+              Inventari
             </span>
-            <button
-              onClick={handleSignOut}
-              disabled={isSigningOut}
-              className="bg-white text-[#12303a] border-[1.5px] border-[#12303a] rounded-full px-5 min-h-[44px] font-bold text-[15px] hover:bg-[#12303a] hover:text-white transition cursor-pointer"
-            >
-              {isSigningOut ? "..." : "Sign out"}
-            </button>
-          </div>
-        </nav>
-
-        {/* Header Row */}
-        <header className="flex flex-wrap items-end justify-between gap-5 pt-4">
-          <div>
-            <h1 className="m-0 text-4xl sm:text-5xl font-extrabold tracking-[-0.03em] leading-[1.05] text-[#17352c]">
-              My Milk Supply <span className="text-[#087a3c]">Inventory</span>
-            </h1>
-          </div>
-          <Link
-            href="/dashboard/farmer/list-supply"
-            className="inline-flex items-center justify-center bg-[#12303a] text-white rounded-full px-7 min-h-[48px] font-bold text-base hover:bg-[#087a3c] transition shadow-sm cursor-pointer"
-          >
-            + List new milk supply
-          </Link>
-        </header>
-
-        {/* Top KPI Telemetry Grid */}
-        <section className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-5">
-          <div className="bg-[rgba(255,255,255,0.76)] border border-white rounded-[24px] shadow-[0_10px_40px_rgba(20,80,60,0.08)] p-6 box-border">
-            <div className="text-xs font-bold tracking-[0.08em] text-[#087a3c] uppercase">
-              Current in Cold Storage
-            </div>
-            <div className="flex items-baseline flex-wrap gap-2 mt-3">
-              <span className="font-[family-name:var(--font-jetbrains-mono,monospace)] text-[34px] font-bold text-[#17352c]">
-                {totalInStorage.toLocaleString()}
-              </span>
-              <span className="font-[family-name:var(--font-jetbrains-mono,monospace)] text-[13px] font-medium text-[#4d6a60]">
-                L
-              </span>
-              <span className="text-xs font-bold bg-[#d9f7e5] text-[#087a3c] rounded-lg px-2 py-1">
-                3.4°C chilled
-              </span>
-            </div>
-          </div>
-
-          <div className="bg-[rgba(255,255,255,0.76)] border border-white rounded-[24px] shadow-[0_10px_40px_rgba(20,80,60,0.08)] p-6 box-border">
-            <div className="text-xs font-bold tracking-[0.08em] text-[#087a3c] uppercase">
-              In Transit to Plants
-            </div>
-            <div className="flex items-baseline flex-wrap gap-2 mt-3">
-              <span className="font-[family-name:var(--font-jetbrains-mono,monospace)] text-[34px] font-bold text-[#17352c]">
-                {totalInTransit.toLocaleString()}
-              </span>
-              <span className="font-[family-name:var(--font-jetbrains-mono,monospace)] text-[13px] font-medium text-[#4d6a60]">
-                L
-              </span>
-              <span className="text-xs font-bold bg-[#d9f7e5] text-[#087a3c] rounded-lg px-2 py-1">
-                2 Tankers
-              </span>
-            </div>
-          </div>
-
-          <div className="bg-[rgba(255,255,255,0.76)] border border-white rounded-[24px] shadow-[0_10px_40px_rgba(20,80,60,0.08)] p-6 box-border">
-            <div className="text-xs font-bold tracking-[0.08em] text-[#087a3c] uppercase">
-              Bulk Tank Temperature
-            </div>
-            <div className="flex items-baseline flex-wrap gap-2 mt-3">
-              <span className="font-[family-name:var(--font-jetbrains-mono,monospace)] text-[34px] font-bold text-[#17352c]">
-                3.4°C
-              </span>
-              <span className="text-xs font-bold bg-[#d9f7e5] text-[#087a3c] rounded-lg px-2 py-1">
-                ✓ Optimal (2°–4°C)
-              </span>
-            </div>
-          </div>
-
-          <div className="bg-[rgba(255,255,255,0.76)] border border-white rounded-[24px] shadow-[0_10px_40px_rgba(20,80,60,0.08)] p-6 box-border">
-            <div className="text-xs font-bold tracking-[0.08em] text-[#087a3c] uppercase">
-              Average Farm-Gate Rate
-            </div>
-            <div className="flex items-baseline flex-wrap gap-2 mt-3">
-              <span className="font-[family-name:var(--font-jetbrains-mono,monospace)] text-[34px] font-bold text-[#17352c]">
-                4,380
-              </span>
-              <span className="font-[family-name:var(--font-jetbrains-mono,monospace)] text-[13px] font-medium text-[#4d6a60]">
-                UZS / L
-              </span>
-              <span className="text-xs font-bold bg-[#d9f7e5] text-[#087a3c] rounded-lg px-2 py-1">
-                Grade A+
-              </span>
-            </div>
-          </div>
-        </section>
-
-        {/* Filter Pills */}
-        <div className="flex flex-wrap gap-2 pt-2">
-          {[
-            { id: "all", label: "All batches" },
-            { id: "stored", label: "In Farm Storage" },
-            { id: "transit", label: "In Transit / Testing" },
-            { id: "released", label: "Settled & Released" },
-          ].map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setFilter(tab.id)}
-              className={`px-5 py-2 rounded-full text-sm font-bold transition cursor-pointer ${
-                filter === tab.id
-                  ? "bg-[#12303a] text-white"
-                  : "bg-white/80 text-[#17352c] border border-white hover:bg-white"
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
+          </h1>
+          <p className="text-xs text-white/50 mt-0.5">
+            Real vaqt rejimida sovutilgan sut hajmi, telematika va laboratoriya tahlillari
+          </p>
         </div>
 
-        {/* Batch Inventory Cards */}
-        <section className="flex flex-col gap-4">
-          {filteredBatches.map((batch) => (
-            <div
-              key={batch.id}
-              className="bg-[rgba(255,255,255,0.76)] border border-white rounded-[24px] shadow-[0_10px_40px_rgba(20,80,60,0.08)] p-6 flex flex-wrap items-center justify-between gap-6"
-            >
-              {/* Batch Info */}
-              <div className="flex-[1_1_240px]">
-                <div className="flex items-center gap-3 mb-1">
-                  <span className="font-[family-name:var(--font-jetbrains-mono,monospace)] font-bold text-lg text-[#12303a]">
-                    {batch.batchNumber}
-                  </span>
-                  <span className="text-xs font-bold bg-[#d9f7e5] text-[#087a3c] rounded-lg px-2 py-0.5">
-                    Grade {batch.qualityGrade}
-                  </span>
-                  <span className="text-xs text-[#4d6a60]">
-                    {batch.milkingDate} ({batch.milkingSession})
-                  </span>
-                </div>
-                <div className="text-sm text-[#4d6a60]">
-                  Target: <span className="font-semibold text-[#17352c]">{batch.destinationPlant}</span>
-                </div>
-                <div className="text-xs text-[#4d6a60] mt-0.5">
-                  Collection window: {batch.pickupWindow}
-                </div>
+        <Link
+          href="/dashboard/farmer/list-supply"
+          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-[#00ffc8] via-[#00d3e0] to-[#0099ff] hover:opacity-95 text-[#070B14] font-black text-xs sm:text-sm shadow-[0_10px_30px_rgba(0,211,224,0.35)] transition-all active:scale-95 cursor-pointer uppercase tracking-wider"
+        >
+          <span className="text-base leading-none font-black">+</span>
+          <span>Yangi partiya qo'shish</span>
+        </Link>
+      </header>
+
+      {/* 2. TOP KPI TELEMETRY GRID */}
+      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="rounded-[24px] p-5 bg-white/[0.03] border border-white/10 hover:border-[#00d3e0]/40 transition-all flex flex-col justify-between">
+          <div className="text-[11px] font-bold tracking-wider text-white/50 uppercase flex items-center justify-between">
+            <span>Sovuq Omborida</span>
+            <span className="w-2 h-2 rounded-full bg-[#00ffc8] animate-ping" />
+          </div>
+          <div className="flex items-baseline gap-2 mt-3">
+            <span className="font-mono text-3xl font-black text-white">
+              {totalInStorage.toLocaleString()}
+            </span>
+            <span className="text-xs text-[#00d3e0] font-mono">L</span>
+            <span className="ml-auto text-[10px] font-bold bg-[#00ffc8]/15 border border-[#00ffc8]/30 text-[#00ffc8] rounded-full px-2.5 py-0.5">
+              3.4°C Sovutilgan
+            </span>
+          </div>
+        </div>
+
+        <div className="rounded-[24px] p-5 bg-white/[0.03] border border-white/10 hover:border-[#00d3e0]/40 transition-all flex flex-col justify-between">
+          <div className="text-[11px] font-bold tracking-wider text-white/50 uppercase flex items-center justify-between">
+            <span>Yetkazilmoqda</span>
+            <span className="text-xs">🚛</span>
+          </div>
+          <div className="flex items-baseline gap-2 mt-3">
+            <span className="font-mono text-3xl font-black text-white">
+              {totalInTransit.toLocaleString()}
+            </span>
+            <span className="text-xs text-[#0099ff] font-mono">L</span>
+            <span className="ml-auto text-[10px] font-bold bg-[#0099ff]/15 border border-[#0099ff]/30 text-[#0099ff] rounded-full px-2.5 py-0.5">
+              2 Tanker Yo'lda
+            </span>
+          </div>
+        </div>
+
+        <div className="rounded-[24px] p-5 bg-white/[0.03] border border-white/10 hover:border-[#00d3e0]/40 transition-all flex flex-col justify-between">
+          <div className="text-[11px] font-bold tracking-wider text-white/50 uppercase flex items-center justify-between">
+            <span>Tank Harorati</span>
+            <span className="text-xs">❄️</span>
+          </div>
+          <div className="flex items-baseline gap-2 mt-3">
+            <span className="font-mono text-3xl font-black text-[#00ffc8]">
+              3.4°C
+            </span>
+            <span className="ml-auto text-[10px] font-bold bg-[#00ffc8]/15 border border-[#00ffc8]/30 text-[#00ffc8] rounded-full px-2.5 py-0.5">
+              ✓ Optimal (2°–4°C)
+            </span>
+          </div>
+        </div>
+
+        <div className="rounded-[24px] p-5 bg-white/[0.03] border border-white/10 hover:border-[#00d3e0]/40 transition-all flex flex-col justify-between">
+          <div className="text-[11px] font-bold tracking-wider text-white/50 uppercase flex items-center justify-between">
+            <span>O'rtacha Narx</span>
+            <span className="text-xs">💰</span>
+          </div>
+          <div className="flex items-baseline gap-2 mt-3">
+            <span className="font-mono text-3xl font-black text-white">
+              4,380
+            </span>
+            <span className="text-xs text-white/60 font-mono">UZS/L</span>
+            <span className="ml-auto text-[10px] font-bold bg-[#00d3e0]/15 border border-[#00d3e0]/30 text-[#00d3e0] rounded-full px-2.5 py-0.5">
+              Grade A+
+            </span>
+          </div>
+        </div>
+      </section>
+
+      {/* 3. FILTER PILLS */}
+      <div className="flex flex-wrap gap-2 pt-1">
+        {[
+          { id: "all", label: "Barcha partiyalar" },
+          { id: "stored", label: "Fermada saqlanmoqda" },
+          { id: "transit", label: "Yo'lda / Sinovda" },
+          { id: "released", label: "Eskrou to'langan" },
+        ].map((tab) => (
+          <button
+            key={tab.id}
+            type="button"
+            onClick={() => setFilter(tab.id)}
+            className={`px-4 py-1.5 rounded-full text-xs font-bold transition cursor-pointer ${
+              filter === tab.id
+                ? "bg-gradient-to-r from-[#00ffc8] to-[#0099ff] text-[#070B14] shadow-md font-black"
+                : "bg-white/5 border border-white/10 text-white/70 hover:text-white hover:bg-white/10"
+            }`}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
+
+      {/* 4. BATCH INVENTORY CARDS */}
+      <section className="flex flex-col gap-3.5">
+        {filteredBatches.map((batch) => (
+          <div
+            key={batch.id}
+            className="rounded-[28px] p-5 sm:p-6 bg-white/[0.03] border border-white/10 hover:border-[#00d3e0]/40 shadow-lg flex flex-wrap items-center justify-between gap-5 transition-all"
+          >
+            {/* Batch Info */}
+            <div className="flex-[1_1_240px]">
+              <div className="flex items-center gap-2.5 mb-1.5">
+                <span className="font-mono font-bold text-lg text-white">
+                  {batch.batchNumber}
+                </span>
+                <span className="text-[10px] font-bold bg-[#00ffc8]/15 border border-[#00ffc8]/30 text-[#00ffc8] rounded-full px-2 py-0.5">
+                  Sinf: {batch.qualityGrade}
+                </span>
+                <span className="text-xs text-white/50">
+                  {batch.milkingDate} ({batch.milkingSession})
+                </span>
               </div>
-
-              {/* Lab Parameters */}
-              <div className="flex flex-wrap items-center gap-6">
-                <div>
-                  <div className="text-xs text-[#4d6a60]">Volume</div>
-                  <div className="font-[family-name:var(--font-jetbrains-mono,monospace)] font-bold text-xl text-[#17352c]">
-                    {batch.volumeLiters.toLocaleString()} L
-                  </div>
-                </div>
-
-                <div>
-                  <div className="text-xs text-[#4d6a60]">Fat / SNF</div>
-                  <div className="font-[family-name:var(--font-jetbrains-mono,monospace)] font-semibold text-sm text-[#17352c]">
-                    {batch.fatPercent}% / {batch.snfPercent}%
-                  </div>
-                </div>
-
-                <div>
-                  <div className="text-xs text-[#4d6a60]">Estimated Payout</div>
-                  <div className="font-[family-name:var(--font-jetbrains-mono,monospace)] font-bold text-lg text-[#087a3c]">
-                    {batch.totalEstimatedPayout.toLocaleString()} UZS
-                  </div>
-                </div>
-
-                <div>
-                  <div className="text-xs text-[#4d6a60]">Status</div>
-                  <span
-                    className={`text-xs font-bold rounded-lg px-2.5 py-1 inline-block mt-0.5 ${
-                      batch.status === "in_transit"
-                        ? "bg-[#d9f7e5] text-[#087a3c]"
-                        : batch.status === "testing"
-                        ? "bg-[#fdf0d2] text-[#7a4b00]"
-                        : batch.status === "released"
-                        ? "bg-[#e6ecea] text-[#33473f]"
-                        : "bg-blue-100 text-blue-800"
-                    }`}
-                  >
-                    {batch.status === "stored" && "● Chilling in Bulk Tank"}
-                    {batch.status === "in_transit" && "● In Transit (GPS locked)"}
-                    {batch.status === "testing" && "● Titration Testing"}
-                    {batch.status === "released" && "✓ Escrow Released"}
-                    {batch.status === "disputed" && "⚠ Disputed"}
-                  </span>
-                </div>
+              <div className="text-xs text-white/70">
+                Mo'ljal: <strong className="text-white">{batch.destinationPlant}</strong>
               </div>
-
-              {/* Actions */}
-              <div className="flex items-center gap-3">
-                <Link
-                  href={`/dashboard/farmer/batches/${batch.batchNumber}`}
-                  className="bg-white text-[#12303a] border-[1.5px] border-[#12303a] rounded-full px-5 min-h-[44px] font-bold text-sm inline-flex items-center justify-center hover:bg-[#12303a] hover:text-white transition cursor-pointer"
-                >
-                  View Telemetry →
-                </Link>
-                {batch.status === "testing" && (
-                  <Link
-                    href={`/dashboard/farmer/dispute?batch=${batch.batchNumber}`}
-                    className="bg-[#fdf0d2] text-[#7a4b00] border border-[#f59e0b]/40 rounded-full px-4 min-h-[44px] font-bold text-sm inline-flex items-center justify-center hover:bg-[#fde68a] transition"
-                  >
-                    Dispute Lab Test
-                  </Link>
-                )}
+              <div className="text-[11px] text-white/40 mt-0.5">
+                Qabul qilish oynasi: {batch.pickupWindow}
               </div>
             </div>
-          ))}
-        </section>
 
-      </div>
+            {/* Lab Parameters */}
+            <div className="flex flex-wrap items-center gap-6 sm:gap-8">
+              <div>
+                <div className="text-[11px] text-white/40 uppercase font-semibold">Hajm</div>
+                <div className="font-mono font-black text-xl text-white">
+                  {batch.volumeLiters.toLocaleString()} <span className="text-xs text-[#00d3e0] font-normal">L</span>
+                </div>
+              </div>
+
+              <div>
+                <div className="text-[11px] text-white/40 uppercase font-semibold">Yog' / SNF</div>
+                <div className="font-mono font-bold text-sm text-white/90">
+                  {batch.fatPercent}% / {batch.snfPercent}%
+                </div>
+              </div>
+
+              <div>
+                <div className="text-[11px] text-white/40 uppercase font-semibold">Eskrou To'lovi</div>
+                <div className="font-mono font-bold text-lg text-[#00ffc8]">
+                  {batch.totalEstimatedPayout.toLocaleString()} <span className="text-xs text-white/50 font-normal">UZS</span>
+                </div>
+              </div>
+
+              <div>
+                <div className="text-[11px] text-white/40 uppercase font-semibold mb-1">Holat</div>
+                <span
+                  className={`text-[10px] font-bold rounded-full px-3 py-1 inline-flex items-center gap-1.5 border ${
+                    batch.status === "in_transit"
+                      ? "bg-[#00ffc8]/15 border-[#00ffc8]/30 text-[#00ffc8]"
+                      : batch.status === "testing"
+                      ? "bg-amber-400/15 border-amber-400/30 text-amber-300"
+                      : batch.status === "released"
+                      ? "bg-[#0099ff]/15 border-[#0099ff]/30 text-[#0099ff]"
+                      : "bg-white/5 border-white/10 text-white/70"
+                  }`}
+                >
+                  <span
+                    className={`w-1.5 h-1.5 rounded-full ${
+                      batch.status === "in_transit"
+                        ? "bg-[#00ffc8] animate-ping"
+                        : batch.status === "testing"
+                        ? "bg-amber-400 animate-pulse"
+                        : batch.status === "released"
+                        ? "bg-[#0099ff]"
+                        : "bg-white/50"
+                    }`}
+                  />
+                  {batch.status === "stored" && "Fermada Sovutilmoqda"}
+                  {batch.status === "in_transit" && "Yo'lda (GPS Qulflangan)"}
+                  {batch.status === "testing" && "Lab Titratsiya Sinovida"}
+                  {batch.status === "released" && "Eskrou To'landi"}
+                  {batch.status === "disputed" && "Nizo Jarayonida"}
+                </span>
+              </div>
+            </div>
+
+            {/* Actions */}
+            <div className="flex items-center gap-2.5">
+              <Link
+                href={`/dashboard/farmer/batches/${batch.batchNumber}`}
+                className="px-4 py-2 rounded-full border border-white/15 bg-white/5 hover:border-[#00d3e0] text-xs font-bold text-white hover:text-[#00ffc8] transition"
+              >
+                Telematika →
+              </Link>
+              {batch.status === "testing" && (
+                <Link
+                  href={`/dashboard/farmer/dispute?batch=${batch.batchNumber}`}
+                  className="px-4 py-2 rounded-full border border-amber-400/30 bg-amber-400/10 hover:bg-amber-400/20 text-xs font-bold text-amber-300 transition"
+                >
+                  Nizo Ochish
+                </Link>
+              )}
+            </div>
+          </div>
+        ))}
+      </section>
     </div>
   );
 }
