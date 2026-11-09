@@ -142,34 +142,44 @@ async def seed_users():
                 )
             else:
                 logger.info("Creating new test account: %s (%s)", email, acc["role_key"])
-                org_id = uuid4()
                 user_id = uuid4()
 
-                await db.execute(
-                    text(
-                        """
-                        INSERT INTO organizations (
-                            id, role, legal_name, kyb_status, tax_id, bank_iban,
-                            contact_phone, address_text, location, created_at
-                        ) VALUES (
-                            :id, :role, :legal_name, :kyb_status, :tax_id, :bank_iban,
-                            :phone, :address_text, ST_SetSRID(ST_MakePoint(:lon, :lat), 4326), NOW()
-                        )
-                        """
-                    ),
-                    {
-                        "id": org_id,
-                        "role": acc["org_role"],
-                        "legal_name": acc["org_name"],
-                        "kyb_status": acc["kyb_status"],
-                        "tax_id": acc["tax_id"],
-                        "bank_iban": acc["bank_iban"],
-                        "phone": acc["phone_number"],
-                        "address_text": acc["address_text"],
-                        "lon": acc["longitude"],
-                        "lat": acc["latitude"],
-                    },
+                # Check if organization with this tax_id already exists
+                org_existing = await db.execute(
+                    text("SELECT id FROM organizations WHERE tax_id = :tax_id"),
+                    {"tax_id": acc["tax_id"]},
                 )
+                existing_org_id = org_existing.scalar()
+
+                if existing_org_id:
+                    org_id = existing_org_id
+                else:
+                    org_id = uuid4()
+                    await db.execute(
+                        text(
+                            """
+                            INSERT INTO organizations (
+                                id, role, legal_name, kyb_status, tax_id, bank_iban,
+                                contact_phone, address_text, location, created_at
+                            ) VALUES (
+                                :id, :role, :legal_name, :kyb_status, :tax_id, :bank_iban,
+                                :phone, :address_text, ST_SetSRID(ST_MakePoint(:lon, :lat), 4326), NOW()
+                            )
+                            """
+                        ),
+                        {
+                            "id": org_id,
+                            "role": acc["org_role"],
+                            "legal_name": acc["org_name"],
+                            "kyb_status": acc["kyb_status"],
+                            "tax_id": acc["tax_id"],
+                            "bank_iban": acc["bank_iban"],
+                            "phone": acc["phone_number"],
+                            "address_text": acc["address_text"],
+                            "lon": acc["longitude"],
+                            "lat": acc["latitude"],
+                        },
+                    )
 
                 await db.execute(
                     text(

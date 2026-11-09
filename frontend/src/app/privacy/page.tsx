@@ -3,11 +3,15 @@
 import React from "react";
 import Link from "next/link";
 import ZaminFlowLogo from "@/components/ZaminFlowLogo";
-import { ThemeToggleButton } from "@/context/ThemeContext";
+import { ThemeToggleButton, useTheme } from "@/context/ThemeContext";
 
 export default function PrivacyPage() {
+  const { themeMode, isDark } = useTheme();
+
   return (
-    <div className="min-h-screen bg-[#0d1013] text-white py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden font-sans select-none">
+    <div className={`min-h-screen py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden font-sans select-none transition-colors duration-300 ${
+      isDark ? "bg-[#0d1013] text-[#E8F1F2]" : "bg-[#f6fbf8] text-[#081c15]"
+    }`}>
       {/* 1. AMBIENT TURQUOISE DREAMLAND BACKDROP AURORAS */}
       <div className="absolute top-10 -left-40 w-[600px] h-[600px] pointer-events-none z-0">
         <div
@@ -33,78 +37,94 @@ export default function PrivacyPage() {
 
       <div className="max-w-[920px] mx-auto relative z-10">
         {/* Header */}
-        <header className="flex items-center justify-between border-b border-white/10 pb-6 mb-8">
+        <header className={`flex items-center justify-between border-b pb-6 mb-8 ${isDark ? "border-white/10" : "border-[#b7e4c7]/60"}`}>
           <Link href="/" className="inline-flex transition-transform hover:scale-105">
-            <ZaminFlowLogo size="md" mode="dark" />
+            <ZaminFlowLogo size="md" mode={themeMode} />
           </Link>
           <div className="flex items-center gap-3">
             <ThemeToggleButton size="sm" />
             <Link
               href="/"
-              className="text-xs font-bold px-4 py-2 rounded-full border border-white/15 bg-white/5 hover:bg-white/10 text-white transition flex items-center gap-1.5 shadow-xs"
+              className={`text-xs font-bold px-4 py-2 rounded-full border transition flex items-center gap-1.5 shadow-xs ${
+                isDark
+                  ? "border-white/15 bg-white/5 hover:bg-white/10 text-white"
+                  : "border-[#b7e4c7] bg-white hover:bg-[#b7e4c7]/20 text-[#081c15] shadow-xs"
+              }`}
             >
               <span>&larr;</span>
-              <span>Bosh sahifaga qaytish</span>
+              <span>Boş sahifaga qaytiş</span>
             </Link>
           </div>
         </header>
 
         {/* Content Card */}
-        <article className="rounded-[36px] p-8 sm:p-12 bg-[#14181d]/90 backdrop-blur-2xl border border-white/10 shadow-[0_25px_80px_rgba(0,153,255,0.18)] space-y-8">
+        <article className={`rounded-[36px] p-8 sm:p-12 border shadow-xl space-y-8 backdrop-blur-2xl ${
+          isDark
+            ? "bg-[#14181d]/90 border-white/10 shadow-[0_25px_80px_rgba(0,153,255,0.18)]"
+            : "bg-white border-[#b7e4c7] shadow-[0_10px_35px_rgba(0,153,255,0.06)]"
+        }`}>
           <div>
-            <div className="text-xs font-bold uppercase tracking-widest bg-gradient-to-r from-[#00ffc8] to-[#00d3e0] bg-clip-text text-transparent mb-2">
+            <div className={`text-xs font-bold uppercase tracking-widest mb-2 ${
+              isDark ? "bg-gradient-to-r from-[#00ffc8] to-[#00d3e0] bg-clip-text text-transparent" : "text-emerald-700"
+            }`}>
               Maxfiylik Siyosati &bull; Privacy Policy
             </div>
-            <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-white">
-              Shaxsiy maʼlumotlarni qayta ishlash siyosati
+            <h1 className={`text-3xl sm:text-4xl font-black tracking-tight ${isDark ? "text-white" : "text-slate-900"}`}>
+              Şaxsiy maʼlumotlarni qayta işlaş siyosati
             </h1>
-            <p className="text-xs text-white/50 mt-2 font-mono">
-              Oʻzbekiston Respublikasining 2019-yil 2-iyuldagi OʻRQ-547-sonli &ldquo;Shaxsiy maʼlumotlar toʻgʻrisida&rdquo;gi Qonuniga muvofiq
+            <p className={`text-xs mt-2 font-mono ${isDark ? "text-white/50" : "text-slate-500"}`}>
+              Özbekiston Respublikasining 2019-yil 2-iyuldagi ÖRQ-547-sonli &ldquo;Şaxsiy maʼlumotlar töğrisida&rdquo;gi Qonuniga muvofiq
             </p>
           </div>
 
-          <div className="h-px bg-white/10" />
+          <div className={`h-px ${isDark ? "bg-white/10" : "bg-slate-200"}`} />
 
           {/* Section 1 */}
           <section className="space-y-3">
-            <h2 className="text-xl font-bold text-white">1. Umumiy qoidalar</h2>
-            <p className="text-sm leading-relaxed text-white/80">
-              Mazkur Siyosat &ldquo;ZaminFlow&rdquo; MCHJ (keyingi oʻrinlarda &mdash; &ldquo;Operator&rdquo;) tomonidan yuritiladigan raqamli sut taʼminoti zanjiri va fintex ekotizimidan foydalanishda jismoniy va yuridik shaxslarning shaxsiy maʼlumotlarini yigʻish, saqlash va qayta ishlash tartibini belgilaydi.
+            <h2 className={`text-xl font-bold ${isDark ? "text-white" : "text-slate-900"}`}>1. Umumiy qoidalar</h2>
+            <p className={`text-sm leading-relaxed ${isDark ? "text-white/80" : "text-slate-600"}`}>
+              Mazkur Siyosat &ldquo;ZaminFlow&rdquo; MÇJ (keyingi örinlarda &mdash; &ldquo;Operator&rdquo;) tomonidan yuritiladigan raqamli sut taʼminoti zanjiri va fintex ekotizimidan foydalanişda jismoniy va yuridik şaxslarning şaxsiy maʼlumotlarini yiğiş, saqlaş va qayta işlaş tartibini belgilaydi.
             </p>
           </section>
 
           {/* Section 2 */}
           <section className="space-y-3">
-            <h2 className="text-xl font-bold text-white">2. Maʼlumotlarni mahalliylashtirish (OʻRQ-547, 27¹-modda)</h2>
-            <div className="p-4 rounded-2xl bg-[#00ffc8]/10 border border-[#00ffc8]/30 text-sm leading-relaxed text-[#00ffc8]">
-              <strong>Qonuniy talab:</strong> Oʻzbekiston Respublikasi fuqarolarining shaxsiy maʼlumotlari (F.I.Sh., STIR, telefon raqamlari, transport vositalari GPS telemetriyasi) Operatorning Oʻzbekiston Respublikasi hududida jismonan joylashgan serverlarida saqlanadi va qayta ishlanadi.
+            <h2 className={`text-xl font-bold ${isDark ? "text-white" : "text-slate-900"}`}>2. Maʼlumotlarni mahalliylaştiriş (ÖRQ-547, 27¹-modda)</h2>
+            <div className={`p-4 rounded-2xl border text-sm leading-relaxed ${
+              isDark
+                ? "bg-[#00ffc8]/10 border-[#00ffc8]/30 text-[#00ffc8]"
+                : "bg-emerald-50 border-emerald-200 text-emerald-900"
+            }`}>
+              <strong>Qonuniy talab:</strong> Özbekiston Respublikasi fuqarolarining şaxsiy maʼlumotlari (F.I.Ş., STIR, telefon raqamlari, transport vositalari GPS telemetriyasi) Operatorning Özbekiston Respublikasi hududida jismonan joylaşgan serverlarida saqlanadi va qayta işlanadi.
             </div>
           </section>
 
           {/* Section 3 */}
           <section className="space-y-3">
-            <h2 className="text-xl font-bold text-white">3. Qayta ishlanadigan maʼlumotlar toifalari</h2>
-            <ul className="list-disc pl-5 space-y-2 text-sm text-white/80">
-              <li>Identifikatsiya maʼlumotlari: F.I.Sh., STIR / JShShIR, tashkilot nomi, bank hisob raqamlari.</li>
-              <li>Aloqa maʼlumotlari: telefon raqami, elektron pochta manzili, yuridik manzil.</li>
-              <li>Logistika va IoT telemetriya: transport vositasining real vaqtdagi GPS koordinatalari, sisterna harorati (sovuq zanjir datchiklari), yoʻl varaqalari raqamlari.</li>
-              <li>Laboratoriya va sifat koʻrsatkichlari: xom sut yogʻliligi, zichligi, kislotaliligi, oqsil miqdori.</li>
-              <li>Tranzaksiya maʼlumotlari: Agrobank ATB orqali amalga oshirilgan eskrou toʻlovlari va ISO 20022 kliring xabarlari.</li>
+            <h2 className={`text-xl font-bold ${isDark ? "text-white" : "text-slate-900"}`}>3. Qayta işlanadigan maʼlumotlar toifalari</h2>
+            <ul className={`list-disc pl-5 space-y-2 text-sm ${isDark ? "text-white/80" : "text-slate-600"}`}>
+              <li>Identifikatsiya maʼlumotlari: F.I.Ş., STIR / JŞŞIR, taşkilot nomi, bank hisob raqamlari.</li>
+              <li>Aloqa maʼlumotlari: telefon raqami, elektron poçta manzili, yuridik manzil.</li>
+              <li>Logistika va IoT telemetriya: transport vositasining real vaqtdagi GPS koordinatalari, sisterna harorati (sovuq zanjir datçiklari), yöl varaqalari raqamlari.</li>
+              <li>Laboratoriya va sifat körsatkiçlari: xom sut yoğliligi, ziçligi, kislotaliligi, oqsil miqdori.</li>
+              <li>Tranzaksiya maʼlumotlari: Agrobank ATB orqali amalga oşirilgan eskrou tölovlari va ISO 20022 kliring xabarlari.</li>
             </ul>
           </section>
 
           {/* Section 4 */}
           <section className="space-y-3">
-            <h2 className="text-xl font-bold text-white">4. Xavfsizlik choralari</h2>
-            <p className="text-sm leading-relaxed text-white/80">
-              Operator barcha uzatiladigan maʼlumotlarni TLS 1.3 shifrlash protokollari bilan himoyalaydi. Bank kliring operatsiyalari Markaziy Bankning xavfsizlik reglamentlari va ikki yoqlama buxgalteriya yozuvlariga muvofiq olib boriladi.
+            <h2 className={`text-xl font-bold ${isDark ? "text-white" : "text-slate-900"}`}>4. Xavfsizlik çoralari</h2>
+            <p className={`text-sm leading-relaxed ${isDark ? "text-white/80" : "text-slate-600"}`}>
+              Operator barça uzatiladigan maʼlumotlarni TLS 1.3 şifrlaş protokollari bilan himoyalaydi. Bank kliring operatsiyalari Markaziy Bankning xavfsizlik reglamentlari va ikki yoqlama buxgalteriya yozuvlariga muvofiq olib boriladi.
             </p>
           </section>
 
-          <div className="pt-6 border-t border-white/10 flex flex-wrap items-center justify-between gap-4 text-xs text-white/50">
-            <span>Oxirgi yangilanish: 2026-yil 8-noyabr</span>
-            <Link href="/terms" className="text-[#00ffc8] hover:underline font-bold">
-              Foydalanish shartlari bilan tanishish &rarr;
+          <div className={`pt-6 border-t flex flex-wrap items-center justify-between gap-4 text-xs ${
+            isDark ? "border-white/10 text-white/50" : "border-slate-200 text-slate-500"
+          }`}>
+            <span>Oxirgi yangilaniş: 2026-yil 8-noyabr</span>
+            <Link href="/terms" className={`font-bold hover:underline ${isDark ? "text-[#00ffc8]" : "text-emerald-700"}`}>
+              Foydalaniş şartlari bilan tanişiş &rarr;
             </Link>
           </div>
         </article>

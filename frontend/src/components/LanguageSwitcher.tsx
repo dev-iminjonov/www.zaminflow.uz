@@ -10,7 +10,7 @@ interface LanguageSwitcherProps {
 }
 
 const LANGUAGES: { code: Locale; label: string; full: string }[] = [
-  { code: "uz", label: "UZ", full: "O'zbekcha" },
+  { code: "uz", label: "UZ", full: "Özbekça" },
   { code: "ru", label: "RU", full: "Русский" },
   { code: "en", label: "EN", full: "English" },
 ];

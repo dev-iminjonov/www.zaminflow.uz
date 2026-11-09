@@ -8,6 +8,7 @@ import { useLanguage } from "@/context/LanguageContext";
 import { useTheme, ThemeToggleButton } from "@/context/ThemeContext";
 import { AuthSession, getStoredSession, signOut } from "@/lib/auth";
 import { resolveUserAvatar } from "@/lib/userAvatar";
+import UniversalSpotlightSearch from "@/components/search/UniversalSpotlightSearch";
 
 type RolePortalKey = "farmer" | "dairy" | "driver" | "admin";
 
@@ -341,23 +342,23 @@ export default function RoleDashboardShell({
 
   return (
     <div className={`min-h-screen py-5 px-3 sm:px-6 relative overflow-x-hidden font-sans antialiased select-none transition-colors duration-300 ${
-      isDark ? "bg-[#070b0e] text-white" : "bg-[#f8fafc] text-slate-900"
+      isDark ? "bg-[#0d1013] text-[#E8F1F2]" : "bg-[#f6fbf8] text-[#081c15]"
     }`}>
       {/* 1. AMBIENT DREAMLAND BACKDROP AURORAS */}
       <div className="absolute top-10 -left-40 w-[550px] h-[550px] pointer-events-none z-0">
         <div
           className={`w-full h-full rounded-full blur-[140px] animate-pulse ${
-            isDark ? "opacity-20" : "opacity-12"
+            isDark ? "opacity-25" : "opacity-35"
           }`}
-          style={{ background: isDark ? "radial-gradient(circle, #00ffc8 0%, #00d3e0 40%, transparent 70%)" : "radial-gradient(circle, #34d399 0%, #38bdf8 40%, transparent 70%)" }}
+          style={{ background: "radial-gradient(circle, #00ffc8 0%, #00d3e0 40%, transparent 70%)" }}
         />
       </div>
       <div className="absolute bottom-10 -right-40 w-[550px] h-[550px] pointer-events-none z-0">
         <div
           className={`w-full h-full rounded-full blur-[140px] animate-pulse ${
-            isDark ? "opacity-20" : "opacity-10"
+            isDark ? "opacity-20" : "opacity-25"
           }`}
-          style={{ background: isDark ? "radial-gradient(circle, #00d3e0 0%, #0099ff 50%, transparent 70%)" : "radial-gradient(circle, #38bdf8 0%, #818cf8 50%, transparent 70%)" }}
+          style={{ background: "radial-gradient(circle, #00d3e0 0%, #0099ff 50%, transparent 70%)" }}
         />
       </div>
 
@@ -365,7 +366,7 @@ export default function RoleDashboardShell({
       <div
         className="absolute inset-0 opacity-10 pointer-events-none"
         style={{
-          backgroundImage: isDark ? "radial-gradient(#00d3e0 1px, transparent 1px)" : "radial-gradient(#059669 1px, transparent 1px)",
+          backgroundImage: "radial-gradient(#00d3e0 1px, transparent 1px)",
           backgroundSize: "28px 28px",
         }}
       />
@@ -373,12 +374,12 @@ export default function RoleDashboardShell({
       {/* Unified Luxury Floating Master Canvas */}
       <div className={`relative z-10 max-w-[1380px] mx-auto rounded-[36px] border p-4 sm:p-8 flex flex-col gap-6 transition-colors duration-300 ${
         isDark
-          ? "bg-[#14181d]/90 backdrop-blur-2xl shadow-[0_25px_80px_rgba(0,153,255,0.18)] border-white/10 text-white"
-          : "bg-white backdrop-blur-2xl shadow-[0_20px_60px_-15px_rgba(15,23,42,0.07)] border-slate-200 text-slate-900"
+          ? "bg-[#14181d]/90 backdrop-blur-2xl shadow-[0_25px_80px_rgba(0,153,255,0.18)] border-white/10 text-[#E8F1F2]"
+          : "bg-white/95 backdrop-blur-2xl shadow-[0_10px_35px_rgba(0,153,255,0.06)] border-[#b7e4c7] text-[#081c15]"
       }`}>
         {/* 1. TOP NAV BAR */}
         <header className={`flex flex-wrap items-center justify-between gap-4 pb-4 border-b ${
-          isDark ? "border-white/10" : "border-slate-200"
+          isDark ? "border-white/10" : "border-[#b7e4c7]/60"
         }`}>
           {/* Brand Logo */}
           <Link href={`/dashboard/${role}`} className="flex items-center shrink-0 transition-transform hover:scale-105">
@@ -387,7 +388,7 @@ export default function RoleDashboardShell({
 
           {/* Navigation Pill Tabs */}
           <nav className={`hidden lg:flex items-center gap-1.5 p-1 rounded-full border text-xs font-semibold backdrop-blur-md ${
-            isDark ? "bg-white/5 border-white/10" : "bg-slate-100 border-slate-200"
+            isDark ? "bg-white/5 border-white/10" : "bg-[#f6fbf8] border-[#b7e4c7]"
           }`}>
             {navItems.map((item) => {
               const active = isNavItemActive(item);
@@ -397,10 +398,10 @@ export default function RoleDashboardShell({
                   href={item.href}
                   className={
                     active
-                      ? "px-4 py-1.5 rounded-full bg-gradient-to-r from-[#00ffc8] to-[#0099ff] text-[#070B14] shadow-md font-black transition"
+                      ? "px-4 py-1.5 rounded-full bg-gradient-to-r from-[#00ffc8] via-[#00d3e0] to-[#0099ff] text-[#070B14] shadow-md font-black transition"
                       : isDark
                       ? "px-4 py-1.5 rounded-full text-white/70 hover:text-white hover:bg-white/5 transition"
-                      : "px-4 py-1.5 rounded-full text-slate-700 hover:text-slate-900 hover:bg-white shadow-xs transition"
+                      : "px-4 py-1.5 rounded-full text-[#2d6a4f] hover:text-[#081c15] hover:bg-white shadow-xs transition"
                   }
                 >
                   {item.label}
@@ -410,7 +411,7 @@ export default function RoleDashboardShell({
             <Link
               href={`/dashboard/${role}/profile`}
               className={`px-4 py-1.5 rounded-full transition ${
-                isDark ? "text-white/70 hover:text-white hover:bg-white/5" : "text-slate-700 hover:text-slate-900 hover:bg-white shadow-xs"
+                isDark ? "text-white/70 hover:text-white hover:bg-white/5" : "text-[#2d6a4f] hover:text-[#081c15] hover:bg-white shadow-xs"
               }`}
             >
               Profile
@@ -419,19 +420,16 @@ export default function RoleDashboardShell({
 
           {/* Right Section: Search, Language Switcher, User Menu */}
           <div className="flex items-center gap-3">
-            {/* Search Pill */}
-            <div className={`hidden sm:flex items-center gap-2 px-3.5 py-1.5 rounded-full border text-xs transition ${
-              isDark ? "bg-white/5 border-white/10 text-white/50 focus-within:border-[#00d3e0]/60" : "bg-slate-100 border-slate-200 text-slate-700 focus-within:border-emerald-500 focus-within:ring-2 focus-within:ring-emerald-500/20"
-            }`}>
-              <svg className={`w-3.5 h-3.5 ${isDark ? "text-[#00d3e0]" : "text-emerald-600"}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-              <span className={isDark ? "text-white/40" : "text-slate-500"}>{searchPlaceholders[role]}</span>
-            </div>
+            {/* Live Interactive Search Pill */}
+            <UniversalSpotlightSearch
+              placeholder={searchPlaceholders[role]}
+              role={role}
+              className="hidden sm:block"
+            />
 
             {/* Language Selector */}
             <div className={`flex rounded-full p-1 border text-[11px] font-bold ${
-              isDark ? "border-white/10 bg-white/5" : "border-slate-200 bg-slate-100"
+              isDark ? "border-white/10 bg-white/5" : "border-[#b7e4c7] bg-[#f6fbf8]"
             }`} role="group" aria-label="Language selector">
               {(["uz", "ru", "en"] as const).map((loc) => (
                 <button
@@ -616,7 +614,7 @@ export default function RoleDashboardShell({
         html.dark .zf-unified-subpage .bg-white {
           background-color: rgba(255, 255, 255, 0.03) !important;
           border-color: rgba(255, 255, 255, 0.1) !important;
-          color: #f1f5f9 !important;
+          color: #E8F1F2 !important;
         }
         html.dark .zf-unified-subpage [class*="text-[#17352c]"],
         html.dark .zf-unified-subpage [class*="text-[#12303a]"],

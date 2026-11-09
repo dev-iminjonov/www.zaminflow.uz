@@ -1,14 +1,16 @@
 /**
  * Role Dashboard Telemetry Service
  *
- * Provides real-time telemetry data for the four ZaminFlow role dashboards:
+ * Provides real-time telemetry data for the five ZaminFlow role dashboards:
  * - Farmer
  * - Dairy Industry
  * - Driver
  * - Admin
+ * - Bank
  *
- * Supports mock provider data (matching Figma/HTML artboards) and live backend API integration.
- * Control mode via NEXT_PUBLIC_USE_MOCK_DATA environment variable.
+ * Strictly connects to live FastAPI backend endpoints (/api/v1/*).
+ * Clean empty states are served when newly registered tenants have 0 transactions,
+ * preventing fake data leaks during production launch.
  */
 
 import { authenticatedFetch } from "./auth";
@@ -123,323 +125,204 @@ export interface BankDashboardData {
   }>;
 }
 
-// --- Mock Data (Exact match to Artboard Specs) ---
+// --- Production Clean Empty States (Zero-Data Defaults) ---
 
-export const MOCK_FARMER_DATA: FarmerDashboardData = {
-  todayPrice: { value: "4,380", unit: "UZS / L", delta: "+12.4%" },
-  suppliedThisMonth: { value: "18,240", unit: "L" },
-  nextPayout: { value: "5,256,000", unit: "UZS" },
-  qualityGrade: { grade: "A+", snf: "SNF 8.7%" },
-  recentDeliveries: [
-    {
-      id: "del-1",
-      destination: "To Tashkent",
-      batch: "Batch ZF-0412",
-      volume: "1,200 L",
-      grade: "A+",
-      status: "● In transit",
-      statusType: "success",
-    },
-    {
-      id: "del-2",
-      destination: "To Samarqand",
-      batch: "Batch ZF-0409",
-      volume: "950 L",
-      grade: "A",
-      status: "● Titration pending",
-      statusType: "warning",
-    },
-    {
-      id: "del-3",
-      destination: "To Fergana",
-      batch: "Batch ZF-0405",
-      volume: "1,100 L",
-      grade: "A+",
-      status: "✓ Escrow released",
-      statusType: "neutral",
-    },
-  ],
-  payouts: [
-    {
-      id: "pay-1",
-      batch: "ZF-0412",
-      condition: "Releases after titration",
-      amount: "5,256,000",
-    },
-    {
-      id: "pay-2",
-      batch: "ZF-0405",
-      condition: "Released",
-      amount: "4,818,000",
-    },
-  ],
+export const EMPTY_FARMER_DATA: FarmerDashboardData = {
+  todayPrice: { value: "0", unit: "UZS / L", delta: "0%" },
+  suppliedThisMonth: { value: "0", unit: "L" },
+  nextPayout: { value: "0", unit: "UZS" },
+  qualityGrade: { grade: "-", snf: "0%" },
+  recentDeliveries: [],
+  payouts: [],
 };
 
-export const MOCK_DAIRY_DATA: DairyDashboardData = {
-  openOrders: { value: "12", unit: "" },
-  receivedToday: { value: "186,400", unit: "L", delta: "+3.8%" },
-  activeShipments: { value: "47", unit: "", coldStatus: "+3.2°C cold" },
-  escrowBalance: { value: "48,500,000", unit: "UZS" },
-  incomingShipments: [
-    {
-      id: "ship-1",
-      route: "Sayxunobod → Tashkent",
-      batch: "Batch ZF-0412 · GPS locked",
-      gpsLock: true,
-      temp: "3.2°C",
-      etaOrStatus: "28 min ETA",
-      status: "● In transit",
-      statusType: "success",
-    },
-    {
-      id: "ship-2",
-      route: "Zomin → Samarqand",
-      batch: "Batch ZF-0409 · GPS locked",
-      gpsLock: true,
-      temp: "3.6°C",
-      etaOrStatus: "At dairy",
-      status: "● Titration pending",
-      statusType: "warning",
-    },
-    {
-      id: "ship-3",
-      route: "Pop → Fergana",
-      batch: "Batch ZF-0405 · Delivered",
-      gpsLock: false,
-      temp: "3.1°C",
-      etaOrStatus: "12 min ago",
-      status: "✓ Escrow released",
-      statusType: "neutral",
-    },
-  ],
-  regionalPrices: [
-    { region: "Andijan", price: "4,420", percentage: 100 },
-    { region: "Samarqand", price: "4,350", percentage: 95 },
-    { region: "Fergana", price: "4,310", percentage: 91 },
-    { region: "Namangan", price: "4,290", percentage: 88 },
-  ],
+export const EMPTY_DAIRY_DATA: DairyDashboardData = {
+  openOrders: { value: "0", unit: "" },
+  receivedToday: { value: "0", unit: "L", delta: "0%" },
+  activeShipments: { value: "0", unit: "", coldStatus: "Normal" },
+  escrowBalance: { value: "0", unit: "UZS" },
+  incomingShipments: [],
+  regionalPrices: [],
 };
 
-export const MOCK_DRIVER_DATA: DriverDashboardData = {
-  todayTrips: { value: "4", unit: "trips" },
-  nextPickup: { time: "08:40", location: "Sayxunobod" },
-  coldChain: { temp: "3.2°C", status: "✓ In range", inRange: true },
-  completedThisWeek: { value: "18", unit: "trips" },
-  todayStops: [
-    {
-      id: "stop-1",
-      time: "08:40",
-      isoTimestamp: "2026-11-07T08:40:00+05:00",
-      type: "pickup",
-      locationName: "Pick up · Sayxunobod farm",
-      batchInfo: "Batch ZF-0412 · 1,200 L",
-      status: "● Next",
-      statusType: "next",
-    },
-    {
-      id: "stop-2",
-      time: "10:15",
-      isoTimestamp: "2026-11-07T10:15:00+05:00",
-      type: "pickup",
-      locationName: "Pick up · Zomin cooperative",
-      batchInfo: "Batch ZF-0409 · 950 L",
-      status: "Scheduled",
-      statusType: "scheduled",
-    },
-    {
-      id: "stop-3",
-      time: "13:30",
-      isoTimestamp: "2026-11-07T13:30:00+05:00",
-      type: "deliver",
-      locationName: "Deliver · Tashkent dairy",
-      batchInfo: "Titration check on arrival",
-      status: "Scheduled",
-      statusType: "scheduled",
-    },
-  ],
+export const EMPTY_DRIVER_DATA: DriverDashboardData = {
+  todayTrips: { value: "0", unit: "reys" },
+  nextPickup: { time: "--:--", location: "Tayinlangan reys yöq" },
+  coldChain: { temp: "--.-°C", status: "Kutilmoqda", inRange: true },
+  completedThisWeek: { value: "0", unit: "reys" },
+  todayStops: [],
   activeTrip: {
-    batch: "ZF-0412",
-    route: "Sayxunobod → Tashkent",
-    progressPercentage: 72,
-    eta: "28 min ETA",
+    batch: "-",
+    route: "Faol reys mavjud emas",
+    progressPercentage: 0,
+    eta: "--",
   },
 };
 
-export const MOCK_ADMIN_DATA: AdminDashboardData = {
-  pendingVerification: { value: "0", unit: "users" },
-  activeUsers: { value: "3", delta: "Live DB" },
-  openDisputes: { value: "0", status: "✓ Clear", statusType: "neutral" },
+export const EMPTY_ADMIN_DATA: AdminDashboardData = {
+  pendingVerification: { value: "0", unit: "dossye" },
+  activeUsers: { value: "0", delta: "0%" },
+  openDisputes: { value: "0", status: "✓ Tinch", statusType: "neutral" },
   escrowTotal: { value: "0", unit: "UZS" },
   verificationQueue: [],
   usersByRole: [
     { role: "Farmers", count: "0", percentage: 0 },
     { role: "Dairy Industry", count: "0", percentage: 0 },
     { role: "Drivers", count: "0", percentage: 0 },
-    { role: "Admins", count: "3", percentage: 100 },
+    { role: "Admins", count: "0", percentage: 0 },
   ],
 };
 
-// --- Service Fetch Functions with API Fallback ---
+export const EMPTY_BANK_DATA: BankDashboardData = {
+  totalEscrowHeld: { value: "0", unit: "UZS" },
+  releasedToday: { value: "0", unit: "UZS" },
+  frozenDisputes: { value: "0", status: "✓ Barqaror" },
+  factoringFeeRevenue: { value: "0", unit: "UZS" },
+  ledgerEntries: [],
+};
+
+// Fallback Mock Data ONLY used when explicit mock mode is on (NEXT_PUBLIC_USE_MOCK_DATA=true)
+export const MOCK_FARMER_DATA = EMPTY_FARMER_DATA;
+export const MOCK_DAIRY_DATA = EMPTY_DAIRY_DATA;
+export const MOCK_DRIVER_DATA = EMPTY_DRIVER_DATA;
+export const MOCK_ADMIN_DATA = EMPTY_ADMIN_DATA;
+export const MOCK_BANK_DATA = EMPTY_BANK_DATA;
+
+// --- Service Fetch Functions Calling Live /api/v1 Endpoints ---
 
 export async function fetchFarmerDashboardData(): Promise<FarmerDashboardData> {
-  if (USE_MOCK_DATA) {
-    return { ...MOCK_FARMER_DATA };
-  }
   try {
-    const res = await authenticatedFetch("/farmer/dashboard");
+    const res = await authenticatedFetch("/api/v1/farmer/dashboard");
     if (res.ok) {
       const liveData = await res.json();
-      if (liveData.recentDeliveries && liveData.recentDeliveries.length > 0) {
-        return liveData;
-      }
       return {
-        ...MOCK_FARMER_DATA,
-        todayPrice: liveData.todayPrice || MOCK_FARMER_DATA.todayPrice,
-        suppliedThisMonth: liveData.suppliedThisMonth?.value !== "0" ? liveData.suppliedThisMonth : MOCK_FARMER_DATA.suppliedThisMonth,
-        nextPayout: liveData.nextPayout?.value !== "0" ? liveData.nextPayout : MOCK_FARMER_DATA.nextPayout,
-        qualityGrade: liveData.qualityGrade || MOCK_FARMER_DATA.qualityGrade,
+        todayPrice: liveData.todayPrice || EMPTY_FARMER_DATA.todayPrice,
+        suppliedThisMonth: liveData.suppliedThisMonth || EMPTY_FARMER_DATA.suppliedThisMonth,
+        nextPayout: liveData.nextPayout || EMPTY_FARMER_DATA.nextPayout,
+        qualityGrade: liveData.qualityGrade || EMPTY_FARMER_DATA.qualityGrade,
+        recentDeliveries: Array.isArray(liveData.recentDeliveries) ? liveData.recentDeliveries : [],
+        payouts: Array.isArray(liveData.payouts) ? liveData.payouts : [],
       };
     }
   } catch (e) {
-    console.warn("Live farmer dashboard API unavailable, using resilient fallback", e);
+    console.warn("Live farmer dashboard API request failed:", e);
   }
-  return { ...MOCK_FARMER_DATA };
+  return { ...EMPTY_FARMER_DATA };
 }
 
 export async function fetchDairyDashboardData(): Promise<DairyDashboardData> {
-  if (USE_MOCK_DATA) {
-    return { ...MOCK_DAIRY_DATA };
-  }
   try {
-    const res = await authenticatedFetch("/dairy/dashboard");
+    const res = await authenticatedFetch("/api/v1/dairy/dashboard");
     if (res.ok) {
       const liveData = await res.json();
-      if (liveData.incomingShipments && liveData.incomingShipments.length > 0) {
-        return liveData;
-      }
       return {
-        ...MOCK_DAIRY_DATA,
-        openOrders: liveData.openOrders?.value !== "0" ? liveData.openOrders : MOCK_DAIRY_DATA.openOrders,
-        receivedToday: liveData.receivedToday?.value !== "0" ? liveData.receivedToday : MOCK_DAIRY_DATA.receivedToday,
-        activeShipments: liveData.activeShipments?.value !== "0" ? liveData.activeShipments : MOCK_DAIRY_DATA.activeShipments,
-        escrowBalance: liveData.escrowBalance?.value !== "0" ? liveData.escrowBalance : MOCK_DAIRY_DATA.escrowBalance,
+        openOrders: liveData.openOrders || EMPTY_DAIRY_DATA.openOrders,
+        receivedToday: liveData.receivedToday || EMPTY_DAIRY_DATA.receivedToday,
+        activeShipments: liveData.activeShipments || EMPTY_DAIRY_DATA.activeShipments,
+        escrowBalance: liveData.escrowBalance || EMPTY_DAIRY_DATA.escrowBalance,
+        incomingShipments: Array.isArray(liveData.incomingShipments) ? liveData.incomingShipments : [],
+        regionalPrices: Array.isArray(liveData.regionalPrices) ? liveData.regionalPrices : [],
       };
     }
   } catch (e) {
-    console.warn("Live dairy dashboard API unavailable, using resilient fallback", e);
+    console.warn("Live dairy dashboard API request failed:", e);
   }
-  return { ...MOCK_DAIRY_DATA };
+  return { ...EMPTY_DAIRY_DATA };
 }
 
 export async function fetchDriverDashboardData(): Promise<DriverDashboardData> {
-  if (USE_MOCK_DATA) {
-    return { ...MOCK_DRIVER_DATA };
-  }
   try {
-    const res = await authenticatedFetch("/driver/dashboard");
+    const res = await authenticatedFetch("/api/v1/driver/dashboard");
     if (res.ok) {
       const liveData = await res.json();
-      if (liveData.todayStops && liveData.todayStops.length > 0) {
-        return liveData;
-      }
       return {
-        ...MOCK_DRIVER_DATA,
-        coldChain: liveData.coldChain || MOCK_DRIVER_DATA.coldChain,
+        todayTrips: liveData.todayTrips || EMPTY_DRIVER_DATA.todayTrips,
+        nextPickup: liveData.nextPickup || EMPTY_DRIVER_DATA.nextPickup,
+        coldChain: liveData.coldChain || EMPTY_DRIVER_DATA.coldChain,
+        completedThisWeek: liveData.completedThisWeek || EMPTY_DRIVER_DATA.completedThisWeek,
+        todayStops: Array.isArray(liveData.todayStops) ? liveData.todayStops : [],
+        activeTrip: liveData.activeTrip || EMPTY_DRIVER_DATA.activeTrip,
       };
     }
   } catch (e) {
-    console.warn("Live driver dashboard API unavailable, using resilient fallback", e);
+    console.warn("Live driver dashboard API request failed:", e);
   }
-  return { ...MOCK_DRIVER_DATA };
+  return { ...EMPTY_DRIVER_DATA };
 }
 
 export async function fetchAdminDashboardData(): Promise<AdminDashboardData> {
-  if (USE_MOCK_DATA) {
-    return { ...MOCK_ADMIN_DATA };
-  }
   try {
-    const res = await authenticatedFetch("/admin/dashboard");
+    const res = await authenticatedFetch("/api/v1/admin/dashboard");
     if (res.ok) {
       const liveData = await res.json();
       return {
-        ...MOCK_ADMIN_DATA,
-        pendingVerification: liveData.pendingVerification || MOCK_ADMIN_DATA.pendingVerification,
-        activeUsers: liveData.activeUsers || MOCK_ADMIN_DATA.activeUsers,
-        openDisputes: liveData.openDisputes || MOCK_ADMIN_DATA.openDisputes,
-        escrowTotal:
-          liveData.escrowTotal?.value !== "0"
-            ? liveData.escrowTotal
-            : MOCK_ADMIN_DATA.escrowTotal,
-        verificationQueue:
-          liveData.verificationQueue && liveData.verificationQueue.length > 0
-            ? liveData.verificationQueue
-            : MOCK_ADMIN_DATA.verificationQueue,
-        usersByRole:
-          liveData.usersByRole && liveData.usersByRole.length > 0
-            ? liveData.usersByRole
-            : MOCK_ADMIN_DATA.usersByRole,
+        pendingVerification: liveData.pendingVerification || EMPTY_ADMIN_DATA.pendingVerification,
+        activeUsers: liveData.activeUsers || EMPTY_ADMIN_DATA.activeUsers,
+        openDisputes: liveData.openDisputes || EMPTY_ADMIN_DATA.openDisputes,
+        escrowTotal: liveData.escrowTotal || EMPTY_ADMIN_DATA.escrowTotal,
+        verificationQueue: Array.isArray(liveData.verificationQueue) ? liveData.verificationQueue : [],
+        usersByRole: Array.isArray(liveData.usersByRole) ? liveData.usersByRole : EMPTY_ADMIN_DATA.usersByRole,
       };
     }
   } catch (e) {
-    console.warn("Live admin dashboard API unavailable, using resilient fallback", e);
+    console.warn("Live admin dashboard API request failed:", e);
   }
-  return { ...MOCK_ADMIN_DATA };
+  return { ...EMPTY_ADMIN_DATA };
 }
 
-export const MOCK_BANK_DATA: BankDashboardData = {
-  totalEscrowHeld: { value: "48,500,000", unit: "UZS" },
-  releasedToday: { value: "10,074,000", unit: "UZS" },
-  frozenDisputes: { value: "1", status: "● Escrow Frozen" },
-  factoringFeeRevenue: { value: "412,500", unit: "UZS" },
-  ledgerEntries: [
-    {
-      id: "led-1",
-      contractId: "CTR-2026-8812",
-      batchId: "ZF-0412",
-      entryType: "ESCROW_LOCK",
-      debitAccount: "INDUSTRY_OPERATING:TASHKENT_DAIRY",
-      creditAccount: "BANK_ESCROW_VAULT:CTR-2026-8812",
-      amountUzs: "18,500,000",
-      bankReferenceId: "ISO-PACS008-9941",
-      webhookStatus: "DELIVERED",
-      createdAt: "2026-11-08T08:15:00Z",
-    },
-    {
-      id: "led-2",
-      contractId: "CTR-2026-8805",
-      batchId: "ZF-0405",
-      entryType: "ESCROW_RELEASE",
-      debitAccount: "BANK_ESCROW_VAULT:CTR-2026-8805",
-      creditAccount: "FARMER_SETTLEMENT:CHASHMA_FARM",
-      amountUzs: "4,818,000",
-      bankReferenceId: "ISO-PACS008-9938",
-      webhookStatus: "DELIVERED",
-      createdAt: "2026-11-08T07:40:00Z",
-    },
-  ],
-};
-
 export async function fetchBankDashboardData(): Promise<BankDashboardData> {
-  if (USE_MOCK_DATA) {
-    return { ...MOCK_BANK_DATA };
-  }
   try {
-    const res = await authenticatedFetch("/bank/dashboard");
+    const res = await authenticatedFetch("/api/v1/bank/dashboard");
     if (res.ok) {
       const liveData = await res.json();
-      if (liveData.ledgerEntries && liveData.ledgerEntries.length > 0) {
-        return liveData;
-      }
       return {
-        ...MOCK_BANK_DATA,
-        totalEscrowHeld:
-          liveData.totalEscrowHeld?.value !== "0"
-            ? liveData.totalEscrowHeld
-            : MOCK_BANK_DATA.totalEscrowHeld,
+        totalEscrowHeld: liveData.totalEscrowHeld || EMPTY_BANK_DATA.totalEscrowHeld,
+        releasedToday: liveData.releasedToday || EMPTY_BANK_DATA.releasedToday,
+        frozenDisputes: liveData.frozenDisputes || EMPTY_BANK_DATA.frozenDisputes,
+        factoringFeeRevenue: liveData.factoringFeeRevenue || EMPTY_BANK_DATA.factoringFeeRevenue,
+        ledgerEntries: Array.isArray(liveData.ledgerEntries) ? liveData.ledgerEntries : [],
       };
     }
   } catch (e) {
-    console.warn("Live bank dashboard API unavailable, using resilient fallback", e);
+    console.warn("Live bank dashboard API request failed:", e);
   }
-  return { ...MOCK_BANK_DATA };
+  return { ...EMPTY_BANK_DATA };
+}
+
+// --- Live Action Methods ---
+
+export async function submitFarmerSupplyListing(data: {
+  volume_liters: number;
+  cooling_temp_c: number;
+  milking_session: "MORNING" | "EVENING";
+  fat_pct?: number;
+  snf_pct?: number;
+  acidity_turner?: number;
+}): Promise<{ success: boolean; detail?: string }> {
+  const res = await authenticatedFetch("/api/v1/farmer/supply", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.detail || "Sut partiyasini e'lon qilishda xatolik yuz berdi");
+  }
+  return await res.json();
+}
+
+export async function submitBatchDispute(
+  batchId: string,
+  reason: string
+): Promise<{ success: boolean; detail?: string }> {
+  const res = await authenticatedFetch(`/api/v1/farmer/batches/${batchId}/dispute`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ reason }),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.detail || "Arbitraj da'vosini yuborishda xatolik yuz berdi");
+  }
+  return await res.json();
 }

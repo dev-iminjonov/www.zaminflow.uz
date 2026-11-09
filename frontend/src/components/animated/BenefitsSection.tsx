@@ -22,12 +22,16 @@ export default function BenefitsSection({ isDark = false }: { isDark?: boolean }
               <SplashDoodle size={24} color="#00ffc8" />
             </div>
             <h2
-              className={`text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-tight ${
+              className={`text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-[1.25] sm:leading-[1.3] ${
                 isDark ? "text-white" : "text-[#081c15]"
               }`}
             >
               {t.benefitsSection.title1}
-              <span className="bg-gradient-to-r from-[#00ffc8] via-[#00d3e0] to-[#0099ff] bg-clip-text text-transparent">
+              <span className={`inline ${
+                isDark
+                  ? "bg-gradient-to-r from-[#00ffc8] via-[#00d3e0] to-[#0099ff] bg-clip-text text-transparent"
+                  : "bg-gradient-to-r from-[#059669] via-[#0284c7] to-[#0369a1] bg-clip-text text-transparent"
+              }`}>
                 {t.benefitsSection.title2}
               </span>
             </h2>
@@ -87,10 +91,14 @@ export default function BenefitsSection({ isDark = false }: { isDark?: boolean }
 
               {/* Bottom Card Micro-Interaction Link */}
               <div className="relative z-10 pt-6 mt-6 border-t border-black/5 dark:border-white/10 flex items-center justify-between">
-                <span className="text-xs font-bold text-[#00d3e0] group-hover:text-[#00ffc8] transition-colors">
+                <span className={`text-xs font-bold transition-colors ${
+                  isDark ? "text-[#00d3e0] group-hover:text-[#00ffc8]" : "text-emerald-700 group-hover:text-emerald-800"
+                }`}>
                   Batafsil ma'lumot
                 </span>
-                <span className="w-8 h-8 rounded-full bg-[#00d3e0]/10 flex items-center justify-center text-xs font-bold text-[#00d3e0] group-hover:translate-x-1 transition-transform">
+                <span className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-transform group-hover:translate-x-1 ${
+                  isDark ? "bg-[#00d3e0]/10 text-[#00d3e0]" : "bg-emerald-100/70 text-emerald-800"
+                }`}>
                   →
                 </span>
               </div>

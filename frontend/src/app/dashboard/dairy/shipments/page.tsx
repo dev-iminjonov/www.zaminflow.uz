@@ -149,7 +149,7 @@ export default function DairyShipmentsPage() {
                         : "bg-[#00d3e0]/15 border-[#00d3e0]/30 text-[#00d3e0]"
                     }`}
                   >
-                    {isReleased && "✓ To'liq Qabul Qilindi"}
+                    {isReleased && "✓ Töliq Qabul Qilindi"}
                     {isTesting && "● Darvoza Titratsiyasi"}
                     {!isReleased && !isTesting && "● Tranzitda (GPS)"}
                   </span>

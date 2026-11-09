@@ -136,7 +136,7 @@ export default function DairyEscrowPage() {
 
         <div className="rounded-[28px] p-6 bg-white/[0.03] border border-white/10 hover:border-[#00d3e0]/40 transition-all flex flex-col justify-between min-h-[160px]">
           <div className="text-[11px] font-bold tracking-wider text-[#00d3e0] uppercase font-mono flex items-center justify-between">
-            <span>BO'SH MABLAG' (BUYURTMA UCHUN)</span>
+            <span>BÖŞ MABLAĞ (BUYURTMA UÇUN)</span>
             <span className="text-xs">⚡</span>
           </div>
           <div className="my-2">
@@ -198,9 +198,9 @@ export default function DairyEscrowPage() {
                 </div>
 
                 <div className="bg-white/5 p-4 rounded-xl text-xs space-y-1.5 text-white/70 border border-white/10">
-                  <div>Xizmat ko'rsatuvchi bank: <strong className="text-white">Agrobank Korporativ Filiali</strong></div>
+                  <div>Xizmat körsatuvçi bank: <strong className="text-white">Agrobank Korporativ Filiali</strong></div>
                   <div>Hisob raqami (IBAN): <strong className="font-mono text-white">UZ89 AGRO 0000 9876 5432 1000</strong></div>
-                  <div>To'lov maqsadi: <strong className="font-mono text-[#00ffc8]">ZF-ESCROW-TOPUP-2026</strong></div>
+                  <div>Tölov maqsadi: <strong className="font-mono text-[#00ffc8]">ZF-ESCROW-TOPUP-2026</strong></div>
                 </div>
 
                 <div className="pt-2 flex gap-3">

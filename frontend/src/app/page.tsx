@@ -22,11 +22,10 @@ import AnimatedFooter from "@/components/animated/AnimatedFooter";
 export default function LandingPage() {
   const { t, locale } = useLanguage();
   const { themeMode, setThemeMode, isDark } = useTheme();
-  const [activeSection, setActiveSection] = useState<string>("company");
+  const [activeSection, setActiveSection] = useState<string>("benefits");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navItems = [
-    { id: "company", label: t.nav.company },
     { id: "benefits", label: t.nav.benefits },
     { id: "simulator", label: t.nav.demo },
     { id: "team", label: t.nav.team },
@@ -38,7 +37,7 @@ export default function LandingPage() {
     if (typeof window === "undefined") return;
 
     const initialHash = window.location.hash.replace("#", "");
-    if (["company", "benefits", "simulator", "team", "stats", "contact"].includes(initialHash)) {
+    if (["benefits", "simulator", "team", "stats", "contact"].includes(initialHash)) {
       setActiveSection(initialHash);
       setTimeout(() => {
         const el = document.getElementById(initialHash);
@@ -48,7 +47,7 @@ export default function LandingPage() {
 
     const handleHash = () => {
       const hash = window.location.hash.replace("#", "");
-      if (["company", "benefits", "simulator", "team", "stats", "contact"].includes(hash)) {
+      if (["benefits", "simulator", "team", "stats", "contact"].includes(hash)) {
         setActiveSection(hash);
       }
     };
@@ -70,7 +69,7 @@ export default function LandingPage() {
       }
     );
 
-    ["company", "benefits", "simulator", "team", "stats", "contact"].forEach((id) => {
+    ["benefits", "simulator", "team", "stats", "contact"].forEach((id) => {
       const el = document.getElementById(id);
       if (el) observer.observe(el);
     });
@@ -145,17 +144,17 @@ export default function LandingPage() {
           </Link>
 
           {/* Center Navigation Links (Desktop) */}
-          <div className="hidden lg:flex items-center gap-7 text-xs sm:text-sm font-bold tracking-tight">
+          <div className="hidden lg:flex items-center gap-3 xl:gap-6 2xl:gap-7 text-xs sm:text-sm font-bold tracking-tight min-w-0">
             {navItems.map((item) => {
               const isActive = activeSection === item.id;
               return (
                 <a
                   key={item.id}
                   href={`#${item.id}`}
-                  className={`transition-all pb-0.5 ${
+                  className={`transition-all pb-0.5 whitespace-nowrap ${
                     isActive
-                      ? "text-[#00ffc8] dark:text-[#00ffc8] border-b-2 border-[#00d3e0] font-black"
-                      : "text-slate-600 dark:text-white/70 hover:text-[#00d3e0] font-semibold"
+                      ? "text-emerald-700 dark:text-[#00ffc8] border-b-2 border-emerald-600 dark:border-[#00d3e0] font-black"
+                      : "text-slate-700 dark:text-white/70 hover:text-emerald-600 dark:hover:text-[#00d3e0] font-semibold"
                   }`}
                 >
                   {item.label}
@@ -165,7 +164,7 @@ export default function LandingPage() {
           </div>
 
           {/* Right Actions: Lang + Theme + Login/Register Pill Buttons */}
-          <div className="flex items-center gap-2 sm:gap-3">
+          <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
             <LanguageSwitcher isDark={isDark} />
 
             {/* Dark Mode Toggle */}
@@ -176,7 +175,7 @@ export default function LandingPage() {
               className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold transition border ${
                 isDark
                   ? "bg-[#1a2026] border-white/10 text-[#00ffc8] hover:bg-white/10"
-                  : "bg-white border-[#b7e4c7] text-[#081c15] hover:bg-slate-100 shadow-xs"
+                  : "bg-white border-slate-200 text-slate-800 hover:bg-slate-100 shadow-xs"
               }`}
             >
               {isDark ? "☀️" : "🌙"}
@@ -255,7 +254,7 @@ export default function LandingPage() {
       </header>
 
       {/* 3. HERO SECTION (Reference 2.3 — 3-Line Headline with Doodles + Hand Phone Mockup) */}
-      <main id="company" className="relative z-10 w-full max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 lg:py-28 min-h-[calc(100vh-5rem)] flex items-center scroll-mt-24">
+      <main id="hero" className="relative z-10 w-full max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 lg:py-28 min-h-[calc(100vh-5rem)] flex items-center scroll-mt-24">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center w-full">
           
           {/* Left Column (6 cols): Typography, Doodle Splash, Hand-drawn Underline, CTAs */}

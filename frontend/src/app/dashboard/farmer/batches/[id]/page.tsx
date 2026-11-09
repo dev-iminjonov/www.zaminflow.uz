@@ -128,11 +128,11 @@ export default function FarmerBatchDetailPage() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
             <div className="p-4 rounded-2xl bg-white/[0.02] border border-white/5 flex flex-col gap-1">
-              <span className="text-white/40 font-mono uppercase text-[10px]">Qabul Qiluvchi Zavod</span>
+              <span className="text-white/40 font-mono uppercase text-[10px]">Qabul Qiluvçi Zavod</span>
               <span className="font-bold text-white text-sm">{batch.destinationPlant}</span>
             </div>
             <div className="p-4 rounded-2xl bg-white/[0.02] border border-white/5 flex flex-col gap-1">
-              <span className="text-white/40 font-mono uppercase text-[10px]">Tashuvchi Haydovchi</span>
+              <span className="text-white/40 font-mono uppercase text-[10px]">Taşuvçi Haydovçi</span>
               <span className="font-bold text-white text-sm">{batch.driverName}</span>
               <span className="text-[10px] font-mono text-white/50">{batch.truckPlate} • {batch.driverPhone}</span>
             </div>
@@ -144,12 +144,12 @@ export default function FarmerBatchDetailPage() {
             <div className="flex items-center justify-between text-xs">
               <div className="flex items-center gap-2">
                 <span className="w-6 h-6 rounded-full bg-[#00ffc8] text-[#070B14] font-black text-xs flex items-center justify-center">✓</span>
-                <span className="text-white font-bold">Fermadan Chiqish</span>
+                <span className="text-white font-bold">Fermadan Çiqiş</span>
               </div>
               <div className="h-0.5 flex-1 bg-[#00ffc8]/40 mx-3" />
               <div className="flex items-center gap-2">
                 <span className="w-6 h-6 rounded-full bg-gradient-to-r from-[#00ffc8] to-[#0099ff] text-[#070B14] font-black text-xs flex items-center justify-center animate-pulse">●</span>
-                <span className="text-[#00ffc8] font-bold">Yoʻlda (Tranzit)</span>
+                <span className="text-[#00ffc8] font-bold">Yölda (Tranzit)</span>
               </div>
               <div className="h-0.5 flex-1 bg-white/10 mx-3" />
               <div className="flex items-center gap-2">
@@ -169,7 +169,7 @@ export default function FarmerBatchDetailPage() {
 
           <div className="flex flex-col gap-3 text-xs">
             <div className="flex justify-between p-3 rounded-xl bg-white/[0.02] border border-white/5">
-              <span className="text-white/60">Yogʻlilik (Fat %):</span>
+              <span className="text-white/60">Yoğlilik (Fat %):</span>
               <span className="font-mono font-bold text-white">{batch.fatPercent}%</span>
             </div>
             <div className="flex justify-between p-3 rounded-xl bg-white/[0.02] border border-white/5">

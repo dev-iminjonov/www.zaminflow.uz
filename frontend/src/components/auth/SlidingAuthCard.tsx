@@ -95,7 +95,7 @@ export default function SlidingAuthCard({ initialMode = "signin" }: SlidingAuthC
       const targetDestination = sanitizeNextRedirect(nextParam, session.canonicalRole);
       router.push(targetDestination);
     } catch (err: any) {
-      setServerError("Telefon/email yoki parol noto'g'ri. Qayta urinib ko'ring.");
+      setServerError("Telefon/email yoki parol notöğri. Qayta urinib köring.");
     } finally {
       setIsLoading(false);
     }
@@ -108,7 +108,7 @@ export default function SlidingAuthCard({ initialMode = "signin" }: SlidingAuthC
     const errors: Record<string, string> = {};
 
     if (!signUpName.trim()) {
-      errors.signUpName = "To'liq ismingizni kiriting.";
+      errors.signUpName = "Töliq ismingizni kiriting.";
     }
     if (!signUpIdentifier.trim()) {
       errors.signUpIdentifier = "Email yoki telefon kiriting.";
@@ -116,7 +116,7 @@ export default function SlidingAuthCard({ initialMode = "signin" }: SlidingAuthC
     if (!signUpPassword) {
       errors.signUpPassword = "Parol kiriting.";
     } else if (signUpPassword.length < 8) {
-      errors.signUpPassword = "Kamida 8 ta belgi bo'lishi lozim.";
+      errors.signUpPassword = "Kamida 8 ta belgi bölişi lozim.";
     }
 
     if (Object.keys(errors).length > 0) {
@@ -146,7 +146,7 @@ export default function SlidingAuthCard({ initialMode = "signin" }: SlidingAuthC
 
   return (
     <div className={`min-h-screen w-full flex flex-col items-center justify-center p-4 sm:p-6 lg:p-8 select-none relative font-sans overflow-x-hidden transition-colors duration-300 ${
-      isDark ? "bg-[#0d1013] text-white" : "bg-[#f4fbf7] text-[#081c15]"
+      isDark ? "bg-[#0d1013] text-[#E8F1F2]" : "bg-[#f6fbf8] text-[#081c15]"
     }`}>
       
       {/* 1. CREATIVE TURQUOISE DREAMLAND BACKGROUND AURORAS */}
@@ -185,7 +185,9 @@ export default function SlidingAuthCard({ initialMode = "signin" }: SlidingAuthC
 
         <div className="flex items-center gap-3 sm:gap-4">
           {/* Language Switcher */}
-          <div className="flex rounded-full bg-white/5 p-1 border border-white/10 text-xs font-bold backdrop-blur-md">
+          <div className={`flex rounded-full p-1 border text-xs font-bold backdrop-blur-md ${
+            isDark ? "bg-white/5 border-white/10" : "bg-white border-[#b7e4c7] shadow-xs"
+          }`}>
             {(["uz", "ru", "en"] as const).map((loc) => (
               <button
                 key={loc}
@@ -194,7 +196,7 @@ export default function SlidingAuthCard({ initialMode = "signin" }: SlidingAuthC
                 className={`px-3 py-1 rounded-full uppercase transition-all ${
                   locale === loc
                     ? "bg-gradient-to-r from-[#00ffc8] to-[#0099ff] text-[#070B14] font-black shadow-md"
-                    : isDark ? "text-white/60 hover:text-white" : "text-slate-600 hover:text-black"
+                    : isDark ? "text-white/60 hover:text-white" : "text-[#2d6a4f] hover:text-[#081c15]"
                 }`}
               >
                 {loc}
@@ -210,7 +212,7 @@ export default function SlidingAuthCard({ initialMode = "signin" }: SlidingAuthC
             className={`px-4 py-1.5 rounded-full text-xs font-bold border transition-all flex items-center gap-1.5 ${
               isDark
                 ? "border-white/10 bg-white/5 hover:bg-white/10 text-white/80 hover:text-white"
-                : "border-[#b7e4c7] bg-white hover:bg-slate-50 text-[#081c15] shadow-xs"
+                : "border-[#b7e4c7] bg-white hover:bg-[#b7e4c7]/20 text-[#081c15] shadow-xs"
             }`}
           >
             <span>←</span>
@@ -230,9 +232,11 @@ export default function SlidingAuthCard({ initialMode = "signin" }: SlidingAuthC
           3. MASTER LUXURY SLIDING AUTH CARD (Accurate Double-Transform Architecture)
          ========================================================================= */}
       <div
-        className={`relative w-full max-w-[840px] min-h-[520px] rounded-[32px] overflow-hidden bg-[#14181d] border border-white/10 shadow-[0_25px_80px_rgba(0,153,255,0.22)] z-10 transition-all ${
-          isSignUp ? "right-panel-active" : ""
-        }`}
+        className={`relative w-full max-w-[840px] min-h-[520px] rounded-[32px] overflow-hidden border z-10 transition-all ${
+          isDark
+            ? "bg-[#14181d] border-white/10 shadow-[0_25px_80px_rgba(0,153,255,0.22)]"
+            : "bg-white border-[#b7e4c7] shadow-[0_10px_35px_rgba(0,153,255,0.08)]"
+        } ${isSignUp ? "right-panel-active" : ""}`}
       >
         
         {/* =======================================================================
@@ -247,7 +251,7 @@ export default function SlidingAuthCard({ initialMode = "signin" }: SlidingAuthC
           style={{ transitionTimingFunction: "cubic-bezier(.68,-0.05,.27,1.05)" }}
         >
           <div className="w-full max-w-sm flex flex-col items-center">
-            <h1 className="text-3xl font-black text-white tracking-tight mb-2">
+            <h1 className={`text-3xl font-black tracking-tight mb-2 ${isDark ? "text-white" : "text-slate-900"}`}>
               Tizimga Kirish
             </h1>
 
@@ -257,7 +261,11 @@ export default function SlidingAuthCard({ initialMode = "signin" }: SlidingAuthC
                 type="button"
                 onClick={() => handleSocialClick("Google")}
                 title="Google orqali kirish"
-                className="w-10 h-10 rounded-xl border border-white/10 bg-white/5 hover:border-[#00d3e0] text-white flex items-center justify-center transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_0_15px_rgba(0,211,224,0.3)] cursor-pointer"
+                className={`w-10 h-10 rounded-xl border flex items-center justify-center transition-all duration-200 hover:-translate-y-0.5 cursor-pointer ${
+                  isDark
+                    ? "border-white/10 bg-white/5 text-white hover:border-[#00d3e0] hover:shadow-[0_0_15px_rgba(0,211,224,0.3)]"
+                    : "border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100 shadow-xs"
+                }`}
               >
                 <svg className="w-4 h-4" viewBox="0 0 24 24">
                   <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
@@ -270,7 +278,11 @@ export default function SlidingAuthCard({ initialMode = "signin" }: SlidingAuthC
                 type="button"
                 onClick={() => handleSocialClick("Telegram")}
                 title="Telegram orqali kirish"
-                className="w-10 h-10 rounded-xl border border-white/10 bg-white/5 hover:border-[#00d3e0] text-[#00d3e0] hover:text-[#00ffc8] flex items-center justify-center transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_0_15px_rgba(0,211,224,0.3)] cursor-pointer"
+                className={`w-10 h-10 rounded-xl border flex items-center justify-center transition-all duration-200 hover:-translate-y-0.5 cursor-pointer ${
+                  isDark
+                    ? "border-white/10 bg-white/5 text-[#00d3e0] hover:text-[#00ffc8] hover:border-[#00d3e0] hover:shadow-[0_0_15px_rgba(0,211,224,0.3)]"
+                    : "border-slate-200 bg-slate-50 text-sky-600 hover:bg-slate-100 shadow-xs"
+                }`}
               >
                 <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.52 2.77-1.17 3.35-1.37 3.72-1.38.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .37z" />
@@ -278,12 +290,12 @@ export default function SlidingAuthCard({ initialMode = "signin" }: SlidingAuthC
               </button>
             </div>
 
-            <p className="text-[11px] text-white/50 mb-5 font-medium">
+            <p className={`text-[11px] mb-5 font-medium ${isDark ? "text-white/50" : "text-slate-500"}`}>
               yoki telefon / email orqali kiring
             </p>
 
             {serverError && !isSignUp && (
-              <div className="w-full mb-3 p-2.5 text-xs rounded-xl bg-red-500/15 border border-red-500/30 text-red-300 font-semibold">
+              <div className="w-full mb-3 p-2.5 text-xs rounded-xl bg-red-500/15 border border-red-500/30 text-red-400 font-semibold">
                 {serverError}
               </div>
             )}
@@ -295,10 +307,14 @@ export default function SlidingAuthCard({ initialMode = "signin" }: SlidingAuthC
                   value={signInIdentifier}
                   onChange={(e) => setSignInIdentifier(e.target.value)}
                   placeholder="Telefon yoki Email"
-                  className="w-full h-11 px-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/30 text-xs sm:text-sm font-medium outline-hidden focus:border-[#00d3e0] focus:ring-2 focus:ring-[#00d3e0]/20 transition-all"
+                  className={`w-full h-11 px-4 rounded-xl border text-xs sm:text-sm font-medium outline-hidden transition-all ${
+                    isDark
+                      ? "bg-white/5 border-white/10 text-white placeholder:text-white/30 focus:border-[#00d3e0] focus:ring-2 focus:ring-[#00d3e0]/20"
+                      : "bg-slate-50 border-slate-200 text-slate-900 placeholder:text-slate-400 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
+                  }`}
                 />
                 {fieldErrors.signInIdentifier && !isSignUp && (
-                  <span className="text-[10px] text-[#00ffc8] font-bold block text-left mt-0.5">
+                  <span className={`text-[10px] font-bold block text-left mt-0.5 ${isDark ? "text-[#00ffc8]" : "text-emerald-700"}`}>
                     {fieldErrors.signInIdentifier}
                   </span>
                 )}
@@ -310,35 +326,39 @@ export default function SlidingAuthCard({ initialMode = "signin" }: SlidingAuthC
                   value={signInPassword}
                   onChange={(e) => setSignInPassword(e.target.value)}
                   placeholder="Parol"
-                  className="w-full h-11 px-4 pr-10 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/30 text-xs sm:text-sm font-medium outline-hidden focus:border-[#00d3e0] focus:ring-2 focus:ring-[#00d3e0]/20 transition-all"
+                  className={`w-full h-11 px-4 pr-10 rounded-xl border text-xs sm:text-sm font-medium outline-hidden transition-all ${
+                    isDark
+                      ? "bg-white/5 border-white/10 text-white placeholder:text-white/30 focus:border-[#00d3e0] focus:ring-2 focus:ring-[#00d3e0]/20"
+                      : "bg-slate-50 border-slate-200 text-slate-900 placeholder:text-slate-400 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
+                  }`}
                 />
                 <button
                   type="button"
                   onClick={() => setShowSignInPassword(!showSignInPassword)}
-                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-white/40 hover:text-white text-xs"
+                  className={`absolute right-3.5 top-1/2 -translate-y-1/2 text-xs ${isDark ? "text-white/40 hover:text-white" : "text-slate-400 hover:text-slate-700"}`}
                 >
                   {showSignInPassword ? "🙈" : "👁"}
                 </button>
                 {fieldErrors.signInPassword && !isSignUp && (
-                  <span className="text-[10px] text-[#00ffc8] font-bold block text-left mt-0.5">
+                  <span className={`text-[10px] font-bold block text-left mt-0.5 ${isDark ? "text-[#00ffc8]" : "text-emerald-700"}`}>
                     {fieldErrors.signInPassword}
                   </span>
                 )}
               </div>
 
               <div className="flex items-center justify-between text-xs mt-1">
-                <label className="flex items-center gap-2 cursor-pointer text-white/60">
+                <label className={`flex items-center gap-2 cursor-pointer ${isDark ? "text-white/60" : "text-slate-600"}`}>
                   <input
                     type="checkbox"
                     checked={keepSignedIn}
                     onChange={(e) => setKeepSignedIn(e.target.checked)}
-                    className="w-3.5 h-3.5 rounded-sm accent-[#00d3e0]"
+                    className="w-3.5 h-3.5 rounded-sm accent-emerald-500"
                   />
                   <span>Eslab qolish</span>
                 </label>
                 <Link
                   href="/forgot-password"
-                  className="text-[#00d3e0] hover:text-[#00ffc8] hover:underline font-semibold"
+                  className={`font-semibold hover:underline ${isDark ? "text-[#00d3e0] hover:text-[#00ffc8]" : "text-emerald-700 hover:text-emerald-800"}`}
                 >
                   Parolni unutdingizmi?
                 </Link>
@@ -355,12 +375,12 @@ export default function SlidingAuthCard({ initialMode = "signin" }: SlidingAuthC
             </form>
 
             {/* Mobile Toggle Link */}
-            <div className="md:hidden mt-6 text-xs text-white/60">
+            <div className={`md:hidden mt-6 text-xs ${isDark ? "text-white/60" : "text-slate-600"}`}>
               Hisobingiz yo'qmi?{" "}
               <button
                 type="button"
                 onClick={() => setPanelMode(true)}
-                className="font-black text-[#00ffc8] underline"
+                className={`font-black underline ${isDark ? "text-[#00ffc8]" : "text-emerald-700"}`}
               >
                 Ro'yxatdan o'tish
               </button>
@@ -380,12 +400,14 @@ export default function SlidingAuthCard({ initialMode = "signin" }: SlidingAuthC
           style={{ transitionTimingFunction: "cubic-bezier(.68,-0.05,.27,1.05)" }}
         >
           <div className="w-full max-w-sm flex flex-col items-center">
-            <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight mb-2">
+            <h2 className={`text-2xl sm:text-3xl font-black tracking-tight mb-2 ${isDark ? "text-white" : "text-slate-900"}`}>
               Hisob Yaratish
             </h2>
 
             {/* Role Selector Chips (Centered 3 equal items filling the pill with equal flex) */}
-            <div className="w-full max-w-[340px] mx-auto mb-4 bg-white/5 p-1 rounded-full border border-white/10 shadow-inner flex items-center justify-center gap-1">
+            <div className={`w-full max-w-[340px] mx-auto mb-4 p-1 rounded-full border shadow-inner flex items-center justify-center gap-1 ${
+              isDark ? "bg-white/5 border-white/10" : "bg-slate-100 border-slate-200"
+            }`}>
               {PUBLIC_SIGNUP_ROLES.map((cfg) => {
                 const r = cfg.key;
                 const isSelected = signUpRole === r;
@@ -397,7 +419,7 @@ export default function SlidingAuthCard({ initialMode = "signin" }: SlidingAuthC
                     className={`flex-1 py-1.5 px-2 rounded-full text-[11px] font-black uppercase tracking-wider transition-all duration-200 text-center flex items-center justify-center cursor-pointer ${
                       isSelected
                         ? "bg-gradient-to-r from-[#00ffc8] to-[#0099ff] text-[#070B14] shadow-md font-black"
-                        : "text-white/60 hover:text-white"
+                        : isDark ? "text-white/60 hover:text-white" : "text-slate-600 hover:text-slate-900"
                     }`}
                   >
                     {r === "farmer" ? "Fermer" : r === "dairy" ? "Zavod" : "Haydovchi"}
@@ -407,7 +429,7 @@ export default function SlidingAuthCard({ initialMode = "signin" }: SlidingAuthC
             </div>
 
             {serverError && isSignUp && (
-              <div className="w-full mb-3 p-2 text-xs rounded-xl bg-red-500/15 border border-red-500/30 text-red-300 font-semibold">
+              <div className="w-full mb-3 p-2 text-xs rounded-xl bg-red-500/15 border border-red-500/30 text-red-400 font-semibold">
                 {serverError}
               </div>
             )}
@@ -419,10 +441,14 @@ export default function SlidingAuthCard({ initialMode = "signin" }: SlidingAuthC
                   value={signUpName}
                   onChange={(e) => setSignUpName(e.target.value)}
                   placeholder="To'liq ism (F.I.SH)"
-                  className="w-full h-10 px-3.5 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/30 text-xs sm:text-sm font-medium outline-hidden focus:border-[#00d3e0] focus:ring-2 focus:ring-[#00d3e0]/20 transition-all"
+                  className={`w-full h-10 px-3.5 rounded-xl border text-xs sm:text-sm font-medium outline-hidden transition-all ${
+                    isDark
+                      ? "bg-white/5 border-white/10 text-white placeholder:text-white/30 focus:border-[#00d3e0] focus:ring-2 focus:ring-[#00d3e0]/20"
+                      : "bg-slate-50 border-slate-200 text-slate-900 placeholder:text-slate-400 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
+                  }`}
                 />
                 {fieldErrors.signUpName && isSignUp && (
-                  <span className="text-[10px] text-[#00ffc8] font-bold block text-left mt-0.5">
+                  <span className={`text-[10px] font-bold block text-left mt-0.5 ${isDark ? "text-[#00ffc8]" : "text-emerald-700"}`}>
                     {fieldErrors.signUpName}
                   </span>
                 )}
@@ -442,7 +468,11 @@ export default function SlidingAuthCard({ initialMode = "signin" }: SlidingAuthC
                       ? "Tanker davlat raqami"
                       : "Bank bo'limi"
                   }
-                  className="w-full h-10 px-3.5 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/30 text-xs sm:text-sm font-medium outline-hidden focus:border-[#00d3e0] focus:ring-2 focus:ring-[#00d3e0]/20 transition-all"
+                  className={`w-full h-10 px-3.5 rounded-xl border text-xs sm:text-sm font-medium outline-hidden transition-all ${
+                    isDark
+                      ? "bg-white/5 border-white/10 text-white placeholder:text-white/30 focus:border-[#00d3e0] focus:ring-2 focus:ring-[#00d3e0]/20"
+                      : "bg-slate-50 border-slate-200 text-slate-900 placeholder:text-slate-400 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
+                  }`}
                 />
               </div>
 
@@ -452,10 +482,14 @@ export default function SlidingAuthCard({ initialMode = "signin" }: SlidingAuthC
                   value={signUpIdentifier}
                   onChange={(e) => setSignUpIdentifier(e.target.value)}
                   placeholder="Telefon yoki Email"
-                  className="w-full h-10 px-3.5 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/30 text-xs sm:text-sm font-medium outline-hidden focus:border-[#00d3e0] focus:ring-2 focus:ring-[#00d3e0]/20 transition-all"
+                  className={`w-full h-10 px-3.5 rounded-xl border text-xs sm:text-sm font-medium outline-hidden transition-all ${
+                    isDark
+                      ? "bg-white/5 border-white/10 text-white placeholder:text-white/30 focus:border-[#00d3e0] focus:ring-2 focus:ring-[#00d3e0]/20"
+                      : "bg-slate-50 border-slate-200 text-slate-900 placeholder:text-slate-400 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
+                  }`}
                 />
                 {fieldErrors.signUpIdentifier && isSignUp && (
-                  <span className="text-[10px] text-[#00ffc8] font-bold block text-left mt-0.5">
+                  <span className={`text-[10px] font-bold block text-left mt-0.5 ${isDark ? "text-[#00ffc8]" : "text-emerald-700"}`}>
                     {fieldErrors.signUpIdentifier}
                   </span>
                 )}
@@ -467,17 +501,21 @@ export default function SlidingAuthCard({ initialMode = "signin" }: SlidingAuthC
                   value={signUpPassword}
                   onChange={(e) => setSignUpPassword(e.target.value)}
                   placeholder="Parol (kamida 8 ta belgi)"
-                  className="w-full h-10 px-3.5 pr-10 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/30 text-xs sm:text-sm font-medium outline-hidden focus:border-[#00d3e0] focus:ring-2 focus:ring-[#00d3e0]/20 transition-all"
+                  className={`w-full h-10 px-3.5 pr-10 rounded-xl border text-xs sm:text-sm font-medium outline-hidden transition-all ${
+                    isDark
+                      ? "bg-white/5 border-white/10 text-white placeholder:text-white/30 focus:border-[#00d3e0] focus:ring-2 focus:ring-[#00d3e0]/20"
+                      : "bg-slate-50 border-slate-200 text-slate-900 placeholder:text-slate-400 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
+                  }`}
                 />
                 <button
                   type="button"
                   onClick={() => setShowSignUpPassword(!showSignUpPassword)}
-                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-white/40 hover:text-white text-xs"
+                  className={`absolute right-3.5 top-1/2 -translate-y-1/2 text-xs ${isDark ? "text-white/40 hover:text-white" : "text-slate-400 hover:text-slate-700"}`}
                 >
                   {showSignUpPassword ? "🙈" : "👁"}
                 </button>
                 {fieldErrors.signUpPassword && isSignUp && (
-                  <span className="text-[10px] text-[#00ffc8] font-bold block text-left mt-0.5">
+                  <span className={`text-[10px] font-bold block text-left mt-0.5 ${isDark ? "text-[#00ffc8]" : "text-emerald-700"}`}>
                     {fieldErrors.signUpPassword}
                   </span>
                 )}
@@ -494,12 +532,12 @@ export default function SlidingAuthCard({ initialMode = "signin" }: SlidingAuthC
             </form>
 
             {/* Mobile Toggle Link */}
-            <div className="md:hidden mt-4 text-xs text-white/60">
+            <div className={`md:hidden mt-4 text-xs ${isDark ? "text-white/60" : "text-slate-600"}`}>
               Hisobingiz bormi?{" "}
               <button
                 type="button"
                 onClick={() => setPanelMode(false)}
-                className="font-black text-[#00ffc8] underline"
+                className={`font-black underline ${isDark ? "text-[#00ffc8]" : "text-emerald-700"}`}
               >
                 Kirish
               </button>

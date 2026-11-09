@@ -26,7 +26,7 @@ const actors: RoleActor[] = [
     role: "Sut Zavodi",
     name: "Toshkent Sut Kombinati",
     avatar: "🏭",
-    chatBubble: "Laboratoriya qabul qildi, to'lov tasdiqlandi!",
+    chatBubble: "Laboratoriya qabul qildi, tölov tasdiqlandi!",
     badge: "Yirik Xaridor",
     color: "#0099ff",
   },
@@ -42,7 +42,7 @@ const actors: RoleActor[] = [
     role: "Bank Eskrou",
     name: "AgroBank Hamkor",
     avatar: "🏦",
-    chatBubble: "Eskrou mablag'i fermer hisobiga chiqarildi!",
+    chatBubble: "Eskrou mablaği fermer hisobiga çiqarildi!",
     badge: "Kafolatlangan",
     color: "#00c5e7",
   },
@@ -64,12 +64,16 @@ export default function EcosystemCommunitySection({ isDark = false }: { isDark?:
             </div>
 
             <h2
-              className={`text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-tight mb-6 ${
+              className={`text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-[1.25] sm:leading-[1.3] mb-6 ${
                 isDark ? "text-white" : "text-[#081c15]"
               }`}
             >
               Yetkazuvchidan Zavodgacha:{" "}
-              <span className="bg-gradient-to-r from-[#00ffc8] via-[#00d3e0] to-[#0099ff] bg-clip-text text-transparent">
+              <span className={`inline ${
+                isDark
+                  ? "bg-gradient-to-r from-[#00ffc8] via-[#00d3e0] to-[#0099ff] bg-clip-text text-transparent"
+                  : "bg-gradient-to-r from-[#059669] via-[#0284c7] to-[#0369a1] bg-clip-text text-transparent"
+              }`}>
                 Yagona Ishonch Zanjiri
               </span>
             </h2>
@@ -89,7 +93,7 @@ export default function EcosystemCommunitySection({ isDark = false }: { isDark?:
                 href="/sign-up"
                 className="px-8 py-4 rounded-full font-extrabold text-sm sm:text-base text-[#070B14] bg-gradient-to-r from-[#00ffc8] via-[#00d3e0] to-[#0099ff] hover:opacity-95 active:scale-95 shadow-[0_12px_36px_rgba(0,153,255,0.28)] transition-all flex items-center gap-2"
               >
-                <span>Ekotizimga Qo'shiling</span>
+                <span>Ekotizimga Qöşiling</span>
                 <span>→</span>
               </Link>
               <Link

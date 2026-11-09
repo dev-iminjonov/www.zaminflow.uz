@@ -1,9 +1,10 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState, useEffect, useMemo } from "react";
 import { Locale, translations, Translations } from "@/messages/translations";
 import { authTranslations } from "@/messages/auth";
 import { dashboardTranslations } from "@/messages/dashboard";
+import { deepTransformUzbek } from "@/lib/uzbekAlphabet";
 
 interface LanguageContextType {
   locale: Locale;
@@ -71,9 +72,20 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const t = translations[locale] || translations.uz;
-  const authT = authTranslations[locale] || authTranslations.uz;
-  const dashT = dashboardTranslations[locale] || dashboardTranslations.uz;
+  const t = useMemo(() => {
+    const raw = translations[locale] || translations.uz;
+    return locale === "uz" ? deepTransformUzbek(raw) : raw;
+  }, [locale]);
+
+  const authT = useMemo(() => {
+    const raw = authTranslations[locale] || authTranslations.uz;
+    return locale === "uz" ? deepTransformUzbek(raw) : raw;
+  }, [locale]);
+
+  const dashT = useMemo(() => {
+    const raw = dashboardTranslations[locale] || dashboardTranslations.uz;
+    return locale === "uz" ? deepTransformUzbek(raw) : raw;
+  }, [locale]);
 
   return (
     <LanguageContext.Provider value={{ locale, setLocale, t, authT, dashT }}>
@@ -82,6 +94,10 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   );
 }
 
+const fallbackUzTranslations = deepTransformUzbek(translations.uz);
+const fallbackUzAuth = deepTransformUzbek(authTranslations.uz);
+const fallbackUzDash = deepTransformUzbek(dashboardTranslations.uz);
+
 export function useLanguage() {
   const context = useContext(LanguageContext);
   if (!context) {
@@ -89,9 +105,9 @@ export function useLanguage() {
     return {
       locale: "uz" as Locale,
       setLocale: () => {},
-      t: translations.uz,
-      authT: authTranslations.uz,
-      dashT: dashboardTranslations.uz,
+      t: fallbackUzTranslations,
+      authT: fallbackUzAuth,
+      dashT: fallbackUzDash,
     };
   }
   return context;

@@ -66,9 +66,6 @@ export default function FieldLayout({
         <header className="sticky top-0 z-40 bg-white border-b border-slate-200 px-4 h-14 flex items-center justify-between shadow-xs">
           <Link href="/" className="flex items-center gap-2.5">
             <ZaminFlowLogo mode="light" size="sm" />
-            <span className="text-[10px] text-teal-700 font-mono font-semibold bg-teal-50 px-2 py-0.5 rounded-full border border-teal-200">
-              {workspaceName}
-            </span>
           </Link>
 
           <div className="flex items-center gap-2 relative">

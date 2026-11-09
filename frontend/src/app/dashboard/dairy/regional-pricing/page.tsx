@@ -54,7 +54,7 @@ export default function RegionalPricingPage() {
 
       {isSaved && (
         <div className="p-4 rounded-2xl bg-[#00ffc8]/10 border border-[#00ffc8]/30 text-[#00ffc8] text-xs font-bold flex items-center justify-between">
-          <span>✓ Barcha hududiy tariflar va ustama koeffitsientlari muvaffaqiyatli yangilandi va saqlandi.</span>
+          <span>✓ Barça hududiy tariflar va ustama koeffitsientlari muvaffaqiyatli yangilandi va saqlandi.</span>
           <span className="font-mono text-[10px] uppercase bg-[#00ffc8]/20 px-2 py-0.5 rounded-full">Faol</span>
         </div>
       )}
@@ -96,7 +96,7 @@ export default function RegionalPricingPage() {
                   <span className="absolute right-3 top-3 text-[10px] font-mono text-white/40">UZS</span>
                 </div>
                 <div className="mt-2 text-[10px] text-white/40 flex justify-between">
-                  <span>Yogʻ bonusi (+0.1%):</span>
+                  <span>Yoğ bonusi (+0.1%):</span>
                   <span className="font-mono text-[#00ffc8]">+45 UZS</span>
                 </div>
               </div>
@@ -109,7 +109,7 @@ export default function RegionalPricingPage() {
           <h2 className="text-base font-bold text-white">Avtomatlashtirilgan Sifat Ustamalari Formulasi</h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
             <div className="p-4 rounded-2xl bg-white/[0.02] border border-white/5">
-              <div className="font-mono text-[10px] uppercase text-[#00ffc8] font-bold mb-1">Yogʻlilik Bonusi</div>
+              <div className="font-mono text-[10px] uppercase text-[#00ffc8] font-bold mb-1">Yoğlilik Bonusi</div>
               <p className="text-white/70 text-[11px] leading-relaxed">
                 Yogʻ miqdori 3.6% dan har 0.1% ga oshganda xarid narxiga avtomatik ravishda <strong>+45 UZS/L</strong> ustama qoʻshiladi.
               </p>

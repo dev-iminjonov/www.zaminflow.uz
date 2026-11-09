@@ -42,7 +42,7 @@ export default function AdminVerificationPage() {
       <section className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div className="rounded-[24px] p-5 bg-white/[0.03] border border-white/10 hover:border-[#00d3e0]/40 transition-all flex flex-col justify-between">
           <div className="text-[11px] font-bold tracking-wider text-white/50 uppercase flex items-center justify-between">
-            <span>Ko'rib Chiqilmoqda</span>
+            <span>Körib Çiqilmoqda</span>
             <span className="w-2 h-2 rounded-full bg-amber-400 animate-ping" />
           </div>
           <div className="flex items-baseline gap-2 mt-2">

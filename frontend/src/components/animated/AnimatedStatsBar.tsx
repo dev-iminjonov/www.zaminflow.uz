@@ -91,11 +91,11 @@ export default function AnimatedStatsBar({ isDark = false }: { isDark?: boolean 
                   {item.suffix}
                 </span>
               </div>
-              <div className="flex flex-col text-left">
-                <span className="text-xs sm:text-sm font-bold text-white tracking-tight">
+              <div className="flex flex-col text-left min-w-0 flex-1">
+                <span className="text-xs sm:text-sm font-bold text-white tracking-tight break-words line-clamp-2" title={item.title}>
                   {item.title}
                 </span>
-                <span className="text-[11px] text-white/70 leading-tight">
+                <span className="text-[11px] text-white/70 leading-tight break-words mt-0.5" title={item.subtitle}>
                   {item.subtitle}
                 </span>
               </div>

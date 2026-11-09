@@ -42,80 +42,9 @@ export interface DriverHistoryRecord {
   avgTemperatureC?: number;
 }
 
-export const INITIAL_DRIVER_STOPS: DriverTripStop[] = [
-  {
-    id: "stop-1",
-    time: "08:40",
-    type: "pickup",
-    locationName: "Pick up · Sayxunobod Farm",
-    address: "Sayxunobod district, Sirdaryo region",
-    batchNumber: "ZF-0412",
-    volumeLiters: 1200,
-    contactName: "Muhammadaziz Iminjonov",
-    contactPhone: "+998 90 123 45 67",
-    status: "next",
-  },
-  {
-    id: "stop-2",
-    time: "10:15",
-    type: "pickup",
-    locationName: "Pick up · Zomin Cooperative",
-    address: "Zomin district, Jizzakh region",
-    batchNumber: "ZF-0409",
-    volumeLiters: 950,
-    contactName: "Erkin Toshmatov",
-    contactPhone: "+998 93 456 78 90",
-    status: "scheduled",
-  },
-  {
-    id: "stop-3",
-    time: "13:30",
-    type: "deliver",
-    locationName: "Deliver · Tashkent Central Dairy",
-    address: "Sergeli district, Tashkent city",
-    batchNumber: "Intake ZF-0412 & ZF-0409",
-    volumeLiters: 2150,
-    contactName: "Malika Alimova (Intake Lab)",
-    contactPhone: "+998 71 200 11 22",
-    status: "scheduled",
-  },
-];
+export const INITIAL_DRIVER_STOPS: DriverTripStop[] = [];
 
-export const INITIAL_DRIVER_HISTORY: DriverHistoryRecord[] = [
-  {
-    id: "hist-1",
-    date: "06 Nov 2026",
-    batchNumber: "ZF-0405",
-    route: "Pop → Fergana Valley Dairy",
-    distanceKm: 85,
-    volumeLiters: 1100,
-    avgTempC: 3.1,
-    coldChainPassed: true,
-    driverEarningsUZS: 425000,
-  },
-  {
-    id: "hist-2",
-    date: "05 Nov 2026",
-    batchNumber: "ZF-0398",
-    route: "Zomin → Tashkent Central Dairy",
-    distanceKm: 160,
-    volumeLiters: 1800,
-    avgTempC: 3.3,
-    coldChainPassed: true,
-    driverEarningsUZS: 800000,
-  },
-  {
-    id: "hist-3",
-    date: "04 Nov 2026",
-    batchNumber: "ZF-0391",
-    route: "Sayxunobod → Samarqand Milk Products",
-    distanceKm: 210,
-    volumeLiters: 2400,
-    avgTempC: 3.4,
-    coldChainPassed: true,
-    driverEarningsUZS: 1050000,
-  },
-];
+export const INITIAL_DRIVER_HISTORY: DriverHistoryRecord[] = [];
 
 const STOPS_KEY = "zaminflow_driver_stops";
 const HISTORY_KEY = "zaminflow_driver_history";

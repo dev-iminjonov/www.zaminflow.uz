@@ -100,7 +100,7 @@ export default function AdminDisputesPage() {
         </div>
 
         <div className="rounded-[24px] bg-white/[0.03] border border-white/10 p-5">
-          <div className="text-[11px] font-mono uppercase text-white/50">Muzlatilgan Eskrou Mablagʻi</div>
+          <div className="text-[11px] font-mono uppercase text-white/50">Muzlatilgan Eskrou Mablaği</div>
           <div className="flex items-baseline gap-2 mt-2">
             <span className="text-3xl font-black font-mono text-amber-400">
               {totalFrozenEscrow.toLocaleString()}
@@ -122,7 +122,16 @@ export default function AdminDisputesPage() {
 
       {/* 3. DISPUTE CASES LIST */}
       <section className="flex flex-col gap-4">
-        {cases.map((c) => {
+        {cases.length === 0 ? (
+          <div className="rounded-[28px] bg-white/[0.03] border border-dashed border-white/10 p-12 text-center flex flex-col items-center justify-center">
+            <span className="text-4xl mb-3">⚖️</span>
+            <h3 className="text-base font-bold text-white">Arbitrajda nizoli holatlar mavjud emas</h3>
+            <p className="text-xs text-white/50 mt-1 max-w-md">
+              Barcha sut qabul qilish, spektrometr tahlillari va AgroBank eskrou toʻlovlari odatiy rejimda ziddiyatsiz amalga oshirilmoqda.
+            </p>
+          </div>
+        ) : (
+          cases.map((c) => {
           const isOpen = c.status === "open";
 
           return (
@@ -147,7 +156,7 @@ export default function AdminDisputesPage() {
                 </div>
 
                 <div className="text-right">
-                  <div className="text-[10px] font-mono uppercase text-white/40">Muzlatilgan Mablagʻ</div>
+                  <div className="text-[10px] font-mono uppercase text-white/40">Muzlatilgan Mablağ</div>
                   <div className="font-mono font-black text-xl text-amber-400">
                     {c.frozenEscrowUZS.toLocaleString()} UZS
                   </div>
@@ -192,7 +201,8 @@ export default function AdminDisputesPage() {
               )}
             </div>
           );
-        })}
+        })
+      )}
       </section>
     </div>
   );

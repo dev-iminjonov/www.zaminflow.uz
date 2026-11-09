@@ -23,6 +23,7 @@ export interface AuthOrganization {
   id: string;
   role: string;
   legalName: string;
+  taxId?: string;
   kybStatus: "VERIFIED" | "INCOMPLETE" | "PENDING" | "REJECTED";
   kybReviewNote?: string;
 }

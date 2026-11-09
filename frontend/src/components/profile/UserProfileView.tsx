@@ -75,11 +75,11 @@ export default function UserProfileView({
 
   const role: RoleKey = initialRole;
 
-  const farmerFullName = "Iminjonov Muhammadaziz";
+  const farmerFullName = "İminjonov Muhammadaziz";
   const dairyFullName = "Malika Karimova";
   const driverFullName = "Bobur Alimov";
   const bankFullName = "Rustam Karimov";
-  const adminFullName = "Iminjonov Muhammadaziz";
+  const adminFullName = "İminjonov Muhammadaziz";
 
   // Role-customized high-end profiles
   const roleProfiles: Record<RoleKey, UserProfileData> = {
@@ -87,54 +87,54 @@ export default function UserProfileView({
       userId: "usr-farmer-01",
       role: "farmer",
       fullName: farmerFullName,
-      title: "Bosh Fermer & Xom Sut Ishlab Chiqaruvchi",
-      organizationName: "Sayxunobod Agro-Dairy Farm MCHJ",
-      location: "Sayxunobod tumani, Sirdaryo viloyati, Oʻzbekiston",
-      avatarUrl: resolveUserAvatar(farmerFullName, "farmer@zaminflow.uz") || "",
-      email: "farmer@zaminflow.uz",
-      phone: "+998 90 333 44 55",
+      title: "Boş Fermer & Xom Sut Işlab Çiqaruvçi",
+      organizationName: session?.organization?.legalName || "Çorva Baraka Fermer Xöjaligi",
+      location: "Toşkent viloyati, Özbekiston",
+      avatarUrl: resolveUserAvatar(farmerFullName, session?.user?.email || "farmer@zaminflow.uz") || "",
+      email: session?.user?.email || "farmer@zaminflow.uz",
+      phone: session?.user?.phoneNumber || "+998 90 123 45 67",
       trustScore: 98,
       kybVerified: true,
       memberSince: "Mart 2025",
-      taxId: "STIR: 308 112 940",
-      bankName: "AgroBank Sayxunobod filiali",
+      taxId: `STIR: ${session?.organization?.taxId || "308 112 940"}`,
+      bankName: "AgroBank Boş Ofisi",
       iban: "UZ8800010000304981223001",
-      bio: "Sayxunobod Agro-Dairy Farm — 180 bosh Gollandiya zotli (Holstein-Friesian) sogʻin sigirlarga ega zamonaviy agrosanoat fermasi. Kunlik sut sogʻimi 4,500 litr yuqori oqsilli A+ toifadagi xom sut. GEA avtomatlashtirilgan sovitish tanklari (+3.2°C) va raqamli titratsiya laboratoriyasi bilan toʻliq jihozlangan.",
-      languages: ["Oʻzbekcha", "Русский", "English"],
+      bio: "Zamonaviy agrosanoat fermasi. GEA avtomatlaştirilgan sovitiş tanklari (+3.2°C) va raqamli titratsiya laboratoriyasi bilan töliq jihozlangan.",
+      languages: ["Özbekça", "Русский", "Engliş"],
       capabilities: [
         { label: "Kunlik Hajm: 4,500 L / kun", active: true },
-        { label: "Yogʻlik Koʻrsatkichi: 3.9% – 4.2%", active: true },
+        { label: "Yoğlik Körsatkiçi: 3.9% – 4.2%", active: true },
         { label: "SNF (Quruq Qoldiq): 8.65% Sertifikatlangan", active: true },
-        { label: "Oldindan Sovitish: +3.2°C Qulflangan", active: true },
+        { label: "Oldindan Sovitiş: +3.2°C Qulflangan", active: true },
         { label: "Veterinariya Guvohnomasi № UZ-99412", active: true },
         { label: "AgroBank Kafolatlangan Eskrou", active: true },
       ],
       stats: [
-        { label: "Bajarilgan Yetkazib Berishlar", value: "142 ta", sublabel: "100% muvaffaqiyatli" },
+        { label: "Bajarilgan Yetkazib Berişlar", value: "142 ta", sublabel: "100% muvaffaqiyatli" },
         { label: "Sifat Sertifikatsiyasi", value: "98.4%", sublabel: "Oliy A+ navli sut" },
         { label: "Nizo va Jarimalar", value: "0.0%", sublabel: "Toza kredit tarixi" },
         { label: "Hisob-kitob Tezligi", value: "< 2.5 soat", sublabel: "AgroBank avto-kliring" },
       ],
       team: [
-        { name: "Iminjonov Muhammadaziz", role: "Muassis & Bosh Fermer", avatarUrl: "/images/team-muhammadaziz.webp", phone: "+998 90 333 44 55", email: "farmer@zaminflow.uz" },
-        { name: "Abdumanov Akrom", role: "IoT Datchiklar & Texnik Muhandis", avatarUrl: "/images/team-akrom.webp", phone: "+998 91 123 45 67", email: "akrom@zaminflow.uz" },
-        { name: "Sevinchoy Soporboyeva", role: "Bosh Zootexnik & Sifat Nazoratchisi", avatarUrl: "/images/team-sevinchoy.webp", phone: "+998 93 987 65 43", email: "sevinchoy@zaminflow.uz" },
+        { name: "İminjonov Muhammadaziz", role: "Muassis & Boş Fermer", avatarUrl: "/images/team-muhammadaziz.webp", phone: "+998 90 333 44 55", email: "farmer@zaminflow.uz" },
+        { name: "Akrom Abdumanov", role: "IoT Datçiklar & Texnik Muhandis", avatarUrl: "/images/team-akrom.webp", phone: "+998 91 123 45 67", email: "akrom@zaminflow.uz" },
+        { name: "Sevinçoy Soporboyeva", role: "Boş Zootexnik & Sifat Nazoratçisi", avatarUrl: "/images/team-sevinchoy.webp", phone: "+998 93 987 65 43", email: "sevinchoy@zaminflow.uz" },
       ],
       tradingSpecs: [
         { label: "Minimal Buyurtma Miqdori", value: "1,000 Litr" },
         { label: "Maksimal Quvvat", value: "5,500 Litr / kun" },
         { label: "Harorat Kafolati", value: "+3.2°C dan +4.0°C gacha" },
         { label: "Bazaviy Xarid Narxi", value: "5,800 – 6,200 UZS / L" },
-        { label: "Toʻlov Kafolati", value: "ZaminFlow Smart Contract & AgroBank Escrow" },
+        { label: "Tölov Kafolati", value: "ZaminFlow Smart Contract & AgroBank Escrow" },
       ],
       roleSpecifics: {
-        sectionTitle: "Fermer Xoʻjaligi Agro-Texnik Pasporti",
+        sectionTitle: "Fermer Xöjaligi Agro-Texnik Pasporti",
         items: [
           { label: "Mollar zoti", value: "Holstein-Friesian (Gollandiya)", badge: "Naslli" },
-          { label: "Jami qoramol soni", value: "240 bosh (180 sogʻin)" },
-          { label: "Sogʻish uskunasi", value: "GEA Westfalia 2x12 Paralell" },
-          { label: "Sovitish tanki sigʻimi", value: "6,000 Litr (Stainless 316)" },
-          { label: "Veterinariya holati", value: "Toʻliq emlangan • Pasportlashtirilgan", badge: "№ VET-2026-88" },
+          { label: "Jami qoramol soni", value: "240 boş (180 soğin)" },
+          { label: "Soğiş uskunasi", value: "GEA Westfalia 2x12 Paralell" },
+          { label: "Sovitiş tanki siğimi", value: "6,000 Litr (Stainless 316)" },
+          { label: "Veterinariya holati", value: "Töliq emlangan • Pasportlaştirilgan", badge: "№ VET-2026-88" },
         ],
       },
     },
@@ -143,53 +143,53 @@ export default function UserProfileView({
       userId: "usr-dairy-01",
       role: "dairy",
       fullName: dairyFullName,
-      title: "Bosh Texnolog & Xaridlar Departamenti Rahbari",
-      organizationName: "Samarqand Sut Zavodi #4 MCHJ",
-      location: "Bektemir / Samarqand sanoat zonasi, Oʻzbekiston",
-      avatarUrl: resolveUserAvatar(dairyFullName, "dairy@zaminflow.uz") || "",
-      email: "dairy@zaminflow.uz",
-      phone: "+998 71 200 45 67",
+      title: "Boş Texnolog & Xaridlar Departamenti Rahbari",
+      organizationName: session?.organization?.legalName || "ZaminFlow Sutni Qayta Işlaş Zavodi",
+      location: "Toşkent sanoat zonasi, Özbekiston",
+      avatarUrl: resolveUserAvatar(dairyFullName, session?.user?.email || "dairy@zaminflow.uz") || "",
+      email: session?.user?.email || "dairy@zaminflow.uz",
+      phone: session?.user?.phoneNumber || "+998 71 200 45 67",
       trustScore: 99,
       kybVerified: true,
       memberSince: "Yanvar 2025",
-      taxId: "STIR: 201 445 990",
-      bankName: "AsakaBank Bosh Ofisi / Xaznachilik",
+      taxId: `STIR: ${session?.organization?.taxId || "201 445 990"}`,
+      bankName: "AgroBank Boş Ofisi",
       iban: "UZ4500020000201445990001",
-      bio: "Samarqand Sut Zavodi #4 — sutni chuqur qayta ishlovchi zamonaviy sanoat korxonasi. Kunlik qabul quvvati 180,000 litrdan ortiq. Pasterizatsiyalangan ichimlik suti, sariyogʻ, kefir va pishloq ishlab chiqarish liniyalari. Kiruvchi sut Agrobank va Asakabank depozitlarida oldindan 100% muzlatilgan eskrou mablagʻlari bilan toʻlanadi.",
-      languages: ["Русский", "Oʻzbekcha", "English"],
+      bio: "Sutni çuqur qayta işlovçi zamonaviy sanoat korxonasi. Pasterizatsiyalangan içimlik suti, sariyoğ, kefir va pişloq işlab çiqariş liniyalari. Kiruvçi sut Agrobank depozitlarida oldindan 100% kafolatlangan eskrou mablağlari bilan tölanadi.",
+      languages: ["Русский", "Özbekça", "Engliş"],
       capabilities: [
         { label: "Qabul Quvvati: 180,000 L / kun", active: true },
         { label: "Standart SNF: kamida 8.5%", active: true },
         { label: "ISO 22000 & Halol Xalqaro Standart", active: true },
-        { label: "Oldindan Toʻldirilgan Eskrou Depoziti", active: true },
+        { label: "Oldindan Töldirilgan Eskrou Depoziti", active: true },
         { label: "Ekspress Laboratoriya: 15 daqiqa", active: true },
-        { label: "24/7 Qabul Qilish Bunkeri", active: true },
+        { label: "24/7 Qabul Qiliş Bunkeri", active: true },
       ],
       stats: [
-        { label: "Oylik Sut Qabuli", value: "4.8M Litr", sublabel: "Sanoat hajmidagi ishlab chiqarish" },
-        { label: "Faol Fermer Shartnomalari", value: "84 ta Ferma", sublabel: "Toʻgʻridan-toʻgʻri kooperativlar" },
-        { label: "Oʻrtacha Eskrou Kliringi", value: "1.8 soat", sublabel: "Testdan soʻng bank oʻtkazmasi" },
-        { label: "Ishonch Reytingi", value: "99 / 100", sublabel: "A toifadagi sanoat hamkori" },
+        { label: "Oylik Sut Qabuli", value: "4.8M Litr", sublabel: "Sanoat hajmidagi işlab çiqariş" },
+        { label: "Faol Fermer Şartnomalari", value: "84 ta Ferma", sublabel: "Töğridan-töğri kooperativlar" },
+        { label: "Örtaça Eskrou Kliringi", value: "1.8 soat", sublabel: "Testdan söng bank ötkazmasi" },
+        { label: "Işonç Reytingi", value: "99 / 100", sublabel: "A toifadagi sanoat hamkori" },
       ],
       team: [
-        { name: "Sevinchoy Soporboyeva", role: "Sifat va Qabul Nazorati Rahbari", avatarUrl: "/images/team-sevinchoy.webp", phone: "+998 71 200 45 68", email: "quality@zavod4.uz" },
-        { name: "Shokhjakhon Abdufattohov", role: "Strategik Taʼminot va Iqtisodchi", avatarUrl: "/images/team-shohjahon.webp", phone: "+998 71 200 45 69", email: "procurement@zavod4.uz" },
-        { name: "Abdumanov Akrom", role: "Zavod Avtomatizatsiyasi Muhandisi", avatarUrl: "/images/team-akrom.webp", phone: "+998 91 123 45 67", email: "automation@zavod4.uz" },
+        { name: "Sevinçoy Soporboyeva", role: "Sifat va Qabul Nazorati Rahbari", avatarUrl: "/images/team-sevinchoy.webp", phone: "+998 71 200 45 68", email: "quality@zavod4.uz" },
+        { name: "Şohjahon Abdufattohov", role: "Strategik Taʼminot va Iqtisodçi", avatarUrl: "/images/team-shohjahon.webp", phone: "+998 71 200 45 69", email: "procurement@zavod4.uz" },
+        { name: "Akrom Abdumanov", role: "Zavod Avtomatizatsiyasi Muhandisi", avatarUrl: "/images/team-akrom.webp", phone: "+998 91 123 45 67", email: "automation@zavod4.uz" },
       ],
       tradingSpecs: [
-        { label: "Talab Qilinuvchi Nav", value: "Oliy A+ yoki 1-navli xom sut" },
-        { label: "Qabul Qilish Vaqti", value: "24/7 Uzluksiz sovuq qabul" },
-        { label: "Bozor Narxlari Indeksi", value: "5,800 – 6,400 UZS / L (Yogʻlikka qarab)" },
-        { label: "Laboratoriya Titratsiya Vaqti", value: "Har bir sisterna uchun 15 daqiqa" },
+        { label: "Talab Qilinuvçi Nav", value: "Oliy A+ yoki 1-navli xom sut" },
+        { label: "Qabul Qiliş Vaqti", value: "24/7 Uzluksiz sovuq qabul" },
+        { label: "Bozor Narxlari Indeksi", value: "5,800 – 6,400 UZS / L (Yoğlikka qarab)" },
+        { label: "Laboratoriya Titratsiya Vaqti", value: "Har bir sisterna uçun 15 daqiqa" },
         { label: "Moliyaviy Kafolat", value: "Markaziy Bank & AgroBank Eskrou" },
       ],
       roleSpecifics: {
-        sectionTitle: "Sanoat Qayta Ishlash Texnologik Quvvati",
+        sectionTitle: "Sanoat Qayta Işlaş Texnologik Quvvati",
         items: [
           { label: "Silo tanklar soni", value: "4 dona x 60,000L", badge: "240k L Jami" },
           { label: "Pasterizator quvvati", value: "15,000 Litr / soat (Tetra Pak)" },
           { label: "Homogenizator bosimi", value: "200 bar (Yuqori dispers)" },
-          { label: "Sovuq saqlash harorati", value: "2.8°C (Avtomatik chiller)" },
+          { label: "Sovuq saqlaş harorati", value: "2.8°C (Avtomatik çiller)" },
           { label: "Sertifikatlar", value: "ISO 22000:2018 & Halol Sertifikati", badge: "UZ-HALAL-99" },
         ],
       },
@@ -199,9 +199,9 @@ export default function UserProfileView({
       userId: "usr-driver-01",
       role: "driver",
       fullName: driverFullName,
-      title: "Sertifikatlangan Sovuq Zanjir Tanker Haydovchisi",
+      title: "Sertifikatlangan Sovuq Zanjir Tanker Haydovçisi",
       organizationName: "ZaminFlow Sovuq Zanjir Logistika Floti #04",
-      location: "Toshkent - Sayxunobod - Samarqand logistika yoʻlagi",
+      location: "Toşkent - Sayxunobod - Samarqand logistika yölagi",
       avatarUrl: resolveUserAvatar(driverFullName, "driver@zaminflow.uz") || "",
       email: "driver@zaminflow.uz",
       phone: "+998 90 999 88 77",
@@ -211,38 +211,38 @@ export default function UserProfileView({
       taxId: "STIR: 401 229 110",
       bankName: "AgroBank Transport Kliring Filiali",
       iban: "UZ1200030000401229110001",
-      bio: "8 yillik tajribaga ega professional oziq-ovqat transporti haydovchisi. MAN TGX 18.440 20,000 litr sigʻimli oziq-ovqat zanglamas poʻlat sisternasini boshqaradi. ZaminFlow IoT harorat nazorat tizimi va GPS sun'iy yoʻldosh kuzatuvi bilan toʻliq jihozlangan.",
-      languages: ["Oʻzbekcha", "Русский"],
+      bio: "8 yillik tajribaga ega professional oziq-ovqat transporti haydovçisi. MAN TGX 18.440 20,000 litr siğimli oziq-ovqat zanglamas pölat sisternasini boşqaradi. ZaminFlow IoT harorat nazorat tizimi va GPS sun'iy yöldoş kuzatuvi bilan töliq jihozlangan.",
+      languages: ["Özbekça", "Русский"],
       capabilities: [
         { label: "20,000 L Izolyatsiyalangan Sisterna", active: true },
         { label: "Real Vaqtda GPS Telemetriya", active: true },
         { label: "Sovuq Zanjir: 3.2°C Germetik", active: true },
-        { label: "QR Elektron Yoʻl Varaqasi (e-TTN)", active: true },
+        { label: "QR Elektron Yöl Varaqasi (e-TTN)", active: true },
         { label: "CIP Dezinfeksiya Sertifikatlangan", active: true },
       ],
       stats: [
-        { label: "Bajarilgan Qatnovlar", value: "348 ta", sublabel: "Harorat buzilishlarsiz" },
-        { label: "Oʻrtacha Yuk Harorati", value: "+3.2°C", sublabel: "Kalibrlangan datchik" },
-        { label: "Vaqtida Yetkazish Ulushi", value: "99.1%", sublabel: "Jadvalga qatʼiy rioya" },
-        { label: "Xavfsizlik Reytingi", value: "5.0 ★", sublabel: "Malakali haydovchi" },
+        { label: "Bajarilgan Qatnovlar", value: "348 ta", sublabel: "Harorat buzilişlarsiz" },
+        { label: "Örtaça Yuk Harorati", value: "+3.2°C", sublabel: "Kalibrlangan datçik" },
+        { label: "Vaqtida Yetkaziş Uluşi", value: "99.1%", sublabel: "Jadvalga qatʼiy rioya" },
+        { label: "Xavfsizlik Reytingi", value: "5.0 ★", sublabel: "Malakali haydovçi" },
       ],
       team: [
-        { name: "Abdumanov Akrom", role: "Flot Telemetriyasi & IoT Dispetcher", avatarUrl: "/images/team-akrom.webp", phone: "+998 91 123 45 67", email: "fleet@zaminflow.uz" },
-        { name: "Shokhjakhon Abdufattohov", role: "Logistika Yoʻnalishlari Muvofiqlashtiruvchisi", avatarUrl: "/images/team-shohjahon.webp", phone: "+998 93 555 44 33", email: "routes@zaminflow.uz" },
+        { name: "Akrom Abdumanov", role: "Flot Telemetriyasi & IoT Dispetçer", avatarUrl: "/images/team-akrom.webp", phone: "+998 91 123 45 67", email: "fleet@zaminflow.uz" },
+        { name: "Şohjahon Abdufattohov", role: "Logistika Yönalişlari Muvofiqlaştiruvçisi", avatarUrl: "/images/team-shohjahon.webp", phone: "+998 93 555 44 33", email: "routes@zaminflow.uz" },
       ],
       tradingSpecs: [
         { label: "Transport Rusumi", value: "MAN TGX 18.440 Euro 6" },
         { label: "Davlat Raqami", value: "01 | 777 ZAM" },
         { label: "Sanitariya Pasporti", value: "Davlat Sanitariya № SAN-2026-90" },
-        { label: "Xizmat Koʻrsatish Yoʻnalishlari", value: "Toshkent, Sirdaryo, Samarqand, Jizzax" },
+        { label: "Xizmat Körsatiş Yönalişlari", value: "Toşkent, Sirdaryo, Samarqand, Jizzax" },
       ],
       roleSpecifics: {
         sectionTitle: "Logistika Texnik & Sovuq Zanjir Pasporti",
         items: [
-          { label: "Sisterna materiali", value: "AISI 304 Oziq-ovqat zanglamas poʻlat", badge: "Termo-izolyatsiya" },
-          { label: "Boʻlimlar soni", value: "3 ta alohida seksiya (8k + 6k + 6k L)" },
+          { label: "Sisterna materiali", value: "AISI 304 Oziq-ovqat zanglamas pölat", badge: "Termo-izolyatsiya" },
+          { label: "Bölimlar soni", value: "3 ta alohida seksiya (8k + 6k + 6k L)" },
           { label: "Nasos unumdorligi", value: "30,000 L / soat (Elektr avtonom)" },
-          { label: "Harorat datchiklari", value: "4 ta PT100 zond (Har bir boʻlimda)" },
+          { label: "Harorat datçiklari", value: "4 ta PT100 zond (Har bir bölimda)" },
           { label: "GPS aniqligi", value: "RTK 0.5 metr aniqlik & GSM 5G", badge: "Online" },
         ],
       },
@@ -252,9 +252,9 @@ export default function UserProfileView({
       userId: "usr-bank-01",
       role: "bank",
       fullName: bankFullName,
-      title: "Bosh Eskrou & Kliring Nazoratchisi",
+      title: "Boş Eskrou & Kliring Nazoratçisi",
       organizationName: "Agrobank ATB (Eskrou Depozitariysi)",
-      location: "Muqimiy koʻchasi 43, Toshkent, 100096, Oʻzbekiston",
+      location: "Muqimiy köçasi 43, Toşkent, 100096, Özbekiston",
       avatarUrl: resolveUserAvatar(bankFullName, "bank@zaminflow.uz") || "",
       email: "bank@zaminflow.uz",
       phone: "+998 71 203 88 88",
@@ -262,39 +262,39 @@ export default function UserProfileView({
       kybVerified: true,
       memberSince: "Fevral 2025",
       taxId: "STIR: 200 110 994",
-      bankName: "Oʻzbekiston Respublikasi Markaziy Banki Kliring Tizimi",
+      bankName: "Özbekiston Respublikasi Markaziy Banki Kliring Tizimi",
       iban: "UZ0100400000200110994001",
-      bio: "Agrobank ATB — ZaminFlow platformasidagi B2B qishloq xoʻjaligi savdo shartnomalari boʻyicha rasmiy litsenziyalangan eskrou depozitariysi va moliyaviy kliring hamkori. ISO 20022 pacs.008 real vaqt rejimida hisob-kitoblar, ikki yoqlama buxgalteriya va qonuniy toʻlov kafolatlarini taʼminlaydi.",
-      languages: ["Oʻzbekcha", "Русский", "English"],
+      bio: "Agrobank ATB — ZaminFlow platformasidagi B2B qişloq xöjaligi savdo şartnomalari böyiça rasmiy litsenziyalangan eskrou depozitariysi va moliyaviy kliring hamkori. ISO 20022 pacs.008 real vaqt rejimida hisob-kitoblar, ikki yoqlama buxgalteriya va qonuniy tölov kafolatlarini taʼminlaydi.",
+      languages: ["Özbekça", "Русский", "Engliş"],
       capabilities: [
         { label: "ISO 20022 pacs.008 Kliring Mexanizmi", active: true },
         { label: "Eskrou Depozitariy Xavfsizlik Kafolati", active: true },
-        { label: "SHA-256 Kriptografik Audit Zanjiri", active: true },
+        { label: "ŞA-256 Kriptografik Audit Zanjiri", active: true },
         { label: "Markaziy Bank Bank Litsenziyasi №14", active: true },
         { label: "Ikki Yoqlama Buxgalteriya Reestri", active: true },
       ],
       stats: [
-        { label: "Eskrou Toʻlov Qobiliyati", value: "100%", sublabel: "Toʻliq garov taʼminlangan" },
-        { label: "Kliring Vaqti", value: "< 3 daqiqa", sublabel: "Laboratoriya tasdigʻidan soʻng" },
-        { label: "Muvaffaqiyatsiz Toʻlovlar", value: "0.00%", sublabel: "Nol muddati oʻtgan qarz" },
+        { label: "Eskrou Tölov Qobiliyati", value: "100%", sublabel: "Töliq garov taʼminlangan" },
+        { label: "Kliring Vaqti", value: "< 3 daqiqa", sublabel: "Laboratoriya tasdiğidan söng" },
+        { label: "Muvaffaqiyatsiz Tölovlar", value: "0.00%", sublabel: "Nol muddati ötgan qarz" },
         { label: "Audit Yaxlitligi", value: "Tasdiqlangan", sublabel: "Markaziy Bank reyestri" },
       ],
       team: [
-        { name: "Iminjonov Muhammadaziz", role: "Muassis & Eskrou Boshqaruvi", avatarUrl: "/images/team-muhammadaziz.webp", phone: "+998 71 203 88 88", email: "escrow@agrobank.uz" },
-        { name: "Shokhjakhon Abdufattohov", role: "Moliyaviy Muvofiqlik Maslahatchisi", avatarUrl: "/images/team-shohjahon.webp", phone: "+998 71 203 88 89", email: "compliance@agrobank.uz" },
+        { name: "İminjonov Muhammadaziz", role: "Muassis & Eskrou Boşqaruvi", avatarUrl: "/images/team-muhammadaziz.webp", phone: "+998 71 203 88 88", email: "escrow@agrobank.uz" },
+        { name: "Şohjahon Abdufattohov", role: "Moliyaviy Muvofiqlik Maslahatçisi", avatarUrl: "/images/team-shohjahon.webp", phone: "+998 71 203 88 89", email: "compliance@agrobank.uz" },
       ],
       tradingSpecs: [
-        { label: "Markaziy Bank Litsenziyasi", value: "MB Bosh Litsenziyasi № 14" },
+        { label: "Markaziy Bank Litsenziyasi", value: "MB Boş Litsenziyasi № 14" },
         { label: "Kliring Xalqaro Standarti", value: "ISO 20022 (pacs.008.001.08)" },
         { label: "Hisobvaraq Turi", value: "Maxsus Eskrou & Tranzit Hisobvaraq" },
       ],
       roleSpecifics: {
-        sectionTitle: "Bank Depozitariysi & Fintex Muvofiqlik Koʻrsatkichlari",
+        sectionTitle: "Bank Depozitariysi & Fintex Muvofiqlik Körsatkiçlari",
         items: [
-          { label: "Eskrou saqlash hajmi", value: "142.85 Mln UZS", badge: "Kafolatlangan" },
-          { label: "Shifrlash standarti", value: "RSA-4096 / SHA-256 (OʻzDSt)" },
-          { label: "Toʻlov shlyuzi", value: "MUNIS & Anor Toʻlov Tizimlari" },
-          { label: "Regulyativ nazorat", value: "Oʻzbekiston Respublikasi Markaziy Banki", badge: "CBU Audit" },
+          { label: "Eskrou saqlaş hajmi", value: "142.85 Mln UZS", badge: "Kafolatlangan" },
+          { label: "Şifrlaş standarti", value: "RSA-4096 / ŞA-256 (ÖzDSt)" },
+          { label: "Tölov şlyuzi", value: "MUNIS & Anor Tölov Tizimlari" },
+          { label: "Regulyativ nazorat", value: "Özbekiston Respublikasi Markaziy Banki", badge: "CBU Audit" },
         ],
       },
     },
@@ -303,9 +303,9 @@ export default function UserProfileView({
       userId: "usr-admin-01",
       role: "admin",
       fullName: adminFullName,
-      title: "Muassis & Bosh Tizim Regulyatori",
+      title: "Muassis & Boş Tizim Regulyatori",
       organizationName: "ZaminFlow Milliy Raqamli Ekotizim Burosi",
-      location: "Navoiy shoh koʻchasi 14, Toshkent, 100011, Oʻzbekiston",
+      location: "Navoiy şoh köçasi 14, Toşkent, 100011, Özbekiston",
       avatarUrl:
         resolveUserAvatar(adminFullName, "admin@zaminflow.uz") || "/images/team-muhammadaziz.webp",
       email: "admin@zaminflow.uz",
@@ -314,38 +314,38 @@ export default function UserProfileView({
       kybVerified: true,
       memberSince: "Yanvar 2025",
       taxId: "STIR: 100 000 001",
-      bankName: "Oʻzbekiston Respublikasi Markaziy Banki",
+      bankName: "Özbekiston Respublikasi Markaziy Banki",
       iban: "UZ0000000000000000000001",
-      bio: "ZaminFlow milliy B2B sut taʼminoti zanjiri va fintex ekotizimi bosh koordinatori va boshqaruvchisi. Ishtirokchilarning KYB dosyelarini tekshirish, laboratoriya arbitraji nizolarini hal qilish va Oʻzbekiston boʻyicha yagona xom sut standarti integratsiyasini nazorat qiladi.",
-      languages: ["Oʻzbekcha", "Русский", "English"],
+      bio: "ZaminFlow milliy B2B sut taʼminoti zanjiri va fintex ekotizimi boş koordinatori va boşqaruvçisi. Iştirokçilarning KYB dosyelarini tekşiriş, laboratoriya arbitraji nizolarini hal qiliş va Özbekiston böyiça yagona xom sut standarti integratsiyasini nazorat qiladi.",
+      languages: ["Özbekça", "Русский", "Engliş"],
       capabilities: [
         { label: "Markaziy Bank Eskrou Nazorati", active: true },
         { label: "Nizolar Arbitraji Tribunali", active: true },
-        { label: "Korxonalarni KYB Tekshiruvi", active: true },
+        { label: "Korxonalarni KYB Tekşiruvi", active: true },
         { label: "Milliy Standartlar (GOST 31449)", active: true },
         { label: "Soliq.uz STIR Integratsiyasi", active: true },
       ],
       stats: [
         { label: "Faol Korxonalar", value: "1,714 ta", sublabel: "Verifikatsiyalangan akkauntlar" },
         { label: "Eskrou Depozitariysi", value: "284.5M UZS", sublabel: "Platforma aylanmasi" },
-        { label: "Nizolarni Hal Qilish", value: "< 24 soat", sublabel: "Tribunal SLA" },
+        { label: "Nizolarni Hal Qiliş", value: "< 24 soat", sublabel: "Tribunal SLA" },
         { label: "Xavfsizlik Standarti", value: "100%", sublabel: "Qatʼiy qonuniy audit" },
       ],
       team: [
-        { name: "Iminjonov Muhammadaziz", role: "Muassis & Super Admin", avatarUrl: "/images/team-muhammadaziz.webp", phone: "+998 71 200 45 67", email: "admin@zaminflow.uz" },
-        { name: "Sevinchoy Soporboyeva", role: "Hammuassis & Operatsiyalar Rahbari", avatarUrl: "/images/team-sevinchoy.webp", phone: "+998 71 200 45 70", email: "operations@zaminflow.uz" },
-        { name: "Abdumanov Akrom", role: "Bosh Platforma Arxitektori", avatarUrl: "/images/team-akrom.webp", phone: "+998 71 200 45 71", email: "arch@zaminflow.uz" },
-        { name: "Shokhjakhon Abdufattohov", role: "Strategik Maslahatchi", avatarUrl: "/images/team-shohjahon.webp", phone: "+998 71 200 45 72", email: "strategy@zaminflow.uz" },
+        { name: "İminjonov Muhammadaziz", role: "Muassis & Super Admin", avatarUrl: "/images/team-muhammadaziz.webp", phone: "+998 71 200 45 67", email: "admin@zaminflow.uz" },
+        { name: "Sevinçoy Soporboyeva", role: "Hammuassis & Operatsiyalar Rahbari", avatarUrl: "/images/team-sevinchoy.webp", phone: "+998 71 200 45 70", email: "operations@zaminflow.uz" },
+        { name: "Akrom Abdumanov", role: "Boş Platforma Arxitektori", avatarUrl: "/images/team-akrom.webp", phone: "+998 71 200 45 71", email: "arch@zaminflow.uz" },
+        { name: "Şohjahon Abdufattohov", role: "Strategik Maslahatçi", avatarUrl: "/images/team-shohjahon.webp", phone: "+998 71 200 45 72", email: "strategy@zaminflow.uz" },
       ],
       tradingSpecs: [
-        { label: "Yurisdiksiya", value: "Oʻzbekiston Respublikasi (14 ta hudud)" },
-        { label: "Qonunchilik Asosi", value: "Elektron Tijorat va Fintex Eskrou Qonuni" },
+        { label: "Yurisdiksiya", value: "Özbekiston Respublikasi (14 ta hudud)" },
+        { label: "Qonunçilik Asosi", value: "Elektron Tijorat va Fintex Eskrou Qonuni" },
       ],
       roleSpecifics: {
-        sectionTitle: "Ekotizim Boshqaruvi & Nazorat Ruxsatnomalari",
+        sectionTitle: "Ekotizim Boşqaruvi & Nazorat Ruxsatnomalari",
         items: [
           { label: "Tizim huquqi", value: "Root Super Administrator", badge: "Maxsus" },
-          { label: "Audit kaliti", value: "SHA-256 Master Key #UZ-SEC-412" },
+          { label: "Audit kaliti", value: "ŞA-256 Master Key #UZ-SEC-412" },
           { label: "Soliq.uz STIR gateway", value: "Direct Gov API • 14ms latency", badge: "Online" },
           { label: "Arbitraj vakolati", value: "Titratsiya xulosalari asosida avto-kliring" },
         ],
@@ -927,7 +927,7 @@ export default function UserProfileView({
                 <div className="flex items-center justify-between pb-3 border-b border-white/10 mb-4">
                   <h2 className="text-base font-bold text-white flex items-center gap-2">
                     <span>📊</span>
-                    <span>Tarixiy Savdo & Kliring Koʻrsatkichlari</span>
+                    <span>Tarixiy Savdo & Kliring Körsatkiçlari</span>
                   </h2>
                   <span className="text-xs font-bold text-[#00ffc8] font-mono">
                     Ishonch Indeksi: {profileState.trustScore} / 100
@@ -1135,7 +1135,7 @@ export default function UserProfileView({
                 <div className="space-y-3.5">
                   <div className="p-3.5 rounded-2xl bg-black/40 border border-white/5">
                     <div className="flex justify-between text-xs mb-1">
-                      <span className="text-white/60">Yog'lilik Ko'rsatkichi (Fat)</span>
+                      <span className="text-white/60">Yoğlilik Körsatkiçi (Fat)</span>
                       <span className="font-bold text-[#00ffc8] font-mono">4.15% (Talab: &gt; 3.2%)</span>
                     </div>
                     <div className="w-full h-2 rounded-full bg-white/10 overflow-hidden">
@@ -1145,7 +1145,7 @@ export default function UserProfileView({
 
                   <div className="p-3.5 rounded-2xl bg-black/40 border border-white/5">
                     <div className="flex justify-between text-xs mb-1">
-                      <span className="text-white/60">Quruq Moddalar Qoldig'i (SNF)</span>
+                      <span className="text-white/60">Quruq Moddalar Qoldiği (SNF)</span>
                       <span className="font-bold text-[#00d3e0] font-mono">8.65% (Talab: &gt; 8.2%)</span>
                     </div>
                     <div className="w-full h-2 rounded-full bg-white/10 overflow-hidden">
@@ -1221,7 +1221,7 @@ export default function UserProfileView({
             <div className="bg-white/[0.03] rounded-[28px] p-6 sm:p-7 border border-white/10 shadow-xs">
               <div className="flex items-center justify-between pb-3 border-b border-white/10 mb-4">
                 <div>
-                  <h2 className="text-base font-bold text-white">Soʻnggi Bajarilgan Shartnomalar & Kliring Tarixi</h2>
+                  <h2 className="text-base font-bold text-white">Sönggi Bajarilgan Şartnomalar & Kliring Tarixi</h2>
                   <span className="text-[11px] text-white/50">Smart kontrakt audit zanjiridagi tranzaksiyalar</span>
                 </div>
                 <span className="text-xs font-bold text-[#00ffc8] font-mono">0 ta Nizo (100% Toza)</span>
@@ -1231,7 +1231,7 @@ export default function UserProfileView({
                 <table className="w-full text-left border-collapse text-xs">
                   <thead>
                     <tr className="border-b border-white/10 text-white/50 uppercase font-mono text-[10px]">
-                      <th className="py-2.5 px-3">Shartnoma №</th>
+                      <th className="py-2.5 px-3">Şartnoma №</th>
                       <th className="py-2.5 px-3">Kontragent</th>
                       <th className="py-2.5 px-3">Hajm</th>
                       <th className="py-2.5 px-3">Sifat / Nav</th>
@@ -1282,7 +1282,7 @@ export default function UserProfileView({
           <div className="flex flex-col gap-6 animate-in fade-in duration-300">
             <div className="flex flex-wrap items-center justify-between gap-4">
               <div>
-                <h2 className="text-base font-bold text-white">Boshqaruv & Mas'ul Mutaxassislar Ro'yxati</h2>
+                <h2 className="text-base font-bold text-white">Boşqaruv & Mas'ul Mutaxassislar Röyxati</h2>
                 <p className="text-xs text-white/50 mt-0.5">Tezkor aloqa va buyurtmalar ijrosiga javobgar vakillar</p>
               </div>
               <button
@@ -1290,7 +1290,7 @@ export default function UserProfileView({
                 onClick={() => setIsAddTeamModalOpen(true)}
                 className="px-4 py-2 rounded-full bg-gradient-to-r from-[#00ffc8] to-[#0099ff] text-[#070B14] font-black text-xs hover:opacity-90 transition shadow-md cursor-pointer active:scale-95"
               >
-                + Yangi Mas'ul Xodim Qo'shish
+                + Yangi Mas'ul Xodim Qöşiş
               </button>
             </div>
 
@@ -1374,7 +1374,7 @@ export default function UserProfileView({
 
             <form onSubmit={handleSaveProfile} className="space-y-3.5">
               <div className="space-y-1">
-                <label className="text-xs font-bold text-white/70">F.I.SH (Toʻliq Ism)</label>
+                <label className="text-xs font-bold text-white/70">F.I.Ş (Töliq Ism)</label>
                 <input
                   type="text"
                   value={editFullName}
@@ -1453,7 +1453,7 @@ export default function UserProfileView({
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-white/70">Xizmat Ko'rsatuvchi Bank</label>
+                  <label className="text-xs font-bold text-white/70">Xizmat Körsatuvçi Bank</label>
                   <input
                     type="text"
                     value={editBankName}
@@ -1497,7 +1497,7 @@ export default function UserProfileView({
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
           <div className="bg-[#12161a] border border-[#00d3e0]/40 rounded-3xl max-w-md w-full p-6 shadow-2xl relative flex flex-col gap-4">
             <div className="flex items-center justify-between pb-3 border-b border-white/10">
-              <h3 className="text-base font-black text-white">Yangi Mas'ul Xodim Qo'shish</h3>
+              <h3 className="text-base font-black text-white">Yangi Mas'ul Xodim Qöşiş</h3>
               <button
                 type="button"
                 onClick={() => setIsAddTeamModalOpen(false)}
@@ -1565,9 +1565,7 @@ export default function UserProfileView({
                 <button
                   type="submit"
                   className="px-5 py-2 rounded-full bg-gradient-to-r from-[#00ffc8] to-[#0099ff] text-[#070B14] font-black text-xs cursor-pointer shadow-md"
-                >
-                  Qo'shish
-                </button>
+                >Qöşiş</button>
               </div>
             </form>
           </div>

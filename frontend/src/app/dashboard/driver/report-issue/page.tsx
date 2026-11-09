@@ -84,8 +84,8 @@ export default function ReportIssuePage() {
             >
               <option value="refrigeration_fault">Sovitish tizimi (Refrejerator) nosozligi</option>
               <option value="vehicle_breakdown">Yuk mashinasi dvigateli / shina yorilishi</option>
-              <option value="road_closure">Yoʻl yopilgan / ta'mirlash sababli toʻsiq</option>
-              <option value="farmer_delay">Fermer qabul punktida kechikish / kutish</option>
+              <option value="road_closure">Yöl yopilgan / ta'mirlaş sababli tösiq</option>
+              <option value="farmer_delay">Fermer qabul punktida keçikiş / kutiş</option>
               <option value="seal_tamper">Sisterna muhrining shikastlanishi</option>
             </select>
           </div>
@@ -97,7 +97,7 @@ export default function ReportIssuePage() {
             <div className="grid grid-cols-3 gap-3">
               {[
                 { id: "critical", label: "Kritik (Harorat > 5°C)", color: "text-red-400 border-red-500/40" },
-                { id: "warning", label: "Oʻrta (Kechikish)", color: "text-amber-400 border-amber-500/40" },
+                { id: "warning", label: "Örta (Keçikiş)", color: "text-amber-400 border-amber-500/40" },
                 { id: "info", label: "Ma'lumot uchun", color: "text-[#00ffc8] border-[#00ffc8]/40" },
               ].map((sev) => (
                 <button
@@ -124,7 +124,7 @@ export default function ReportIssuePage() {
               rows={4}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="Vaziyatni qisqacha bayon qiling: harorat oʻzgarishi, qolgan yoqilgʻi yoki yordam talabi..."
+              placeholder="Vaziyatni qisqaça bayon qiling: harorat özgarişi, qolgan yoqilği yoki yordam talabi..."
               className="w-full rounded-2xl bg-white/5 border border-white/15 p-4 text-xs text-white placeholder:text-white/30 focus:border-red-400 outline-none"
               required
             />

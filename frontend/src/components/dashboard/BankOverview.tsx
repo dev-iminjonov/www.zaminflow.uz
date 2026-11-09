@@ -17,8 +17,21 @@ import { useLanguage } from "@/context/LanguageContext";
 import { useTheme, ThemeToggleButton } from "@/context/ThemeContext";
 import ZaminFlowLogo from "@/components/ZaminFlowLogo";
 import { resolveUserAvatar } from "@/lib/userAvatar";
+import UniversalSpotlightSearch from "@/components/search/UniversalSpotlightSearch";
+import B2BProfileWindow from "@/components/profile/B2BProfileWindow";
+import InteractiveFinancialChart from "@/components/dashboard/InteractiveFinancialChart";
+import InteractiveComparisonBarChart from "@/components/dashboard/InteractiveComparisonBarChart";
+import InteractiveRadialGauge from "@/components/dashboard/InteractiveRadialGauge";
 
-type BankWindow = "overview" | "ledger" | "iso20022" | "underwriting" | "arbitration" | "reports" | "settings";
+type BankWindow =
+  | "overview"
+  | "ledger"
+  | "iso20022"
+  | "underwriting"
+  | "arbitration"
+  | "reports"
+  | "settings"
+  | "profile";
 
 const BANK_I18N = {
   uz: {
@@ -28,8 +41,8 @@ const BANK_I18N = {
     desc: "Agrobank ATB / Markaziy bank hisob-kitob nazorati • Ikki yoqlama buxgalteriya reestri",
     exportXml: "ISO 20022 XML",
     exportCsv: "CSV Reestr",
-    heldTitle: "Eskrouda saqlanayotgan mablagʻ",
-    releasedTitle: "Bugun chiqarilgan toʻlovlar",
+    heldTitle: "Eskrouda saqlanayotgan mablağ",
+    releasedTitle: "Bugun çiqarilgan tölovlar",
     frozenTitle: "Muzlatilgan nizoli partiyalar",
     feeTitle: "Bank komissiya daromadi",
     ledgerTitle: "Ikki yoqlama buxgalteriya va ISO 20022 kliring reestri",
@@ -40,9 +53,9 @@ const BANK_I18N = {
     colAmount: "Summa (UZS)",
     colStatus: "Holat",
     advisorTitle: "CBU Regulyator nazorati",
-    advisorDesc: "Oʻzbekiston Markaziy banki talablari asosida 100% zaxiralangan eskrou tizimi.",
-    btnAudit: "Audit xulosasini ko'rish",
-    newTransfer: "Yangi kliring o'tkazmasi",
+    advisorDesc: "Özbekiston Markaziy banki talablari asosida 100% zaxiralangan eskrou tizimi.",
+    btnAudit: "Audit xulosasini köriş",
+    newTransfer: "Yangi kliring ötkazmasi",
   },
   ru: {
     badge: "АКБ Агробанк Клиринг",
@@ -205,7 +218,7 @@ export default function BankOverview() {
     setTimeout(() => {
       setTransferSuccess(false);
       setShowNewTransferModal(false);
-      setExportBanner("Yangi bank kliring o'tkazmasi muvaffaqiyatli reestrga kiritildi.");
+      setExportBanner("Yangi bank kliring ötkazmasi muvaffaqiyatli reestrga kiritildi.");
     }, 1200);
   };
 
@@ -352,11 +365,20 @@ export default function BankOverview() {
         </svg>
       ),
     },
+    {
+      key: "profile",
+      label: "B2B Profil & Rekvizitlar",
+      icon: (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+        </svg>
+      ),
+    },
   ];
 
   return (
     <div className={`min-h-screen py-4 px-3 sm:px-6 relative overflow-x-hidden font-sans antialiased transition-colors duration-300 ${
-      isDark ? "bg-[#0b0f14] text-white" : "bg-[#f1f5f9] text-slate-900"
+      isDark ? "bg-[#0d1013] text-[#E8F1F2]" : "bg-[#f6fbf8] text-[#081c15]"
     }`}>
       {/* Background Subtle Gradient Blobs */}
       <div className="absolute top-0 left-1/4 w-[600px] h-[600px] pointer-events-none -z-0 opacity-20 blur-[140px] bg-gradient-to-br from-emerald-500 to-teal-400" />
@@ -364,27 +386,22 @@ export default function BankOverview() {
       {/* Master Container: Fixed Left Sidebar + Dynamic In-Place Content Area (Investure Architecture) */}
       <div className={`relative z-10 max-w-[1520px] mx-auto rounded-[32px] border shadow-2xl flex flex-col lg:flex-row overflow-hidden transition-all ${
         isDark
-          ? "bg-[#121820] border-white/10 shadow-[0_30px_90px_rgba(0,0,0,0.6)] text-white"
-          : "bg-white border-slate-200 shadow-[0_20px_70px_rgba(15,23,42,0.06)] text-slate-900"
+          ? "bg-[#14181d] border-white/10 shadow-[0_30px_90px_rgba(0,0,0,0.6)] text-[#E8F1F2]"
+          : "bg-white border-[#b7e4c7] shadow-[0_10px_35px_rgba(0,153,255,0.06)] text-[#081c15]"
       }`}>
 
         {/* =========================================================================
             LEFT NAVIGATION SIDEBAR (Exact Investure Layout)
         ========================================================================= */}
         <aside className={`w-full lg:w-72 shrink-0 border-b lg:border-b-0 lg:border-r p-6 flex flex-col justify-between transition-colors ${
-          isDark ? "border-white/10 bg-[#0e1319]" : "border-slate-100 bg-[#fafcff]"
+          isDark ? "border-white/10 bg-[#0d1013]" : "border-[#b7e4c7]/60 bg-[#f6fbf8]"
         }`}>
           <div>
             {/* 1. Brand Logo */}
-            <div className="flex items-center justify-between pb-8">
+            <div className="flex items-center pb-8">
               <Link href="/" className="flex items-center gap-2 transition hover:scale-105">
                 <ZaminFlowLogo mode={themeMode} size="md" />
               </Link>
-              <span className={`text-[10px] font-mono font-bold px-2.5 py-1 rounded-full uppercase border ${
-                isDark ? "bg-teal-500/10 border-teal-500/30 text-teal-400" : "bg-teal-50 border-teal-200 text-teal-800"
-              }`}>
-                {bt.badge}
-              </span>
             </div>
 
             {/* 2. Navigation Items with Right Emerald Indicator Line */}
@@ -509,26 +526,19 @@ export default function BankOverview() {
             </div>
 
             <div className="flex items-center gap-3">
-              {/* Quick Search */}
-              <div className={`hidden sm:flex items-center gap-2 px-3.5 py-2 rounded-2xl border text-xs transition ${
-                isDark ? "bg-white/5 border-white/10 text-white/70" : "bg-slate-100 border-slate-200 text-slate-700"
-              }`}>
-                <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-                <input
-                  type="text"
-                  placeholder="Xabar ID / INN / Tranzaksiya..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="bg-transparent border-none outline-none text-xs w-36 lg:w-48"
-                />
-                <kbd className={`text-[10px] px-1.5 py-0.5 rounded border ${
-                  isDark ? "bg-white/10 border-white/10 text-white/40" : "bg-white border-slate-200 text-slate-400"
-                }`}>
-                  ⌘K
-                </kbd>
-              </div>
+              {/* Universal Live Spotlight Search */}
+              <UniversalSpotlightSearch
+                role="bank"
+                onSelectAction={(item) => {
+                  if (item.category === "batches") {
+                    setActiveWindow("ledger");
+                  } else if (item.category === "navigation") {
+                    setActiveWindow("overview");
+                  } else if (item.href) {
+                    router.push(item.href);
+                  }
+                }}
+              />
 
               {/* Language Switcher */}
               <div className={`flex items-center p-0.5 rounded-xl border text-[11px] font-bold ${
@@ -599,145 +609,29 @@ export default function BankOverview() {
             ========================================================================= */}
             {activeWindow === "overview" && (
               <div className="space-y-8 animate-fadeIn">
-                {/* 1. HERO FINANCIAL CHART (Investure Exact Match) */}
+                {/* 1. HERO FINANCIAL CHART (Interactive & Live) */}
                 <div className={`p-6 sm:p-7 rounded-3xl border transition-all ${
                   isDark
                     ? "bg-white/[0.03] border-white/10"
                     : "bg-slate-50/60 border-slate-200 shadow-xs"
                 }`}>
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6">
-                    <div>
-                      <p className={`text-xs font-bold uppercase tracking-wider ${isDark ? "text-white/50" : "text-slate-400"}`}>
-                        {bt.heldTitle}
-                      </p>
-                      <div className="flex items-baseline gap-3 mt-1">
-                        <span className="text-2xl sm:text-3xl font-black tracking-tight">
-                          {data ? `${data.totalEscrowHeld.value} ${data.totalEscrowHeld.unit}` : chartDatasets.total}
-                        </span>
-                        <span className="text-xs font-bold text-emerald-500 flex items-center gap-0.5">
-                          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-                          </svg>
-                          {chartDatasets.delta}
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Chart Controls */}
-                    <div className="flex items-center gap-2">
-                      <div className={`flex items-center p-1 rounded-xl border ${
-                        isDark ? "bg-white/5 border-white/10" : "bg-white border-slate-200"
-                      }`}>
-                        <button
-                          type="button"
-                          onClick={() => setChartType("line")}
-                          className={`p-1.5 rounded-lg transition cursor-pointer ${
-                            chartType === "line"
-                              ? isDark ? "bg-white/15 text-white" : "bg-slate-100 text-slate-900"
-                              : isDark ? "text-white/40" : "text-slate-400"
-                          }`}
-                        >
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-                          </svg>
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setChartType("bar")}
-                          className={`p-1.5 rounded-lg transition cursor-pointer ${
-                            chartType === "bar"
-                              ? isDark ? "bg-white/15 text-white" : "bg-slate-100 text-slate-900"
-                              : isDark ? "text-white/40" : "text-slate-400"
-                          }`}
-                        >
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                          </svg>
-                        </button>
-                      </div>
-
-                      {/* Time Range Selector */}
-                      <div className={`flex items-center p-1 rounded-xl border text-xs font-bold ${
-                        isDark ? "bg-white/5 border-white/10 text-white/50" : "bg-white border-slate-200 text-slate-500"
-                      }`}>
-                        {(["1d", "1w", "1m", "6m", "1y", "all"] as const).map((r) => (
-                          <button
-                            key={r}
-                            type="button"
-                            onClick={() => setTimeRange(r)}
-                            className={`px-2.5 py-1 rounded-lg uppercase transition cursor-pointer ${
-                              timeRange === r
-                                ? isDark ? "bg-white/20 text-white" : "bg-slate-100 text-slate-900 shadow-xs"
-                                : "hover:text-emerald-500"
-                            }`}
-                          >
-                            {r}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Interactive SVG Chart */}
-                  <div className="relative h-56 sm:h-64 w-full">
-                    <svg className="w-full h-full overflow-visible" viewBox="0 0 700 200" preserveAspectRatio="none">
-                      <defs>
-                        <linearGradient id="bankEmeraldGrad" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="0%" stopColor="#10b981" stopOpacity="0.25" />
-                          <stop offset="100%" stopColor="#10b981" stopOpacity="0.0" />
-                        </linearGradient>
-                      </defs>
-
-                      <line x1="0" y1="40" x2="700" y2="40" stroke="currentColor" strokeOpacity={isDark ? "0.08" : "0.06"} strokeDasharray="4 4" />
-                      <line x1="0" y1="90" x2="700" y2="90" stroke="currentColor" strokeOpacity={isDark ? "0.08" : "0.06"} strokeDasharray="4 4" />
-                      <line x1="0" y1="140" x2="700" y2="140" stroke="currentColor" strokeOpacity={isDark ? "0.08" : "0.06"} strokeDasharray="4 4" />
-
-                      {chartType === "line" ? (
-                        <>
-                          <path
-                            d="M 20 160 Q 120 130, 200 110 T 380 70 T 520 85 T 680 30 L 680 190 L 20 190 Z"
-                            fill="url(#bankEmeraldGrad)"
-                          />
-                          <path
-                            d="M 20 160 Q 120 130, 200 110 T 380 70 T 520 85 T 680 30"
-                            fill="none"
-                            stroke="#10b981"
-                            strokeWidth="3.5"
-                            strokeLinecap="round"
-                          />
-                          <circle cx="520" cy="85" r="5" fill="#10b981" />
-                          <circle cx="680" cy="30" r="6" fill="#10b981" className="animate-pulse" />
-                        </>
-                      ) : (
-                        <g>
-                          {chartDatasets.points.map((pt, i) => {
-                            const x = 50 + i * 100;
-                            const h = 40 + (pt.val / 1000000000) * 110;
-                            return (
-                              <g key={i}>
-                                <rect
-                                  x={x - 14}
-                                  y={180 - h}
-                                  width="28"
-                                  height={h}
-                                  rx="6"
-                                  fill="#10b981"
-                                  fillOpacity={i === chartDatasets.points.length - 1 ? "1" : "0.6"}
-                                />
-                              </g>
-                            );
-                          })}
-                        </g>
-                      )}
-                    </svg>
-
-                    {/* Chart bottom labels */}
-                    <div className="flex justify-between items-center text-[11px] font-semibold pt-3 px-1 text-slate-400">
-                      {chartDatasets.points.map((p, i) => (
-                        <span key={i}>{p.label}</span>
-                      ))}
-                    </div>
-                  </div>
+                  <InteractiveFinancialChart
+                    title={bt.heldTitle}
+                    subtitle="BANK KAFOLATI VA KLIRING NAZORATI"
+                    totalDisplay={data ? `${data.totalEscrowHeld.value} ${data.totalEscrowHeld.unit}` : chartDatasets.total}
+                    deltaDisplay={chartDatasets.delta}
+                    deltaPositive={true}
+                    unit="UZS"
+                    accentColor="#00ffc8"
+                    secondaryColor="#0099ff"
+                    gradientId="bankChartGradient"
+                    timeRange={timeRange}
+                    onTimeRangeChange={setTimeRange}
+                    chartType={chartType}
+                    onChartTypeChange={setChartType}
+                    points={chartDatasets.points}
+                    isDark={isDark}
+                  />
                 </div>
 
                 {/* 2. FOUR BENTO METRIC CARDS */}
@@ -755,7 +649,7 @@ export default function BankOverview() {
                       </h3>
                       <p className="text-[11px] font-bold text-emerald-500 mt-0.5 flex items-center gap-1">
                         <span>↑ 12.4%</span>
-                        <span className={isDark ? "text-white/40 font-normal" : "text-slate-400 font-normal"}>oylik oʻsish</span>
+                        <span className={isDark ? "text-white/40 font-normal" : "text-slate-400 font-normal"}>oylik ösiş</span>
                       </p>
                     </div>
                     <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 flex items-center justify-center text-emerald-600">
@@ -843,7 +737,7 @@ export default function BankOverview() {
                   }`}>
                     <div className="flex items-center justify-between pb-4 border-b border-inherit">
                       <div>
-                        <h4 className="text-sm font-black">So'nggi Kliring Amaliyotlari</h4>
+                        <h4 className="text-sm font-black">Sönggi Kliring Amaliyotlari</h4>
                         <p className={`text-[11px] ${isDark ? "text-white/40" : "text-slate-400"}`}>
                           Avtomatlashtirilgan tranzaksiyalar
                         </p>
@@ -858,132 +752,82 @@ export default function BankOverview() {
                     </div>
 
                     <div className="divide-y divide-inherit mt-2">
-                      {[
-                        { ref: "ZF-ESC-8491", co: "Samarqand Sut Zavodi", sum: "48,200,000 UZS", type: "RELEASE", stat: "Tasdiqlangan" },
-                        { ref: "ZF-ESC-8490", co: "Fargʻona Agro Fayz", sum: "18,400,000 UZS", type: "LOCK", stat: "Muzlatilgan" },
-                        { ref: "ZF-ESC-8489", co: "Toshkent Dairy LLC", sum: "34,800,000 UZS", type: "RELEASE", stat: "Tasdiqlangan" },
-                        { ref: "ZF-ESC-8488", co: "Kesh Agro Cooperative", sum: "12,900,000 UZS", type: "FEE", stat: "Yechilgan" },
-                      ].map((item, idx) => (
-                        <div key={idx} className="py-3 flex items-center justify-between">
-                          <div className="flex items-center gap-3">
-                            <div className={`w-8 h-8 rounded-xl flex items-center justify-center text-xs font-bold ${
-                              item.type === "RELEASE"
-                                ? "bg-emerald-500/10 text-emerald-600"
-                                : item.type === "LOCK"
-                                ? "bg-amber-500/10 text-amber-600"
-                                : "bg-sky-500/10 text-sky-600"
-                            }`}>
-                              {item.type[0]}
+                      {data?.ledgerEntries && data.ledgerEntries.length > 0 ? (
+                        data.ledgerEntries.map((item, idx) => (
+                          <div key={idx} className="py-3 flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                              <div className={`w-8 h-8 rounded-xl flex items-center justify-center text-xs font-bold ${
+                                item.entryType === "RELEASE"
+                                  ? "bg-emerald-500/10 text-emerald-600"
+                                  : item.entryType === "LOCK"
+                                  ? "bg-amber-500/10 text-amber-600"
+                                  : "bg-sky-500/10 text-sky-600"
+                              }`}>
+                                {item.entryType[0]}
+                              </div>
+                              <div>
+                                <p className="text-xs font-bold">{item.creditAccount}</p>
+                                <p className={`text-[10px] ${isDark ? "text-white/40" : "text-slate-400"}`}>{item.bankReferenceId || item.id}</p>
+                              </div>
                             </div>
-                            <div>
-                              <p className="text-xs font-bold">{item.co}</p>
-                              <p className={`text-[10px] ${isDark ? "text-white/40" : "text-slate-400"}`}>{item.ref}</p>
+                            <div className="text-right">
+                              <p className="text-xs font-black">{item.amountUzs} UZS</p>
+                              <span className="text-[10px] text-emerald-500 font-semibold">{item.webhookStatus}</span>
                             </div>
                           </div>
-                          <div className="text-right">
-                            <p className="text-xs font-black">{item.sum}</p>
-                            <span className="text-[10px] text-emerald-500 font-semibold">{item.stat}</span>
-                          </div>
+                        ))
+                      ) : (
+                        <div className="py-8 text-center text-slate-400">
+                          <p className="text-xs font-semibold text-slate-500 dark:text-white/60">
+                            Kliring yozuvlari mavjud emas
+                          </p>
+                          <p className="text-[11px] text-slate-400 mt-0.5">
+                            Yangi eskrou bitimi tasdiqlanganda operatsiyalar bu yerda aks etadi.
+                          </p>
                         </div>
-                      ))}
+                      )}
                     </div>
                   </div>
 
-                  {/* Col 2: Semi-Circle Radial Gauge (AgroBank Escrow Reserve Adequacy) */}
-                  <div className={`p-6 rounded-3xl border flex flex-col items-center justify-between transition-all ${
-                    isDark ? "bg-white/[0.02] border-white/10" : "bg-white border-slate-200 shadow-xs"
-                  }`}>
-                    <div className="w-full flex items-center justify-between pb-2">
-                      <h4 className="text-sm font-black">Eskrou Zaxira Koeffitsienti</h4>
-                      <span className="text-xs font-bold text-emerald-500">100% CBU</span>
-                    </div>
-
-                    <div className="relative w-48 h-28 my-auto flex items-end justify-center">
-                      <svg className="w-48 h-28 overflow-visible" viewBox="0 0 200 110">
-                        <path
-                          d="M 20 100 A 80 80 0 0 1 180 100"
-                          fill="none"
-                          stroke={isDark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.06)"}
-                          strokeWidth="16"
-                          strokeLinecap="round"
-                        />
-                        <path
-                          d="M 20 100 A 80 80 0 0 1 176 90"
-                          fill="none"
-                          stroke="#10b981"
-                          strokeWidth="16"
-                          strokeLinecap="round"
-                          strokeDasharray="250"
-                          strokeDashoffset="12"
-                        />
-                      </svg>
-                      <div className="absolute bottom-0 flex flex-col items-center">
-                        <span className="text-2xl font-black">99.4%</span>
-                        <span className={`text-[10px] font-semibold ${isDark ? "text-white/40" : "text-slate-400"}`}>
-                          Zaxiralangan Fond
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="w-full grid grid-cols-2 gap-2 text-center pt-3 border-t border-inherit">
-                      <div>
-                        <p className={`text-[10px] ${isDark ? "text-white/40" : "text-slate-400"}`}>Talab qilingan</p>
-                        <p className="text-xs font-bold">100.0% MB</p>
-                      </div>
-                      <div>
-                        <p className={`text-[10px] ${isDark ? "text-white/40" : "text-slate-400"}`}>Likvidlik buferi</p>
-                        <p className="text-xs font-bold text-emerald-500">+48.5 mln UZS</p>
-                      </div>
-                    </div>
-                  </div>
+                  {/* Col 2: Interactive Radial Gauge (AgroBank Escrow Reserve Adequacy) */}
+                  <InteractiveRadialGauge
+                    title="Eskrou Zaxira Koeffitsienti"
+                    totalLabel="100% CBU"
+                    isDark={isDark}
+                    defaultActiveKey="reserved"
+                    segments={[
+                      { key: "reserved", label: "Zaxira Fond", percentage: 99.4, color: "#10b981", sublabel: "Zaxiralangan Fond: 99.4%", countFormatted: "99.4%" },
+                      { key: "buffer", label: "Likvidlik", percentage: 24.5, color: "#00ffc8", sublabel: "Likvidlik buferi: +48.5M", countFormatted: "+48.5M" },
+                      { key: "clearing", label: "Kliring", percentage: 76.8, color: "#38bdf8", sublabel: "Kliring aylanmasi: 76.8%", countFormatted: "76.8%" },
+                    ]}
+                  />
 
                   {/* Col 3: Dual Comparison Bar Chart (Settlement vs Payout Velocity) */}
                   <div className={`p-6 rounded-3xl border flex flex-col justify-between transition-all ${
                     isDark ? "bg-white/[0.02] border-white/10" : "bg-white border-slate-200 shadow-xs"
                   }`}>
-                    <div className="flex items-center justify-between pb-3">
-                      <div>
-                        <h4 className="text-sm font-black">Kliring Dinamikasi</h4>
-                        <p className={`text-[11px] ${isDark ? "text-white/40" : "text-slate-400"}`}>Haftalik o'tkazmalar</p>
-                      </div>
-                      <span className="text-xs font-bold text-sky-500">+14.2%</span>
-                    </div>
-
-                    <div className="h-36 flex items-end justify-between gap-3 pt-4 px-2">
-                      {[
-                        { day: "Du", h1: "40%", h2: "55%" },
-                        { day: "Se", h1: "65%", h2: "70%" },
-                        { day: "Ch", h1: "50%", h2: "62%" },
-                        { day: "Pa", h1: "80%", h2: "95%" },
-                        { day: "Ju", h1: "70%", h2: "85%" },
-                        { day: "Sh", h1: "90%", h2: "100%" },
-                      ].map((bar, i) => (
-                        <div key={i} className="flex-1 flex flex-col items-center gap-1.5 h-full justify-end">
-                          <div className="w-full flex items-end justify-center gap-1 h-28">
-                            <div
-                              style={{ height: bar.h1 }}
-                              className="w-2 rounded-t-sm bg-slate-300 dark:bg-white/20 transition-all"
-                            />
-                            <div
-                              style={{ height: bar.h2 }}
-                              className="w-2 rounded-t-sm bg-emerald-500 transition-all"
-                            />
-                          </div>
-                          <span className={`text-[10px] font-bold ${isDark ? "text-white/40" : "text-slate-400"}`}>
-                            {bar.day}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-
-                    <div className="flex items-center justify-center gap-4 pt-3 text-[10px] font-bold text-slate-400">
-                      <span className="flex items-center gap-1">
-                        <span className="w-2 h-2 rounded-full bg-slate-300 dark:bg-white/20" /> O'tgan hafta
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <span className="w-2 h-2 rounded-full bg-emerald-500" /> Joriy hafta
-                      </span>
-                    </div>
+                    <InteractiveComparisonBarChart
+                      title="Kliring va Chiqaruv Dinamikasi"
+                      subtitle="Haftalik eskrou hisob-kitoblar solishtirmasi"
+                      currentLabel="Joriy hafta"
+                      previousLabel="O'tgan hafta"
+                      currentTotal="780M UZS"
+                      previousTotal="620M UZS"
+                      primaryColor="#00ffc8"
+                      secondaryColor="#38bdf8"
+                      unit="UZS"
+                      isDark={isDark}
+                      actionText="Bank depozitariy daftari →"
+                      onActionClick={() => setActiveWindow("ledger")}
+                      items={[
+                        { label: "Du", currentVal: 95000000, previousVal: 70000000, currentFormatted: "95M UZS", previousFormatted: "70M UZS" },
+                        { label: "Se", currentVal: 120000000, previousVal: 85000000, currentFormatted: "120M UZS", previousFormatted: "85M UZS" },
+                        { label: "Ch", currentVal: 110000000, previousVal: 90000000, currentFormatted: "110M UZS", previousFormatted: "90M UZS" },
+                        { label: "Pa", currentVal: 165000000, previousVal: 130000000, currentFormatted: "165M UZS", previousFormatted: "130M UZS" },
+                        { label: "Ju", currentVal: 145000000, previousVal: 120000000, currentFormatted: "145M UZS", previousFormatted: "120M UZS" },
+                        { label: "Sh", currentVal: 145000000, previousVal: 125000000, currentFormatted: "145M UZS", previousFormatted: "125M UZS" },
+                      ]}
+                    />
                   </div>
                 </div>
               </div>
@@ -1206,34 +1050,13 @@ export default function BankOverview() {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  {[
-                    { name: "Chust Agro Fayz", score: "AAA (94/100)", limit: "150,000,000 UZS", used: "42,000,000 UZS", risk: "Past risk" },
-                    { name: "Samarqand Sut Sanoat", score: "AA+ (88/100)", limit: "500,000,000 UZS", used: "210,000,000 UZS", risk: "Past risk" },
-                    { name: "Zarafshon Agro Vet", score: "B+ (68/100)", limit: "60,000,000 UZS", used: "55,000,000 UZS", risk: "O'rta monitoring" },
-                  ].map((row, i) => (
-                    <div key={i} className={`p-5 rounded-3xl border transition-all ${
-                      isDark ? "bg-white/[0.02] border-white/10" : "bg-white border-slate-200 shadow-xs"
-                    }`}>
-                      <div className="flex items-center justify-between pb-3">
-                        <h4 className="text-sm font-black">{row.name}</h4>
-                        <span className="text-xs font-mono font-bold text-emerald-500">{row.score}</span>
-                      </div>
-                      <div className="space-y-2 text-xs pt-2">
-                        <div className="flex justify-between text-slate-400">
-                          <span>Tasdiqlangan limit:</span>
-                          <span className="font-bold text-slate-800 dark:text-white">{row.limit}</span>
-                        </div>
-                        <div className="flex justify-between text-slate-400">
-                          <span>Ishlatilgan faktoring:</span>
-                          <span className="font-bold text-sky-500">{row.used}</span>
-                        </div>
-                        <div className="flex justify-between text-slate-400 pt-1 border-t border-inherit">
-                          <span>Status:</span>
-                          <span className="font-semibold text-emerald-500">{row.risk}</span>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
+                  <div className="py-12 text-center rounded-3xl border border-dashed border-slate-200 dark:border-white/10 col-span-full">
+                    <span className="text-3xl block mb-2">📊</span>
+                    <h4 className="text-sm font-bold">Hozirça aylanma mablağ faktoring arizalari yöq</h4>
+                    <p className="text-xs text-slate-400 mt-1">
+                      Fermerlar yoki korxonalar kredit limiti soʻraganda ularning anderrayting skoringi bu yerda koʻrinadi.
+                    </p>
+                  </div>
                 </div>
               </div>
             )}
@@ -1244,7 +1067,7 @@ export default function BankOverview() {
             {activeWindow === "arbitration" && (
               <div className="space-y-6 animate-fadeIn">
                 <div>
-                  <h3 className="text-lg font-black">Eskrou Arbitraj & Muzlatilgan Mablag'lar</h3>
+                  <h3 className="text-lg font-black">Eskrou Arbitraj & Muzlatilgan Mablağlar</h3>
                   <p className={`text-xs ${isDark ? "text-white/50" : "text-slate-500"}`}>
                     Laboratoriya xulosasi kutilayotgan yoki sifat bo'yicha nizoli partiyalar
                   </p>
@@ -1253,37 +1076,12 @@ export default function BankOverview() {
                 <div className={`p-6 rounded-3xl border ${
                   isDark ? "border-white/10 bg-white/[0.02]" : "border-slate-200 bg-white shadow-xs"
                 }`}>
-                  <div className="space-y-4">
-                    {[
-                      { id: "DISP-401", dairy: "Toshkent Sut Zavodi", farmer: "Oqqo'rg'on Agro", sum: "14,800,000 UZS", reason: "Yog'lilik darajasi 2.8% (shartnomada 3.4%)", status: "Muzlatilgan" },
-                    ].map((item, i) => (
-                      <div key={i} className="p-4 rounded-2xl border border-rose-500/30 bg-rose-500/5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                        <div>
-                          <div className="flex items-center gap-2">
-                            <span className="font-mono font-bold text-xs text-rose-500">{item.id}</span>
-                            <span className="text-xs font-black">{item.dairy} ↔ {item.farmer}</span>
-                          </div>
-                          <p className="text-xs text-slate-500 mt-1">{item.reason}</p>
-                          <p className="text-xs font-black mt-1 text-slate-900 dark:text-white">Mablag': {item.sum}</p>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <button
-                            type="button"
-                            onClick={() => setExportBanner("Arbitraj bo'yicha mablag' fermer foydasiga qaytarildi.")}
-                            className="px-3.5 py-1.5 rounded-xl bg-emerald-600 text-white text-xs font-bold hover:bg-emerald-500 cursor-pointer"
-                          >
-                            Mablag'ni chiqarish
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => setExportBanner("Partiya to'lovi to'liq zavodga qaytarildi.")}
-                            className="px-3.5 py-1.5 rounded-xl border border-rose-500/30 text-rose-500 text-xs font-bold hover:bg-rose-500/10 cursor-pointer"
-                          >
-                            Depozitni qaytarish
-                          </button>
-                        </div>
-                      </div>
-                    ))}
+                  <div className="py-12 text-center">
+                    <span className="text-3xl block mb-2">⚖️</span>
+                    <p className="text-sm font-bold">Hozirça eskrou hisoblarida muzlatilgan nizoli mablağlar yöq</p>
+                    <p className="text-xs text-slate-400 mt-1">
+                      Sifat va laboratoriya tahlillari boʻyicha barcha toʻlovlar avtomatik kliringdan oʻtmoqda.
+                    </p>
                   </div>
                 </div>
               </div>
@@ -1314,7 +1112,7 @@ export default function BankOverview() {
                   <div className={`p-5 rounded-3xl border ${isDark ? "border-white/10" : "border-slate-200"}`}>
                     <p className="text-xs text-slate-400">Fond Zaxira Darajasi</p>
                     <h4 className="text-2xl font-black text-emerald-500 mt-1">100.0%</h4>
-                    <p className="text-[11px] text-slate-500 mt-1">To'liq naqd kafolatlangan</p>
+                    <p className="text-[11px] text-slate-500 mt-1">Töliq naqd kafolatlangan</p>
                   </div>
                   <div className={`p-5 rounded-3xl border ${isDark ? "border-white/10" : "border-slate-200"}`}>
                     <p className="text-xs text-slate-400">Audit Xulosasi</p>
@@ -1374,6 +1172,13 @@ export default function BankOverview() {
                   </div>
                 </div>
               </div>
+            )}
+
+            {/* =========================================================================
+                WINDOW 8: B2B PROFILE & REKVIZITLAR (Role-Adaptive Profile Window)
+            ========================================================================= */}
+            {activeWindow === "profile" && (
+              <B2BProfileWindow session={session} role="bank" isDark={isDark} />
             )}
           </div>
         </main>

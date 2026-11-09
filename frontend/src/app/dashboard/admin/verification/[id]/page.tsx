@@ -29,7 +29,7 @@ export default function AdminVerificationDetailPage() {
       setDossier({ ...updated });
       setDecisionNotice(
         status === "approved"
-          ? "✓ KYB Muvaffaqiyatli Tasdiqlandi! Tashkilotga toʻliq eskrou savdo ruxsati berildi."
+          ? "✓ KYB Muvaffaqiyatli Tasdiqlandi! Taşkilotga töliq eskrou savdo ruxsati berildi."
           : "Ariza rad etildi. Kerakli tuzatishlar bilan arizachiga bildirishnoma yuborildi."
       );
     }

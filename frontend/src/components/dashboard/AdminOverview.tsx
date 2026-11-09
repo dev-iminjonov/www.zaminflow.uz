@@ -12,8 +12,21 @@ import { useLanguage } from "@/context/LanguageContext";
 import { useTheme, ThemeToggleButton } from "@/context/ThemeContext";
 import ZaminFlowLogo from "@/components/ZaminFlowLogo";
 import { resolveUserAvatar } from "@/lib/userAvatar";
+import UniversalSpotlightSearch from "@/components/search/UniversalSpotlightSearch";
+import B2BProfileWindow from "@/components/profile/B2BProfileWindow";
+import InteractiveFinancialChart from "@/components/dashboard/InteractiveFinancialChart";
+import InteractiveComparisonBarChart from "@/components/dashboard/InteractiveComparisonBarChart";
+import InteractiveRadialGauge from "@/components/dashboard/InteractiveRadialGauge";
 
-type AdminWindow = "overview" | "verifications" | "users" | "disputes" | "audit" | "analytics" | "settings";
+type AdminWindow =
+  | "overview"
+  | "verifications"
+  | "users"
+  | "disputes"
+  | "audit"
+  | "analytics"
+  | "settings"
+  | "profile";
 
 const ADMIN_I18N = {
   uz: {
@@ -31,9 +44,9 @@ const ADMIN_I18N = {
     newNoticeBtn: "Ekotizim Bildirishnomasi",
     btnApprove: "Tasdiqlash",
     btnReject: "Rad etish",
-    btnReview: "Dossyeni ko'rish",
+    btnReview: "Dossyeni köriş",
     advisorTitle: "Tizim Xavfsizlik Sertifikati",
-    advisorDesc: "Platformadagi barcha tranzaksiyalar va STIR ma'lumotlari CBU va Soliq Qo'mitasi bazasi bilan himoyalangan.",
+    advisorDesc: "Platformadagi barça tranzaksiyalar va STIR ma'lumotlari CBU va Soliq Qömitasi bazasi bilan himoyalangan.",
   },
   ru: {
     badge: "Управление и Безопасность",
@@ -267,11 +280,20 @@ export default function AdminOverview() {
         </svg>
       ),
     },
+    {
+      key: "profile",
+      label: "B2B Profil & Rekvizitlar",
+      icon: (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+        </svg>
+      ),
+    },
   ];
 
   return (
     <div className={`min-h-screen py-4 px-3 sm:px-6 relative overflow-x-hidden font-sans antialiased transition-colors duration-300 ${
-      isDark ? "bg-[#0b0f14] text-white" : "bg-[#f1f5f9] text-slate-900"
+      isDark ? "bg-[#0d1013] text-[#E8F1F2]" : "bg-[#f6fbf8] text-[#081c15]"
     }`}>
       {/* Background Subtle Gradient Blobs */}
       <div className="absolute top-0 left-1/4 w-[600px] h-[600px] pointer-events-none -z-0 opacity-20 blur-[140px] bg-gradient-to-br from-teal-500 to-sky-400" />
@@ -279,8 +301,8 @@ export default function AdminOverview() {
       {/* Master Container: Fixed Left Sidebar + Dynamic In-Place Content Area (Investure Architecture) */}
       <div className={`relative z-10 max-w-[1520px] mx-auto rounded-[32px] border shadow-2xl flex flex-col lg:flex-row overflow-hidden transition-all ${
         isDark
-          ? "bg-[#121820] border-white/10 shadow-[0_30px_90px_rgba(0,0,0,0.6)] text-white"
-          : "bg-white border-slate-200 shadow-[0_20px_70px_rgba(15,23,42,0.06)] text-slate-900"
+          ? "bg-[#14181d] border-white/10 shadow-[0_30px_90px_rgba(0,0,0,0.6)] text-[#E8F1F2]"
+          : "bg-white border-[#b7e4c7] shadow-[0_10px_35px_rgba(0,153,255,0.06)] text-[#081c15]"
       }`}>
 
         {/* =========================================================================
@@ -291,15 +313,10 @@ export default function AdminOverview() {
         }`}>
           <div>
             {/* 1. Brand Logo */}
-            <div className="flex items-center justify-between pb-8">
+            <div className="flex items-center pb-8">
               <Link href="/" className="flex items-center gap-2 transition hover:scale-105">
                 <ZaminFlowLogo mode={themeMode} size="md" />
               </Link>
-              <span className={`text-[10px] font-mono font-bold px-2.5 py-1 rounded-full uppercase border ${
-                isDark ? "bg-teal-500/10 border-teal-500/30 text-teal-400" : "bg-teal-50 border-teal-200 text-teal-800"
-              }`}>
-                {at.badge}
-              </span>
             </div>
 
             {/* 2. Navigation Items with Right Emerald Indicator Line */}
@@ -373,19 +390,23 @@ export default function AdminOverview() {
             <div className={`flex items-center justify-between p-2.5 rounded-2xl border ${
               isDark ? "border-white/10 bg-white/[0.02]" : "border-slate-200 bg-slate-50/80"
             }`}>
-              <div className="flex items-center gap-2.5 min-w-0">
+              <button
+                type="button"
+                onClick={() => setActiveWindow("profile")}
+                className="flex items-center gap-2.5 min-w-0 text-left hover:opacity-85 transition cursor-pointer"
+              >
                 <img
                   src={resolveUserAvatar(adminName, session?.user?.email) || "/images/team-muhammadaziz.webp"}
                   alt="Admin"
                   className="w-8 h-8 rounded-full object-cover border border-emerald-500/40"
                 />
                 <div className="min-w-0">
-                  <p className="text-xs font-bold truncate">{adminName}</p>
+                  <p className="text-xs font-bold truncate hover:text-emerald-500 transition">{adminName}</p>
                   <p className={`text-[10px] truncate ${isDark ? "text-white/40" : "text-slate-400"}`}>
                     Super Administrator
                   </p>
                 </div>
-              </div>
+              </button>
               <button
                 type="button"
                 onClick={handleSignOut}
@@ -424,26 +445,25 @@ export default function AdminOverview() {
             </div>
 
             <div className="flex items-center gap-3">
-              {/* Quick Search */}
-              <div className={`hidden sm:flex items-center gap-2 px-3.5 py-2 rounded-2xl border text-xs transition ${
-                isDark ? "bg-white/5 border-white/10 text-white/70" : "bg-slate-100 border-slate-200 text-slate-700"
-              }`}>
-                <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-                <input
-                  type="text"
-                  placeholder="Kompaniya, STIR, Ariza..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="bg-transparent border-none outline-none text-xs w-32 lg:w-44"
-                />
-                <kbd className={`text-[10px] px-1.5 py-0.5 rounded border ${
-                  isDark ? "bg-white/10 border-white/10 text-white/40" : "bg-white border-slate-200 text-slate-400"
-                }`}>
-                  ⌘K
-                </kbd>
-              </div>
+              {/* Universal Live Spotlight Search */}
+              <UniversalSpotlightSearch
+                role="admin"
+                onSelectAction={(item) => {
+                  if (item.category === "dossiers") {
+                    setActiveWindow("verifications");
+                  } else if (item.category === "organizations" || item.category === "users") {
+                    if (item.href) {
+                      router.push(item.href);
+                    } else {
+                      setActiveWindow("users");
+                    }
+                  } else if (item.category === "batches") {
+                    setActiveWindow("overview");
+                  } else if (item.href) {
+                    router.push(item.href);
+                  }
+                }}
+              />
 
               {/* Language Switcher */}
               <div className={`flex items-center p-0.5 rounded-xl border text-[11px] font-bold ${
@@ -502,144 +522,29 @@ export default function AdminOverview() {
             ========================================================================= */}
             {activeWindow === "overview" && (
               <div className="space-y-8 animate-fadeIn">
-                {/* 1. HERO FINANCIAL / GMV CURVE CHART */}
+                {/* 1. HERO FINANCIAL / GMV CURVE CHART (Interactive & Live) */}
                 <div className={`p-6 sm:p-7 rounded-3xl border transition-all ${
                   isDark
                     ? "bg-white/[0.03] border-white/10"
                     : "bg-slate-50/60 border-slate-200 shadow-xs"
                 }`}>
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6">
-                    <div>
-                      <p className={`text-xs font-bold uppercase tracking-wider ${isDark ? "text-white/50" : "text-slate-400"}`}>
-                        Platforma Jami Aylanmasi (GMV)
-                      </p>
-                      <div className="flex items-baseline gap-3 mt-1">
-                        <span className="text-2xl sm:text-3xl font-black tracking-tight">
-                          {data ? `${data.escrowTotal.value} ${data.escrowTotal.unit}` : chartDatasets.total}
-                        </span>
-                        <span className="text-xs font-bold text-emerald-500 flex items-center gap-0.5">
-                          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-                          </svg>
-                          {chartDatasets.delta}
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Chart Controls */}
-                    <div className="flex items-center gap-2">
-                      <div className={`flex items-center p-1 rounded-xl border ${
-                        isDark ? "bg-white/5 border-white/10" : "bg-white border-slate-200"
-                      }`}>
-                        <button
-                          type="button"
-                          onClick={() => setChartType("line")}
-                          className={`p-1.5 rounded-lg transition cursor-pointer ${
-                            chartType === "line"
-                              ? isDark ? "bg-white/15 text-white" : "bg-slate-100 text-slate-900"
-                              : isDark ? "text-white/40" : "text-slate-400"
-                          }`}
-                        >
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-                          </svg>
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setChartType("bar")}
-                          className={`p-1.5 rounded-lg transition cursor-pointer ${
-                            chartType === "bar"
-                              ? isDark ? "bg-white/15 text-white" : "bg-slate-100 text-slate-900"
-                              : isDark ? "text-white/40" : "text-slate-400"
-                          }`}
-                        >
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                          </svg>
-                        </button>
-                      </div>
-
-                      {/* Time Range Selector */}
-                      <div className={`flex items-center p-1 rounded-xl border text-xs font-bold ${
-                        isDark ? "bg-white/5 border-white/10 text-white/50" : "bg-white border-slate-200 text-slate-500"
-                      }`}>
-                        {(["1d", "1w", "1m", "6m", "1y", "all"] as const).map((r) => (
-                          <button
-                            key={r}
-                            type="button"
-                            onClick={() => setTimeRange(r)}
-                            className={`px-2.5 py-1 rounded-lg uppercase transition cursor-pointer ${
-                              timeRange === r
-                                ? isDark ? "bg-white/20 text-white" : "bg-slate-100 text-slate-900 shadow-xs"
-                                : "hover:text-emerald-500"
-                            }`}
-                          >
-                            {r}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Interactive SVG Chart */}
-                  <div className="relative h-56 sm:h-64 w-full">
-                    <svg className="w-full h-full overflow-visible" viewBox="0 0 700 200" preserveAspectRatio="none">
-                      <defs>
-                        <linearGradient id="adminEmeraldGrad" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="0%" stopColor="#10b981" stopOpacity="0.25" />
-                          <stop offset="100%" stopColor="#10b981" stopOpacity="0.0" />
-                        </linearGradient>
-                      </defs>
-
-                      <line x1="0" y1="40" x2="700" y2="40" stroke="currentColor" strokeOpacity={isDark ? "0.08" : "0.06"} strokeDasharray="4 4" />
-                      <line x1="0" y1="90" x2="700" y2="90" stroke="currentColor" strokeOpacity={isDark ? "0.08" : "0.06"} strokeDasharray="4 4" />
-                      <line x1="0" y1="140" x2="700" y2="140" stroke="currentColor" strokeOpacity={isDark ? "0.08" : "0.06"} strokeDasharray="4 4" />
-
-                      {chartType === "line" ? (
-                        <>
-                          <path
-                            d="M 20 160 Q 120 140, 210 115 T 390 75 T 530 65 T 680 20 L 680 190 L 20 190 Z"
-                            fill="url(#adminEmeraldGrad)"
-                          />
-                          <path
-                            d="M 20 160 Q 120 140, 210 115 T 390 75 T 530 65 T 680 20"
-                            fill="none"
-                            stroke="#10b981"
-                            strokeWidth="3.5"
-                            strokeLinecap="round"
-                          />
-                          <circle cx="530" cy="65" r="5" fill="#10b981" />
-                          <circle cx="680" cy="20" r="6" fill="#10b981" className="animate-pulse" />
-                        </>
-                      ) : (
-                        <g>
-                          {chartDatasets.points.map((pt, i) => {
-                            const x = 50 + i * 95;
-                            const h = 40 + (pt.val / 3200000000) * 115;
-                            return (
-                              <g key={i}>
-                                <rect
-                                  x={x - 14}
-                                  y={180 - Math.min(h, 150)}
-                                  width="28"
-                                  height={Math.min(h, 150)}
-                                  rx="6"
-                                  fill="#10b981"
-                                  fillOpacity={i === chartDatasets.points.length - 1 ? "1" : "0.6"}
-                                />
-                              </g>
-                            );
-                          })}
-                        </g>
-                      )}
-                    </svg>
-
-                    <div className="flex justify-between items-center text-[11px] font-semibold pt-3 px-1 text-slate-400">
-                      {chartDatasets.points.map((p, i) => (
-                        <span key={i}>{p.label}</span>
-                      ))}
-                    </div>
-                  </div>
+                  <InteractiveFinancialChart
+                    title="Platforma Jami Aylanmasi (GMV)"
+                    subtitle="PLATFORMA BOSHQARUVI VA ARBITRAJ"
+                    totalDisplay={data ? `${data.escrowTotal.value} ${data.escrowTotal.unit}` : chartDatasets.total}
+                    deltaDisplay={chartDatasets.delta}
+                    deltaPositive={true}
+                    unit="UZS"
+                    accentColor="#10b981"
+                    secondaryColor="#00ffc8"
+                    gradientId="adminChartGradient"
+                    timeRange={timeRange}
+                    onTimeRangeChange={setTimeRange}
+                    chartType={chartType}
+                    onChartTypeChange={setChartType}
+                    points={chartDatasets.points}
+                    isDark={isDark}
+                  />
                 </div>
 
                 {/* 2. FOUR BENTO METRIC CARDS */}
@@ -680,7 +585,7 @@ export default function AdminOverview() {
                       </h3>
                       <p className="text-[11px] font-bold text-sky-500 mt-0.5 flex items-center gap-1">
                         <span>↑ 18.5%</span>
-                        <span className={isDark ? "text-white/40 font-normal" : "text-slate-400 font-normal"}>respublika bo'yicha</span>
+                        <span className={isDark ? "text-white/40 font-normal" : "text-slate-400 font-normal"}>respublika böyiça</span>
                       </p>
                     </div>
                     <div className="w-12 h-12 rounded-2xl bg-sky-500/10 flex items-center justify-center text-sky-600">
@@ -807,105 +712,44 @@ export default function AdminOverview() {
                     </div>
                   </div>
 
-                  {/* Col 2: Semi-Circle Radial Gauge (Ecosystem Demographics) */}
-                  <div className={`p-6 rounded-3xl border flex flex-col items-center justify-between transition-all ${
-                    isDark ? "bg-white/[0.02] border-white/10" : "bg-white border-slate-200 shadow-xs"
-                  }`}>
-                    <div className="w-full flex items-center justify-between pb-2">
-                      <h4 className="text-sm font-black">{at.demographicsTitle}</h4>
-                      <span className="text-xs font-bold text-emerald-500">1,720 Jami</span>
-                    </div>
-
-                    <div className="relative w-48 h-28 my-auto flex items-end justify-center">
-                      <svg className="w-48 h-28 overflow-visible" viewBox="0 0 200 110">
-                        <path
-                          d="M 20 100 A 80 80 0 0 1 180 100"
-                          fill="none"
-                          stroke={isDark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.06)"}
-                          strokeWidth="16"
-                          strokeLinecap="round"
-                        />
-                        <path
-                          d="M 20 100 A 80 80 0 0 1 150 70"
-                          fill="none"
-                          stroke="#10b981"
-                          strokeWidth="16"
-                          strokeLinecap="round"
-                          strokeDasharray="250"
-                          strokeDashoffset="55"
-                        />
-                      </svg>
-                      <div className="absolute bottom-0 flex flex-col items-center">
-                        <span className="text-2xl font-black">82.5%</span>
-                        <span className={`text-[10px] font-semibold ${isDark ? "text-white/40" : "text-slate-400"}`}>
-                          Fermerlar ulushi
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="w-full grid grid-cols-3 gap-1 text-center pt-3 border-t border-inherit text-[10px]">
-                      <div>
-                        <p className={isDark ? "text-white/40" : "text-slate-400"}>Fermer</p>
-                        <p className="font-bold text-emerald-500">1,420 (82%)</p>
-                      </div>
-                      <div>
-                        <p className={isDark ? "text-white/40" : "text-slate-400"}>Zavod</p>
-                        <p className="font-bold text-sky-500">84 (5%)</p>
-                      </div>
-                      <div>
-                        <p className={isDark ? "text-white/40" : "text-slate-400"}>Haydovchi</p>
-                        <p className="font-bold text-amber-500">216 (13%)</p>
-                      </div>
-                    </div>
-                  </div>
+                  {/* Col 2: Interactive Radial Gauge (Ecosystem Demographics) */}
+                  <InteractiveRadialGauge
+                    title={at.demographicsTitle}
+                    totalLabel="1,720 Jami"
+                    isDark={isDark}
+                    defaultActiveKey="farmers"
+                    segments={[
+                      { key: "farmers", label: "Fermer", count: 1420, countFormatted: "1,420 (82%)", percentage: 82.5, color: "#10b981", sublabel: "Fermerlar ulushi" },
+                      { key: "dairies", label: "Zavod", count: 84, countFormatted: "84 (5%)", percentage: 4.9, color: "#0ea5e9", sublabel: "Sut zavodlari ulushi" },
+                      { key: "drivers", label: "Haydovçi", count: 216, countFormatted: "216 (13%)", percentage: 12.6, color: "#f59e0b", sublabel: "Logistika parki ulushi" },
+                    ]}
+                  />
 
                   {/* Col 3: Dual Comparison Bar Chart (Weekly Activity Dynamics) */}
                   <div className={`p-6 rounded-3xl border flex flex-col justify-between transition-all ${
                     isDark ? "bg-white/[0.02] border-white/10" : "bg-white border-slate-200 shadow-xs"
                   }`}>
-                    <div className="flex items-center justify-between pb-3">
-                      <div>
-                        <h4 className="text-sm font-black">{at.approvalsTitle}</h4>
-                        <p className={`text-[11px] ${isDark ? "text-white/40" : "text-slate-400"}`}>Tasdiqlangan arizalar</p>
-                      </div>
-                      <span className="text-xs font-bold text-emerald-500">+22.4%</span>
-                    </div>
-
-                    <div className="h-36 flex items-end justify-between gap-3 pt-4 px-2">
-                      {[
-                        { day: "Du", h1: "40%", h2: "50%" },
-                        { day: "Se", h1: "55%", h2: "65%" },
-                        { day: "Ch", h1: "48%", h2: "58%" },
-                        { day: "Pa", h1: "75%", h2: "92%" },
-                        { day: "Ju", h1: "60%", h2: "72%" },
-                        { day: "Sh", h1: "70%", h2: "80%" },
-                      ].map((bar, i) => (
-                        <div key={i} className="flex-1 flex flex-col items-center gap-1.5 h-full justify-end">
-                          <div className="w-full flex items-end justify-center gap-1 h-28">
-                            <div
-                              style={{ height: bar.h1 }}
-                              className="w-2 rounded-t-sm bg-slate-300 dark:bg-white/20 transition-all"
-                            />
-                            <div
-                              style={{ height: bar.h2 }}
-                              className="w-2 rounded-t-sm bg-emerald-500 transition-all"
-                            />
-                          </div>
-                          <span className={`text-[10px] font-bold ${isDark ? "text-white/40" : "text-slate-400"}`}>
-                            {bar.day}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-
-                    <div className="flex items-center justify-center gap-4 pt-3 text-[10px] font-bold text-slate-400">
-                      <span className="flex items-center gap-1">
-                        <span className="w-2 h-2 rounded-full bg-slate-300 dark:bg-white/20" /> O'tgan hafta
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <span className="w-2 h-2 rounded-full bg-emerald-500" /> Joriy hafta
-                      </span>
-                    </div>
+                    <InteractiveComparisonBarChart
+                      title={at.approvalsTitle}
+                      subtitle="Haftalik faollik va tasdiqlash dinamikasi"
+                      currentLabel="Joriy hafta"
+                      previousLabel="O'tgan hafta"
+                      currentTotal="2,480 ta"
+                      previousTotal="1,960 ta"
+                      primaryColor="#10b981"
+                      unit="Arizalar"
+                      isDark={isDark}
+                      actionText="Arbitraj audit jurnali →"
+                      onActionClick={() => setActiveWindow("audit")}
+                      items={[
+                        { label: "Du", currentVal: 340, previousVal: 280, currentFormatted: "340 ta", previousFormatted: "280 ta" },
+                        { label: "Se", currentVal: 420, previousVal: 310, currentFormatted: "420 ta", previousFormatted: "310 ta" },
+                        { label: "Ch", currentVal: 390, previousVal: 290, currentFormatted: "390 ta", previousFormatted: "290 ta" },
+                        { label: "Pa", currentVal: 560, previousVal: 410, currentFormatted: "560 ta", previousFormatted: "410 ta" },
+                        { label: "Ju", currentVal: 480, previousVal: 380, currentFormatted: "480 ta", previousFormatted: "380 ta" },
+                        { label: "Sh", currentVal: 290, previousVal: 290, currentFormatted: "290 ta", previousFormatted: "290 ta" },
+                      ]}
+                    />
                   </div>
                 </div>
               </div>
@@ -990,11 +834,20 @@ export default function AdminOverview() {
             ========================================================================= */}
             {activeWindow === "users" && (
               <div className="space-y-6 animate-fadeIn">
-                <div>
-                  <h3 className="text-lg font-black">Platforma Foydalanuvchilar Reestri</h3>
-                  <p className={`text-xs ${isDark ? "text-white/50" : "text-slate-500"}`}>
-                    Tizimda ro'yxatdan o'tgan barcha 1,720 nafar subyekt va ularning faoliyat holati
-                  </p>
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <div>
+                    <h3 className="text-lg font-black text-slate-900 dark:text-white">Platforma Foydalanuvchilar Reestri</h3>
+                    <p className={`text-xs ${isDark ? "text-white/50" : "text-slate-500"}`}>
+                      Tizimda ro'yxatdan o'tgan barcha subyektlar va ularning faoliyat holati
+                    </p>
+                  </div>
+                  <Link
+                    href="/users"
+                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-[#00ffc8] via-[#00d3e0] to-[#0099ff] text-[#070B14] text-xs font-black shadow-md hover:opacity-95 active:scale-95 transition"
+                  >
+                    <span>Töliq User & Admin Moduliga Ötiş</span>
+                    <span>→</span>
+                  </Link>
                 </div>
 
                 <div className={`rounded-3xl border overflow-hidden ${
@@ -1002,29 +855,28 @@ export default function AdminOverview() {
                 }`}>
                   <table className="w-full text-left text-xs">
                     <thead className={`border-b text-[11px] font-black uppercase tracking-wider ${
-                      isDark ? "border-white/10 bg-white/[0.03] text-white/50" : "border-slate-100 bg-slate-50 text-slate-400"
+                      isDark ? "border-white/10 bg-white/[0.03] text-white/50" : "border-slate-100 bg-slate-50 text-slate-500"
                     }`}>
                       <tr>
                         <th className="px-5 py-3.5">F.I.SH / Tashkilot</th>
-                        <th className="px-5 py-3.5">Email / Telefon</th>
+                        <th className="px-5 py-3.5">Email / Boğlaniş</th>
                         <th className="px-5 py-3.5">Rol</th>
-                        <th className="px-5 py-3.5">Ro'yxatdan o'tgan sana</th>
+                        <th className="px-5 py-3.5">Röyxatdan ötgan sana</th>
                         <th className="px-5 py-3.5 text-center">Holat</th>
-                        <th className="px-5 py-3.5 text-right">Harakat</th>
+                        <th className="px-5 py-3.5 text-right">Boşqaruv</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-inherit">
                       {[
-                        { name: "Muhammadaziz Ergashev", email: "admin@zaminflow.uz", role: "ADMIN", date: "01.01.2026", status: "FAOL" },
-                        { name: "Oqdaryo Chorva Fayz", email: "oqdaryo@agro.uz", role: "FARMER", date: "12.02.2026", status: "FAOL" },
-                        { name: "Samarqand Sut Sanoat AJ", email: "samarqand@dairy.uz", role: "DAIRY", date: "15.02.2026", status: "FAOL" },
-                        { name: "Bobur Temirov (Isuzu)", email: "bobur@trans.uz", role: "DRIVER", date: "18.02.2026", status: "FAOL" },
-                        { name: "AgroBank ATB Kliring", email: "clearing@agrobank.uz", role: "BANK", date: "05.01.2026", status: "FAOL" },
+                        { name: "Iminjonov Muhammadaziz", email: "dev.iminjonov@gmail.com", role: "ADMIN", date: "2026.01.10", status: "FAOL" },
+                        { name: "Sevinchoy Soporboyeva", email: "sevinchinoyatovna005@gmail.com", role: "ADMIN", date: "2026.01.12", status: "FAOL" },
+                        { name: "Abdumanov Akrom", email: "abdumanovjamshid1@gmail.com", role: "ADMIN", date: "2026.01.14", status: "FAOL" },
+                        { name: "Chorva Baraka LLC (Muhammadayub)", email: "iminjonovmuhammadayub@zaminflow.uz", role: "FARMER", date: "2026.02.01", status: "FAOL" },
                       ].map((u, i) => (
                         <tr key={i} className="hover:bg-slate-50 dark:hover:bg-white/[0.02] transition">
-                          <td className="px-5 py-4 font-bold">{u.name}</td>
+                          <td className="px-5 py-4 font-bold text-slate-900 dark:text-white">{u.name}</td>
                           <td className="px-5 py-4 text-slate-500">{u.email}</td>
-                          <td className="px-5 py-4 font-mono font-bold text-emerald-500">{u.role}</td>
+                          <td className="px-5 py-4 font-mono font-bold text-emerald-600 dark:text-emerald-400">{u.role}</td>
                           <td className="px-5 py-4 text-slate-400">{u.date}</td>
                           <td className="px-5 py-4 text-center">
                             <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-600 border border-emerald-500/30">
@@ -1032,13 +884,12 @@ export default function AdminOverview() {
                             </span>
                           </td>
                           <td className="px-5 py-4 text-right">
-                            <button
-                              type="button"
-                              onClick={() => setBannerNotice(`${u.name} profili ochildi.`)}
-                              className="text-xs font-bold text-emerald-500 hover:underline cursor-pointer"
+                            <Link
+                              href="/users"
+                              className="text-xs font-bold text-[#00d3e0] hover:underline"
                             >
-                              Tahrirlash →
-                            </button>
+                              Boşqariş →
+                            </Link>
                           </td>
                         </tr>
                       ))}
@@ -1054,7 +905,7 @@ export default function AdminOverview() {
             {activeWindow === "disputes" && (
               <div className="space-y-6 animate-fadeIn">
                 <div>
-                  <h3 className="text-lg font-black">Markaziy Nizolarni Ko'rib Chiqish (Arbitraj)</h3>
+                  <h3 className="text-lg font-black">Markaziy Nizolarni Körib Çiqiş (Arbitraj)</h3>
                   <p className={`text-xs ${isDark ? "text-white/50" : "text-slate-500"}`}>
                     Sifat, harorat yoki og'irlik bo'yicha yuzaga kelgan partiyalar nizolarini hal qilish
                   </p>
@@ -1066,7 +917,7 @@ export default function AdminOverview() {
                   <div className="p-4 rounded-2xl border border-rose-500/30 bg-rose-500/5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
                       <span className="font-mono font-bold text-xs text-rose-500">NIZO-704</span>
-                      <h4 className="text-sm font-black mt-0.5">Toshkent Sut Zavodi ↔ Yangiyo'l Ferma Fayz</h4>
+                      <h4 className="text-sm font-black mt-0.5">Toşkent Sut Zavodi ↔ Yangiyöl Ferma Fayz</h4>
                       <p className="text-xs text-slate-500 mt-1">
                         Sut partiyasi: 2,400 litr • E'tiroz: Qabul paytida harorat +6.2°C bo'lgan. Muzlatilgan eskrou: 14,800,000 UZS
                       </p>
@@ -1158,7 +1009,7 @@ export default function AdminOverview() {
                       <h4 className="text-sm font-black">{r.region}</h4>
                       <p className="text-2xl font-black text-emerald-500 mt-2">{r.vol}</p>
                       <div className="flex justify-between items-center text-xs text-slate-400 pt-2 border-t border-inherit mt-2">
-                        <span>O'rtacha: {r.price}</span>
+                        <span>Örtaça: {r.price}</span>
                         <span className="text-emerald-500 font-bold">{r.trend}</span>
                       </div>
                     </div>
@@ -1183,7 +1034,7 @@ export default function AdminOverview() {
                   isDark ? "border-white/10 bg-white/[0.02]" : "border-slate-200 bg-white shadow-xs"
                 }`}>
                   <div>
-                    <label className="block text-xs font-bold mb-1">Minimal Ruxsat Etilgan Yog'lilik Darajasi (%)</label>
+                    <label className="block text-xs font-bold mb-1">Minimal Ruxsat Etilgan Yoğlilik Darajasi (%)</label>
                     <input
                       type="text"
                       defaultValue="3.2%"
@@ -1215,6 +1066,13 @@ export default function AdminOverview() {
                   </button>
                 </div>
               </div>
+            )}
+
+            {/* =========================================================================
+                WINDOW 8: B2B PROFILE & REKVIZITLAR (Role-Adaptive Profile Window)
+            ========================================================================= */}
+            {activeWindow === "profile" && (
+              <B2BProfileWindow session={session} role="admin" isDark={isDark} />
             )}
           </div>
         </main>
@@ -1248,7 +1106,7 @@ export default function AdminOverview() {
               <div>
                 <label className="block text-xs font-bold mb-1">Kimlarga Yuborish</label>
                 <select className="w-full px-3.5 py-2.5 rounded-xl border text-xs bg-transparent border-inherit outline-none">
-                  <option value="all">Barcha ishtirokchilar (Fermer, Zavod, Haydovchi, Bank)</option>
+                  <option value="all">Barça iştirokçilar (Fermer, Zavod, Haydovçi, Bank)</option>
                   <option value="farmers">Faqat Fermerlar</option>
                   <option value="dairies">Faqat Sut Zavodlari</option>
                   <option value="drivers">Faqat Haydovchilar</option>

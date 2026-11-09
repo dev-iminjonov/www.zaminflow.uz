@@ -210,11 +210,11 @@ export default function AdminUsersPage() {
                         href={`/dashboard/admin/verification/${encodeURIComponent(u.role + "-" + u.region)}`}
                         className="px-3.5 py-1.5 rounded-full bg-gradient-to-r from-[#00ffc8] to-[#0099ff] text-[#070B14] font-black text-xs hover:opacity-95 transition"
                       >
-                        Dosyeni ko'rish →
+                        Dosyeni köriş →
                       </Link>
                     ) : (
                       <Link
-                        href={`/dashboard/profile/${encodeURIComponent(u.id)}`}
+                        href={`/daşboard/profile/${encodeURIComponent(u.id)}`}
                         className="px-3 py-1 rounded-full bg-white/5 border border-white/10 hover:border-[#00ffc8] text-white/80 hover:text-white text-xs font-semibold transition"
                       >
                         Dosye ↗

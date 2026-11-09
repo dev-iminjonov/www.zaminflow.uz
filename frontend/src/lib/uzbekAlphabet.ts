@@ -1,21 +1,44 @@
 /**
  * New Uzbek Latin Alphabet Utility (Yangi Özbek Lotin Alifbosi)
- * Based on the Law approved by the President of the Republic of Uzbekistan:
+ * Conforming to the reformed Uzbek Latin alphabet standards:
  * - Oʻ / oʻ  →  Ö / ö
  * - Gʻ / gʻ  →  Ğ / ğ
  * - Sh / sh  →  Ş / ş
  * - Ch / ch  →  Ç / ç
  * 
- * Preserves the glottal stop / modifier apostrophe (tuturuq belgisi) in words like ma'lumot, e'lon, ta'sir.
+ * Preserves the glottal stop / modifier apostrophe (tuturuq belgisi) in words like maʼlumot, eʼlon, taʼsir.
+ * Preserves URLs, emails, phone numbers, and code paths.
  */
-
-const O_VARIANTS = /[oO][ʻ'‘ʼ’`´]/g;
-const G_VARIANTS = /[gG][ʻ'‘ʼ’`´]/g;
 
 export function toNewUzbekAlphabet(input: string): string {
   if (!input || typeof input !== "string") return input;
 
-  return input
+  // Do not transform pure URLs, emails, phone numbers, IDs, or file paths
+  if (
+    input.startsWith("http://") ||
+    input.startsWith("https://") ||
+    input.startsWith("mailto:") ||
+    input.startsWith("tel:") ||
+    input.startsWith("/") ||
+    input.startsWith("#") ||
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input)
+  ) {
+    return input;
+  }
+
+  // Preserve URLs and emails embedded in text
+  const placeholders: string[] = [];
+  let protectedText = input
+    .replace(/https?:\/\/[^\s]+/g, (match) => {
+      placeholders.push(match);
+      return `___URL_PH_${placeholders.length - 1}___`;
+    })
+    .replace(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g, (match) => {
+      placeholders.push(match);
+      return `___EMAIL_PH_${placeholders.length - 1}___`;
+    });
+
+  let transformed = protectedText
     // Oʻ / oʻ → Ö / ö
     .replace(/O[ʻ'‘ʼ’`´]/g, "Ö")
     .replace(/o[ʻ'‘ʼ’`´]/g, "ö")
@@ -30,6 +53,15 @@ export function toNewUzbekAlphabet(input: string): string {
     .replace(/CH/g, "Ç")
     .replace(/Ch/g, "Ç")
     .replace(/ch/g, "ç");
+
+  // Restore placeholders
+  placeholders.forEach((val, idx) => {
+    transformed = transformed
+      .replace(`___URL_PH_${idx}___`, val)
+      .replace(`___EMAIL_PH_${idx}___`, val);
+  });
+
+  return transformed;
 }
 
 /**

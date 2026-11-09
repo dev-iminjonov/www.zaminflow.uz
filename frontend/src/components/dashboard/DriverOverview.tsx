@@ -16,8 +16,22 @@ import { useLanguage } from "@/context/LanguageContext";
 import { useTheme, ThemeToggleButton } from "@/context/ThemeContext";
 import ZaminFlowLogo from "@/components/ZaminFlowLogo";
 import { resolveUserAvatar } from "@/lib/userAvatar";
+import UniversalSpotlightSearch from "@/components/search/UniversalSpotlightSearch";
+import B2BProfileWindow from "@/components/profile/B2BProfileWindow";
+import InteractiveFinancialChart from "@/components/dashboard/InteractiveFinancialChart";
+import InteractiveComparisonBarChart from "@/components/dashboard/InteractiveComparisonBarChart";
+import InteractiveRadialGauge from "@/components/dashboard/InteractiveRadialGauge";
 
-type DriverWindow = "overview" | "trips" | "pickup" | "dispatch" | "telemetry" | "issues" | "history" | "settings";
+type DriverWindow =
+  | "overview"
+  | "trips"
+  | "pickup"
+  | "dispatch"
+  | "telemetry"
+  | "issues"
+  | "history"
+  | "settings"
+  | "profile";
 
 const DRIVER_I18N = {
   uz: {
@@ -29,7 +43,7 @@ const DRIVER_I18N = {
     tankTemp: "Tanker harorati",
     deliveredMilk: "Yetkazilgan sut hajmi",
     earnings: "Haydovchi daromadi",
-    waypointsTitle: "Marshrut va To'xtash Nuqtalari",
+    waypointsTitle: "Marşrut va Töxtaş Nuqtalari",
     gaugeTitle: "Sovuq Zanjir Nazorati",
     velocityTitle: "Reyslar Dinamikasi",
     newPickupBtn: "Sutni qabul qilish",
@@ -153,7 +167,7 @@ export default function DriverOverview() {
     try {
       const res = await flushDriverOfflineQueue();
       setQueuedOfflineCount(res.remainingCount);
-      setBannerNotice("Oflayn navbat server bilan to'liq sinxronlashtirildi.");
+      setBannerNotice("Oflayn navbat server bilan töliq sinxronlaştirildi.");
     } finally {
       setIsFlushing(false);
     }
@@ -309,11 +323,20 @@ export default function DriverOverview() {
         </svg>
       ),
     },
+    {
+      key: "profile",
+      label: "B2B Profil & Rekvizitlar",
+      icon: (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+        </svg>
+      ),
+    },
   ];
 
   return (
     <div className={`min-h-screen py-4 px-3 sm:px-6 relative overflow-x-hidden font-sans antialiased transition-colors duration-300 ${
-      isDark ? "bg-[#0b0f14] text-white" : "bg-[#f1f5f9] text-slate-900"
+      isDark ? "bg-[#0d1013] text-[#E8F1F2]" : "bg-[#f6fbf8] text-[#081c15]"
     }`}>
       {/* Background Subtle Gradient Blobs */}
       <div className="absolute top-0 left-1/4 w-[600px] h-[600px] pointer-events-none -z-0 opacity-20 blur-[140px] bg-gradient-to-br from-emerald-500 to-amber-400" />
@@ -321,27 +344,22 @@ export default function DriverOverview() {
       {/* Master Container: Fixed Left Sidebar + Dynamic In-Place Content Area (Investure Architecture) */}
       <div className={`relative z-10 max-w-[1520px] mx-auto rounded-[32px] border shadow-2xl flex flex-col lg:flex-row overflow-hidden transition-all ${
         isDark
-          ? "bg-[#121820] border-white/10 shadow-[0_30px_90px_rgba(0,0,0,0.6)] text-white"
-          : "bg-white border-slate-200 shadow-[0_20px_70px_rgba(15,23,42,0.06)] text-slate-900"
+          ? "bg-[#14181d] border-white/10 shadow-[0_30px_90px_rgba(0,0,0,0.6)] text-[#E8F1F2]"
+          : "bg-white border-[#b7e4c7] shadow-[0_10px_35px_rgba(0,153,255,0.06)] text-[#081c15]"
       }`}>
 
         {/* =========================================================================
             LEFT NAVIGATION SIDEBAR (Exact Investure Layout)
         ========================================================================= */}
         <aside className={`w-full lg:w-72 shrink-0 border-b lg:border-b-0 lg:border-r p-6 flex flex-col justify-between transition-colors ${
-          isDark ? "border-white/10 bg-[#0e1319]" : "border-slate-100 bg-[#fafcff]"
+          isDark ? "border-white/10 bg-[#0d1013]" : "border-[#b7e4c7]/60 bg-[#f6fbf8]"
         }`}>
           <div>
             {/* 1. Brand Logo */}
-            <div className="flex items-center justify-between pb-8">
+            <div className="flex items-center pb-8">
               <Link href="/" className="flex items-center gap-2 transition hover:scale-105">
                 <ZaminFlowLogo mode={themeMode} size="md" />
               </Link>
-              <span className={`text-[10px] font-mono font-bold px-2.5 py-1 rounded-full uppercase border ${
-                isDark ? "bg-amber-500/10 border-amber-500/30 text-amber-400" : "bg-amber-50 border-amber-200 text-amber-800"
-              }`}>
-                {dt.badge}
-              </span>
             </div>
 
             {/* 2. Navigation Items with Right Emerald Indicator Line */}
@@ -485,26 +503,19 @@ export default function DriverOverview() {
                 )}
               </div>
 
-              {/* Quick Search */}
-              <div className={`hidden sm:flex items-center gap-2 px-3.5 py-2 rounded-2xl border text-xs transition ${
-                isDark ? "bg-white/5 border-white/10 text-white/70" : "bg-slate-100 border-slate-200 text-slate-700"
-              }`}>
-                <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-                <input
-                  type="text"
-                  placeholder="Ferma / Reys ID / INN..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="bg-transparent border-none outline-none text-xs w-32 lg:w-44"
-                />
-                <kbd className={`text-[10px] px-1.5 py-0.5 rounded border ${
-                  isDark ? "bg-white/10 border-white/10 text-white/40" : "bg-white border-slate-200 text-slate-400"
-                }`}>
-                  ⌘K
-                </kbd>
-              </div>
+              {/* Universal Live Spotlight Search */}
+              <UniversalSpotlightSearch
+                role="driver"
+                onSelectAction={(item) => {
+                  if (item.category === "batches") {
+                    setActiveWindow("trips");
+                  } else if (item.category === "navigation") {
+                    setActiveWindow("overview");
+                  } else if (item.href) {
+                    router.push(item.href);
+                  }
+                }}
+              />
 
               {/* Language Switcher */}
               <div className={`flex items-center p-0.5 rounded-xl border text-[11px] font-bold ${
@@ -563,144 +574,29 @@ export default function DriverOverview() {
             ========================================================================= */}
             {activeWindow === "overview" && (
               <div className="space-y-8 animate-fadeIn">
-                {/* 1. HERO FINANCIAL / DELIVERY VOLUME CHART */}
+                {/* 1. HERO FINANCIAL / DELIVERY VOLUME CHART (Interactive & Live) */}
                 <div className={`p-6 sm:p-7 rounded-3xl border transition-all ${
                   isDark
                     ? "bg-white/[0.03] border-white/10"
                     : "bg-slate-50/60 border-slate-200 shadow-xs"
                 }`}>
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6">
-                    <div>
-                      <p className={`text-xs font-bold uppercase tracking-wider ${isDark ? "text-white/50" : "text-slate-400"}`}>
-                        {dt.deliveredMilk}
-                      </p>
-                      <div className="flex items-baseline gap-3 mt-1">
-                        <span className="text-2xl sm:text-3xl font-black tracking-tight">
-                          {data ? `${data.completedThisWeek.value} Litr` : chartDatasets.total}
-                        </span>
-                        <span className="text-xs font-bold text-emerald-500 flex items-center gap-0.5">
-                          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-                          </svg>
-                          {chartDatasets.delta}
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Chart Controls */}
-                    <div className="flex items-center gap-2">
-                      <div className={`flex items-center p-1 rounded-xl border ${
-                        isDark ? "bg-white/5 border-white/10" : "bg-white border-slate-200"
-                      }`}>
-                        <button
-                          type="button"
-                          onClick={() => setChartType("line")}
-                          className={`p-1.5 rounded-lg transition cursor-pointer ${
-                            chartType === "line"
-                              ? isDark ? "bg-white/15 text-white" : "bg-slate-100 text-slate-900"
-                              : isDark ? "text-white/40" : "text-slate-400"
-                          }`}
-                        >
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-                          </svg>
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setChartType("bar")}
-                          className={`p-1.5 rounded-lg transition cursor-pointer ${
-                            chartType === "bar"
-                              ? isDark ? "bg-white/15 text-white" : "bg-slate-100 text-slate-900"
-                              : isDark ? "text-white/40" : "text-slate-400"
-                          }`}
-                        >
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                          </svg>
-                        </button>
-                      </div>
-
-                      {/* Time Range Selector */}
-                      <div className={`flex items-center p-1 rounded-xl border text-xs font-bold ${
-                        isDark ? "bg-white/5 border-white/10 text-white/50" : "bg-white border-slate-200 text-slate-500"
-                      }`}>
-                        {(["1d", "1w", "1m", "6m", "1y", "all"] as const).map((r) => (
-                          <button
-                            key={r}
-                            type="button"
-                            onClick={() => setTimeRange(r)}
-                            className={`px-2.5 py-1 rounded-lg uppercase transition cursor-pointer ${
-                              timeRange === r
-                                ? isDark ? "bg-white/20 text-white" : "bg-slate-100 text-slate-900 shadow-xs"
-                                : "hover:text-emerald-500"
-                            }`}
-                          >
-                            {r}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Interactive SVG Chart */}
-                  <div className="relative h-56 sm:h-64 w-full">
-                    <svg className="w-full h-full overflow-visible" viewBox="0 0 700 200" preserveAspectRatio="none">
-                      <defs>
-                        <linearGradient id="driverEmeraldGrad" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="0%" stopColor="#10b981" stopOpacity="0.25" />
-                          <stop offset="100%" stopColor="#10b981" stopOpacity="0.0" />
-                        </linearGradient>
-                      </defs>
-
-                      <line x1="0" y1="40" x2="700" y2="40" stroke="currentColor" strokeOpacity={isDark ? "0.08" : "0.06"} strokeDasharray="4 4" />
-                      <line x1="0" y1="90" x2="700" y2="90" stroke="currentColor" strokeOpacity={isDark ? "0.08" : "0.06"} strokeDasharray="4 4" />
-                      <line x1="0" y1="140" x2="700" y2="140" stroke="currentColor" strokeOpacity={isDark ? "0.08" : "0.06"} strokeDasharray="4 4" />
-
-                      {chartType === "line" ? (
-                        <>
-                          <path
-                            d="M 20 150 Q 140 120, 220 130 T 400 65 T 530 80 T 680 25 L 680 190 L 20 190 Z"
-                            fill="url(#driverEmeraldGrad)"
-                          />
-                          <path
-                            d="M 20 150 Q 140 120, 220 130 T 400 65 T 530 80 T 680 25"
-                            fill="none"
-                            stroke="#10b981"
-                            strokeWidth="3.5"
-                            strokeLinecap="round"
-                          />
-                          <circle cx="400" cy="65" r="5" fill="#10b981" />
-                          <circle cx="680" cy="25" r="6" fill="#10b981" className="animate-pulse" />
-                        </>
-                      ) : (
-                        <g>
-                          {chartDatasets.points.map((pt, i) => {
-                            const x = 50 + i * 95;
-                            const h = 30 + (pt.val / 10000) * 120;
-                            return (
-                              <g key={i}>
-                                <rect
-                                  x={x - 14}
-                                  y={180 - Math.min(h, 150)}
-                                  width="28"
-                                  height={Math.min(h, 150)}
-                                  rx="6"
-                                  fill="#10b981"
-                                  fillOpacity={i === chartDatasets.points.length - 1 ? "1" : "0.6"}
-                                />
-                              </g>
-                            );
-                          })}
-                        </g>
-                      )}
-                    </svg>
-
-                    <div className="flex justify-between items-center text-[11px] font-semibold pt-3 px-1 text-slate-400">
-                      {chartDatasets.points.map((p, i) => (
-                        <span key={i}>{p.label}</span>
-                      ))}
-                    </div>
-                  </div>
+                  <InteractiveFinancialChart
+                    title={dt.deliveredMilk}
+                    subtitle="HAYDOVCHI VA SOVUQ ZANJIR TELEMETRIYASI"
+                    totalDisplay={data ? `${data.completedThisWeek.value} Litr` : chartDatasets.total}
+                    deltaDisplay={chartDatasets.delta}
+                    deltaPositive={true}
+                    unit="Litr"
+                    accentColor="#f59e0b"
+                    secondaryColor="#10b981"
+                    gradientId="driverChartGradient"
+                    timeRange={timeRange}
+                    onTimeRangeChange={setTimeRange}
+                    chartType={chartType}
+                    onChartTypeChange={setChartType}
+                    points={chartDatasets.points}
+                    isDark={isDark}
+                  />
                 </div>
 
                 {/* 2. FOUR BENTO METRIC CARDS */}
@@ -764,7 +660,7 @@ export default function DriverOverview() {
                       </h3>
                       <p className="text-[11px] font-bold text-emerald-500 mt-0.5 flex items-center gap-1">
                         <span>↑ 14%</span>
-                        <span className={isDark ? "text-white/40 font-normal" : "text-slate-400 font-normal"}>oʻtgan kunga nisbatan</span>
+                        <span className={isDark ? "text-white/40 font-normal" : "text-slate-400 font-normal"}>ötgan kunga nisbatan</span>
                       </p>
                     </div>
                     <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 flex items-center justify-center text-emerald-600">
@@ -821,126 +717,68 @@ export default function DriverOverview() {
                     </div>
 
                     <div className="mt-4 space-y-4">
-                      {[
-                        { title: "Oqdaryo Fermasi #12", desc: "1,200L Xom sut yuklandi • Harorat: 3.4°C", time: "08:30", done: true },
-                        { title: "Tranzit Nazorat Punkti (M39)", desc: "Sovuq zanjir telemetriya nazorati • 3.2°C", time: "09:15", done: true },
-                        { title: "Samarqand Sut Zavodi #4", desc: "Qabul qilish bunkeri • Laboratoriya testi", time: "10:30", done: false },
-                      ].map((wp, i) => (
-                        <div key={i} className="flex items-start gap-3">
-                          <div className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 mt-0.5 text-xs font-black ${
-                            wp.done
-                              ? "bg-emerald-500 text-white"
-                              : "bg-slate-200 dark:bg-white/10 text-slate-500"
-                          }`}>
-                            {wp.done ? "✓" : i + 1}
-                          </div>
-                          <div className="min-w-0 flex-1">
-                            <div className="flex items-center justify-between">
-                              <h5 className="text-xs font-bold truncate">{wp.title}</h5>
-                              <span className={`text-[10px] font-mono ${isDark ? "text-white/40" : "text-slate-400"}`}>{wp.time}</span>
+                      {data?.todayStops && data.todayStops.length > 0 ? (
+                        data.todayStops.map((wp, i) => (
+                          <div key={i} className="flex items-start gap-3">
+                            <div className="w-7 h-7 rounded-full flex items-center justify-center shrink-0 mt-0.5 text-xs font-black bg-emerald-500 text-white">
+                              {i + 1}
                             </div>
-                            <p className={`text-[11px] mt-0.5 leading-snug ${isDark ? "text-white/50" : "text-slate-500"}`}>{wp.desc}</p>
+                            <div className="min-w-0 flex-1">
+                              <div className="flex items-center justify-between">
+                                <h5 className="text-xs font-bold truncate">{wp.locationName}</h5>
+                                <span className={`text-[10px] font-mono ${isDark ? "text-white/40" : "text-slate-400"}`}>{wp.time}</span>
+                              </div>
+                              <p className={`text-[11px] mt-0.5 leading-snug ${isDark ? "text-white/50" : "text-slate-500"}`}>{wp.batchInfo}</p>
+                            </div>
                           </div>
+                        ))
+                      ) : (
+                        <div className="py-6 text-center text-slate-400 text-xs font-medium">
+                          Marshrut nuqtalari mavjud emas
                         </div>
-                      ))}
+                      )}
                     </div>
                   </div>
 
-                  {/* Col 2: Semi-Circle Radial Gauge (Cold Chain Temperature Integrity) */}
-                  <div className={`p-6 rounded-3xl border flex flex-col items-center justify-between transition-all ${
-                    isDark ? "bg-white/[0.02] border-white/10" : "bg-white border-slate-200 shadow-xs"
-                  }`}>
-                    <div className="w-full flex items-center justify-between pb-2">
-                      <h4 className="text-sm font-black">{dt.gaugeTitle}</h4>
-                      <span className="text-xs font-bold text-emerald-500">Standart: +4°C</span>
-                    </div>
-
-                    <div className="relative w-48 h-28 my-auto flex items-end justify-center">
-                      <svg className="w-48 h-28 overflow-visible" viewBox="0 0 200 110">
-                        <path
-                          d="M 20 100 A 80 80 0 0 1 180 100"
-                          fill="none"
-                          stroke={isDark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.06)"}
-                          strokeWidth="16"
-                          strokeLinecap="round"
-                        />
-                        <path
-                          d="M 20 100 A 80 80 0 0 1 170 85"
-                          fill="none"
-                          stroke="#10b981"
-                          strokeWidth="16"
-                          strokeLinecap="round"
-                          strokeDasharray="250"
-                          strokeDashoffset="25"
-                        />
-                      </svg>
-                      <div className="absolute bottom-0 flex flex-col items-center">
-                        <span className="text-2xl font-black text-sky-500">+3.4°C</span>
-                        <span className={`text-[10px] font-semibold ${isDark ? "text-white/40" : "text-slate-400"}`}>
-                          Tanker ichi harorati
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="w-full grid grid-cols-2 gap-2 text-center pt-3 border-t border-inherit">
-                      <div>
-                        <p className={`text-[10px] ${isDark ? "text-white/40" : "text-slate-400"}`}>Termo-izolyatsiya</p>
-                        <p className="text-xs font-bold text-emerald-500">99.8% Saqlangan</p>
-                      </div>
-                      <div>
-                        <p className={`text-[10px] ${isDark ? "text-white/40" : "text-slate-400"}`}>Agregat holati</p>
-                        <p className="text-xs font-bold">Faol Sovutish</p>
-                      </div>
-                    </div>
-                  </div>
+                  {/* Col 2: Interactive Radial Gauge (Cold Chain Temperature Integrity) */}
+                  <InteractiveRadialGauge
+                    title={dt.gaugeTitle}
+                    totalLabel="Standart: +4°C"
+                    isDark={isDark}
+                    defaultActiveKey="thermo"
+                    segments={[
+                      { key: "thermo", label: "Termo-izolyatsiya", percentage: 99.8, color: "#10b981", sublabel: "Termo-izolyatsiya: 99.8%", countFormatted: "99.8%" },
+                      { key: "cooling", label: "Sovutish", percentage: 85.0, color: "#0ea5e9", sublabel: "Sovutish agregati faol", countFormatted: "Faol" },
+                      { key: "temp", label: "Harorat", percentage: 68.0, color: "#f59e0b", sublabel: "Tanker harorati: +3.4°C", countFormatted: "+3.4°C" },
+                    ]}
+                  />
 
                   {/* Col 3: Dual Comparison Bar Chart (Daily Deliveries Velocity) */}
                   <div className={`p-6 rounded-3xl border flex flex-col justify-between transition-all ${
                     isDark ? "bg-white/[0.02] border-white/10" : "bg-white border-slate-200 shadow-xs"
                   }`}>
-                    <div className="flex items-center justify-between pb-3">
-                      <div>
-                        <h4 className="text-sm font-black">{dt.velocityTitle}</h4>
-                        <p className={`text-[11px] ${isDark ? "text-white/40" : "text-slate-400"}`}>Haftalik qatnovlar soni</p>
-                      </div>
-                      <span className="text-xs font-bold text-emerald-500">18 qatnov/hafta</span>
-                    </div>
-
-                    <div className="h-36 flex items-end justify-between gap-3 pt-4 px-2">
-                      {[
-                        { day: "Du", h1: "45%", h2: "60%" },
-                        { day: "Se", h1: "70%", h2: "80%" },
-                        { day: "Ch", h1: "55%", h2: "65%" },
-                        { day: "Pa", h1: "95%", h2: "100%" },
-                        { day: "Ju", h1: "65%", h2: "75%" },
-                        { day: "Sh", h1: "80%", h2: "90%" },
-                      ].map((bar, i) => (
-                        <div key={i} className="flex-1 flex flex-col items-center gap-1.5 h-full justify-end">
-                          <div className="w-full flex items-end justify-center gap-1 h-28">
-                            <div
-                              style={{ height: bar.h1 }}
-                              className="w-2 rounded-t-sm bg-slate-300 dark:bg-white/20 transition-all"
-                            />
-                            <div
-                              style={{ height: bar.h2 }}
-                              className="w-2 rounded-t-sm bg-emerald-500 transition-all"
-                            />
-                          </div>
-                          <span className={`text-[10px] font-bold ${isDark ? "text-white/40" : "text-slate-400"}`}>
-                            {bar.day}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-
-                    <div className="flex items-center justify-center gap-4 pt-3 text-[10px] font-bold text-slate-400">
-                      <span className="flex items-center gap-1">
-                        <span className="w-2 h-2 rounded-full bg-slate-300 dark:bg-white/20" /> O'tgan hafta
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <span className="w-2 h-2 rounded-full bg-emerald-500" /> Joriy hafta
-                      </span>
-                    </div>
+                    <InteractiveComparisonBarChart
+                      title={dt.velocityTitle}
+                      subtitle="Haftalik bajarilgan va rejalashtirilgan qatnovlar"
+                      currentLabel="Joriy hafta"
+                      previousLabel="O'tgan hafta"
+                      currentTotal="18 qatnov"
+                      previousTotal="14 qatnov"
+                      primaryColor="#f59e0b"
+                      secondaryColor="#10b981"
+                      unit="Qatnov"
+                      isDark={isDark}
+                      actionText="Qatnovlar tarixini ko'rish →"
+                      onActionClick={() => setActiveWindow("history")}
+                      items={[
+                        { label: "Du", currentVal: 3, previousVal: 2, currentFormatted: "3 qatnov", previousFormatted: "2 qatnov" },
+                        { label: "Se", currentVal: 4, previousVal: 3, currentFormatted: "4 qatnov", previousFormatted: "3 qatnov" },
+                        { label: "Ch", currentVal: 3, previousVal: 2, currentFormatted: "3 qatnov", previousFormatted: "2 qatnov" },
+                        { label: "Pa", currentVal: 5, previousVal: 4, currentFormatted: "5 qatnov", previousFormatted: "4 qatnov" },
+                        { label: "Ju", currentVal: 4, previousVal: 3, currentFormatted: "4 qatnov", previousFormatted: "3 qatnov" },
+                        { label: "Sh", currentVal: 4, previousVal: 3, currentFormatted: "4 qatnov", previousFormatted: "3 qatnov" },
+                      ]}
+                    />
                   </div>
                 </div>
               </div>
@@ -968,47 +806,53 @@ export default function DriverOverview() {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-                  {[
-                    { id: "REYS-902", from: "Oqdaryo Kooperativi", to: "Samarqand Sut Zavodi", lit: "4,200 L", temp: "3.4°C", status: "TRANZITDA", time: "10:30 da yetib boradi" },
-                    { id: "REYS-901", from: "Pastdarg'om Agro Ferma", to: "Maroqand Sut LLC", lit: "3,100 L", temp: "3.8°C", status: "YETKAZILDI", time: "Bugun 08:15" },
-                    { id: "REYS-900", from: "Ishtixon Chorva MCHJ", to: "Samarqand Sut Zavodi", lit: "5,400 L", temp: "3.1°C", status: "YETKAZILDI", time: "Kecha 17:40" },
-                  ].map((trip, idx) => (
-                    <div key={idx} className={`p-5 rounded-3xl border transition-all ${
-                      isDark ? "bg-white/[0.02] border-white/10" : "bg-white border-slate-200 shadow-xs"
-                    }`}>
-                      <div className="flex items-center justify-between pb-3 border-b border-inherit">
-                        <span className="font-mono font-bold text-xs text-emerald-500">{trip.id}</span>
-                        <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
-                          trip.status === "TRANZITDA"
-                            ? "bg-sky-500/10 text-sky-600 border border-sky-500/30 animate-pulse"
-                            : "bg-emerald-500/10 text-emerald-600 border border-emerald-500/30"
-                        }`}>
-                          {trip.status}
-                        </span>
+                  {data?.todayStops && data.todayStops.length > 0 ? (
+                    data.todayStops.map((stop, idx) => (
+                      <div key={idx} className={`p-5 rounded-3xl border transition-all ${
+                        isDark ? "bg-white/[0.02] border-white/10" : "bg-white border-slate-200 shadow-xs"
+                      }`}>
+                        <div className="flex items-center justify-between pb-3 border-b border-inherit">
+                          <span className="font-mono font-bold text-xs text-emerald-500">{stop.batchInfo || `REYS-${idx + 1}`}</span>
+                          <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                            stop.statusType === "next"
+                              ? "bg-sky-500/10 text-sky-600 border border-sky-500/30 animate-pulse"
+                              : "bg-emerald-500/10 text-emerald-600 border border-emerald-500/30"
+                          }`}>
+                            {stop.status}
+                          </span>
+                        </div>
+                        <div className="py-3 space-y-2 text-xs">
+                          <div>
+                            <span className="text-slate-400 text-[10px]">Manzil:</span>
+                            <p className="font-bold">{stop.locationName}</p>
+                          </div>
+                          <div>
+                            <span className="text-slate-400 text-[10px]">Reja vaqti:</span>
+                            <p className="font-bold text-slate-700 dark:text-slate-200">{stop.time}</p>
+                          </div>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => setActiveWindow("dispatch")}
+                          className="w-full mt-2 py-2 rounded-xl bg-slate-100 dark:bg-white/5 hover:bg-emerald-600 hover:text-white text-xs font-bold transition cursor-pointer"
+                        >
+                          Marshrutni xaritada kuzatish →
+                        </button>
                       </div>
-                      <div className="py-3 space-y-2 text-xs">
-                        <div>
-                          <span className="text-slate-400 text-[10px]">Qayerdan:</span>
-                          <p className="font-bold">{trip.from}</p>
-                        </div>
-                        <div>
-                          <span className="text-slate-400 text-[10px]">Qayerga:</span>
-                          <p className="font-bold text-slate-700 dark:text-slate-200">{trip.to}</p>
-                        </div>
-                        <div className="flex justify-between pt-2 border-t border-inherit">
-                          <span>Hajm: <strong>{trip.lit}</strong></span>
-                          <span>Harorat: <strong className="text-sky-500">{trip.temp}</strong></span>
-                        </div>
+                    ))
+                  ) : (
+                    <div className="col-span-full py-12 text-center text-slate-400">
+                      <div className="w-12 h-12 rounded-full bg-slate-100 dark:bg-white/5 mx-auto flex items-center justify-center text-xl mb-2">
+                        🚛
                       </div>
-                      <button
-                        type="button"
-                        onClick={() => setActiveWindow("dispatch")}
-                        className="w-full mt-2 py-2 rounded-xl bg-slate-100 dark:bg-white/5 hover:bg-emerald-600 hover:text-white text-xs font-bold transition cursor-pointer"
-                      >
-                        Marshrutni xaritada kuzatish →
-                      </button>
+                      <p className="text-xs font-bold text-slate-700 dark:text-white/80">
+                        Faol logistika reyslari mavjud emas
+                      </p>
+                      <p className="text-[11px] text-slate-400 mt-0.5">
+                        Zavod yoki kooperativdan yangi qabul partiyasi tayinlanganda bu yerda marshrut paydo bo'ladi.
+                      </p>
                     </div>
-                  ))}
+                  )}
                 </div>
               </div>
             )}
@@ -1019,7 +863,7 @@ export default function DriverOverview() {
             {activeWindow === "pickup" && (
               <div className="space-y-6 max-w-2xl animate-fadeIn">
                 <div>
-                  <h3 className="text-lg font-black">Ferma Darvozasida Sut Qabul Qilish</h3>
+                  <h3 className="text-lg font-black">Ferma Darvozasida Sut Qabul Qiliş</h3>
                   <p className={`text-xs ${isDark ? "text-white/50" : "text-slate-500"}`}>
                     Laboratoriya ko'rsatkichlarini kiritish va fermerga raqamli qabul dalolatnomasini berish
                   </p>
@@ -1060,7 +904,7 @@ export default function DriverOverview() {
                     </div>
                     <div className="grid grid-cols-2 gap-3">
                       <div>
-                        <label className="block text-xs font-bold mb-1">Yog'lilik darajasi (%)</label>
+                        <label className="block text-xs font-bold mb-1">Yoğlilik darajasi (%)</label>
                         <input
                           type="text"
                           required
@@ -1114,7 +958,7 @@ export default function DriverOverview() {
                   <div>
                     <h4 className="text-base font-bold">Faol GPS Koordinata: 39.6542° N, 66.9597° E</h4>
                     <p className={`text-xs mt-1 ${isDark ? "text-white/50" : "text-slate-500"}`}>
-                      Tezlik: 62 km/soat • Samarqand Sut Zavodiga yetib borish: 24 daqiqa
+                      {data?.activeTrip?.route ? `${data.activeTrip.route} • ETA: ${data.activeTrip.eta}` : "Sovuq zanjir telemetriyasi barqaror"}
                     </p>
                   </div>
                   <div className="flex justify-center gap-3 pt-2">
@@ -1223,7 +1067,7 @@ export default function DriverOverview() {
                       {[
                         { id: "REYS-898", date: "Kecha, 16:30", route: "Oqdaryo → Samarqand Sut", vol: "3,800 L", temp: "3.2°C" },
                         { id: "REYS-897", date: "Kecha, 11:20", route: "Chorva Lux → Maroqand", vol: "4,100 L", temp: "3.5°C" },
-                        { id: "REYS-896", date: "14 May, 18:00", route: "Pastdarg'om → Toshkent Sut", vol: "5,200 L", temp: "3.4°C" },
+                        { id: "REYS-896", date: "14 May, 18:00", route: "Pastdarğom → Toşkent Sut", vol: "5,200 L", temp: "3.4°C" },
                       ].map((row, i) => (
                         <tr key={i} className="hover:bg-slate-50 dark:hover:bg-white/[0.02] transition">
                           <td className="px-5 py-4 font-mono font-bold text-emerald-500">{row.id}</td>
@@ -1288,6 +1132,13 @@ export default function DriverOverview() {
                   </div>
                 </div>
               </div>
+            )}
+
+            {/* =========================================================================
+                WINDOW 9: B2B PROFILE & REKVIZITLAR (Role-Adaptive Profile Window)
+            ========================================================================= */}
+            {activeWindow === "profile" && (
+              <B2BProfileWindow session={session} role="driver" isDark={isDark} />
             )}
           </div>
         </main>
@@ -1382,9 +1233,9 @@ export default function DriverOverview() {
             <div className="space-y-2">
               <label className="block text-xs font-bold">Nosozlik Turi</label>
               <select className="w-full px-3.5 py-2.5 rounded-xl border text-xs bg-transparent border-inherit outline-none">
-                <option value="temp">Sovutgich agregati harorati ko'tarildi (&gt;4°C)</option>
+                <option value="temp">Sovutgiç agregati harorati kötarildi (&gt;4°C)</option>
                 <option value="breakdown">Avtomobil dvigatel yoki shassi nosozligi</option>
-                <option value="traffic">Magistral yo'lda to'siq yoki yo'l halokati</option>
+                <option value="traffic">Magistral yölda tösiq yoki yöl halokati</option>
                 <option value="tank">Tanker germetik klapan nosozligi</option>
               </select>
             </div>
@@ -1399,7 +1250,7 @@ export default function DriverOverview() {
               <button
                 type="button"
                 onClick={() => {
-                  setBannerNotice("SOS favqulodda signali dispecherga uzatildi. Zaxira tanker yo'naltirildi!");
+                  setBannerNotice("SOS favqulodda signali dispeçerga uzatildi. Zaxira tanker yönaltirildi!");
                   setShowSosModal(false);
                 }}
                 className="px-4 py-2 rounded-xl bg-rose-600 text-white text-xs font-black hover:bg-rose-500 shadow-md cursor-pointer"

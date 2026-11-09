@@ -4,12 +4,13 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useState, Suspense } from "react";
 import ZaminFlowLogo from "@/components/ZaminFlowLogo";
-import { ThemeToggleButton } from "@/context/ThemeContext";
+import { ThemeToggleButton, useTheme } from "@/context/ThemeContext";
 
 function ResetPasswordContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const token = searchParams.get("token") || "";
+  const { themeMode, isDark } = useTheme();
 
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -28,7 +29,7 @@ function ResetPasswordContent() {
     setErrorMsg(null);
 
     if (!hasLength || !hasLetter || !hasDigit) {
-      setErrorMsg("Parol kamida 10 ta belgi, harf va raqamdan iborat boʻlishi kerak.");
+      setErrorMsg("Parol kamida 10 ta belgi, harf va raqamdan iborat bölişi kerak.");
       return;
     }
 
@@ -48,12 +49,12 @@ function ResetPasswordContent() {
 
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
-        throw new Error(err.detail || "Tiklash tokeni yaroqsiz yoki muddati oʻtgan.");
+        throw new Error(err.detail || "Tiklaş tokeni yaroqsiz yoki muddati ötgan.");
       }
 
       setIsSuccess(true);
       setTimeout(() => {
-        router.push("/signin");
+        router.push("/sign-in");
       }, 1500);
     } catch (err: any) {
       setErrorMsg(err.message || "Parolni yangilashda xatolik yuz berdi.");
@@ -63,7 +64,9 @@ function ResetPasswordContent() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0d1013] text-white flex flex-col justify-center items-center py-10 px-4 relative overflow-hidden font-sans select-none">
+    <div className={`min-h-screen flex flex-col justify-center items-center py-10 px-4 relative overflow-hidden font-sans select-none transition-colors duration-300 ${
+      isDark ? "bg-[#0d1013] text-[#E8F1F2]" : "bg-[#f6fbf8] text-[#081c15]"
+    }`}>
       {/* Ambient Auroras */}
       <div className="absolute top-10 -left-40 w-[600px] h-[600px] pointer-events-none z-0">
         <div
@@ -89,21 +92,29 @@ function ResetPasswordContent() {
       {/* Header */}
       <div className="w-full max-w-[920px] flex items-center justify-between mb-6 relative z-10 px-2">
         <Link href="/" className="inline-flex items-center transition-transform hover:scale-105">
-          <ZaminFlowLogo mode="dark" size="md" />
+          <ZaminFlowLogo mode={themeMode} size="md" />
         </Link>
         <div className="flex items-center gap-3">
           <ThemeToggleButton size="sm" />
           <Link
-            href="/signin"
-            className="text-xs font-bold text-white/70 hover:text-white px-3.5 py-1.5 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 transition"
+            href="/sign-in"
+            className={`text-xs font-bold px-3.5 py-1.5 rounded-full border transition ${
+              isDark
+                ? "text-white/70 hover:text-white bg-white/5 border-white/10 hover:bg-white/10"
+                : "text-[#081c15] hover:text-emerald-700 bg-white border-[#b7e4c7] shadow-xs hover:bg-[#f6fbf8]"
+            }`}
           >
-            ← Kirish sahifasiga
+            ← Kiriş sahifasiga
           </Link>
         </div>
       </div>
 
       {/* Central Card */}
-      <div className="relative z-10 max-w-[920px] w-full bg-[#12161a] rounded-[36px] shadow-[0_25px_80px_rgba(0,153,255,0.22)] border border-white/10 overflow-hidden grid grid-cols-1 md:grid-cols-12 min-h-[460px]">
+      <div className={`relative z-10 max-w-[920px] w-full rounded-[36px] border overflow-hidden grid grid-cols-1 md:grid-cols-12 min-h-[460px] ${
+        isDark
+          ? "bg-[#12161a] border-white/10 shadow-[0_25px_80px_rgba(0,153,255,0.22)]"
+          : "bg-white/95 border-[#b7e4c7] shadow-[0_25px_80px_rgba(0,153,255,0.06)]"
+      }`}>
         {/* Left Hero */}
         <div className="md:col-span-5 bg-gradient-to-br from-[#00ffc8] to-[#00b4d8] text-[#070B14] p-8 sm:p-10 flex flex-col justify-between relative overflow-hidden">
           <div className="relative z-10">
@@ -111,19 +122,19 @@ function ResetPasswordContent() {
               🛡️
             </div>
             <h2 className="text-2xl sm:text-3xl font-black tracking-tight leading-tight">
-              Yangi Parol Oʻrnatish
+              Yangi Parol Örnatiş
             </h2>
             <p className="text-xs font-bold text-black/75 mt-3 leading-relaxed">
-              Kamida 10 ta belgidan iborat, harf va raqam qatnashgan kuchli parol tanlang.
+              Kamida 10 ta belgidan iborat, harf va raqam qatnaşgan kuçli parol tanlang.
             </p>
           </div>
 
           <div className="relative z-10 pt-6">
             <Link
-              href="/signin"
+              href="/sign-in"
               className="inline-flex items-center justify-center w-full py-2.5 px-6 rounded-full border-2 border-black text-black font-extrabold text-xs uppercase tracking-wider hover:bg-black hover:text-white transition"
             >
-              Kirish sahifasiga qaytish
+              Kiriş sahifasiga qaytiş
             </Link>
           </div>
         </div>
@@ -135,30 +146,30 @@ function ResetPasswordContent() {
               <div className="w-14 h-14 rounded-full bg-[#00ffc8]/15 border border-[#00ffc8]/30 text-[#00ffc8] text-2xl flex items-center justify-center mx-auto mb-2">
                 ✓
               </div>
-              <h3 className="text-xl font-black text-white">Parol yangilandi!</h3>
-              <p className="text-xs text-white/60 leading-relaxed max-w-sm mx-auto">
-                Yangi parolingiz muvaffaqiyatli saqlandi. Kirish sahifasiga yoʻnaltirilmoqdasiz...
+              <h3 className={`text-xl font-black ${isDark ? "text-white" : "text-[#081c15]"}`}>Parol yangilandi!</h3>
+              <p className={`text-xs leading-relaxed max-w-sm mx-auto ${isDark ? "text-white/60" : "text-[#2d6a4f]"}`}>
+                Yangi parolingiz muvaffaqiyatli saqlandi. Kiriş sahifasiga yönaltirilmoqdasiz...
               </p>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <h3 className="text-xl sm:text-2xl font-black text-white tracking-tight">
-                  Parolni oʻzgartirish
+                <h3 className={`text-xl sm:text-2xl font-black tracking-tight ${isDark ? "text-white" : "text-[#081c15]"}`}>
+                  Parolni özgartiş
                 </h3>
-                <p className="text-xs text-white/50 mt-1">
+                <p className={`text-xs mt-1 ${isDark ? "text-white/50" : "text-[#2d6a4f]"}`}>
                   Yangi xavfsiz parolni kiriting va tasdiqlang
                 </p>
               </div>
 
               {errorMsg && (
-                <div className="p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-300 text-xs">
+                <div className="p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-xs font-semibold">
                   {errorMsg}
                 </div>
               )}
 
               <div className="space-y-1.5">
-                <label className="text-xs font-bold text-white/70 block">Yangi parol</label>
+                <label className={`text-xs font-bold block ${isDark ? "text-white/70" : "text-[#081c15]"}`}>Yangi parol</label>
                 <div className="relative">
                   <input
                     type={showPassword ? "text" : "password"}
@@ -166,14 +177,18 @@ function ResetPasswordContent() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••••••"
-                    className="w-full px-4 py-3 rounded-2xl bg-black/40 border border-white/10 text-white placeholder-white/30 text-sm focus:border-[#00ffc8] outline-none transition"
+                    className={`w-full px-4 py-3 rounded-2xl border text-sm outline-none transition ${
+                      isDark
+                        ? "bg-black/40 border-white/10 text-white placeholder-white/30 focus:border-[#00ffc8]"
+                        : "bg-[#f6fbf8] border-[#b7e4c7] text-[#081c15] placeholder-slate-400 focus:border-[#00d3e0]"
+                    }`}
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs text-white/50 hover:text-white"
+                    className={`absolute right-3.5 top-1/2 -translate-y-1/2 text-xs ${isDark ? "text-white/50 hover:text-white" : "text-slate-400 hover:text-slate-700"}`}
                   >
-                    {showPassword ? "Yashirish" : "Koʻrish"}
+                    {showPassword ? "Yaşiriş" : "Köriş"}
                   </button>
                 </div>
                 {/* Strength meter */}
@@ -182,7 +197,9 @@ function ResetPasswordContent() {
                     <div
                       key={step}
                       className={`h-1 flex-1 rounded-full transition-all ${
-                        step <= strengthScore ? "bg-[#00ffc8]" : "bg-white/10"
+                        step <= strengthScore
+                          ? isDark ? "bg-[#00ffc8]" : "bg-emerald-500"
+                          : isDark ? "bg-white/10" : "bg-slate-200"
                       }`}
                     />
                   ))}
@@ -190,23 +207,27 @@ function ResetPasswordContent() {
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-xs font-bold text-white/70 block">Parolni tasdiqlang</label>
+                <label className={`text-xs font-bold block ${isDark ? "text-white/70" : "text-[#081c15]"}`}>Parolni tasdiqlang</label>
                 <input
                   type={showPassword ? "text" : "password"}
                   required
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="••••••••••••"
-                  className="w-full px-4 py-3 rounded-2xl bg-black/40 border border-white/10 text-white placeholder-white/30 text-sm focus:border-[#00ffc8] outline-none transition"
+                  className={`w-full px-4 py-3 rounded-2xl border text-sm outline-none transition ${
+                    isDark
+                      ? "bg-black/40 border-white/10 text-white placeholder-white/30 focus:border-[#00ffc8]"
+                      : "bg-[#f6fbf8] border-[#b7e4c7] text-[#081c15] placeholder-slate-400 focus:border-[#00d3e0]"
+                  }`}
                 />
               </div>
 
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full py-3.5 rounded-full bg-gradient-to-r from-[#00ffc8] to-[#00b4d8] hover:opacity-95 text-[#070B14] font-black text-xs sm:text-sm shadow-[0_10px_30px_rgba(0,255,200,0.3)] transition cursor-pointer uppercase tracking-wider"
+                className="w-full py-3.5 rounded-full bg-gradient-to-r from-[#00ffc8] via-[#00d3e0] to-[#0099ff] hover:opacity-95 text-[#070B14] font-black text-xs sm:text-sm shadow-[0_10px_30px_rgba(0,255,200,0.3)] transition cursor-pointer uppercase tracking-wider"
               >
-                {isLoading ? "Saqlanmoqda..." : "Parolni Saqlash →"}
+                {isLoading ? "Saqlanmoqda..." : "Parolni Saqlaş →"}
               </button>
             </form>
           )}

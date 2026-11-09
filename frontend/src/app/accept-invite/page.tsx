@@ -4,9 +4,10 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useState, Suspense } from "react";
 import ZaminFlowLogo from "@/components/ZaminFlowLogo";
-import { ThemeToggleButton } from "@/context/ThemeContext";
+import { ThemeToggleButton, useTheme } from "@/context/ThemeContext";
 
 function AcceptInviteContent() {
+  const { themeMode, isDark } = useTheme();
   const router = useRouter();
   const searchParams = useSearchParams();
   const token = searchParams.get("token") || "";
@@ -23,12 +24,12 @@ function AcceptInviteContent() {
     setErrorMsg(null);
 
     if (!fullName.trim()) {
-      setErrorMsg("Iltimos, toʻliq ism-sharifingizni kiriting.");
+      setErrorMsg("Iltimos, töliq ism-şarifingizni kiriting.");
       return;
     }
 
     if (password.length < 10 || !/[a-zA-Z]/.test(password) || !/[0-9]/.test(password)) {
-      setErrorMsg("Parol kamida 10 ta belgi, harf va raqamdan iborat boʻlishi kerak.");
+      setErrorMsg("Parol kamida 10 ta belgi, harf va raqamdan iborat bölişi kerak.");
       return;
     }
 
@@ -48,7 +49,7 @@ function AcceptInviteContent() {
 
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
-        throw new Error(err.detail || "Taklifnoma tokeni muddati oʻtgan yoki yaroqsiz.");
+        throw new Error(err.detail || "Taklifnoma tokeni muddati ötgan yoki yaroqsiz.");
       }
 
       const data = await res.json();
@@ -74,7 +75,9 @@ function AcceptInviteContent() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0d1013] text-white flex flex-col justify-center items-center py-10 px-4 relative overflow-hidden font-sans select-none">
+    <div className={`min-h-screen flex flex-col justify-center items-center py-10 px-4 relative overflow-hidden font-sans select-none transition-colors duration-300 ${
+      isDark ? "bg-[#0d1013] text-[#E8F1F2]" : "bg-[#f6fbf8] text-[#081c15]"
+    }`}>
       {/* Ambient Auroras */}
       <div className="absolute top-10 -left-40 w-[600px] h-[600px] pointer-events-none z-0">
         <div
@@ -100,13 +103,17 @@ function AcceptInviteContent() {
       {/* Header */}
       <div className="w-full max-w-[920px] flex items-center justify-between mb-6 relative z-10 px-2">
         <Link href="/" className="inline-flex items-center transition-transform hover:scale-105">
-          <ZaminFlowLogo mode="dark" size="md" />
+          <ZaminFlowLogo mode={themeMode} size="md" />
         </Link>
         <div className="flex items-center gap-3">
           <ThemeToggleButton size="sm" />
           <Link
             href="/signin"
-            className="text-xs font-bold text-white/70 hover:text-white px-3.5 py-1.5 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 transition"
+            className={`text-xs font-bold px-3.5 py-1.5 rounded-full border transition ${
+              isDark
+                ? "text-white/70 hover:text-white bg-white/5 border-white/10 hover:bg-white/10"
+                : "text-[#081c15] bg-white border-[#b7e4c7] shadow-xs hover:bg-[#b7e4c7]/20"
+            }`}
           >
             ← Kirish sahifasiga
           </Link>
@@ -114,7 +121,11 @@ function AcceptInviteContent() {
       </div>
 
       {/* Central Card */}
-      <div className="relative z-10 max-w-[920px] w-full bg-[#12161a] rounded-[36px] shadow-[0_25px_80px_rgba(0,153,255,0.22)] border border-white/10 overflow-hidden grid grid-cols-1 md:grid-cols-12 min-h-[460px]">
+      <div className={`relative z-10 max-w-[920px] w-full rounded-[36px] border overflow-hidden grid grid-cols-1 md:grid-cols-12 min-h-[460px] ${
+        isDark
+          ? "bg-[#14181d] border-white/10 shadow-[0_25px_80px_rgba(0,153,255,0.22)]"
+          : "bg-white border-[#b7e4c7] shadow-[0_10px_35px_rgba(0,153,255,0.06)]"
+      }`}>
         {/* Left Hero */}
         <div className="md:col-span-5 bg-gradient-to-br from-[#00ffc8] to-[#00b4d8] text-[#070B14] p-8 sm:p-10 flex flex-col justify-between relative overflow-hidden">
           <div className="relative z-10">
@@ -143,34 +154,38 @@ function AcceptInviteContent() {
         <div className="md:col-span-7 p-8 sm:p-12 flex flex-col justify-center">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <h3 className="text-xl sm:text-2xl font-black text-white tracking-tight">
+              <h3 className={`text-xl sm:text-2xl font-black tracking-tight ${isDark ? "text-white" : "text-slate-900"}`}>
                 Hisobingizni sozlang
               </h3>
-              <p className="text-xs text-white/50 mt-1">
+              <p className={`text-xs mt-1 ${isDark ? "text-white/50" : "text-slate-500"}`}>
                 F.I.SH va xavfsiz parolingizni belgilang
               </p>
             </div>
 
             {errorMsg && (
-              <div className="p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-300 text-xs">
+              <div className="p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-xs font-semibold">
                 {errorMsg}
               </div>
             )}
 
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-white/70 block">Toʻliq ism-sharifingiz</label>
+              <label className={`text-xs font-bold block ${isDark ? "text-white/70" : "text-slate-700"}`}>Töliq ism-şarifingiz</label>
               <input
                 type="text"
                 required
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
                 placeholder="Abdulla Qodiriy"
-                className="w-full px-4 py-3 rounded-2xl bg-black/40 border border-white/10 text-white placeholder-white/30 text-sm focus:border-[#00ffc8] outline-none transition"
+                className={`w-full px-4 py-3 rounded-2xl border text-sm outline-none transition ${
+                  isDark
+                    ? "bg-black/40 border-white/10 text-white placeholder-white/30 focus:border-[#00ffc8]"
+                    : "bg-slate-50 border-slate-200 text-slate-900 placeholder-slate-400 focus:border-emerald-500"
+                }`}
               />
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-white/70 block">Parol (kamida 10 ta belgi)</label>
+              <label className={`text-xs font-bold block ${isDark ? "text-white/70" : "text-slate-700"}`}>Parol (kamida 10 ta belgi)</label>
               <div className="relative">
                 <input
                   type={showPassword ? "text" : "password"}
@@ -178,27 +193,35 @@ function AcceptInviteContent() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••••••"
-                  className="w-full px-4 py-3 rounded-2xl bg-black/40 border border-white/10 text-white placeholder-white/30 text-sm focus:border-[#00ffc8] outline-none transition"
+                  className={`w-full px-4 py-3 rounded-2xl border text-sm outline-none transition ${
+                    isDark
+                      ? "bg-black/40 border-white/10 text-white placeholder-white/30 focus:border-[#00ffc8]"
+                      : "bg-slate-50 border-slate-200 text-slate-900 placeholder-slate-400 focus:border-emerald-500"
+                  }`}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs text-white/50 hover:text-white"
+                  className={`absolute right-3.5 top-1/2 -translate-y-1/2 text-xs ${isDark ? "text-white/50 hover:text-white" : "text-slate-400 hover:text-slate-700"}`}
                 >
-                  {showPassword ? "Yashirish" : "Koʻrish"}
+                  {showPassword ? "Yashirish" : "Köriş"}
                 </button>
               </div>
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-white/70 block">Parolni tasdiqlang</label>
+              <label className={`text-xs font-bold block ${isDark ? "text-white/70" : "text-slate-700"}`}>Parolni tasdiqlang</label>
               <input
                 type={showPassword ? "text" : "password"}
                 required
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 placeholder="••••••••••••"
-                className="w-full px-4 py-3 rounded-2xl bg-black/40 border border-white/10 text-white placeholder-white/30 text-sm focus:border-[#00ffc8] outline-none transition"
+                className={`w-full px-4 py-3 rounded-2xl border text-sm outline-none transition ${
+                  isDark
+                    ? "bg-black/40 border-white/10 text-white placeholder-white/30 focus:border-[#00ffc8]"
+                    : "bg-slate-50 border-slate-200 text-slate-900 placeholder-slate-400 focus:border-emerald-500"
+                }`}
               />
             </div>
 

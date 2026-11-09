@@ -3,9 +3,10 @@
 import Link from "next/link";
 import React, { useState } from "react";
 import ZaminFlowLogo from "@/components/ZaminFlowLogo";
-import { ThemeToggleButton } from "@/context/ThemeContext";
+import { ThemeToggleButton, useTheme } from "@/context/ThemeContext";
 
 export default function ForgotPasswordPage() {
+  const { themeMode, isDark } = useTheme();
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -28,7 +29,9 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0d1013] text-white flex flex-col justify-center items-center py-10 px-4 relative overflow-hidden font-sans select-none">
+    <div className={`min-h-screen flex flex-col justify-center items-center py-10 px-4 relative overflow-hidden font-sans select-none transition-colors duration-300 ${
+      isDark ? "bg-[#0d1013] text-[#E8F1F2]" : "bg-[#f6fbf8] text-[#081c15]"
+    }`}>
       {/* 1. AMBIENT TURQUOISE DREAMLAND BACKDROP AURORAS */}
       <div className="absolute top-10 -left-40 w-[600px] h-[600px] pointer-events-none z-0">
         <div
@@ -55,21 +58,29 @@ export default function ForgotPasswordPage() {
       {/* Top Floating Header with Logo & Theme Toggle */}
       <div className="w-full max-w-[920px] flex items-center justify-between mb-6 relative z-10 px-2">
         <Link href="/" className="inline-flex items-center transition-transform hover:scale-105">
-          <ZaminFlowLogo mode="dark" size="md" />
+          <ZaminFlowLogo mode={themeMode} size="md" />
         </Link>
         <div className="flex items-center gap-3">
           <ThemeToggleButton size="sm" />
           <Link
-            href="/signin"
-            className="text-xs font-bold text-white/70 hover:text-white px-3.5 py-1.5 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 transition"
+            href="/sign-in"
+            className={`text-xs font-bold px-3.5 py-1.5 rounded-full border transition ${
+              isDark
+                ? "text-white/70 hover:text-white bg-white/5 border-white/10 hover:bg-white/10"
+                : "text-[#081c15] hover:text-emerald-700 bg-white border-[#b7e4c7] shadow-xs hover:bg-[#f6fbf8]"
+            }`}
           >
-            ← Kirish sahifasiga
+            ← Kiriş sahifasiga
           </Link>
         </div>
       </div>
 
       {/* Central Auth Card Container */}
-      <div className="relative z-10 max-w-[920px] w-full bg-[#12161a] rounded-[36px] shadow-[0_25px_80px_rgba(0,153,255,0.22)] border border-white/10 overflow-hidden grid grid-cols-1 md:grid-cols-12 min-h-[460px]">
+      <div className={`relative z-10 max-w-[920px] w-full rounded-[36px] border overflow-hidden grid grid-cols-1 md:grid-cols-12 min-h-[460px] ${
+        isDark
+          ? "bg-[#12161a] border-white/10 shadow-[0_25px_80px_rgba(0,153,255,0.22)]"
+          : "bg-white/95 border-[#b7e4c7] shadow-[0_25px_80px_rgba(0,153,255,0.06)]"
+      }`}>
         
         {/* Left Vibrant Turquoise Hero Banner (cols 5) */}
         <div className="md:col-span-5 bg-gradient-to-br from-[#00ffc8] to-[#00b4d8] text-[#070B14] p-8 sm:p-10 flex flex-col justify-between relative overflow-hidden">
@@ -78,19 +89,19 @@ export default function ForgotPasswordPage() {
               🔑
             </div>
             <h2 className="text-2xl sm:text-3xl font-black tracking-tight leading-tight">
-              Parolni Tiklash
+              Parolni Tiklaş
             </h2>
             <p className="text-xs font-bold text-black/75 mt-3 leading-relaxed">
-              Hisobingiz xavfsizligini ta'minlash uchun parolni qayta tiklash havolasi xavfsiz kanallar orqali yuboriladi.
+              Hisobingiz xavfsizligini taʼminlaş uçun parolni qayta tiklaş havolasi xavfsiz kanallar orqali yuboriladi.
             </p>
           </div>
 
           <div className="relative z-10 pt-6">
             <Link
-              href="/signin"
+              href="/sign-in"
               className="inline-flex items-center justify-center w-full py-2.5 px-6 rounded-full border-2 border-black text-black font-extrabold text-xs uppercase tracking-wider hover:bg-black hover:text-white transition"
             >
-              Kirish sahifasiga qaytish
+              Kiriş sahifasiga qaytiş
             </Link>
           </div>
         </div>
@@ -102,33 +113,33 @@ export default function ForgotPasswordPage() {
               <div className="w-14 h-14 rounded-full bg-[#00ffc8]/15 border border-[#00ffc8]/30 text-[#00ffc8] text-2xl flex items-center justify-center mx-auto mb-2">
                 ✓
               </div>
-              <h3 className="text-xl font-black text-white">Havola yuborildi</h3>
-              <p className="text-xs text-white/60 leading-relaxed max-w-sm mx-auto">
-                Agar koʻrsatilgan email tizimda mavjud boʻlsa, parolni tiklash yoʻriqnomasi yuborildi. Token 15 daqiqa davomida amal qiladi.
+              <h3 className={`text-xl font-black ${isDark ? "text-white" : "text-[#081c15]"}`}>Havola yuborildi</h3>
+              <p className={`text-xs leading-relaxed max-w-sm mx-auto ${isDark ? "text-white/60" : "text-[#2d6a4f]"}`}>
+                Agar körsatilgan email tizimda mavjud bölsa, parolni tiklaş yöriqnomasi yuborildi. Token 15 daqiqa davomida amal qiladi.
               </p>
               <div className="pt-4">
                 <Link
-                  href="/signin"
-                  className="inline-flex items-center justify-center px-6 py-3 rounded-full bg-gradient-to-r from-[#00ffc8] to-[#00b4d8] text-[#070B14] font-black text-xs uppercase tracking-wider shadow-lg hover:opacity-95 transition"
+                  href="/sign-in"
+                  className="inline-flex items-center justify-center px-6 py-3 rounded-full bg-gradient-to-r from-[#00ffc8] via-[#00d3e0] to-[#0099ff] text-[#070B14] font-black text-xs uppercase tracking-wider shadow-lg hover:opacity-95 transition"
                 >
-                  Kirish sahifasiga oʻtish
+                  Kiriş sahifasiga ötiş
                 </Link>
               </div>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-5">
               <div>
-                <h3 className="text-xl sm:text-2xl font-black text-white tracking-tight">
-                  Elektron pochtangizni kiriting
+                <h3 className={`text-xl sm:text-2xl font-black tracking-tight ${isDark ? "text-white" : "text-[#081c15]"}`}>
+                  Elektron poçtangizni kiriting
                 </h3>
-                <p className="text-xs text-white/50 mt-1">
-                  Roʻyxatdan oʻtgan elektron pochta manzilingizni kiriting
+                <p className={`text-xs mt-1 ${isDark ? "text-white/50" : "text-[#2d6a4f]"}`}>
+                  Röyxatdan ötgan elektron poçta manzilingizni kiriting
                 </p>
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-xs font-bold text-white/70 block">
-                  Elektron pochta (Email)
+                <label className={`text-xs font-bold block ${isDark ? "text-white/70" : "text-[#081c15]"}`}>
+                  Elektron poçta (Email)
                 </label>
                 <input
                   type="email"
@@ -136,20 +147,24 @@ export default function ForgotPasswordPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="nom@ferma.uz"
-                  className="w-full px-4 py-3 rounded-2xl bg-black/40 border border-white/10 text-white placeholder-white/30 text-sm focus:border-[#00ffc8] focus:ring-1 focus:ring-[#00ffc8] outline-none transition"
+                  className={`w-full px-4 py-3 rounded-2xl border text-sm outline-none transition ${
+                    isDark
+                      ? "bg-black/40 border-white/10 text-white placeholder-white/30 focus:border-[#00ffc8] focus:ring-1 focus:ring-[#00ffc8]"
+                      : "bg-[#f6fbf8] border-[#b7e4c7] text-[#081c15] placeholder-slate-400 focus:border-[#00d3e0] focus:ring-1 focus:ring-[#00d3e0]"
+                  }`}
                 />
               </div>
 
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full py-3.5 rounded-full bg-gradient-to-r from-[#00ffc8] to-[#00b4d8] hover:opacity-95 text-[#070B14] font-black text-xs sm:text-sm shadow-[0_10px_30px_rgba(0,255,200,0.3)] transition-all cursor-pointer uppercase tracking-wider flex items-center justify-center gap-2"
+                className="w-full py-3.5 rounded-full bg-gradient-to-r from-[#00ffc8] via-[#00d3e0] to-[#0099ff] hover:opacity-95 text-[#070B14] font-black text-xs sm:text-sm shadow-[0_10px_30px_rgba(0,255,200,0.3)] transition-all cursor-pointer uppercase tracking-wider flex items-center justify-center gap-2"
               >
                 {isLoading ? (
                   <span>Yuborilmoqda...</span>
                 ) : (
                   <>
-                    <span>Tiklash havolasini yuborish</span>
+                    <span>Tiklaş havolasini yuboriş</span>
                     <span>→</span>
                   </>
                 )}
@@ -160,7 +175,7 @@ export default function ForgotPasswordPage() {
 
       </div>
 
-      <div className="mt-8 text-center text-xs text-white/40 font-mono relative z-10">
+      <div className={`mt-8 text-center text-xs font-mono relative z-10 ${isDark ? "text-white/40" : "text-slate-400"}`}>
         © 2026 ZaminFlow LLC &bull; Kriptografik Xavfsizlik
       </div>
     </div>

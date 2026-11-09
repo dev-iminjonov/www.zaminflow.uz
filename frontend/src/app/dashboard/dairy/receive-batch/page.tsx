@@ -233,7 +233,7 @@ function ReceiveBatchContent() {
               <span className="font-bold text-[#00d3e0] font-mono">{ratePerLiter.toLocaleString()} UZS / L</span>
             </div>
             <div className="flex justify-between items-center pt-1">
-              <span className="text-gray-200 font-bold">Fermer Hisobiga Oʻtgan Summa:</span>
+              <span className="text-gray-200 font-bold">Fermer Hisobiga Ötgan Summa:</span>
               <span className="font-black text-lg text-[#00ffc8] font-mono">
                 {totalSettlement.toLocaleString()} UZS
               </span>
@@ -293,7 +293,7 @@ function ReceiveBatchContent() {
                   </span>
                   <div>
                     <div className="text-xs font-bold text-white">Gerber Butirometr & Sentrifuga</div>
-                    <div className="text-[10px] text-gray-400">Yogʻlik fraksiyasini ajratish</div>
+                    <div className="text-[10px] text-gray-400">Yoğlik fraksiyasini ajratiş</div>
                   </div>
                 </div>
 
@@ -326,7 +326,7 @@ function ReceiveBatchContent() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-center">
                 <div>
                   <div className="flex justify-between text-xs font-bold mb-1">
-                    <span className="text-gray-300">Yogʻlik Darajasi:</span>
+                    <span className="text-gray-300">Yoğlik Darajasi:</span>
                     <span className="text-[#00ffc8] font-mono text-sm">{fatPercent}%</span>
                   </div>
                   <input
@@ -339,7 +339,7 @@ function ReceiveBatchContent() {
                     className="w-full accent-[#00ffc8] cursor-pointer"
                   />
                   <div className="flex justify-between text-[9px] text-gray-500 font-mono mt-0.5">
-                    <span>2.8% (Kam yogʻ)</span>
+                    <span>2.8% (Kam yoğ)</span>
                     <span className="text-[#00ffc8]">3.8% (Standart)</span>
                     <span>5.2% (Premium)</span>
                   </div>
@@ -512,7 +512,7 @@ function ReceiveBatchContent() {
               {/* Pricing Formula Breakdown */}
               <div className="p-4 rounded-2xl bg-white/[0.02] border border-white/5 space-y-2 text-xs">
                 <div className="flex justify-between text-gray-300">
-                  <span>Bazaviy narx (3.6% yogʻ):</span>
+                  <span>Bazaviy narx (3.6% yoğ):</span>
                   <span className="font-mono">{basePrice.toLocaleString()} UZS</span>
                 </div>
                 <div className="flex justify-between text-[#00ffc8]">
@@ -540,7 +540,7 @@ function ReceiveBatchContent() {
                   <span className="font-mono text-white font-bold">{activeShipment?.truckPlate || "01 | 777 ZAM"}</span>
                 </div>
                 <div className="flex justify-between text-gray-400">
-                  <span>Sertifikatlangan Haydovchi:</span>
+                  <span>Sertifikatlangan Haydovçi:</span>
                   <span className="text-white">{activeShipment?.driverName || "Bobur Alimov"}</span>
                 </div>
                 <div className="flex justify-between text-gray-400">

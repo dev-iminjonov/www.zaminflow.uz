@@ -135,7 +135,7 @@ export default function DeliveriesPage() {
                     {isTransit ? "●" : "✓"}
                   </span>
                   <div className="text-xs">
-                    <div className="font-bold text-white">2. Tanker yo'lda</div>
+                    <div className="font-bold text-white">2. Tanker yölda</div>
                     <div className="text-[10px] text-[#00d3e0]">GPS 250m radius</div>
                   </div>
                 </div>
@@ -152,7 +152,7 @@ export default function DeliveriesPage() {
                   </span>
                   <div className="text-xs">
                     <div className="font-bold text-white">3. Laboratoriya</div>
-                    <div className="text-[10px] text-amber-300">Yog' & SNF titratsiya</div>
+                    <div className="text-[10px] text-amber-300">Yoğ & SNF titratsiya</div>
                   </div>
                 </div>
 
@@ -168,7 +168,7 @@ export default function DeliveriesPage() {
                   </span>
                   <div className="text-xs">
                     <div className="font-bold text-white">4. Bank Eskrou</div>
-                    <div className="text-[10px] text-[#00ffc8]">Hisobga o'tkazildi</div>
+                    <div className="text-[10px] text-[#00ffc8]">Hisobga ötkazildi</div>
                   </div>
                 </div>
               </div>

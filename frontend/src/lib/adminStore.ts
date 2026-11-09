@@ -73,7 +73,7 @@ export const INITIAL_ADMIN_USERS: AdminUserRecord[] = [
   },
   {
     id: "77b122c1-b022-469a-8b8a-81f5035a08c1",
-    fullName: "Sevinchoy Soporboyeva",
+    fullName: "Sevinçoy Soporboyeva",
     legalName: "ZaminFlow Operations HQ",
     role: "admin",
     taxId: "304445566",
@@ -138,34 +138,7 @@ export const INITIAL_KYB_DOSSIERS: KybDossier[] = [
   },
 ];
 
-export const INITIAL_DISPUTE_CASES: DisputeCase[] = [
-  {
-    id: "dsp-1",
-    caseNumber: "DSP-2026-088",
-    batchNumber: "ZF-0409",
-    claimantName: "Zomin Cooperative (Farmer)",
-    claimantRole: "Farmer",
-    respondentName: "Samarqand Milk Products (Buyer)",
-    respondentRole: "Dairy Industry",
-    frozenEscrowUZS: 3942500,
-    reason: "Titratable Acidity mismatch: Farm recorded 16.5°T; plant claimed 19.5°T",
-    filedDate: "Today, 11:20",
-    status: "open",
-  },
-  {
-    id: "dsp-2",
-    caseNumber: "DSP-2026-084",
-    batchNumber: "ZF-0394",
-    claimantName: "Sayxunobod Cooperative",
-    claimantRole: "Farmer",
-    respondentName: "Tashkent Central Dairy",
-    respondentRole: "Dairy Industry",
-    frozenEscrowUZS: 5200000,
-    reason: "Flow meter deduction dispute of 65 Litres during reception bay pumping",
-    filedDate: "04 Nov 2026",
-    status: "settled_farmer",
-  },
-];
+export const INITIAL_DISPUTE_CASES: DisputeCase[] = [];
 
 const ADMIN_USERS_KEY = "zaminflow_admin_users_v2";
 const KYB_KEY = "zaminflow_admin_kyb";

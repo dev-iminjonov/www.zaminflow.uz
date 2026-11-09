@@ -33,12 +33,16 @@ export default function TestimonialsSlider({ isDark = false }: { isDark?: boolea
               <SplashDoodle size={24} color="#00ffc8" />
             </div>
             <h2
-              className={`text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight ${
+              className={`text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-[1.25] sm:leading-[1.3] ${
                 isDark ? "text-white" : "text-[#081c15]"
               }`}
             >
-              {t.testimonialsSection.titleStart}
-              <span className="bg-gradient-to-r from-[#00ffc8] via-[#00d3e0] to-[#0099ff] bg-clip-text text-transparent">
+              {t.testimonialsSection.titleStart}{" "}
+              <span className={`inline ${
+                isDark
+                  ? "bg-gradient-to-r from-[#00ffc8] via-[#00d3e0] to-[#0099ff] bg-clip-text text-transparent"
+                  : "bg-gradient-to-r from-[#059669] via-[#0284c7] to-[#0369a1] bg-clip-text text-transparent"
+              }`}>
                 {t.testimonialsSection.titleAccent}
               </span>
             </h2>
@@ -57,7 +61,11 @@ export default function TestimonialsSlider({ isDark = false }: { isDark?: boolea
               type="button"
               onClick={prevSlide}
               aria-label="Oldingi fikr"
-              className="w-12 h-12 rounded-full border border-[#00d3e0] text-[#00d3e0] hover:bg-[#00d3e0]/10 hover:scale-105 active:scale-95 flex items-center justify-center transition-all"
+              className={`w-12 h-12 rounded-full border hover:scale-105 active:scale-95 flex items-center justify-center transition-all ${
+                isDark
+                  ? "border-[#00d3e0] text-[#00d3e0] hover:bg-[#00d3e0]/10"
+                  : "border-emerald-600 text-emerald-700 hover:bg-emerald-50"
+              }`}
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <polyline points="15 18 9 12 15 6" />
@@ -67,7 +75,11 @@ export default function TestimonialsSlider({ isDark = false }: { isDark?: boolea
               type="button"
               onClick={nextSlide}
               aria-label="Keyingi fikr"
-              className="w-12 h-12 rounded-full border border-[#00d3e0] text-[#00d3e0] hover:bg-[#00d3e0]/10 hover:scale-105 active:scale-95 flex items-center justify-center transition-all"
+              className={`w-12 h-12 rounded-full border hover:scale-105 active:scale-95 flex items-center justify-center transition-all ${
+                isDark
+                  ? "border-[#00d3e0] text-[#00d3e0] hover:bg-[#00d3e0]/10"
+                  : "border-emerald-600 text-emerald-700 hover:bg-emerald-50"
+              }`}
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <polyline points="9 18 15 12 9 6" />
@@ -91,8 +103,10 @@ export default function TestimonialsSlider({ isDark = false }: { isDark?: boolea
                 }`}
               >
                 <div>
-                  {/* Cyan Quotation Mark */}
-                  <span className="text-4xl font-serif text-[#00d3e0] block mb-3">“</span>
+                  {/* Quotation Mark */}
+                  <span className={`text-4xl font-serif block mb-3 ${
+                    isDark ? "text-[#00d3e0]" : "text-emerald-600"
+                  }`}>“</span>
                   <p
                     className={`text-sm sm:text-base leading-relaxed italic mb-6 ${
                       isDark ? "text-white/90" : "text-[#081c15]"
@@ -115,7 +129,9 @@ export default function TestimonialsSlider({ isDark = false }: { isDark?: boolea
                       >
                         {item.name}
                       </div>
-                      <div className="text-[11px] text-[#00d3e0] font-semibold truncate">
+                      <div className={`text-[11px] font-semibold truncate ${
+                        isDark ? "text-[#00d3e0]" : "text-emerald-700"
+                      }`}>
                         {item.role} • {item.company}
                       </div>
                     </div>

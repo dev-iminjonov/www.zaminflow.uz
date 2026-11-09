@@ -52,7 +52,7 @@ export default function MyMilkPage() {
           className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-[#00ffc8] via-[#00d3e0] to-[#0099ff] hover:opacity-95 text-[#070B14] font-black text-xs sm:text-sm shadow-[0_10px_30px_rgba(0,211,224,0.35)] transition-all active:scale-95 cursor-pointer uppercase tracking-wider"
         >
           <span className="text-base leading-none font-black">+</span>
-          <span>Yangi partiya qo'shish</span>
+          <span>Yangi partiya qöşiş</span>
         </Link>
       </header>
 
@@ -107,7 +107,7 @@ export default function MyMilkPage() {
 
         <div className="rounded-[24px] p-5 bg-white/[0.03] border border-white/10 hover:border-[#00d3e0]/40 transition-all flex flex-col justify-between">
           <div className="text-[11px] font-bold tracking-wider text-white/50 uppercase flex items-center justify-between">
-            <span>O'rtacha Narx</span>
+            <span>Örtaça Narx</span>
             <span className="text-xs">💰</span>
           </div>
           <div className="flex items-baseline gap-2 mt-3">
@@ -183,14 +183,14 @@ export default function MyMilkPage() {
               </div>
 
               <div>
-                <div className="text-[11px] text-white/40 uppercase font-semibold">Yog' / SNF</div>
+                <div className="text-[11px] text-white/40 uppercase font-semibold">Yoğ / SNF</div>
                 <div className="font-mono font-bold text-sm text-white/90">
                   {batch.fatPercent}% / {batch.snfPercent}%
                 </div>
               </div>
 
               <div>
-                <div className="text-[11px] text-white/40 uppercase font-semibold">Eskrou To'lovi</div>
+                <div className="text-[11px] text-white/40 uppercase font-semibold">Eskrou Tölovi</div>
                 <div className="font-mono font-bold text-lg text-[#00ffc8]">
                   {batch.totalEstimatedPayout.toLocaleString()} <span className="text-xs text-white/50 font-normal">UZS</span>
                 </div>
@@ -221,9 +221,9 @@ export default function MyMilkPage() {
                     }`}
                   />
                   {batch.status === "stored" && "Fermada Sovutilmoqda"}
-                  {batch.status === "in_transit" && "Yo'lda (GPS Qulflangan)"}
+                  {batch.status === "in_transit" && "Yölda (GPS Qulflangan)"}
                   {batch.status === "testing" && "Lab Titratsiya Sinovida"}
-                  {batch.status === "released" && "Eskrou To'landi"}
+                  {batch.status === "released" && "Eskrou Tölandi"}
                   {batch.status === "disputed" && "Nizo Jarayonida"}
                 </span>
               </div>

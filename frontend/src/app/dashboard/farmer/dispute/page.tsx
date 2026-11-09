@@ -136,9 +136,9 @@ function DisputeContent() {
                 className="w-full h-11 rounded-xl border border-white/10 px-4 text-xs font-semibold text-white bg-[#14181d] focus:border-[#00d3e0] outline-none"
               >
                 <option value="acidity_discrepancy">Kislotalilik (°T) nomuvofiqligi (Zavod: 21°T, Ferma: 16.5°T)</option>
-                <option value="fat_discrepancy">Yog'lilik darajasi past baholangan (Ferma: 4.1%, Zavod: 3.5%)</option>
-                <option value="volume_discrepancy">Hajm o'lchovida tafovut (&gt; 50 Litr kamomad)</option>
-                <option value="temp_discrepancy">Sovuq zanjir haroratini noto'g'ri qayd etish</option>
+                <option value="fat_discrepancy">Yoğlilik darajasi past baholangan (Ferma: 4.1%, Zavod: 3.5%)</option>
+                <option value="volume_discrepancy">Hajm ölçovida tafovut (&gt; 50 Litr kamomad)</option>
+                <option value="temp_discrepancy">Sovuq zanjir haroratini notöğri qayd etiş</option>
               </select>
             </div>
 

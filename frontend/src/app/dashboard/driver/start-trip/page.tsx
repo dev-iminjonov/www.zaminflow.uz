@@ -72,7 +72,7 @@ export default function StartTripPage() {
           className="max-w-2xl mx-auto w-full rounded-[28px] bg-white/[0.03] border border-white/10 p-6 sm:p-8 flex flex-col gap-6"
         >
           <div className="border-b border-white/10 pb-4">
-            <h2 className="text-lg font-bold text-white">Reys Oldi Nazorat Roʻyxati</h2>
+            <h2 className="text-lg font-bold text-white">Reys Oldi Nazorat Röyxati</h2>
             <p className="text-xs text-white/50">HACCP va sovuq zanjir xavfsizlik talablari</p>
           </div>
 
@@ -89,14 +89,14 @@ export default function StartTripPage() {
               {
                 id: "preChilled",
                 label: "Sovitish tizimi oldindan sovutilgan",
-                desc: "Kompressor barqaror 3.0°C – 4.0°C oraligʻiga yetkazilgan",
+                desc: "Kompressor barqaror 3.0°C – 4.0°C oraliğiga yetkazilgan",
                 state: preChilled,
                 set: setPreChilled,
               },
               {
                 id: "sensorCalibrated",
                 label: "IoT datchiklar va GPS faol",
-                desc: "BLE termodatchiklar va yoʻldosh aloqasi dispetcherlikka ulangan",
+                desc: "BLE termodatçiklar va yöldoş aloqasi dispetçerlikka ulangan",
                 state: sensorCalibrated,
                 set: setSensorCalibrated,
               },

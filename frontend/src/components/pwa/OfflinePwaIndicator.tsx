@@ -95,10 +95,10 @@ export default function OfflinePwaIndicator() {
           <button
             onClick={handleInstallClick}
             className="px-3.5 py-1.5 rounded-full bg-gradient-to-r from-[#00ffc8] to-[#0099ff] text-[#070B14] font-black text-xs flex items-center gap-1.5 shadow-[0_4px_15px_rgba(0,255,200,0.4)] hover:opacity-95 active:scale-95 transition"
-            title="ZaminFlow ilovasini smartfon yoki kompyuteringizga oʻrnating"
+            title="ZaminFlow ilovasini smartfon yoki kompyuteringizga örnating"
           >
             <span>📲</span>
-            <span>Ilovani Oʻrnatish (PWA)</span>
+            <span>Ilovani Örnatiş (PWA)</span>
           </button>
         )}
 
@@ -106,7 +106,7 @@ export default function OfflinePwaIndicator() {
         <button
           onClick={() => setIsTelegramModalOpen(true)}
           className="px-3.5 py-1.5 rounded-full bg-[#14181d]/90 hover:bg-[#1a2027] border border-white/15 hover:border-[#00d3e0]/50 text-white text-xs font-bold flex items-center gap-1.5 shadow-xl backdrop-blur-xl transition active:scale-95"
-          title="Telegram orqali lahzalik toʻlov va partiya bildirishnomalarini sozlash"
+          title="Telegram orqali lahzalik tölov va partiya bildirişnomalarini sozlaş"
         >
           <span className="text-[#0099ff]">✈</span>
           <span>Telegram Xabarlar</span>
@@ -172,8 +172,8 @@ export default function OfflinePwaIndicator() {
                 <div className="flex items-center gap-2">
                   <span>⚡</span>
                   <div>
-                    <div className="text-xs font-bold text-white">AgroBank Eskrou Toʻlovlari</div>
-                    <div className="text-[10px] text-gray-400">Pul hisobga tushishi bilan lahzalik chek</div>
+                    <div className="text-xs font-bold text-white">AgroBank Eskrou Tölovlari</div>
+                    <div className="text-[10px] text-gray-400">Pul hisobga tuşişi bilan lahzalik çek</div>
                   </div>
                 </div>
                 <input
@@ -188,7 +188,7 @@ export default function OfflinePwaIndicator() {
                 <div className="flex items-center gap-2">
                   <span>🚛</span>
                   <div>
-                    <div className="text-xs font-bold text-white">Tanker Yetib Kelishi & Qabul</div>
+                    <div className="text-xs font-bold text-white">Tanker Yetib Kelişi & Qabul</div>
                     <div className="text-[10px] text-gray-400">Zavod darvozasiga yetganda GPS xabari</div>
                   </div>
                 </div>
@@ -205,7 +205,7 @@ export default function OfflinePwaIndicator() {
                   <span>🔬</span>
                   <div>
                     <div className="text-xs font-bold text-white">Laboratoriya Sifat Dalolatnomasi</div>
-                    <div className="text-[10px] text-gray-400">Yogʻlik, zichlik va Oliy A+ xulosasi</div>
+                    <div className="text-[10px] text-gray-400">Yoğlik, ziçlik va Oliy A+ xulosasi</div>
                   </div>
                 </div>
                 <input
@@ -241,7 +241,7 @@ export default function OfflinePwaIndicator() {
                   <span className="text-[10px] text-gray-400">Hozir</span>
                 </div>
                 <p className="text-[11px] leading-relaxed">
-                  ✅ <strong>AGROBANK TOʻLOV TASDIQLANDI!</strong><br />
+                  ✅ <strong>AGROBANK TÖLOV TASDIQLANDI!</strong><br />
                   💰 Summa: <strong>+22,250,000 UZS</strong><br />
                   🥛 Partiya: #ZF-9042 (5,000 L, Yogʻ: 4.18%)<br />
                   🏛 Kliring: ISO 20022 pacs.008 (Kafolatlangan)

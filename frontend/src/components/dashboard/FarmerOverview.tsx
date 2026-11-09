@@ -8,11 +8,17 @@ import { useTheme, ThemeToggleButton } from "@/context/ThemeContext";
 import {
   fetchFarmerDashboardData,
   FarmerDashboardData,
-  MOCK_FARMER_DATA,
+  EMPTY_FARMER_DATA,
+  submitFarmerSupplyListing,
 } from "@/lib/roleDashboardService";
 import { getStoredSession, signOut, AuthSession } from "@/lib/auth";
 import { resolveUserAvatar } from "@/lib/userAvatar";
 import ZaminFlowLogo from "@/components/ZaminFlowLogo";
+import UniversalSpotlightSearch from "@/components/search/UniversalSpotlightSearch";
+import B2BProfileWindow from "@/components/profile/B2BProfileWindow";
+import InteractiveFinancialChart from "@/components/dashboard/InteractiveFinancialChart";
+import InteractiveComparisonBarChart from "@/components/dashboard/InteractiveComparisonBarChart";
+import InteractiveRadialGauge from "@/components/dashboard/InteractiveRadialGauge";
 
 export type FarmerWindowKey =
   | "overview"
@@ -32,7 +38,7 @@ export default function FarmerOverview() {
   const [activeWindow, setActiveWindow] = useState<FarmerWindowKey>("overview");
 
   const [session, setSession] = useState<AuthSession | null>(null);
-  const [data, setData] = useState<FarmerDashboardData | null>(MOCK_FARMER_DATA);
+  const [data, setData] = useState<FarmerDashboardData | null>(EMPTY_FARMER_DATA);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isSigningOut, setIsSigningOut] = useState(false);
@@ -40,7 +46,6 @@ export default function FarmerOverview() {
   // Financial Chart Controls
   const [timeRange, setTimeRange] = useState<"1d" | "1w" | "1m" | "6m" | "1y" | "all">("1m");
   const [chartType, setChartType] = useState<"line" | "bar">("line");
-  const [hoveredPoint, setHoveredPoint] = useState<{ x: number; y: number; label: string; value: string } | null>(null);
 
   // Supply list modal state
   const [showSupplyModal, setShowSupplyModal] = useState(false);
@@ -156,34 +161,6 @@ export default function FarmerOverview() {
     }
   }, [timeRange]);
 
-  // Compute SVG coordinates for the Investure-style smooth curve
-  const svgMetrics = useMemo(() => {
-    const pts = chartDatasets.points;
-    const minVal = Math.min(...pts.map((p) => p.val)) * 0.95;
-    const maxVal = Math.max(...pts.map((p) => p.val)) * 1.05;
-    const width = 760;
-    const height = 220;
-
-    const coords = pts.map((p, idx) => {
-      const x = (idx / (pts.length - 1)) * (width - 40) + 20;
-      const y = height - ((p.val - minVal) / (maxVal - minVal)) * (height - 40) - 20;
-      return { x, y, label: p.label, value: `${(p.val / 1000000).toFixed(2)}M UZS` };
-    });
-
-    // Build SVG smooth path
-    let pathD = `M ${coords[0].x} ${coords[0].y}`;
-    for (let i = 0; i < coords.length - 1; i++) {
-      const p0 = coords[i];
-      const p1 = coords[i + 1];
-      const cpX = (p0.x + p1.x) / 2;
-      pathD += ` C ${cpX} ${p0.y}, ${cpX} ${p1.y}, ${p1.x} ${p1.y}`;
-    }
-
-    const areaD = `${pathD} L ${coords[coords.length - 1].x} ${height} L ${coords[0].x} ${height} Z`;
-
-    return { coords, pathD, areaD, width, height };
-  }, [chartDatasets]);
-
   // Navigation items matching the Investure layout
   const navigationItems: Array<{
     key: FarmerWindowKey;
@@ -259,18 +236,31 @@ export default function FarmerOverview() {
     },
   ];
 
-  const handleCreateSupply = (e: React.FormEvent) => {
+  const handleCreateSupply = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSupplySuccess(true);
-    setTimeout(() => {
-      setSupplySuccess(false);
-      setShowSupplyModal(false);
-    }, 1500);
+    try {
+      await submitFarmerSupplyListing({
+        volume_liters: Number(supplyLiters),
+        cooling_temp_c: 3.4,
+        milking_session: "MORNING",
+        fat_pct: Number(supplyFat),
+        snf_pct: 8.7,
+        acidity_turner: 16.5,
+      });
+      setSupplySuccess(true);
+      setTimeout(() => {
+        setSupplySuccess(false);
+        setShowSupplyModal(false);
+        fetchFarmerDashboardData().then((res) => setData(res));
+      }, 1500);
+    } catch (err: unknown) {
+      alert(err instanceof Error ? err.message : "Xatolik yuz berdi");
+    }
   };
 
   return (
     <div className={`min-h-screen py-4 px-3 sm:px-6 relative overflow-x-hidden font-sans antialiased transition-colors duration-300 ${
-      isDark ? "bg-[#0b0f14] text-white" : "bg-[#f1f5f9] text-slate-900"
+      isDark ? "bg-[#0d1013] text-[#E8F1F2]" : "bg-[#f6fbf8] text-[#081c15]"
     }`}>
       {/* Background Subtle Gradient Blobs */}
       <div className="absolute top-0 left-1/4 w-[600px] h-[600px] pointer-events-none -z-0 opacity-20 blur-[140px] bg-gradient-to-br from-emerald-400 to-sky-400" />
@@ -278,27 +268,22 @@ export default function FarmerOverview() {
       {/* Master Container: Fixed Left Sidebar + Dynamic In-Place Content Area (Figma/Investure Architecture) */}
       <div className={`relative z-10 max-w-[1520px] mx-auto rounded-[32px] border shadow-2xl flex flex-col lg:flex-row overflow-hidden transition-all ${
         isDark
-          ? "bg-[#121820] border-white/10 shadow-[0_30px_90px_rgba(0,0,0,0.6)] text-white"
-          : "bg-white border-slate-200 shadow-[0_20px_70px_rgba(15,23,42,0.06)] text-slate-900"
+          ? "bg-[#14181d] border-white/10 shadow-[0_30px_90px_rgba(0,0,0,0.6)] text-[#E8F1F2]"
+          : "bg-white border-[#b7e4c7] shadow-[0_10px_35px_rgba(0,153,255,0.06)] text-[#081c15]"
       }`}>
 
         {/* =========================================================================
             LEFT NAVIGATION SIDEBAR (Exact Investure Layout)
         ========================================================================= */}
         <aside className={`w-full lg:w-72 shrink-0 border-b lg:border-b-0 lg:border-r p-6 flex flex-col justify-between transition-colors ${
-          isDark ? "border-white/10 bg-[#0e1319]" : "border-slate-100 bg-[#fafcff]"
+          isDark ? "border-white/10 bg-[#0d1013]" : "border-[#b7e4c7]/60 bg-[#f6fbf8]"
         }`}>
           <div>
             {/* 1. Brand Logo */}
-            <div className="flex items-center justify-between pb-8">
+            <div className="flex items-center pb-8">
               <Link href="/" className="flex items-center gap-2 transition hover:scale-105">
                 <ZaminFlowLogo mode={themeMode} size="md" />
               </Link>
-              <span className={`text-[10px] font-mono font-bold px-2.5 py-1 rounded-full uppercase border ${
-                isDark ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400" : "bg-emerald-50 border-emerald-200 text-emerald-800"
-              }`}>
-                Farmer Pro
-              </span>
             </div>
 
             {/* 2. Navigation Items with Right Emerald Indicator Line */}
@@ -441,20 +426,19 @@ export default function FarmerOverview() {
             </div>
 
             <div className="flex items-center gap-3">
-              {/* Search Pill */}
-              <div className={`hidden sm:flex items-center gap-2 px-3.5 py-1.5 rounded-full border text-xs transition ${
-                isDark ? "bg-white/5 border-white/10 text-white/50 focus-within:border-emerald-500" : "bg-slate-50 border-slate-200 text-slate-500 focus-within:border-emerald-500"
-              }`}>
-                <svg className="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-                <input
-                  type="text"
-                  placeholder="Partiya yoki shartnoma qidirish..."
-                  className="bg-transparent border-none outline-hidden text-xs w-48 placeholder-slate-400"
-                />
-                <kbd className="hidden md:inline-block px-1.5 py-0.5 text-[9px] font-mono font-bold rounded bg-slate-200/60 dark:bg-white/10">⌘K</kbd>
-              </div>
+              {/* Universal Live Spotlight Search */}
+              <UniversalSpotlightSearch
+                role="farmer"
+                onSelectAction={(item) => {
+                  if (item.category === "batches") {
+                    setActiveWindow("contracts");
+                  } else if (item.category === "navigation") {
+                    setActiveWindow("overview");
+                  } else if (item.href) {
+                    router.push(item.href);
+                  }
+                }}
+              />
 
               {/* Language Selector */}
               <div className={`flex rounded-full p-1 border text-[11px] font-bold ${
@@ -500,160 +484,27 @@ export default function FarmerOverview() {
             {activeWindow === "overview" && (
               <div className="space-y-6">
 
-                {/* 1. HERO FINANCIAL CHART (Investure Total Invested Value replica) */}
+                {/* 1. HERO FINANCIAL CHART (Interactive & Live) */}
                 <div className={`rounded-3xl p-6 sm:p-7 border relative overflow-hidden transition ${
                   isDark ? "bg-[#141b24] border-white/10" : "bg-white border-slate-200/80 shadow-xs"
                 }`}>
-                  <div className="flex flex-wrap items-center justify-between gap-4 pb-4">
-                    <div>
-                      <span className={`text-xs font-mono uppercase font-bold tracking-wider ${
-                        isDark ? "text-white/50" : "text-slate-500"
-                      }`}>
-                        Jami Qabul Qilingan & Kutilayotgan Qiymat
-                      </span>
-                      <div className="flex items-baseline gap-3 mt-1">
-                        <span className="text-3xl sm:text-4xl font-black font-mono tracking-tight">
-                          {chartDatasets.total}
-                        </span>
-                        <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full">
-                          ▲ {chartDatasets.delta}
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Chart Controls: Line/Bar Toggle + Timeframe Pills */}
-                    <div className="flex flex-wrap items-center gap-2">
-                      <div className={`flex rounded-xl p-1 border ${
-                        isDark ? "bg-white/5 border-white/10" : "bg-slate-100 border-slate-200"
-                      }`}>
-                        <button
-                          type="button"
-                          onClick={() => setChartType("line")}
-                          className={`p-1.5 rounded-lg transition ${
-                            chartType === "line"
-                              ? "bg-white dark:bg-white/20 text-emerald-600 dark:text-white shadow-xs"
-                              : "text-slate-400 hover:text-slate-700 dark:hover:text-white"
-                          }`}
-                          title="Line Chart"
-                        >
-                          📈
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setChartType("bar")}
-                          className={`p-1.5 rounded-lg transition ${
-                            chartType === "bar"
-                              ? "bg-white dark:bg-white/20 text-emerald-600 dark:text-white shadow-xs"
-                              : "text-slate-400 hover:text-slate-700 dark:hover:text-white"
-                          }`}
-                          title="Bar Chart"
-                        >
-                          📊
-                        </button>
-                      </div>
-
-                      <div className={`flex rounded-xl p-1 border text-xs font-bold ${
-                        isDark ? "bg-white/5 border-white/10" : "bg-slate-100 border-slate-200"
-                      }`}>
-                        {(["1d", "1w", "1m", "6m", "1y", "all"] as const).map((period) => (
-                          <button
-                            key={period}
-                            type="button"
-                            onClick={() => setTimeRange(period)}
-                            className={`px-2.5 py-1 rounded-lg uppercase transition cursor-pointer ${
-                              timeRange === period
-                                ? "bg-white dark:bg-white/20 text-slate-900 dark:text-white shadow-xs font-black"
-                                : "text-slate-500 dark:text-white/50 hover:text-slate-900 dark:hover:text-white"
-                            }`}
-                          >
-                            {period}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Interactive SVG Chart Canvas */}
-                  <div className="relative pt-4 pb-2">
-                    {/* Horizontal Reference Grid Lines */}
-                    <div className="absolute inset-0 flex flex-col justify-between pointer-events-none opacity-20 text-[10px] font-mono text-slate-400">
-                      <div className="border-b border-dashed border-slate-400 dark:border-white w-full flex justify-end pr-2">20M</div>
-                      <div className="border-b border-dashed border-slate-400 dark:border-white w-full flex justify-end pr-2">16M</div>
-                      <div className="border-b border-dashed border-slate-400 dark:border-white w-full flex justify-end pr-2">12M</div>
-                      <div className="border-b border-dashed border-slate-400 dark:border-white w-full flex justify-end pr-2">8M</div>
-                    </div>
-
-                    {chartType === "line" ? (
-                      <div className="relative w-full h-[220px]">
-                        <svg className="w-full h-full overflow-visible" viewBox={`0 0 ${svgMetrics.width} ${svgMetrics.height}`}>
-                          <defs>
-                            <linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">
-                              <stop offset="0%" stopColor="#10b981" stopOpacity="0.25" />
-                              <stop offset="100%" stopColor="#10b981" stopOpacity="0.0" />
-                            </linearGradient>
-                          </defs>
-
-                          {/* Gradient Area */}
-                          <path d={svgMetrics.areaD} fill="url(#chartGradient)" />
-
-                          {/* Main Smooth Line */}
-                          <path
-                            d={svgMetrics.pathD}
-                            fill="none"
-                            stroke="#10b981"
-                            strokeWidth="3"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-
-                          {/* Interactive Points */}
-                          {svgMetrics.coords.map((pt, idx) => (
-                            <circle
-                              key={idx}
-                              cx={pt.x}
-                              cy={pt.y}
-                              r={hoveredPoint?.x === pt.x ? 6 : 4}
-                              className="fill-white dark:fill-[#121820] stroke-emerald-500 stroke-[3] cursor-pointer transition-all hover:scale-125"
-                              onMouseEnter={() => setHoveredPoint(pt)}
-                              onMouseLeave={() => setHoveredPoint(null)}
-                            />
-                          ))}
-                        </svg>
-
-                        {/* Hover Tooltip (Investure exact replica) */}
-                        {hoveredPoint && (
-                          <div
-                            className="absolute z-20 pointer-events-none -translate-x-1/2 -translate-y-full mb-3 px-3 py-1.5 rounded-xl bg-slate-900 text-white text-xs font-mono shadow-xl border border-white/20 flex flex-col items-center"
-                            style={{ left: `${(hoveredPoint.x / svgMetrics.width) * 100}%`, top: `${hoveredPoint.y}px` }}
-                          >
-                            <span className="text-[10px] text-slate-400">{hoveredPoint.label}</span>
-                            <span className="font-bold text-emerald-400">{hoveredPoint.value}</span>
-                          </div>
-                        )}
-                      </div>
-                    ) : (
-                      /* Bar Chart view */
-                      <div className="h-[220px] flex items-end justify-between gap-3 px-4 pt-6">
-                        {chartDatasets.points.map((pt, idx) => (
-                          <div key={idx} className="flex-1 flex flex-col items-center gap-2 group">
-                            <div className={`w-full max-w-[40px] rounded-t-xl transition-all ${
-                              idx === chartDatasets.points.length - 1
-                                ? "bg-emerald-500 shadow-lg shadow-emerald-500/30"
-                                : isDark ? "bg-white/10 group-hover:bg-emerald-500/40" : "bg-slate-200 group-hover:bg-emerald-500/40"
-                            }`} style={{ height: `${(pt.val / 20000000) * 180}px` }} />
-                            <span className="text-[10px] font-mono text-slate-400">{pt.label}</span>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-
-                    {/* Bottom Date Labels */}
-                    <div className="flex justify-between items-center text-[10px] font-mono text-slate-400 pt-3 border-t border-slate-100 dark:border-white/5">
-                      {chartDatasets.points.map((pt, idx) => (
-                        <span key={idx}>{pt.label}</span>
-                      ))}
-                    </div>
-                  </div>
+                  <InteractiveFinancialChart
+                    title="Jami Qabul Qilingan & Kutilayotgan Qiymat"
+                    subtitle="FERMER TRANZAKSIYALARI VA SOVRIN TÖLOVLARI"
+                    totalDisplay={chartDatasets.total}
+                    deltaDisplay={chartDatasets.delta}
+                    deltaPositive={true}
+                    unit="UZS"
+                    accentColor="#10b981"
+                    secondaryColor="#00d3e0"
+                    gradientId="farmerChartGradient"
+                    timeRange={timeRange}
+                    onTimeRangeChange={setTimeRange}
+                    chartType={chartType}
+                    onChartTypeChange={setChartType}
+                    points={chartDatasets.points}
+                    isDark={isDark}
+                  />
                 </div>
 
                 {/* 2. FOUR FINANCIAL BENTO METRIC CARDS (Investure 4-card row) */}
@@ -720,7 +571,7 @@ export default function FarmerOverview() {
                         {data?.todayPrice.value || "4,380"} <span className="text-xs font-normal text-slate-400">UZS</span>
                       </div>
                       <div className="flex items-center gap-1.5 text-xs text-emerald-500 font-bold mt-1">
-                        <span>{data?.todayPrice.delta || "+12.4% oʻsish"}</span>
+                        <span>{data?.todayPrice.delta || "+12.4% ösiş"}</span>
                       </div>
                     </div>
                   </div>
@@ -745,7 +596,7 @@ export default function FarmerOverview() {
                         </span>
                       </div>
                       <div className="flex items-center gap-1.5 text-xs text-emerald-500 font-bold mt-1">
-                        <span>Premium Ragʻbat: +400 UZS/L</span>
+                        <span>Premium Rağbat: +400 UZS/L</span>
                       </div>
                     </div>
                   </div>
@@ -760,7 +611,7 @@ export default function FarmerOverview() {
                   }`}>
                     <div>
                       <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-white/10">
-                        <h3 className="font-bold text-sm">Soʻnggi Partiyalar</h3>
+                        <h3 className="font-bold text-sm">Sönggi Partiyalar</h3>
                         <span className="text-xs font-mono text-slate-400">Haftalik ▾</span>
                       </div>
 
@@ -800,142 +651,46 @@ export default function FarmerOverview() {
                     </button>
                   </div>
 
-                  {/* Col 2: Quality & Milk Composition (Investure "Diversification" Half-Circle Gauge) */}
-                  <div className={`lg:col-span-4 p-6 rounded-3xl border flex flex-col justify-between transition ${
-                    isDark ? "bg-[#141b24] border-white/10" : "bg-white border-slate-200/80 shadow-xs"
-                  }`}>
-                    <div>
-                      <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-white/10">
-                        <h3 className="font-bold text-sm">Sut Sifat Tarkibi</h3>
-                        <span className="text-xs font-mono text-emerald-500 font-bold">Laboratoriya Tasdiqlagan</span>
-                      </div>
-
-                      {/* Half-Circle Gauge (Signature Investure Feature) */}
-                      <div className="my-6 flex flex-col items-center justify-center">
-                        <div className="relative w-44 h-24 overflow-hidden flex items-end justify-center">
-                          <svg className="w-44 h-44 -rotate-180" viewBox="0 0 100 100">
-                            {/* Background Track */}
-                            <circle
-                              cx="50"
-                              cy="50"
-                              r="40"
-                              fill="none"
-                              stroke={isDark ? "rgba(255,255,255,0.08)" : "#f1f5f9"}
-                              strokeWidth="10"
-                              strokeDasharray="125 250"
-                            />
-                            {/* Quality Fill Arc */}
-                            <circle
-                              cx="50"
-                              cy="50"
-                              r="40"
-                              fill="none"
-                              stroke="#10b981"
-                              strokeWidth="10"
-                              strokeDasharray="118 250"
-                              strokeLinecap="round"
-                            />
-                          </svg>
-
-                          <div className="absolute bottom-0 flex flex-col items-center">
-                            <span className="text-[10px] uppercase font-bold text-slate-400">Soflik Koʻrsatkichi</span>
-                            <span className="text-2xl font-black font-mono">94.2%</span>
-                          </div>
-                        </div>
-
-                        {/* Legend row */}
-                        <div className="grid grid-cols-2 gap-3 w-full mt-5 text-[11px] font-mono">
-                          <div className="flex items-center justify-between p-2 rounded-xl bg-slate-50 dark:bg-white/5">
-                            <span className="flex items-center gap-1.5 text-slate-500">
-                              <span className="w-2 h-2 rounded-full bg-emerald-500" /> Yogʻlik (Fat)
-                            </span>
-                            <span className="font-bold">4.1%</span>
-                          </div>
-                          <div className="flex items-center justify-between p-2 rounded-xl bg-slate-50 dark:bg-white/5">
-                            <span className="flex items-center gap-1.5 text-slate-500">
-                              <span className="w-2 h-2 rounded-full bg-sky-500" /> Quruq Modda (SNF)
-                            </span>
-                            <span className="font-bold">8.7%</span>
-                          </div>
-                          <div className="flex items-center justify-between p-2 rounded-xl bg-slate-50 dark:bg-white/5">
-                            <span className="flex items-center gap-1.5 text-slate-500">
-                              <span className="w-2 h-2 rounded-full bg-amber-500" /> Zichlik (Density)
-                            </span>
-                            <span className="font-bold">1.028</span>
-                          </div>
-                          <div className="flex items-center justify-between p-2 rounded-xl bg-slate-50 dark:bg-white/5">
-                            <span className="flex items-center gap-1.5 text-slate-500">
-                              <span className="w-2 h-2 rounded-full bg-purple-500" /> Kislotalilik
-                            </span>
-                            <span className="font-bold">16.5°T</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <button
-                      type="button"
-                      onClick={() => setActiveWindow("disputes")}
-                      className="pt-3 border-t border-slate-100 dark:border-white/10 text-xs font-bold text-slate-500 hover:text-emerald-500 text-center w-full block cursor-pointer"
-                    >
-                      Laboratoriya sinov sertifikatlari →
-                    </button>
+                  {/* Col 2: Quality & Milk Composition (Interactive Radial Gauge) */}
+                  <div className="lg:col-span-4 flex flex-col">
+                    <InteractiveRadialGauge
+                      title="Sut Sifat Tarkibi"
+                      totalLabel="94.2% A-Sinf"
+                      isDark={isDark}
+                      defaultActiveKey="fat"
+                      segments={[
+                        { key: "fat", label: "Yogʻlik (Fat)", percentage: 82.0, color: "#10b981", sublabel: "Sut yogʻliligi: 4.1%", countFormatted: "4.1%" },
+                        { key: "snf", label: "Quruq (SNF)", percentage: 87.0, color: "#0ea5e9", sublabel: "Quruq modda: 8.7%", countFormatted: "8.7%" },
+                        { key: "density", label: "Zichlik", percentage: 95.0, color: "#f59e0b", sublabel: "Zichlik: 1.028", countFormatted: "1.028" },
+                      ]}
+                    />
                   </div>
 
-                  {/* Col 3: Payouts & Dividend comparison (Investure "Dividend" bar chart) */}
+                  {/* Col 3: Payouts & Dividend comparison (Interactive Dual Comparison Bar Chart) */}
                   <div className={`lg:col-span-4 p-6 rounded-3xl border flex flex-col justify-between transition ${
                     isDark ? "bg-[#141b24] border-white/10" : "bg-white border-slate-200/80 shadow-xs"
                   }`}>
-                    <div>
-                      <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-white/10">
-                        <h3 className="font-bold text-sm">Oylik Toʻlovlar</h3>
-                        <span className="text-xs font-mono text-slate-400">6 oy ▾</span>
-                      </div>
-
-                      <div className="h-44 flex items-end justify-between gap-3 pt-6 pb-2 px-1">
-                        {[
-                          { m: "Yan", h1: "40%", h2: "25%" },
-                          { m: "Fev", h1: "65%", h2: "45%" },
-                          { m: "Mar", h1: "50%", h2: "35%" },
-                          { m: "Apr", h1: "80%", h2: "55%" },
-                          { m: "May", h1: "95%", h2: "70%" },
-                          { m: "Iyun", h1: "85%", h2: "60%" },
-                        ].map((b, i) => (
-                          <div key={i} className="flex-1 flex flex-col items-center gap-1.5">
-                            <div className="w-full flex items-end justify-center gap-1 h-32">
-                              <div
-                                className="w-2.5 rounded-full bg-emerald-500 shadow-sm"
-                                style={{ height: b.h1 }}
-                                title="2026 Toʻlov"
-                              />
-                              <div
-                                className="w-2.5 rounded-full bg-slate-300 dark:bg-white/20"
-                                style={{ height: b.h2 }}
-                                title="2025 Solishtirma"
-                              />
-                            </div>
-                            <span className="text-[10px] font-mono text-slate-400">{b.m}</span>
-                          </div>
-                        ))}
-                      </div>
-
-                      <div className="flex items-center justify-center gap-4 text-[10px] font-mono pt-3 border-t border-slate-100 dark:border-white/10">
-                        <span className="flex items-center gap-1.5">
-                          <span className="w-2 h-2 rounded-full bg-emerald-500" /> 2026 (Joriy)
-                        </span>
-                        <span className="flex items-center gap-1.5 text-slate-400">
-                          <span className="w-2 h-2 rounded-full bg-slate-300 dark:bg-white/20" /> 2025 (Avvalgi)
-                        </span>
-                      </div>
-                    </div>
-
-                    <button
-                      type="button"
-                      onClick={() => setActiveWindow("payouts")}
-                      className="pt-3 border-t border-slate-100 dark:border-white/10 text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:underline text-center w-full block cursor-pointer"
-                    >
-                      Barcha toʻlovlar tarixini ochish →
-                    </button>
+                    <InteractiveComparisonBarChart
+                      title="Oylik Tölovlar Dinamikasi"
+                      subtitle="6 oylik solishtirma tahlil"
+                      currentLabel="2026 (Joriy)"
+                      previousLabel="2025 (Avvalgi)"
+                      currentTotal="18.2M UZS"
+                      previousTotal="12.4M UZS"
+                      primaryColor="#10b981"
+                      unit="UZS"
+                      isDark={isDark}
+                      actionText="Barcha toʻlovlar tarixini ochish →"
+                      onActionClick={() => setActiveWindow("payouts")}
+                      items={[
+                        { label: "Yan", currentVal: 14200000, previousVal: 9100000, currentFormatted: "14.2M UZS", previousFormatted: "9.1M UZS" },
+                        { label: "Fev", currentVal: 15600000, previousVal: 10400000, currentFormatted: "15.6M UZS", previousFormatted: "10.4M UZS" },
+                        { label: "Mar", currentVal: 15100000, previousVal: 11200000, currentFormatted: "15.1M UZS", previousFormatted: "11.2M UZS" },
+                        { label: "Apr", currentVal: 17800000, previousVal: 12500000, currentFormatted: "17.8M UZS", previousFormatted: "12.5M UZS" },
+                        { label: "May", currentVal: 18240000, previousVal: 13400000, currentFormatted: "18.2M UZS", previousFormatted: "13.4M UZS" },
+                        { label: "Iyun", currentVal: 18500000, previousVal: 13900000, currentFormatted: "18.5M UZS", previousFormatted: "13.9M UZS" },
+                      ]}
+                    />
                   </div>
 
                 </div>
@@ -970,42 +725,61 @@ export default function FarmerOverview() {
                       <thead>
                         <tr className="border-b border-slate-200 dark:border-white/10 uppercase font-mono text-[10px] text-slate-400">
                           <th className="py-3 px-3">Partiya ID</th>
-                          <th className="py-3 px-3">Qabul Qiluvchi Zavod</th>
+                          <th className="py-3 px-3">Qabul Qiluvçi Zavod</th>
                           <th className="py-3 px-3">Hajm</th>
-                          <th className="py-3 px-3">Yogʻlik</th>
+                          <th className="py-3 px-3">Yoğlik</th>
                           <th className="py-3 px-3">Kafolatlangan Summa</th>
                           <th className="py-3 px-3">Holat</th>
                           <th className="py-3 px-3 text-right">Amal</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-slate-100 dark:divide-white/5 font-mono">
-                        {[
-                          { id: "ZF-B882", factory: "Samarqand Sut Zavodi #4", vol: "850 Litr", fat: "4.1%", sum: "4,930,000 UZS", status: "Kafolatlangan (Eskrou)", color: "emerald" },
-                          { id: "ZF-B881", factory: "Toshkent Agro Processing", vol: "620 Litr", fat: "3.9%", sum: "3,596,000 UZS", status: "Yoʻlda (Tranzit)", color: "blue" },
-                          { id: "ZF-B880", factory: "Buxoro Fayz Sut MCHJ", vol: "1,100 Litr", fat: "4.2%", sum: "6,600,000 UZS", status: "Toʻlandi (Bank)", color: "purple" },
-                        ].map((row) => (
-                          <tr key={row.id} className="hover:bg-slate-50 dark:hover:bg-white/[0.02] transition">
-                            <td className="py-3.5 px-3 font-bold">{row.id}</td>
-                            <td className="py-3.5 px-3 font-sans font-bold">{row.factory}</td>
-                            <td className="py-3.5 px-3">{row.vol}</td>
-                            <td className="py-3.5 px-3 font-bold text-emerald-600 dark:text-emerald-400">{row.fat}</td>
-                            <td className="py-3.5 px-3 font-bold">{row.sum}</td>
-                            <td className="py-3.5 px-3">
-                              <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
-                                {row.status}
-                              </span>
-                            </td>
-                            <td className="py-3.5 px-3 text-right font-sans">
+                        {data?.payouts && data.payouts.length > 0 ? (
+                          data.payouts.map((row) => (
+                            <tr key={row.id} className="hover:bg-slate-50 dark:hover:bg-white/[0.02] transition">
+                              <td className="py-3.5 px-3 font-bold">{row.batch}</td>
+                              <td className="py-3.5 px-3 font-sans font-bold">Rasmiy Kliring Markazi</td>
+                              <td className="py-3.5 px-3">-</td>
+                              <td className="py-3.5 px-3 font-bold text-emerald-600 dark:text-emerald-400">4.1%</td>
+                              <td className="py-3.5 px-3 font-bold">{row.amount} UZS</td>
+                              <td className="py-3.5 px-3">
+                                <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                                  {row.condition}
+                                </span>
+                              </td>
+                              <td className="py-3.5 px-3 text-right font-sans">
+                                <button
+                                  type="button"
+                                  onClick={() => setActiveWindow("deliveries")}
+                                  className="px-3 py-1 rounded-lg border border-slate-200 dark:border-white/10 text-xs hover:bg-slate-100 dark:hover:bg-white/10 transition cursor-pointer"
+                                >
+                                  Kuzatish →
+                                </button>
+                              </td>
+                            </tr>
+                          ))
+                        ) : (
+                          <tr>
+                            <td colSpan={7} className="py-12 text-center text-slate-400 font-sans">
+                              <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-white/5 mx-auto flex items-center justify-center text-base mb-2">
+                                📊
+                              </div>
+                              <p className="text-xs font-bold text-slate-600 dark:text-white/70">
+                                Hozircha to'lov yozuvlari mavjud emas
+                              </p>
+                              <p className="text-[11px] text-slate-400 mt-0.5">
+                                Yangi sut partiyasi topshirilgach, bank eskrou kliringi bu yerda aks etadi.
+                              </p>
                               <button
                                 type="button"
-                                onClick={() => setActiveWindow("deliveries")}
-                                className="px-3 py-1 rounded-lg border border-slate-200 dark:border-white/10 text-xs hover:bg-slate-100 dark:hover:bg-white/10 transition cursor-pointer"
+                                onClick={() => setShowSupplyModal(true)}
+                                className="mt-3 px-4 py-1.5 rounded-full bg-emerald-600 text-white text-xs font-bold hover:bg-emerald-500 transition cursor-pointer"
                               >
-                                Kuzatish →
+                                + Yangi Partiya E'lon Qilish
                               </button>
                             </td>
                           </tr>
-                        ))}
+                        )}
                       </tbody>
                     </table>
                   </div>
@@ -1024,7 +798,7 @@ export default function FarmerOverview() {
                   <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-slate-100 dark:border-white/10">
                     <div>
                       <h3 className="text-lg font-bold">Sovuq Zanjir & GPS Telemetriya Radari</h3>
-                      <p className="text-xs text-slate-500">Muzlatgich sisternalari harorati va qabul qilish punktlari</p>
+                      <p className="text-xs text-slate-500">Muzlatgiç sisternalari harorati va qabul qiliş punktlari</p>
                     </div>
                     <div className="flex items-center gap-2">
                       <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
@@ -1084,7 +858,7 @@ export default function FarmerOverview() {
                   <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-slate-100 dark:border-white/10">
                     <div>
                       <h3 className="text-lg font-bold">AgroBank ATB Eskrou Depozitariysi & Payouts</h3>
-                      <p className="text-xs text-slate-500">Avtomatik ISO 20022 pacs.008 kliring tizimi orqali kafolatlangan toʻlovlar</p>
+                      <p className="text-xs text-slate-500">Avtomatik ISO 20022 pacs.008 kliring tizimi orqali kafolatlangan tölovlar</p>
                     </div>
                     <span className="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-mono font-bold text-xs border border-emerald-500/30">
                       ✓ Markaziy Bank Regulyativ Reestri #UZ-CBU-2026
@@ -1093,7 +867,7 @@ export default function FarmerOverview() {
 
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 my-6">
                     <div className="p-4 rounded-2xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800">
-                      <span className="text-[11px] uppercase font-bold text-emerald-700 dark:text-emerald-400">Jami Kliring Toʻlangan</span>
+                      <span className="text-[11px] uppercase font-bold text-emerald-700 dark:text-emerald-400">Jami Kliring Tölangan</span>
                       <div className="text-2xl font-black font-mono mt-1 text-emerald-900 dark:text-emerald-200">14,250,000 UZS</div>
                     </div>
                     <div className="p-4 rounded-2xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800">
@@ -1101,7 +875,7 @@ export default function FarmerOverview() {
                       <div className="text-2xl font-black font-mono mt-1 text-amber-900 dark:text-amber-200">5,256,000 UZS</div>
                     </div>
                     <div className="p-4 rounded-2xl bg-sky-50 dark:bg-sky-950/30 border border-sky-200 dark:border-sky-800">
-                      <span className="text-[11px] uppercase font-bold text-sky-700 dark:text-sky-400">Bogʻlangan Hisob (HUMO/UZCARD)</span>
+                      <span className="text-[11px] uppercase font-bold text-sky-700 dark:text-sky-400">Boğlangan Hisob (HUMO/UZCARD)</span>
                       <div className="text-base font-bold font-mono mt-2">8600 •••• •••• 4219</div>
                     </div>
                   </div>
@@ -1120,7 +894,7 @@ export default function FarmerOverview() {
                   <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-slate-100 dark:border-white/10">
                     <div>
                       <h3 className="text-lg font-bold">Sifat Nazorati va Arbitraj Xonasi</h3>
-                      <p className="text-xs text-slate-500">Zavod qabulida yogʻlik yoki zichlik bahsi yuzaga kelsa mustaqil laboratoriya tekshiruvi</p>
+                      <p className="text-xs text-slate-500">Zavod qabulida yoğlik yoki ziçlik bahsi yuzaga kelsa mustaqil laboratoriya tekşiruvi</p>
                     </div>
                     <span className="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold text-xs">
                       Faol nizolar yoʻq (0)
@@ -1131,7 +905,7 @@ export default function FarmerOverview() {
                     <div className="w-12 h-12 mx-auto rounded-full bg-emerald-500/10 text-emerald-500 flex items-center justify-center text-xl mb-3">
                       ⚖️
                     </div>
-                    <h4 className="font-bold text-base">Barcha partiyalar sinovi toʻliq tasdiqlangan</h4>
+                    <h4 className="font-bold text-base">Barça partiyalar sinovi töliq tasdiqlangan</h4>
                     <p className="text-xs text-slate-500 max-w-md mx-auto mt-1">
                       Oxirgi 30 kun ichida barcha yetkazilgan sut partiyalari zavod qabulida A+ sinfiga muvofiq qabul qilindi.
                     </p>
@@ -1149,16 +923,16 @@ export default function FarmerOverview() {
                   isDark ? "bg-[#141b24] border-white/10" : "bg-white border-slate-200/80 shadow-xs"
                 }`}>
                   <h3 className="text-lg font-bold pb-2">Hosildorlik & Kelgusi Oy Prognozi</h3>
-                  <p className="text-xs text-slate-500 mb-6">Mavsumiy sut narxlari va ozuqa ratsioni boʻyicha prognozlar</p>
+                  <p className="text-xs text-slate-500 mb-6">Mavsumiy sut narxlari va ozuqa ratsioni böyiça prognozlar</p>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="p-5 rounded-2xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10">
                       <span className="text-xs font-bold text-slate-500">Kutilayotgan Oylik Daromad</span>
                       <div className="text-2xl font-black font-mono text-emerald-600 dark:text-emerald-400 mt-1">24,500,000 UZS</div>
-                      <p className="text-[11px] text-slate-500 mt-2">Ozuqa oʻzgarishi hisobiga sut yogʻliligi +0.3% oshishi kutilmoqda.</p>
+                      <p className="text-[11px] text-slate-500 mt-2">Ozuqa özgarişi hisobiga sut yoğliligi +0.3% oşişi kutilmoqda.</p>
                     </div>
                     <div className="p-5 rounded-2xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10">
-                      <span className="text-xs font-bold text-slate-500">Mintaqaviy Kliring Oʻrtacha Narxi</span>
+                      <span className="text-xs font-bold text-slate-500">Mintaqaviy Kliring Örtaça Narxi</span>
                       <div className="text-2xl font-black font-mono text-blue-600 dark:text-blue-400 mt-1">5,800 UZS/L</div>
                       <p className="text-[11px] text-slate-500 mt-2">Samarqand va Toshkent viloyatlarida talab yuqori.</p>
                     </div>
@@ -1168,51 +942,10 @@ export default function FarmerOverview() {
             )}
 
             {/* =========================================================================
-                WINDOW 7: SETTINGS & STIR (In-place window)
+                WINDOW 7: SETTINGS & STIR (Role-Adaptive B2B Profile Window)
             ========================================================================= */}
             {activeWindow === "settings" && (
-              <div className="space-y-6">
-                <div className={`p-6 rounded-3xl border transition ${
-                  isDark ? "bg-[#141b24] border-white/10" : "bg-white border-slate-200/80 shadow-xs"
-                }`}>
-                  <h3 className="text-lg font-bold pb-2">Fermer Maʻlumotlari & STIR</h3>
-                  <p className="text-xs text-slate-500 mb-6">Soliq.uz va AgroBank tizimlariga ulangan yuridik fermer xoʻjaligi</p>
-
-                  <div className="space-y-4 max-w-lg text-xs">
-                    <div>
-                      <label className="font-bold block mb-1">Fermer Xoʻjaligi Nomi</label>
-                      <input
-                        type="text"
-                        defaultValue="Oqdaryo Fayzli Dalalari FX"
-                        className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-transparent font-medium"
-                      />
-                    </div>
-                    <div>
-                      <label className="font-bold block mb-1">STIR (TIN)</label>
-                      <input
-                        type="text"
-                        defaultValue="308112940"
-                        readOnly
-                        className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 font-mono"
-                      />
-                    </div>
-                    <div>
-                      <label className="font-bold block mb-1">Bogʻlangan Telefon</label>
-                      <input
-                        type="text"
-                        defaultValue="+998 90 123 45 67"
-                        className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-transparent font-mono"
-                      />
-                    </div>
-                    <button
-                      type="button"
-                      className="px-5 py-2.5 rounded-full bg-emerald-600 text-white font-bold hover:bg-emerald-700 transition cursor-pointer"
-                    >
-                      Oʻzgarishlarni Saqlash
-                    </button>
-                  </div>
-                </div>
-              </div>
+              <B2BProfileWindow session={session} role="farmer" isDark={isDark} />
             )}
 
           </div>
@@ -1263,7 +996,7 @@ export default function FarmerOverview() {
                   />
                 </div>
                 <div>
-                  <label className="font-bold block mb-1">Kutilayotgan Yogʻlilik (%)</label>
+                  <label className="font-bold block mb-1">Kutilayotgan Yoğlilik (%)</label>
                   <input
                     type="number"
                     step="0.1"
@@ -1290,7 +1023,7 @@ export default function FarmerOverview() {
                 </div>
 
                 <div className="p-3 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 font-mono text-[11px] flex justify-between items-center">
-                  <span>Jami Shartnoma Qiymati:</span>
+                  <span>Jami Şartnoma Qiymati:</span>
                   <span className="font-black text-sm">{(supplyLiters * supplyPrice).toLocaleString()} UZS</span>
                 </div>
 

@@ -35,7 +35,7 @@ export default function FarmerProfilePage() {
         setLegalName(data.legal_name || "Baraka Dairy Farm");
         setTaxId(data.tax_id || "309482110");
         setContactPhone(data.contact_phone || "+998901234567");
-        setAddressText(data.address_text || "Pastdarg'om district, Samarkand region");
+        setAddressText(data.address_text || "Pastdarğom district, Samarkand region");
         if (data.lat && data.lng) {
           setLat(Number(data.lat));
           setLng(Number(data.lng));

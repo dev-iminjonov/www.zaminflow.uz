@@ -96,7 +96,7 @@ export default function ConfirmPickupPage() {
           <p className="text-xs text-white/70 max-w-md leading-relaxed mb-4">
             Fermer bilan raqamli OTP qoʻl berish yakunlandi. {meterLiters} litr xom sut sisternaga quyildi va IoT harorat datchigi 3.2°C rejimida faollashtirildi.
           </p>
-          <span className="text-[11px] text-white/40">Yoʻl xaritasiga yoʻnaltirilmoqda...</span>
+          <span className="text-[11px] text-white/40">Yöl xaritasiga yönaltirilmoqda...</span>
         </div>
       ) : (
         <form
@@ -105,7 +105,7 @@ export default function ConfirmPickupPage() {
         >
           <div className="border-b border-white/10 pb-4">
             <h2 className="text-lg font-bold text-white">Qabul Punktidagi Ma'lumotlar</h2>
-            <p className="text-xs text-white/50">Fermer hisoblagich koʻrsatkichlari va xavfsizlik muhr raqami</p>
+            <p className="text-xs text-white/50">Fermer hisoblagiç körsatkiçlari va xavfsizlik muhr raqami</p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

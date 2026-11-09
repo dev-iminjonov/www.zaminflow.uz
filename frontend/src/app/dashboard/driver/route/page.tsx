@@ -55,7 +55,7 @@ export default function DriverRoutePage() {
       active: false,
     },
     {
-      name: "M39 Sirdaryo Nazorat Bepul Yo'lagi",
+      name: "M39 Sirdaryo Nazorat Bepul Yölagi",
       desc: "Avtomatik tarozi nazorati: 38.4 tonna yalpi vazn",
       distance: "42 km",
       time: "12:05",
@@ -63,7 +63,7 @@ export default function DriverRoutePage() {
       active: false,
     },
     {
-      name: "Chinoz Ko'prigi / Toshkent Kirish",
+      name: "Çinoz Köprigi / Toşkent Kiriş",
       desc: "Magistral oqimida harakat. Harorat +3.2°C me'yorda",
       distance: "78 km",
       time: "12:45",
@@ -71,8 +71,8 @@ export default function DriverRoutePage() {
       active: true,
     },
     {
-      name: "Toshkent Halqa Yo'li (THAY Sergeli)",
-      desc: "Zavod qabul bo'limiga burilish yo'nalishi",
+      name: "Toşkent Halqa Yöli (THAY Sergeli)",
+      desc: "Zavod qabul bölimiga buriliş yönalişi",
       distance: "112 km",
       time: "13:15",
       passed: false,
@@ -279,7 +279,7 @@ export default function DriverRoutePage() {
                 <span className="text-[#00ffc8] font-mono">
                   {routeProgress.toFixed(0)}% Marshrut Bajarildi
                 </span>
-                <span>Yoʻl Qoplamasi: Quruq • Ochiq</span>
+                <span>Yöl Qoplamasi: Quruq • Oçiq</span>
               </div>
             </div>
 
@@ -298,7 +298,7 @@ export default function DriverRoutePage() {
                 {/* Section 1 */}
                 <div className="p-3.5 rounded-2xl bg-white/[0.03] border border-white/10">
                   <div className="flex justify-between items-center text-[10px] text-gray-400 mb-1">
-                    <span>1-Boʻlim (Oldi)</span>
+                    <span>1-Bölim (Oldi)</span>
                     <span className="text-[#00ffc8] font-bold">8,000 L</span>
                   </div>
                   <div className="text-xl font-black font-mono text-white">
@@ -310,7 +310,7 @@ export default function DriverRoutePage() {
                 {/* Section 2 */}
                 <div className="p-3.5 rounded-2xl bg-white/[0.03] border border-white/10">
                   <div className="flex justify-between items-center text-[10px] text-gray-400 mb-1">
-                    <span>2-Boʻlim (Oʻrta)</span>
+                    <span>2-Bölim (Örta)</span>
                     <span className="text-[#00d3e0] font-bold">6,000 L</span>
                   </div>
                   <div className="text-xl font-black font-mono text-white">
@@ -322,7 +322,7 @@ export default function DriverRoutePage() {
                 {/* Section 3 */}
                 <div className="p-3.5 rounded-2xl bg-white/[0.03] border border-white/10">
                   <div className="flex justify-between items-center text-[10px] text-gray-400 mb-1">
-                    <span>3-Boʻlim (Orqa)</span>
+                    <span>3-Bölim (Orqa)</span>
                     <span className="text-[#0099ff] font-bold">6,000 L</span>
                   </div>
                   <div className="text-xl font-black font-mono text-white">
@@ -414,7 +414,7 @@ export default function DriverRoutePage() {
                 href="/dashboard/driver/report-issue"
                 className="w-full py-3 rounded-full border border-red-500/30 bg-red-500/10 hover:bg-red-500/20 text-red-300 font-bold text-xs flex items-center justify-center gap-1.5 transition"
               >
-                <span>⚠ Nosozlik / Kechikish haqida xabar berish</span>
+                <span>⚠ Nosozlik / Keçikiş haqida xabar beriş</span>
               </Link>
             </div>
           </div>

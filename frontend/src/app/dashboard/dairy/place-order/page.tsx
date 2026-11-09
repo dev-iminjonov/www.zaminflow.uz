@@ -112,7 +112,7 @@ export default function PlaceOrderPage() {
           >
             <div className="border-b border-white/10 pb-4">
               <h2 className="text-lg font-bold text-white">Xarid Parametrlari</h2>
-              <p className="text-xs text-white/50">Qabul qiluvchi zavod va sut sifat talablari</p>
+              <p className="text-xs text-white/50">Qabul qiluvçi zavod va sut sifat talablari</p>
             </div>
 
             {/* Target Volume */}
@@ -141,9 +141,9 @@ export default function PlaceOrderPage() {
               </label>
               <div className="grid grid-cols-3 gap-3">
                 {[
-                  { id: "A+", label: "A+ Oliy Sinf", desc: "Yogʻ ≥ 4.0%, Kislotalik ≤ 17°T" },
-                  { id: "A", label: "A 1-Sinf", desc: "Yogʻ ≥ 3.6%, Kislotalik ≤ 19°T" },
-                  { id: "B", label: "B 2-Sinf", desc: "Yogʻ ≥ 3.2%, Kislotalik ≤ 21°T" },
+                  { id: "A+", label: "A+ Oliy Sinf", desc: "Yoğ ≥ 4.0%, Kislotalik ≤ 17°T" },
+                  { id: "A", label: "A 1-Sinf", desc: "Yoğ ≥ 3.6%, Kislotalik ≤ 19°T" },
+                  { id: "B", label: "B 2-Sinf", desc: "Yoğ ≥ 3.2%, Kislotalik ≤ 21°T" },
                 ].map((g) => (
                   <button
                     key={g.id}
@@ -194,7 +194,7 @@ export default function PlaceOrderPage() {
                 >
                   <option value="Tashkent Central Dairy">Toshkent Markaziy Sut Zavodi</option>
                   <option value="Samarkand Plant No 2">Samarqand Qayta Ishlash Markazi</option>
-                  <option value="Fergana Valley Dairy">Fargʻona Valley Dairy MCHJ</option>
+                  <option value="Fergana Valley Dairy">Farğona Valley Dairy MÇJ</option>
                   <option value="Sayxunobod Intake Station">Sayxunobod Qabul Punkti</option>
                 </select>
               </div>

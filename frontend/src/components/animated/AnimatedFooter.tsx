@@ -38,9 +38,6 @@ export default function AnimatedFooter({ isDark = false }: { isDark?: boolean })
             <div className="text-xs font-black tracking-wider uppercase text-[#00d3e0] mb-1">
               {f.companyCol}
             </div>
-            <a href="#company" className="text-xs sm:text-sm text-white/70 hover:text-white transition-colors">
-              {f.about}
-            </a>
             <a href="#benefits" className="text-xs sm:text-sm text-white/70 hover:text-white transition-colors">
               {f.benefits}
             </a>

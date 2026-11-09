@@ -119,7 +119,7 @@ export default function ListSupplyPage() {
               <strong className="font-mono text-[#00d3e0] text-sm">{totalPayout.toLocaleString()} UZS</strong>
             </div>
             <div className="flex justify-between">
-              <span className="text-white/50">Qabul qiluvchi zavod:</span>
+              <span className="text-white/50">Qabul qiluvçi zavod:</span>
               <strong className="text-white">{destinationPlant}</strong>
             </div>
           </div>
@@ -146,7 +146,7 @@ export default function ListSupplyPage() {
             {/* Section 1: Volume & Milking */}
             <div>
               <div className="text-xs font-bold tracking-widest text-[#00d3e0] uppercase mb-4 flex items-center gap-2">
-                <span>1. Hajm va Sog'ish Seansi</span>
+                <span>1. Hajm va Soğiş Seansi</span>
                 <div className="flex-1 h-px bg-white/10" />
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -287,7 +287,7 @@ export default function ListSupplyPage() {
             {/* Section 3: Buyer & Pickup Logistics */}
             <div>
               <div className="text-xs font-bold tracking-widest text-[#00d3e0] uppercase mb-4 flex items-center gap-2">
-                <span>3. Qabul Qiluvchi Zavod & Qabul Oynasi</span>
+                <span>3. Qabul Qiluvçi Zavod & Qabul Oynasi</span>
                 <div className="flex-1 h-px bg-white/10" />
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -302,7 +302,7 @@ export default function ListSupplyPage() {
                   >
                     <option value="Tashkent Central Dairy">Tashkent Central Dairy (Toshkent viloyati)</option>
                     <option value="Samarqand Milk Products">Samarqand Milk Products (Samarqand)</option>
-                    <option value="Fergana Valley Dairy">Fergana Valley Dairy (Farg'ona)</option>
+                    <option value="Fergana Valley Dairy">Fergana Valley Dairy (Farğona)</option>
                     <option value="Andijan Pure Dairy">Andijan Pure Dairy (Andijon)</option>
                   </select>
                 </div>
@@ -349,7 +349,7 @@ export default function ListSupplyPage() {
                 </div>
 
                 <div className="flex justify-between items-center">
-                  <span className="text-white/60">Yog' & SNF bonusi:</span>
+                  <span className="text-white/60">Yoğ & SNF bonusi:</span>
                   <span className="font-mono font-bold text-[#00ffc8]">
                     +{effectivePrice - 4100} UZS/L
                   </span>

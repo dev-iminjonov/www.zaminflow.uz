@@ -45,12 +45,16 @@ export default function FaqEmailSection({ isDark = false }: { isDark?: boolean }
             </div>
 
             <h2
-              className={`text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-tight mb-4 ${
+              className={`text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-[1.25] sm:leading-[1.3] mb-4 ${
                 isDark ? "text-white" : "text-[#081c15]"
               }`}
             >
               {t.faqSection.titleStart}{" "}
-              <span className="bg-gradient-to-r from-[#00ffc8] via-[#00d3e0] to-[#0099ff] bg-clip-text text-transparent">
+              <span className={`inline ${
+                isDark
+                  ? "bg-gradient-to-r from-[#00ffc8] via-[#00d3e0] to-[#0099ff] bg-clip-text text-transparent"
+                  : "bg-gradient-to-r from-[#059669] via-[#0284c7] to-[#0369a1] bg-clip-text text-transparent"
+              }`}>
                 {t.faqSection.titleAccent}
               </span>
             </h2>
@@ -79,8 +83,8 @@ export default function FaqEmailSection({ isDark = false }: { isDark?: boolean }
               <div
                 className={`rounded-full p-2 border flex items-center shadow-lg transition-all ${
                   isDark
-                    ? "bg-[#14181d]/90 backdrop-blur-xl border-white/15 focus-within:border-[#00d3e0]"
-                    : "bg-white/95 backdrop-blur-xl border-[#b7e4c7] focus-within:border-[#00d3e0] shadow-[0_10px_35px_rgba(0,153,255,0.12)]"
+                    ? "bg-[#14181d]/90 backdrop-blur-xl border-white/15 focus-within:border-[#00d3e0] focus-within:ring-2 focus-within:ring-[#00d3e0]/20"
+                    : "bg-white/95 backdrop-blur-xl border-[#b7e4c7] focus-within:border-[#00d3e0] focus-within:ring-2 focus-within:ring-[#00d3e0]/20 shadow-[0_10px_35px_rgba(0,153,255,0.12)]"
                 }`}
               >
                 <input
@@ -88,7 +92,8 @@ export default function FaqEmailSection({ isDark = false }: { isDark?: boolean }
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder={t.faqSection.emailPlaceholder}
-                  className="w-full px-5 py-2.5 bg-transparent text-xs sm:text-sm font-semibold outline-hidden placeholder:opacity-50"
+                  className="w-full px-5 py-2.5 rounded-l-full bg-transparent text-xs sm:text-sm font-semibold border-0 outline-none ring-0 focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0 placeholder:opacity-50 shadow-none"
+                  style={{ outline: "none", boxShadow: "none" }}
                 />
                 <button
                   type="submit"
@@ -118,7 +123,7 @@ export default function FaqEmailSection({ isDark = false }: { isDark?: boolean }
                 ? "Часто задаваемые вопросы"
                 : locale === "en"
                 ? "Frequently Asked Questions"
-                : "Eng ko'p so'raladigan savollar"}
+                : "Eng köp söraladigan savollar"}
             </div>
 
             {faqs.map((faq, idx) => {
@@ -142,10 +147,12 @@ export default function FaqEmailSection({ isDark = false }: { isDark?: boolean }
                       {faq.question}
                     </span>
                     <span
-                      className={`w-8 h-8 rounded-full border border-white/10 flex items-center justify-center text-sm transition-transform duration-300 shrink-0 ${
+                      className={`w-8 h-8 rounded-full border flex items-center justify-center text-sm transition-transform duration-300 shrink-0 ${
                         isOpen
-                          ? "rotate-180 bg-[#00ffc8] text-[#070B14] font-black"
-                          : "text-gray-400"
+                          ? "rotate-180 bg-[#00ffc8] text-[#070B14] font-black border-[#00ffc8]"
+                          : isDark
+                          ? "border-white/10 text-gray-400"
+                          : "border-slate-200 text-slate-500"
                       }`}
                     >
                       ↓
@@ -153,7 +160,9 @@ export default function FaqEmailSection({ isDark = false }: { isDark?: boolean }
                   </button>
 
                   {isOpen && (
-                    <div className="px-5 sm:px-6 pb-6 pt-1 text-xs sm:text-sm text-gray-400 leading-relaxed border-t border-black/5 dark:border-white/5 animate-in fade-in duration-300">
+                    <div className={`px-5 sm:px-6 pb-6 pt-1 text-xs sm:text-sm leading-relaxed border-t animate-in fade-in duration-300 ${
+                      isDark ? "text-gray-400 border-white/5" : "text-slate-600 border-slate-100"
+                    }`}>
                       {faq.answer}
                     </div>
                   )}

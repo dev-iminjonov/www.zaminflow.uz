@@ -40,6 +40,11 @@ export default function RootLayout({
                     root.classList.add('light');
                     root.style.colorScheme = 'light';
                   }
+
+                  var savedLang = window.localStorage.getItem('zaminflow_locale');
+                  if (savedLang === 'ru' || savedLang === 'en' || savedLang === 'uz') {
+                    root.lang = savedLang;
+                  }
                 } catch (e) {}
               })();
             `,

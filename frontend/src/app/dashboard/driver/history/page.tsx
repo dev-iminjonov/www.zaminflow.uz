@@ -45,7 +45,7 @@ export default function DriverHistoryPage() {
       {/* 2. SUMMARY TELEMETRY BENCH */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div className="rounded-[24px] bg-white/[0.03] border border-white/10 p-5">
-          <div className="text-[11px] font-mono uppercase text-white/50">Jami Bosib Oʻtilgan Masofa</div>
+          <div className="text-[11px] font-mono uppercase text-white/50">Jami Bosib Ötilgan Masofa</div>
           <div className="flex items-baseline gap-2 mt-2">
             <span className="text-3xl font-black font-mono text-white">{totalKm.toLocaleString()}</span>
             <span className="text-xs font-mono text-[#00ffc8]">km</span>
@@ -76,7 +76,7 @@ export default function DriverHistoryPage() {
             <thead>
               <tr className="border-b border-white/10 text-white/50 uppercase font-mono text-[10px]">
                 <th className="py-3 px-3">Reys ID / Sana</th>
-                <th className="py-3 px-3">Marshrut (Qabul → Yetkazish)</th>
+                <th className="py-3 px-3">Marşrut (Qabul → Yetkaziş)</th>
                 <th className="py-3 px-3">Hajm</th>
                 <th className="py-3 px-3">Masofa</th>
                 <th className="py-3 px-3">Sovuq Zanjir</th>

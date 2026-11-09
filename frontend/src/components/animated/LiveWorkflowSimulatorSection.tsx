@@ -48,17 +48,21 @@ export default function LiveWorkflowSimulatorSection({ isDark = false }: { isDar
           </div>
 
           <h2
-            className={`text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-tight mb-4 ${
+            className={`text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-[1.25] sm:leading-[1.3] mb-4 ${
               isDark ? "text-white" : "text-[#081c15]"
             }`}
           >
             {t.simulatorSection.titleStart}{" "}
-            <span className="bg-gradient-to-r from-[#00ffc8] via-[#00d3e0] to-[#0099ff] bg-clip-text text-transparent">
+            <span className={`inline ${
+              isDark
+                ? "bg-gradient-to-r from-[#00ffc8] via-[#00d3e0] to-[#0099ff] bg-clip-text text-transparent"
+                : "bg-gradient-to-r from-[#059669] via-[#0284c7] to-[#0369a1] bg-clip-text text-transparent"
+            }`}>
               {t.simulatorSection.titleAccent}
             </span>
           </h2>
 
-          <p className="text-xs sm:text-sm text-gray-400 max-w-xl mx-auto mb-6">
+          <p className={`text-xs sm:text-sm max-w-xl mx-auto mb-6 ${isDark ? "text-gray-400" : "text-slate-600"}`}>
             {t.simulatorSection.subtitle}
           </p>
 
@@ -69,7 +73,9 @@ export default function LiveWorkflowSimulatorSection({ isDark = false }: { isDar
               className={`px-4 py-2 rounded-full text-xs font-black flex items-center gap-2 transition-all border ${
                 isAutoPlaying
                   ? "bg-[#00ffc8] text-[#070B14] border-[#00ffc8] shadow-[0_0_20px_rgba(0,255,200,0.4)]"
-                  : "bg-[#14181d]/80 text-white border-white/10 hover:border-[#00d3e0]/50"
+                  : isDark
+                  ? "bg-[#14181d]/80 text-white border-white/10 hover:border-[#00d3e0]/50"
+                  : "bg-white text-slate-800 border-slate-200 hover:border-emerald-500 shadow-xs"
               }`}
             >
               <span>
@@ -78,7 +84,7 @@ export default function LiveWorkflowSimulatorSection({ isDark = false }: { isDar
                     ? "⏸ Пауза"
                     : locale === "en"
                     ? "⏸ Pause"
-                    : "⏸ Toʻxtatish"
+                    : "⏸ Töxtatiş"
                   : locale === "ru"
                   ? "▶ Запустить авто-симуляцию"
                   : locale === "en"
@@ -93,7 +99,11 @@ export default function LiveWorkflowSimulatorSection({ isDark = false }: { isDar
                 setIsAutoPlaying(false);
                 setCurrentStepIndex(0);
               }}
-              className="px-3.5 py-2 rounded-full text-xs font-bold bg-[#14181d]/50 text-gray-400 hover:text-white border border-white/10 transition-colors"
+              className={`px-3.5 py-2 rounded-full text-xs font-bold transition-colors border ${
+                isDark
+                  ? "bg-[#14181d]/50 text-gray-400 hover:text-white border-white/10"
+                  : "bg-white text-slate-500 hover:text-slate-900 border-slate-200 shadow-xs"
+              }`}
               title="Qayta boshlash"
             >
               {locale === "ru" ? "↺ Сброс" : locale === "en" ? "↺ Restart" : "↺ Qayta Boshlash"}
@@ -113,10 +123,16 @@ export default function LiveWorkflowSimulatorSection({ isDark = false }: { isDar
                 onClick={() => handleStepClick(idx)}
                 className={`p-3 sm:p-4 rounded-2xl sm:rounded-3xl border text-left transition-all relative overflow-hidden group ${
                   isActive
-                    ? "bg-gradient-to-br from-[#182029] to-[#0e1319] border-[#00ffc8] shadow-[0_10px_30px_rgba(0,255,200,0.22)] scale-[1.02]"
+                    ? isDark
+                      ? "bg-gradient-to-br from-[#182029] to-[#0e1319] border-[#00ffc8] shadow-[0_10px_30px_rgba(0,255,200,0.22)] scale-[1.02]"
+                      : "bg-white border-emerald-500 shadow-[0_10px_30px_rgba(16,185,129,0.18)] scale-[1.02]"
                     : isCompleted
-                    ? "bg-[#14181d]/60 border-[#00ffc8]/30 text-gray-300 hover:bg-[#14181d]"
-                    : "bg-[#14181d]/30 border-white/5 text-gray-500 hover:bg-[#14181d]/60 hover:text-gray-300"
+                    ? isDark
+                      ? "bg-[#14181d]/60 border-[#00ffc8]/30 text-gray-300 hover:bg-[#14181d]"
+                      : "bg-emerald-50/50 border-emerald-200 text-slate-700 hover:bg-emerald-50"
+                    : isDark
+                    ? "bg-[#14181d]/30 border-white/5 text-gray-500 hover:bg-[#14181d]/60 hover:text-gray-300"
+                    : "bg-white/60 border-slate-200 text-slate-500 hover:bg-white hover:text-slate-800"
                 }`}
               >
                 {/* Active Top Glow Line */}
@@ -139,10 +155,16 @@ export default function LiveWorkflowSimulatorSection({ isDark = false }: { isDar
                   </span>
                 </div>
 
-                <div className="text-xs font-extrabold text-white truncate mb-0.5">
+                <div
+                  className="text-xs font-extrabold text-slate-900 dark:text-white line-clamp-2 break-words leading-tight min-h-[32px] mb-0.5"
+                  title={s.title}
+                >
                   {s.title}
                 </div>
-                <div className="text-[10px] text-gray-400 truncate">
+                <div
+                  className="text-[10px] text-slate-500 dark:text-gray-400 line-clamp-1 break-words"
+                  title={s.roleTitle}
+                >
                   {s.roleTitle}
                 </div>
               </button>
@@ -151,7 +173,11 @@ export default function LiveWorkflowSimulatorSection({ isDark = false }: { isDar
         </div>
 
         {/* Active Stage Interactive Showcase Card */}
-        <div className="relative rounded-[32px] sm:rounded-[40px] p-6 sm:p-10 bg-gradient-to-br from-[#151b22]/95 via-[#10141a]/95 to-[#0b0e12]/95 border border-white/10 shadow-[0_25px_80px_rgba(0,0,0,0.7)] backdrop-blur-2xl">
+        <div className={`relative rounded-[32px] sm:rounded-[40px] p-6 sm:p-10 border shadow-2xl backdrop-blur-2xl transition-all ${
+          isDark
+            ? "bg-gradient-to-br from-[#151b22]/95 via-[#10141a]/95 to-[#0b0e12]/95 border-white/10 shadow-[0_25px_80px_rgba(0,0,0,0.7)]"
+            : "bg-white/95 border-slate-200 shadow-[0_25px_70px_rgba(15,23,42,0.08)]"
+        }`}>
           
           {/* Ambient Glows */}
           <div className="absolute top-0 right-0 w-80 h-80 bg-[#00ffc8]/10 rounded-full blur-[100px] pointer-events-none" />
@@ -167,15 +193,17 @@ export default function LiveWorkflowSimulatorSection({ isDark = false }: { isDar
                 <span className="px-3 py-1 rounded-full text-xs font-black bg-gradient-to-r from-[#00ffc8] to-[#0099ff] text-[#070B14]">
                   {t.simulatorSection.stepBadge} 0{currentStep.step} / 05
                 </span>
-                <span className="px-3 py-1 rounded-full text-xs font-bold bg-white/5 text-gray-300 border border-white/10 flex items-center gap-1.5">
+                <span className={`px-3 py-1 rounded-full text-xs font-bold border flex items-center gap-1.5 ${
+                  isDark ? "bg-white/5 text-gray-300 border-white/10" : "bg-slate-100 text-slate-700 border-slate-200"
+                }`}>
                   <span>{currentStep.icon}</span>
                   <span>{currentStep.roleTitle}</span>
                 </span>
                 <span
                   className="px-3 py-1 rounded-full text-xs font-bold"
                   style={{
-                    backgroundColor: `${currentStep.badgeColor}20`,
-                    color: currentStep.badgeColor,
+                    backgroundColor: isDark ? `${currentStep.badgeColor}20` : `${currentStep.badgeColor}15`,
+                    color: isDark ? currentStep.badgeColor : "#047857",
                     borderColor: `${currentStep.badgeColor}40`,
                     borderWidth: 1,
                   }}
@@ -186,10 +214,14 @@ export default function LiveWorkflowSimulatorSection({ isDark = false }: { isDar
 
               {/* Title & Description */}
               <div>
-                <h3 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-white mb-2">
+                <h3 className={`text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight mb-2 ${
+                  isDark ? "text-white" : "text-slate-900"
+                }`}>
                   {currentStep.title}
                 </h3>
-                <p className="text-xs sm:text-sm text-gray-300 leading-relaxed">
+                <p className={`text-xs sm:text-sm leading-relaxed ${
+                  isDark ? "text-gray-300" : "text-slate-600"
+                }`}>
                   {currentStep.subtitle}
                 </p>
               </div>
@@ -201,16 +233,24 @@ export default function LiveWorkflowSimulatorSection({ isDark = false }: { isDar
                     key={i}
                     className={`p-3 sm:p-3.5 rounded-2xl border transition-all ${
                       d.highlight
-                        ? "bg-[#00ffc8]/10 border-[#00ffc8]/30 shadow-sm"
-                        : "bg-[#14181d]/60 border-white/5"
+                        ? isDark
+                          ? "bg-[#00ffc8]/10 border-[#00ffc8]/30 shadow-sm"
+                          : "bg-emerald-50 border-emerald-200 shadow-xs"
+                        : isDark
+                        ? "bg-[#14181d]/60 border-white/5"
+                        : "bg-slate-50 border-slate-200/80"
                     }`}
                   >
-                    <div className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-0.5">
+                    <div className={`text-[10px] font-bold uppercase tracking-wider mb-0.5 ${
+                      isDark ? "text-gray-400" : "text-slate-500"
+                    }`}>
                       {d.label}
                     </div>
                     <div
                       className={`text-sm sm:text-base font-extrabold truncate ${
-                        d.highlight ? "text-[#00ffc8]" : "text-white"
+                        d.highlight
+                          ? isDark ? "text-[#00ffc8]" : "text-emerald-700"
+                          : isDark ? "text-white" : "text-slate-900"
                       }`}
                     >
                       {d.value}
@@ -220,29 +260,43 @@ export default function LiveWorkflowSimulatorSection({ isDark = false }: { isDar
               </div>
 
               {/* System Audit Log Ribbon */}
-              <div className="p-3 rounded-2xl bg-black/50 border border-white/5 font-mono text-xs flex items-center gap-2 text-gray-300">
-                <span className="text-[#00ffc8] animate-pulse">●</span>
-                <span className="text-gray-400">
+              <div className={`p-3 rounded-2xl border font-mono text-xs flex items-center gap-2 ${
+                isDark ? "bg-black/50 border-white/5 text-gray-300" : "bg-slate-100 border-slate-200 text-slate-700"
+              }`}>
+                <span className={isDark ? "text-[#00ffc8] animate-pulse" : "text-emerald-600 animate-pulse"}>●</span>
+                <span className={isDark ? "text-gray-400" : "text-slate-500"}>
                   {locale === "ru" ? "Системный лог:" : locale === "en" ? "System Log:" : "Tizim Yozuvi:"}
                 </span>
-                <span className="text-white truncate">{currentStep.systemLog}</span>
+                <span className={`truncate font-semibold ${isDark ? "text-white" : "text-slate-900"}`}>{currentStep.systemLog}</span>
               </div>
             </div>
 
             {/* Right Column (5 cols): Interactive Simulation Visual & CTA */}
-            <div className="lg:col-span-5 flex flex-col items-center justify-between h-full bg-[#14181d]/80 border border-white/10 rounded-3xl p-6 sm:p-8 space-y-6">
+            <div className={`lg:col-span-5 flex flex-col items-center justify-between h-full border rounded-3xl p-6 sm:p-8 space-y-6 ${
+              isDark ? "bg-[#14181d]/80 border-white/10" : "bg-slate-50 border-slate-200"
+            }`}>
               
               {/* Visual Reactor Core */}
               <div className="relative w-40 h-40 sm:w-48 sm:h-48 flex items-center justify-center">
                 {/* Rotating Glowing Rings */}
-                <div className="absolute inset-0 rounded-full border-2 border-dashed border-[#00ffc8]/40 animate-spin" style={{ animationDuration: "20s" }} />
-                <div className="absolute inset-3 rounded-full border-2 border-[#00d3e0]/20" />
+                <div className={`absolute inset-0 rounded-full border-2 border-dashed animate-spin ${
+                  isDark ? "border-[#00ffc8]/40" : "border-emerald-400/50"
+                }`} style={{ animationDuration: "20s" }} />
+                <div className={`absolute inset-3 rounded-full border-2 ${
+                  isDark ? "border-[#00d3e0]/20" : "border-emerald-300/30"
+                }`} />
                 <div className="absolute inset-6 rounded-full bg-gradient-to-tr from-[#00ffc8]/20 to-[#0099ff]/20 blur-md" />
 
                 {/* Center Icon */}
-                <div className="relative z-10 w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-[#0d1013] border-2 border-[#00ffc8] shadow-[0_0_35px_rgba(0,255,200,0.5)] flex flex-col items-center justify-center text-4xl sm:text-5xl">
+                <div className={`relative z-10 w-24 h-24 sm:w-28 sm:h-28 rounded-full border-2 flex flex-col items-center justify-center text-4xl sm:text-5xl shadow-xl ${
+                  isDark
+                    ? "bg-[#0d1013] border-[#00ffc8] text-white"
+                    : "bg-white border-emerald-500 text-slate-900 shadow-emerald-500/10"
+                }`}>
                   <span>{currentStep.icon}</span>
-                  <span className="text-[9px] font-black text-[#00ffc8] uppercase mt-1">
+                  <span className={`text-[9px] font-black uppercase mt-1 ${
+                    isDark ? "text-[#00ffc8]" : "text-emerald-600"
+                  }`}>
                     {t.simulatorSection.stepBadge} 0{currentStep.step}
                   </span>
                 </div>
@@ -251,14 +305,14 @@ export default function LiveWorkflowSimulatorSection({ isDark = false }: { isDar
               {/* Progress Bar & Status */}
               <div className="w-full space-y-2">
                 <div className="flex items-center justify-between text-xs font-bold">
-                  <span className="text-gray-400">
+                  <span className={isDark ? "text-gray-400" : "text-slate-500"}>
                     {locale === "ru" ? "Статус процесса" : locale === "en" ? "Process Status" : "Jarayon Holati"}
                   </span>
-                  <span className="text-[#00ffc8]">
+                  <span className={isDark ? "text-[#00ffc8]" : "text-emerald-700"}>
                     {currentStep.step * 20}% {locale === "ru" ? "Завершено" : locale === "en" ? "Ready" : "Tayyor"}
                   </span>
                 </div>
-                <div className="w-full h-2.5 rounded-full bg-white/10 overflow-hidden">
+                <div className={`w-full h-2.5 rounded-full overflow-hidden ${isDark ? "bg-white/10" : "bg-slate-200"}`}>
                   <div
                     className="h-full rounded-full transition-all duration-500 bg-gradient-to-r from-[#00ffc8] via-[#00d3e0] to-[#0099ff]"
                     style={{ width: `${currentStep.step * 20}%` }}
@@ -270,7 +324,7 @@ export default function LiveWorkflowSimulatorSection({ isDark = false }: { isDar
               <div className="w-full space-y-2.5">
                 <button
                   onClick={handleNext}
-                  className="w-full py-4 rounded-full font-black text-xs sm:text-sm text-[#070B14] bg-gradient-to-r from-[#00ffc8] via-[#00d3e0] to-[#0099ff] hover:opacity-95 active:scale-95 shadow-[0_10px_30px_rgba(0,255,200,0.3)] transition-all flex items-center justify-center gap-2"
+                  className="w-full py-4 rounded-full font-black text-xs sm:text-sm text-[#070B14] bg-gradient-to-r from-[#00ffc8] via-[#00d3e0] to-[#0099ff] hover:opacity-95 active:scale-95 shadow-[0_10px_30px_rgba(0,255,200,0.3)] transition-all flex items-center justify-center gap-2 cursor-pointer"
                 >
                   <span>{currentStep.actionText}</span>
                   <span>➔</span>
@@ -279,13 +333,17 @@ export default function LiveWorkflowSimulatorSection({ isDark = false }: { isDar
                 {currentStep.step === 5 && (
                   <Link
                     href="/sign-up"
-                    className="w-full py-3 rounded-full text-xs font-bold text-center text-white bg-white/10 hover:bg-white/20 transition-colors block border border-white/10"
+                    className={`w-full py-3 rounded-full text-xs font-bold text-center transition-colors block border ${
+                      isDark
+                        ? "text-white bg-white/10 hover:bg-white/20 border-white/10"
+                        : "text-slate-800 bg-white hover:bg-slate-100 border-slate-200 shadow-xs"
+                    }`}
                   >
                     {locale === "ru"
                       ? "Подключить вашу ферму или завод →"
                       : locale === "en"
                       ? "Connect Your Farm or Dairy Plant →"
-                      : "Oʻz Ferma yoki Zavodingizni Ulash →"}
+                      : "Öz Ferma yoki Zavodingizni Ulaş →"}
                   </Link>
                 )}
               </div>

@@ -15,7 +15,7 @@ interface TeamMember {
 
 const teamMembers: TeamMember[] = [
   {
-    name: "Iminjonov Muhammadaziz",
+    name: "Muhammadaziz Iminjonov",
     roleKey: "founder",
     image: "/images/team-muhammadaziz.webp",
     linkedin: "https://www.linkedin.com/in/imuhammadaziz/?lipi=urn%3Ali%3Apage%3Ad_flagship3_profile_view_base_contact_details%3B%2FEcJS8O%2FRgGnZhvFIPzRPg%3D%3D",
@@ -23,20 +23,20 @@ const teamMembers: TeamMember[] = [
     instagram: "https://instagram.com/im.mukhammadaziz",
   },
   {
-    name: "Sevinchoy Soporboyeva",
+    name: "Sevinçoy Soporboyeva",
     roleKey: "coFounder",
     image: "/images/team-sevinchoy.webp",
     linkedin: "https://www.linkedin.com/in/sevinchoy-soporboyeva/?lipi=urn%3Ali%3Apage%3Ad_flagship3_profile_view_base_contact_details%3Bj1rNvFTKSPGzLrYpN01iZg%3D%3D",
   },
   {
-    name: "Abdumanov Akrom",
+    name: "Akrom Abdumanov",
     roleKey: "leadDev",
     image: "/images/team-akrom.webp",
     linkedin: "https://www.linkedin.com/in/akrom-abdumanov-6457a039a/?lipi=urn%3Ali%3Apage%3Ad_flagship3_profile_view_base_contact_details%3BR1yI1s4YSVqIWhj3gbHoUQ%3D%3D",
     instagram: "https://instagram.com/abdumanovakrom",
   },
   {
-    name: "Shokhjakhon Abdufattohov",
+    name: "Şohjahon Abdufattohov",
     roleKey: "adviser",
     image: "/images/team-shohjahon.webp",
     email: "sh.abdufattohov@polito.uz",

@@ -100,7 +100,7 @@ export default function IndustryDashboardPage() {
     {
       route: "R-1105-C (Tanker 01 C 411 EA)",
       driver: "Aziz Mamadiev",
-      farm: "Pastdarg'om Agro (1,500 L)",
+      farm: "Pastdarğom Agro (1,500 L)",
       volumeL: 1500,
       eta: "11:15",
       status: "AT_GATE",

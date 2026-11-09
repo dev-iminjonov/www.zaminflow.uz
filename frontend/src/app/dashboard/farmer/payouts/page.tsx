@@ -66,7 +66,7 @@ export default function PayoutsPage() {
         <div className="rounded-[28px] p-6 bg-gradient-to-br from-[#0c2e28] via-[#093a38] to-[#081a28] border border-[#00ffc8]/30 text-white shadow-[0_15px_45px_rgba(0,255,200,0.15)] flex flex-col justify-between min-h-[160px] relative overflow-hidden">
           <div className="absolute -top-10 -right-10 w-28 h-28 rounded-full bg-[#00ffc8]/15 blur-xl pointer-events-none" />
           <div className="flex items-center justify-between text-xs text-[#00ffc8] font-mono font-bold">
-            <span>YAKUNIY TO'LANGAN</span>
+            <span>YAKUNIY TÖLANGAN</span>
             <span>🏛️ CBU</span>
           </div>
           <div className="my-2">
@@ -136,7 +136,7 @@ export default function PayoutsPage() {
                 <th className="py-3 px-3">Zavod</th>
                 <th className="py-3 px-3">Hajm</th>
                 <th className="py-3 px-3">Sifat</th>
-                <th className="py-3 px-3">To'langan Summa</th>
+                <th className="py-3 px-3">Tölangan Summa</th>
                 <th className="py-3 px-3">Holat</th>
                 <th className="py-3 px-3 text-right">Kvitansiya</th>
               </tr>
@@ -207,7 +207,7 @@ export default function PayoutsPage() {
                 <span className="font-bold text-[#00ffc8]">{selectedReceipt.batchNumber}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-white/40">Qabul Qiluvchi Zavod:</span>
+                <span className="text-white/40">Qabul Qiluvçi Zavod:</span>
                 <span className="text-white font-medium">{selectedReceipt.destinationPlant}</span>
               </div>
               <div className="flex justify-between">
@@ -219,7 +219,7 @@ export default function PayoutsPage() {
                 <span className="text-[#00d3e0] font-bold">Oliy A+ ({selectedReceipt.qualityGrade})</span>
               </div>
               <div className="flex justify-between border-t border-white/10 pt-2 text-sm font-bold">
-                <span className="text-white/70">To'lov Summasi:</span>
+                <span className="text-white/70">Tölov Summasi:</span>
                 <span className="text-[#00ffc8]">{selectedReceipt.totalEstimatedPayout.toLocaleString()} UZS</span>
               </div>
               <div className="flex justify-between text-[11px] text-white/50 pt-1">

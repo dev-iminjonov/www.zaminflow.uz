@@ -148,6 +148,14 @@
     outline-offset: 2px;
   }
 
+  /* Prevent rectangular focus outlines from breaking pill/rounded inputs */
+  input:focus,
+  input:focus-visible,
+  textarea:focus,
+  textarea:focus-visible {
+    outline: none !important;
+  }
+
   /* Accessible motion preferences (WCAG 2.2 SC 2.3.3) */
   @media (prefers-reduced-motion: reduce) {
     html, body, :root {
@@ -409,33 +417,70 @@ html.light [class*="bg-amber-500/20"] {
   font-weight: 700 !important;
 }
 
-/* 6. Primary Action Buttons (Gradient Pills) in Light Mode */
-html.light [class*="bg-gradient-to-r from-[#00ffc8]"] {
-  background: linear-gradient(135deg, #059669 0%, #0d9488 50%, #0284c7 100%) !important;
-  color: #ffffff !important;
-  box-shadow: 0 8px 24px -4px rgba(5, 150, 105, 0.3) !important;
+/* 6. Primary Action Buttons (Turquoise Dreamland Pills) in Light Mode */
+html.light button[class*="bg-gradient-to-r from-[#00ffc8]"],
+html.light a[class*="bg-gradient-to-r from-[#00ffc8]"]:not([class*="bg-clip-text"]),
+html.light label[class*="bg-gradient-to-r from-[#00ffc8]"] {
+  background: linear-gradient(135deg, #00ffc8 0%, #00d3e0 50%, #0099ff 100%) !important;
+  color: #070B14 !important;
+  font-weight: 900 !important;
+  box-shadow: 0 8px 24px -4px rgba(0, 211, 224, 0.3) !important;
 }
-html.light [class*="bg-gradient-to-r from-[#00ffc8]"] * {
-  color: #ffffff !important;
+html.light button[class*="bg-gradient-to-r from-[#00ffc8]"] *,
+html.light a[class*="bg-gradient-to-r from-[#00ffc8]"]:not([class*="bg-clip-text"]) * {
+  color: #070B14 !important;
 }
 
-/* 7. Navigation Pills, Header Borders & Search Bars */
+/* Universal Glyph Clearance for all Gradient Text Clips (prevents ascender clipping on tall glyphs) */
+[class*="bg-clip-text"],
+.bg-clip-text {
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  padding-top: 0.18em;
+  padding-bottom: 0.18em;
+}
+
+/* 6b. Text Clip & Gradient Headings in Light Mode (Zero Clipping / Full Glyph Clearance) */
+html.light [class*="bg-clip-text"],
+html.light span[class*="bg-clip-text"],
+html.light h1 [class*="bg-clip-text"],
+html.light h2 [class*="bg-clip-text"],
+html.light h3 [class*="bg-clip-text"],
+html.light h4 [class*="bg-clip-text"],
+html.light div[class*="bg-clip-text"] {
+  background-color: transparent !important;
+  background-image: linear-gradient(135deg, #059669 0%, #0284c7 60%, #0369a1 100%) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  color: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+  display: inline;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  padding-top: 0.18em;
+  padding-bottom: 0.18em;
+  line-height: normal;
+}
+
+/* 7. Navigation Pills, Header Borders & Search Bars (ZaminFlow Mint Identity) */
 html.light header.border-b {
-  border-color: #e2e8f0 !important;
+  border-color: rgba(183, 228, 199, 0.6) !important;
 }
 html.light nav.hidden.lg\:flex,
 html.light .bg-white\/5.p-1,
 html.light .bg-white\/5.p-0\.5 {
-  background-color: #f1f5f9 !important; /* Slate-100 */
-  border-color: #e2e8f0 !important;
+  background-color: #f6fbf8 !important; /* Soft mint off-white */
+  border-color: #b7e4c7 !important;
 }
 html.light nav a:not([class*="bg-gradient-to-r"]) {
-  color: #475569 !important;
+  color: #2d6a4f !important;
 }
 html.light nav a:not([class*="bg-gradient-to-r"]):hover {
-  color: #0f172a !important;
+  color: #081c15 !important;
   background-color: #ffffff !important;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 1px 3px rgba(0, 153, 255, 0.08);
 }
 
 /* 8. Input Fields, Search Bars & Selects in Light Mode */
@@ -443,22 +488,23 @@ html.light input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
 html.light select,
 html.light textarea,
 html.light .hidden.sm\:flex.items-center.gap-2.px-3\.5 {
-  background-color: #f8fafc !important;
-  border-color: #cbd5e1 !important;
-  color: #0f172a !important;
+  background-color: #f6fbf8 !important;
+  border-color: #b7e4c7 !important;
+  color: #081c15 !important;
 }
 html.light input:focus,
 html.light select:focus,
 html.light textarea:focus,
 html.light .hidden.sm\:flex.items-center.gap-2.px-3\.5:focus-within {
   background-color: #ffffff !important;
-  border-color: #059669 !important;
-  box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.15) !important;
+  border-color: #00d3e0 !important;
+  box-shadow: 0 0 0 3px rgba(0, 211, 224, 0.2) !important;
 }
 html.light input::placeholder,
 html.light textarea::placeholder,
 html.light .hidden.sm\:flex.items-center.gap-2.px-3\.5 span {
-  color: #64748b !important;
+  color: #2d6a4f !important;
+  opacity: 0.6;
 }
 
 /* 9. Progress Bars, Mini Bar Chart Tracks & Radial Gauges */
@@ -466,14 +512,14 @@ html.light .bg-white\/5.h-2\.5,
 html.light .bg-white\/5.rounded-full.h-16,
 html.light .bg-white\/5.rounded-full.h-32,
 html.light .bg-white\/5.h-20 {
-  background-color: #f1f5f9 !important; /* Visible Slate-100 baseline */
-  border-color: #e2e8f0 !important;
+  background-color: #eaf7f0 !important;
+  border-color: #b7e4c7 !important;
 }
 html.light [class*="bg-[#00d3e0]/30"] {
-  background-color: #a7f3d0 !important; /* Emerald-200 fill */
+  background-color: #b7e4c7 !important;
 }
 html.light svg path.text-white\/10 {
-  stroke: #e2e8f0 !important; /* Crisp Slate-200 radial track */
+  stroke: #b7e4c7 !important;
 }
 
 /* 10. Dividers & Borders */
@@ -481,64 +527,77 @@ html.light [class*="border-white/10"],
 html.light [class*="border-white/5"],
 html.light [class*="border-white/15"],
 html.light [class*="border-white/20"] {
-  border-color: #e2e8f0 !important;
+  border-color: #b7e4c7 !important;
 }
 html.light [class*="divide-white/5"] > * + *,
 html.light [class*="divide-white/10"] > * + * {
-  border-color: #f1f5f9 !important;
+  border-color: rgba(183, 228, 199, 0.5) !important;
 }
 
-/* 11. Accessible Accent Brand Text in Light Mode (Replaces washed-out neon) */
+/* 11. Accessible Accent Brand Text in Light Mode */
 html.light [class*="text-[#00ffc8]"],
 html.light [class*="text-[#00f0d0]"] {
-  color: #047857 !important; /* Emerald-700 AAA contrast */
+  color: #0099ff !important;
 }
 html.light [class*="text-[#00d3e0]"],
 html.light [class*="text-[#00c5e7]"] {
-  color: #0369a1 !important; /* Sky-700 AAA contrast */
+  color: #0088cc !important;
 }
 html.light [class*="text-amber-300"] {
-  color: #b45309 !important; /* Amber-700 */
+  color: #b45309 !important;
 }
 
 /* 12. Left Vertical Icon Dock in Light Mode */
 html.light aside.hidden.xl\:flex {
   background-color: #ffffff !important;
-  border-color: #e2e8f0 !important;
-  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.05) !important;
+  border-color: #b7e4c7 !important;
+  box-shadow: 0 4px 16px rgba(0, 153, 255, 0.06) !important;
 }
 html.light aside.hidden.xl\:flex a:not([class*="bg-gradient-to-r"]) {
-  color: #64748b !important;
+  color: #2d6a4f !important;
 }
 html.light aside.hidden.xl\:flex a:not([class*="bg-gradient-to-r"]):hover {
-  color: #0f172a !important;
-  background-color: #f1f5f9 !important;
+  color: #081c15 !important;
+  background-color: #f6fbf8 !important;
 }
 html.light aside.hidden.xl\:flex .bg-white\/10 {
-  background-color: #e2e8f0 !important;
+  background-color: #b7e4c7 !important;
 }
 
 /* 13. Table Headers & Rows in Light Mode */
 html.light table th {
-  background-color: #f8fafc !important;
-  color: #475569 !important;
-  border-bottom: 1px solid #e2e8f0 !important;
+  background-color: #f6fbf8 !important;
+  color: #2d6a4f !important;
+  border-bottom: 1px solid #b7e4c7 !important;
   font-weight: 700 !important;
 }
 html.light table td {
-  border-bottom: 1px solid #f1f5f9 !important;
-  color: #0f172a !important;
+  border-bottom: 1px solid rgba(183, 228, 199, 0.5) !important;
+  color: #081c15 !important;
 }
 html.light table tr:hover td {
-  background-color: #f8fafc !important;
+  background-color: #f6fbf8 !important;
 }
 
 /* 14. Interactive Hover States in Light Mode */
 html.light [class*="hover:bg-white/[0.04]"]:hover,
 html.light [class*="hover:bg-white/5"]:hover,
 html.light [class*="hover:bg-white/10"]:hover {
-  background-color: #f8fafc !important;
+  background-color: #f6fbf8 !important;
 }
 html.light [class*="hover:text-white"]:hover {
-  color: #0f172a !important;
+  color: #081c15 !important;
+}
+
+/* 15. Defensive Isolation against Third-Party Browser Extension Floating Dark Mode Widgets */
+.darkreader,
+[id*="dark-mode-toggle"],
+[id*="darkmode-toggle"],
+[class*="dark-mode-toggle"],
+[class*="darkmode-toggle"],
+[class*="dark-mode-switch"],
+[class*="darkmode-switch"],
+[class*="dark-mode-button"],
+[class*="darkmode-button"] {
+  display: none !important;
 }

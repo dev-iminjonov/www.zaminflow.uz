@@ -19,31 +19,31 @@ const teamMembers: TeamMember[] = [
   {
     name: "Muhammadaziz Iminjonov",
     roleKey: "founder",
-    badge: "Boshqaruvchi",
+    badge: "Boşqaruvçi",
     image: "/images/team-muhammadaziz.webp",
     linkedin: "https://www.linkedin.com/in/imuhammadaziz/",
     github: "https://github.com/dev-iminjonov",
     instagram: "https://instagram.com/im.mukhammadaziz",
   },
   {
-    name: "Sevinchoy Soporboyeva",
+    name: "Sevinçoy Soporboyeva",
     roleKey: "coFounder",
     badge: "Operatsiyalar",
     image: "/images/team-sevinchoy.webp",
     linkedin: "https://www.linkedin.com/in/sevinchoy-soporboyeva/",
   },
   {
-    name: "Abdumanov Akrom",
+    name: "Akrom Abdumanov",
     roleKey: "leadDev",
-    badge: "Yetakchi Muhandis",
+    badge: "Yetakçi Muhandis",
     image: "/images/team-akrom.webp",
     linkedin: "https://www.linkedin.com/in/akrom-abdumanov-6457a039a/",
     instagram: "https://instagram.com/abdumanovakrom",
   },
   {
-    name: "Shokhjakhon Abdufattohov",
+    name: "Şohjahon Abdufattohov",
     roleKey: "adviser",
-    badge: "Strategik Maslahatchi",
+    badge: "Strategik Maslahatçi",
     image: "/images/team-shohjahon.webp",
     email: "sh.abdufattohov@polito.uz",
   },
@@ -107,12 +107,16 @@ export default function TeamSection({ isDark = false }: { isDark?: boolean }) {
               <SplashDoodle size={24} color="#00ffc8" />
             </div>
             <h2
-              className={`text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight ${
+              className={`text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-[1.25] sm:leading-[1.3] ${
                 isDark ? "text-white" : "text-[#081c15]"
               }`}
             >
-              {t.team.titleStart}
-              <span className="bg-gradient-to-r from-[#00ffc8] via-[#00d3e0] to-[#0099ff] bg-clip-text text-transparent">
+              {t.team.titleStart}{" "}
+              <span className={`inline ${
+                isDark
+                  ? "bg-gradient-to-r from-[#00ffc8] via-[#00d3e0] to-[#0099ff] bg-clip-text text-transparent"
+                  : "bg-gradient-to-r from-[#059669] via-[#0284c7] to-[#0369a1] bg-clip-text text-transparent"
+              }`}>
                 {t.team.titleAccent}
               </span>
             </h2>
@@ -185,7 +189,11 @@ export default function TeamSection({ isDark = false }: { isDark?: boolean }) {
                 />
 
                 {/* Soft Bottom Gradient Mask */}
-                <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#14181d] via-[#14181d]/50 to-transparent" />
+                <div
+                  className={`absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t ${
+                    isDark ? "from-[#14181d] via-[#14181d]/50" : "from-white via-white/50"
+                  } to-transparent`}
+                />
               </div>
 
               {/* Bio & Socials */}
@@ -197,7 +205,7 @@ export default function TeamSection({ isDark = false }: { isDark?: boolean }) {
                 >
                   {member.name}
                 </h3>
-                <p className="text-xs font-semibold text-[#00d3e0] mb-4">
+                <p className={`text-xs font-semibold mb-4 ${isDark ? "text-[#00d3e0]" : "text-emerald-700"}`}>
                   {t.team.roles[member.roleKey]}
                 </p>
 

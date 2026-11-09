@@ -9,7 +9,7 @@ export default function AdminAnalyticsPage() {
   const regionsData = [
     { region: "Toshkent viloyati", volume: "420,000 L", escrow: "2.6B UZS", quality: "96% Grade A+" },
     { region: "Samarqand viloyati", volume: "385,000 L", escrow: "2.2B UZS", quality: "94% Grade A+" },
-    { region: "Fargʻona vodiysi", volume: "290,000 L", escrow: "1.6B UZS", quality: "92% Grade A" },
+    { region: "Farğona vodiysi", volume: "290,000 L", escrow: "1.6B UZS", quality: "92% Grade A" },
     { region: "Buxoro viloyati", volume: "180,000 L", escrow: "1.0B UZS", quality: "95% Grade A+" },
     { region: "Qashqadaryo viloyati", volume: "210,000 L", escrow: "1.2B UZS", quality: "91% Grade A" },
   ];
@@ -46,12 +46,12 @@ export default function AdminAnalyticsPage() {
         <div className="rounded-[24px] p-5 bg-gradient-to-br from-[#0c2e28] to-[#081a28] border border-[#00ffc8]/30 flex flex-col justify-between">
           <span className="text-[11px] font-mono uppercase text-[#00ffc8] font-bold">Oylik Tovarlar Aylanmasi</span>
           <div className="text-3xl font-black font-mono text-white mt-1">1,485,000 L</div>
-          <span className="text-[10px] text-[#00ffc8] font-mono mt-1">+14.2% oʻtgan oyga nisbatan</span>
+          <span className="text-[10px] text-[#00ffc8] font-mono mt-1">+14.2% ötgan oyga nisbatan</span>
         </div>
         <div className="rounded-[24px] p-5 bg-white/[0.03] border border-white/10 flex flex-col justify-between">
-          <span className="text-[11px] font-bold uppercase text-white/50">Oʻrtacha Respublika Narxi</span>
+          <span className="text-[11px] font-bold uppercase text-white/50">Örtaça Respublika Narxi</span>
           <div className="text-3xl font-black font-mono text-white mt-1">5,820 UZS/L</div>
-          <span className="text-[10px] text-[#00d3e0] font-mono mt-1">Standart 3.4% yogʻlik uchun</span>
+          <span className="text-[10px] text-[#00d3e0] font-mono mt-1">Standart 3.4% yoğlik uçun</span>
         </div>
         <div className="rounded-[24px] p-5 bg-white/[0.03] border border-white/10 flex flex-col justify-between">
           <span className="text-[11px] font-bold uppercase text-white/50">Muvaffaqiyatli Kliring Ulushi</span>
@@ -64,7 +64,7 @@ export default function AdminAnalyticsPage() {
       <div className="bg-white/[0.03] rounded-[28px] p-6 border border-white/10">
         <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-white/10">
           <div>
-            <span className="text-xs font-bold uppercase tracking-wider text-[#00d3e0]">Viloyatlar Boʻyicha Tahlil</span>
+            <span className="text-xs font-bold uppercase tracking-wider text-[#00d3e0]">Viloyatlar Böyiça Tahlil</span>
             <h3 className="text-lg font-bold text-white mt-0.5">Xom Sut Oqimi va Eskrou Kafolatlari</h3>
           </div>
 
@@ -120,7 +120,7 @@ export default function AdminAnalyticsPage() {
                   <span className="font-bold text-[#00ffc8] text-sm">{item.escrow}</span>
                 </div>
                 <div>
-                  <span className="text-[10px] text-white/40 uppercase block">Oʻrtacha Sifat</span>
+                  <span className="text-[10px] text-white/40 uppercase block">Örtaça Sifat</span>
                   <span className="font-bold text-[#00d3e0] text-sm">{item.quality}</span>
                 </div>
               </div>

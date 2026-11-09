@@ -8,11 +8,16 @@ import { useTheme, ThemeToggleButton } from "@/context/ThemeContext";
 import {
   fetchDairyDashboardData,
   DairyDashboardData,
-  MOCK_DAIRY_DATA,
+  EMPTY_DAIRY_DATA,
 } from "@/lib/roleDashboardService";
 import { getStoredSession, signOut, AuthSession } from "@/lib/auth";
 import { resolveUserAvatar } from "@/lib/userAvatar";
 import ZaminFlowLogo from "@/components/ZaminFlowLogo";
+import UniversalSpotlightSearch from "@/components/search/UniversalSpotlightSearch";
+import B2BProfileWindow from "@/components/profile/B2BProfileWindow";
+import InteractiveFinancialChart from "@/components/dashboard/InteractiveFinancialChart";
+import InteractiveComparisonBarChart from "@/components/dashboard/InteractiveComparisonBarChart";
+import InteractiveRadialGauge from "@/components/dashboard/InteractiveRadialGauge";
 
 export type DairyWindowKey =
   | "overview"
@@ -32,7 +37,7 @@ export default function DairyOverview() {
   const [activeWindow, setActiveWindow] = useState<DairyWindowKey>("overview");
 
   const [session, setSession] = useState<AuthSession | null>(null);
-  const [data, setData] = useState<DairyDashboardData | null>(MOCK_DAIRY_DATA);
+  const [data, setData] = useState<DairyDashboardData | null>(EMPTY_DAIRY_DATA);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isSigningOut, setIsSigningOut] = useState(false);
@@ -40,7 +45,6 @@ export default function DairyOverview() {
   // Financial Chart Controls
   const [timeRange, setTimeRange] = useState<"1d" | "1w" | "1m" | "6m" | "1y" | "all">("1m");
   const [chartType, setChartType] = useState<"line" | "bar">("line");
-  const [hoveredPoint, setHoveredPoint] = useState<{ x: number; y: number; label: string; value: string } | null>(null);
 
   // Procurement order modal state
   const [showOrderModal, setShowOrderModal] = useState(false);
@@ -167,33 +171,6 @@ export default function DairyOverview() {
     }
   }, [timeRange]);
 
-  // Compute SVG coordinates for the Investure-style smooth curve
-  const svgMetrics = useMemo(() => {
-    const pts = chartDatasets.points;
-    const minVal = Math.min(...pts.map((p) => p.val)) * 0.95;
-    const maxVal = Math.max(...pts.map((p) => p.val)) * 1.05;
-    const width = 760;
-    const height = 220;
-
-    const coords = pts.map((p, idx) => {
-      const x = (idx / (pts.length - 1)) * (width - 40) + 20;
-      const y = height - ((p.val - minVal) / (maxVal - minVal)) * (height - 40) - 20;
-      return { x, y, label: p.label, value: `${(p.val / 1000).toFixed(1)}k L` };
-    });
-
-    let pathD = `M ${coords[0].x} ${coords[0].y}`;
-    for (let i = 0; i < coords.length - 1; i++) {
-      const p0 = coords[i];
-      const p1 = coords[i + 1];
-      const cpX = (p0.x + p1.x) / 2;
-      pathD += ` C ${cpX} ${p0.y}, ${cpX} ${p1.y}, ${p1.x} ${p1.y}`;
-    }
-
-    const areaD = `${pathD} L ${coords[coords.length - 1].x} ${height} L ${coords[0].x} ${height} Z`;
-
-    return { coords, pathD, areaD, width, height };
-  }, [chartDatasets]);
-
   // Navigation items matching Investure layout
   const navigationItems: Array<{
     key: DairyWindowKey;
@@ -283,7 +260,7 @@ export default function DairyOverview() {
 
   return (
     <div className={`min-h-screen py-4 px-3 sm:px-6 relative overflow-x-hidden font-sans antialiased transition-colors duration-300 ${
-      isDark ? "bg-[#0b0f14] text-white" : "bg-[#f1f5f9] text-slate-900"
+      isDark ? "bg-[#0d1013] text-[#E8F1F2]" : "bg-[#f6fbf8] text-[#081c15]"
     }`}>
       {/* Background Subtle Gradient Blobs */}
       <div className="absolute top-0 left-1/4 w-[600px] h-[600px] pointer-events-none -z-0 opacity-20 blur-[140px] bg-gradient-to-br from-teal-400 to-emerald-400" />
@@ -291,27 +268,22 @@ export default function DairyOverview() {
       {/* Master Container: Fixed Left Sidebar + Dynamic In-Place Content Area */}
       <div className={`relative z-10 max-w-[1520px] mx-auto rounded-[32px] border shadow-2xl flex flex-col lg:flex-row overflow-hidden transition-all ${
         isDark
-          ? "bg-[#121820] border-white/10 shadow-[0_30px_90px_rgba(0,0,0,0.6)] text-white"
-          : "bg-white border-slate-200 shadow-[0_20px_70px_rgba(15,23,42,0.06)] text-slate-900"
+          ? "bg-[#14181d] border-white/10 shadow-[0_30px_90px_rgba(0,0,0,0.6)] text-[#E8F1F2]"
+          : "bg-white border-[#b7e4c7] shadow-[0_10px_35px_rgba(0,153,255,0.06)] text-[#081c15]"
       }`}>
 
         {/* =========================================================================
             LEFT NAVIGATION SIDEBAR (Investure / FlowBoard Architecture)
         ========================================================================= */}
         <aside className={`w-full lg:w-72 shrink-0 border-b lg:border-b-0 lg:border-r p-6 flex flex-col justify-between transition-colors ${
-          isDark ? "border-white/10 bg-[#0e1319]" : "border-slate-100 bg-[#fafcff]"
+          isDark ? "border-white/10 bg-[#0d1013]" : "border-[#b7e4c7]/60 bg-[#f6fbf8]"
         }`}>
           <div>
             {/* 1. Brand Logo */}
-            <div className="flex items-center justify-between pb-8">
+            <div className="flex items-center pb-8">
               <Link href="/" className="flex items-center gap-2 transition hover:scale-105">
                 <ZaminFlowLogo mode={themeMode} size="md" />
               </Link>
-              <span className={`text-[10px] font-mono font-bold px-2.5 py-1 rounded-full uppercase border ${
-                isDark ? "bg-teal-500/10 border-teal-500/30 text-teal-400" : "bg-teal-50 border-teal-200 text-teal-800"
-              }`}>
-                Dairy Plant
-              </span>
             </div>
 
             {/* 2. Navigation Items with Right Emerald Indicator Line */}
@@ -443,31 +415,30 @@ export default function DairyOverview() {
                 {activeWindow === "overview" && "Dashboard"}
                 {activeWindow === "orders" && "Sut Xaridi Buyurtmalari & Shartnomalar"}
                 {activeWindow === "shipments" && "Kiruvchi Yuklar & IoT Telemetriya"}
-                {activeWindow === "escrow" && "AgroBank Eskrou Depoziti & Toʻlovlar"}
+                {activeWindow === "escrow" && "AgroBank Eskrou Depoziti & Tölovlar"}
                 {activeWindow === "pricing" && "Mintaqaviy Xarid Narxlari Sozlamasi"}
                 {activeWindow === "analytics" && "Zavod Ishlab Chiqarish Tahlili"}
                 {activeWindow === "settings" && "Zavod Profili & Xalqaro Standartlar"}
               </h1>
               <p className={`text-xs mt-0.5 ${isDark ? "text-white/50" : "text-slate-500"}`}>
-                Samarqand Sut Zavodi #4 &bull; IoT Silo & Sovuq Zanjir Nazorati
+                {session?.organization?.legalName || "ZaminFlow Ekotizimi"} &bull; IoT Silo & Sovuq Zanjir Nazorati
               </p>
             </div>
 
             <div className="flex items-center gap-3">
-              {/* Search Pill */}
-              <div className={`hidden sm:flex items-center gap-2 px-3.5 py-1.5 rounded-full border text-xs transition ${
-                isDark ? "bg-white/5 border-white/10 text-white/50 focus-within:border-teal-500" : "bg-slate-50 border-slate-200 text-slate-500 focus-within:border-teal-500"
-              }`}>
-                <svg className="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-                <input
-                  type="text"
-                  placeholder="Partiya yoki haydovchi qidirish..."
-                  className="bg-transparent border-none outline-hidden text-xs w-48 placeholder-slate-400"
-                />
-                <kbd className="hidden md:inline-block px-1.5 py-0.5 text-[9px] font-mono font-bold rounded bg-slate-200/60 dark:bg-white/10">⌘K</kbd>
-              </div>
+              {/* Universal Live Spotlight Search */}
+              <UniversalSpotlightSearch
+                role="dairy"
+                onSelectAction={(item) => {
+                  if (item.category === "batches") {
+                    setActiveWindow("orders");
+                  } else if (item.category === "navigation") {
+                    setActiveWindow("overview");
+                  } else if (item.href) {
+                    router.push(item.href);
+                  }
+                }}
+              />
 
               {/* Language Selector */}
               <div className={`flex rounded-full p-1 border text-[11px] font-bold ${
@@ -513,130 +484,27 @@ export default function DairyOverview() {
             {activeWindow === "overview" && (
               <div className="space-y-6">
 
-                {/* 1. HERO FINANCIAL INTAKE CHART */}
+                {/* 1. HERO FINANCIAL INTAKE CHART (Interactive & Live) */}
                 <div className={`rounded-3xl p-6 sm:p-7 border relative overflow-hidden transition ${
                   isDark ? "bg-[#141b24] border-white/10" : "bg-white border-slate-200/80 shadow-xs"
                 }`}>
-                  <div className="flex flex-wrap items-center justify-between gap-4 pb-4">
-                    <div>
-                      <span className={`text-xs font-mono uppercase font-bold tracking-wider ${
-                        isDark ? "text-white/50" : "text-slate-500"
-                      }`}>
-                        Kunlik & Oylik Qabul Qilingan Xomashyo Hajmi
-                      </span>
-                      <div className="flex items-baseline gap-3 mt-1">
-                        <span className="text-3xl sm:text-4xl font-black font-mono tracking-tight">
-                          {chartDatasets.total}
-                        </span>
-                        <span className="text-xs font-bold text-teal-600 dark:text-teal-400 bg-teal-500/10 px-2 py-0.5 rounded-full">
-                          ▲ {chartDatasets.delta}
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Chart Controls */}
-                    <div className="flex flex-wrap items-center gap-2">
-                      <div className={`flex rounded-xl p-1 border ${
-                        isDark ? "bg-white/5 border-white/10" : "bg-slate-100 border-slate-200"
-                      }`}>
-                        <button
-                          type="button"
-                          onClick={() => setChartType("line")}
-                          className={`p-1.5 rounded-lg transition ${
-                            chartType === "line"
-                              ? "bg-white dark:bg-white/20 text-teal-600 dark:text-white shadow-xs"
-                              : "text-slate-400 hover:text-slate-700 dark:hover:text-white"
-                          }`}
-                          title="Line Chart"
-                        >
-                          📈
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setChartType("bar")}
-                          className={`p-1.5 rounded-lg transition ${
-                            chartType === "bar"
-                              ? "bg-white dark:bg-white/20 text-teal-600 dark:text-white shadow-xs"
-                              : "text-slate-400 hover:text-slate-700 dark:hover:text-white"
-                          }`}
-                          title="Bar Chart"
-                        >
-                          📊
-                        </button>
-                      </div>
-
-                      <div className={`flex rounded-xl p-1 border text-xs font-bold ${
-                        isDark ? "bg-white/5 border-white/10" : "bg-slate-100 border-slate-200"
-                      }`}>
-                        {(["1d", "1w", "1m", "6m", "1y", "all"] as const).map((period) => (
-                          <button
-                            key={period}
-                            type="button"
-                            onClick={() => setTimeRange(period)}
-                            className={`px-2.5 py-1 rounded-lg uppercase transition cursor-pointer ${
-                              timeRange === period
-                                ? "bg-white dark:bg-white/20 text-slate-900 dark:text-white shadow-xs font-black"
-                                : "text-slate-500 dark:text-white/50 hover:text-slate-900 dark:hover:text-white"
-                            }`}
-                          >
-                            {period}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Interactive SVG Chart Canvas */}
-                  <div className="relative pt-4 pb-2">
-                    <div className="relative w-full h-[220px]">
-                      <svg className="w-full h-full overflow-visible" viewBox={`0 0 ${svgMetrics.width} ${svgMetrics.height}`}>
-                        <defs>
-                          <linearGradient id="dairyGradient" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%" stopColor="#14b8a6" stopOpacity="0.25" />
-                            <stop offset="100%" stopColor="#14b8a6" stopOpacity="0.0" />
-                          </linearGradient>
-                        </defs>
-
-                        <path d={svgMetrics.areaD} fill="url(#dairyGradient)" />
-                        <path
-                          d={svgMetrics.pathD}
-                          fill="none"
-                          stroke="#14b8a6"
-                          strokeWidth="3"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-
-                        {svgMetrics.coords.map((pt, idx) => (
-                          <circle
-                            key={idx}
-                            cx={pt.x}
-                            cy={pt.y}
-                            r={hoveredPoint?.x === pt.x ? 6 : 4}
-                            className="fill-white dark:fill-[#121820] stroke-teal-500 stroke-[3] cursor-pointer transition-all hover:scale-125"
-                            onMouseEnter={() => setHoveredPoint(pt)}
-                            onMouseLeave={() => setHoveredPoint(null)}
-                          />
-                        ))}
-                      </svg>
-
-                      {hoveredPoint && (
-                        <div
-                          className="absolute z-20 pointer-events-none -translate-x-1/2 -translate-y-full mb-3 px-3 py-1.5 rounded-xl bg-slate-900 text-white text-xs font-mono shadow-xl border border-white/20 flex flex-col items-center"
-                          style={{ left: `${(hoveredPoint.x / svgMetrics.width) * 100}%`, top: `${hoveredPoint.y}px` }}
-                        >
-                          <span className="text-[10px] text-slate-400">{hoveredPoint.label}</span>
-                          <span className="font-bold text-teal-400">{hoveredPoint.value}</span>
-                        </div>
-                      )}
-                    </div>
-
-                    <div className="flex justify-between items-center text-[10px] font-mono text-slate-400 pt-3 border-t border-slate-100 dark:border-white/5">
-                      {chartDatasets.points.map((pt, idx) => (
-                        <span key={idx}>{pt.label}</span>
-                      ))}
-                    </div>
-                  </div>
+                  <InteractiveFinancialChart
+                    title="Kunlik & Oylik Qabul Qilingan Xomashyo Hajmi"
+                    subtitle="XOM SUT RECEPTION VA LOGISTIKA QABULI"
+                    totalDisplay={chartDatasets.total}
+                    deltaDisplay={chartDatasets.delta}
+                    deltaPositive={true}
+                    unit="Litr"
+                    accentColor="#14b8a6"
+                    secondaryColor="#0099ff"
+                    gradientId="dairyChartGradient"
+                    timeRange={timeRange}
+                    onTimeRangeChange={setTimeRange}
+                    chartType={chartType}
+                    onChartTypeChange={setChartType}
+                    points={chartDatasets.points}
+                    isDark={isDark}
+                  />
                 </div>
 
                 {/* 2. FOUR FINANCIAL BENTO METRIC CARDS */}
@@ -681,7 +549,7 @@ export default function DairyOverview() {
                         {data?.receivedToday.value || "186,400"} <span className="text-xs font-normal text-slate-400">L</span>
                       </div>
                       <div className="flex items-center gap-1.5 text-xs text-blue-500 font-bold mt-1">
-                        <span>{data?.receivedToday.delta || "+8.2% vs oʻtgan hafta"}</span>
+                        <span>{data?.receivedToday.delta || "+8.2% vs ötgan hafta"}</span>
                       </div>
                     </div>
                   </div>
@@ -745,25 +613,32 @@ export default function DairyOverview() {
                       </div>
 
                       <div className="divide-y divide-slate-100 dark:divide-white/5 mt-2 space-y-1">
-                        {data?.incomingShipments.map((shipment) => (
-                          <div key={shipment.id} className="py-3 flex items-center justify-between gap-3">
-                            <div className="flex items-center gap-3">
-                              <div className="w-9 h-9 rounded-2xl bg-teal-500/10 text-teal-600 flex items-center justify-center font-bold text-xs">
-                                🚛
+                        {data?.incomingShipments && data.incomingShipments.length > 0 ? (
+                          data.incomingShipments.map((shipment) => (
+                            <div key={shipment.id} className="py-3 flex items-center justify-between gap-3">
+                              <div className="flex items-center gap-3">
+                                <div className="w-9 h-9 rounded-2xl bg-teal-500/10 text-teal-600 flex items-center justify-center font-bold text-xs">
+                                  🚛
+                                </div>
+                                <div>
+                                  <div className="font-bold text-xs">{shipment.route}</div>
+                                  <div className="text-[10px] text-slate-400 font-mono">{shipment.batch} &bull; {shipment.temp}</div>
+                                </div>
                               </div>
-                              <div>
-                                <div className="font-bold text-xs">{shipment.route}</div>
-                                <div className="text-[10px] text-slate-400 font-mono">{shipment.batch} &bull; {shipment.temp}</div>
+                              <div className="text-right">
+                                <div className="font-bold font-mono text-xs">{shipment.etaOrStatus}</div>
+                                <span className="text-[10px] font-bold text-teal-500">
+                                  GPS {shipment.gpsLock ? "🔒 Locked" : "Signal"}
+                                </span>
                               </div>
                             </div>
-                            <div className="text-right">
-                              <div className="font-bold font-mono text-xs">{shipment.etaOrStatus}</div>
-                              <span className="text-[10px] font-bold text-teal-500">
-                                GPS {shipment.gpsLock ? "🔒 Locked" : "Signal"}
-                              </span>
-                            </div>
+                          ))
+                        ) : (
+                          <div className="py-8 text-center text-xs text-slate-400">
+                            <span className="text-2xl block mb-2">🚛</span>
+                            Hozircha zavodga yoʻnaltirilgan faol yuklar yoʻq.
                           </div>
-                        ))}
+                        )}
                       </div>
                     </div>
 
@@ -776,74 +651,19 @@ export default function DairyOverview() {
                     </button>
                   </div>
 
-                  {/* Col 2: Silo Tank Capacity Semi-Circle Gauge */}
-                  <div className={`lg:col-span-4 p-6 rounded-3xl border flex flex-col justify-between transition ${
-                    isDark ? "bg-[#141b24] border-white/10" : "bg-white border-slate-200/80 shadow-xs"
-                  }`}>
-                    <div>
-                      <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-white/10">
-                        <h3 className="font-bold text-sm">Silo Sigʻimi & Xomashyo</h3>
-                        <span className="text-xs font-mono text-emerald-500 font-bold">Avtomatik Datchik</span>
-                      </div>
-
-                      <div className="my-6 flex flex-col items-center justify-center">
-                        <div className="relative w-44 h-24 overflow-hidden flex items-end justify-center">
-                          <svg className="w-44 h-44 -rotate-180" viewBox="0 0 100 100">
-                            <circle
-                              cx="50"
-                              cy="50"
-                              r="40"
-                              fill="none"
-                              stroke={isDark ? "rgba(255,255,255,0.08)" : "#f1f5f9"}
-                              strokeWidth="10"
-                              strokeDasharray="125 250"
-                            />
-                            <circle
-                              cx="50"
-                              cy="50"
-                              r="40"
-                              fill="none"
-                              stroke="#14b8a6"
-                              strokeWidth="10"
-                              strokeDasharray="93 250"
-                              strokeLinecap="round"
-                            />
-                          </svg>
-
-                          <div className="absolute bottom-0 flex flex-col items-center">
-                            <span className="text-[10px] uppercase font-bold text-slate-400">Toʻla Daraja</span>
-                            <span className="text-2xl font-black font-mono">74.5%</span>
-                          </div>
-                        </div>
-
-                        <div className="grid grid-cols-2 gap-3 w-full mt-5 text-[11px] font-mono">
-                          <div className="p-2 rounded-xl bg-slate-50 dark:bg-white/5 flex justify-between">
-                            <span className="text-slate-500">Silo #1:</span>
-                            <span className="font-bold">186.4k L</span>
-                          </div>
-                          <div className="p-2 rounded-xl bg-slate-50 dark:bg-white/5 flex justify-between">
-                            <span className="text-slate-500">Silo #2:</span>
-                            <span className="font-bold">42.0k L</span>
-                          </div>
-                          <div className="p-2 rounded-xl bg-slate-50 dark:bg-white/5 flex justify-between">
-                            <span className="text-slate-500">Harorat:</span>
-                            <span className="font-bold text-teal-500">2.8°C</span>
-                          </div>
-                          <div className="p-2 rounded-xl bg-slate-50 dark:bg-white/5 flex justify-between">
-                            <span className="text-slate-500">Bosim:</span>
-                            <span className="font-bold">1.2 bar</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <button
-                      type="button"
-                      onClick={() => setActiveWindow("pricing")}
-                      className="pt-3 border-t border-slate-100 dark:border-white/10 text-xs font-bold text-teal-600 dark:text-teal-400 hover:underline text-center w-full block cursor-pointer"
-                    >
-                      Xarid narxlarini yangilash →
-                    </button>
+                  {/* Col 2: Silo Tank Capacity (Interactive Radial Gauge) */}
+                  <div className="lg:col-span-4 flex flex-col">
+                    <InteractiveRadialGauge
+                      title="Silo Siğimi & Xomaşyo"
+                      totalLabel="228.4k L Jami"
+                      isDark={isDark}
+                      defaultActiveKey="silo1"
+                      segments={[
+                        { key: "silo1", label: "Silo #1", percentage: 74.5, color: "#14b8a6", sublabel: "Silo #1: 186.4k L", countFormatted: "186.4k L" },
+                        { key: "silo2", label: "Silo #2", percentage: 42.0, color: "#0ea5e9", sublabel: "Silo #2: 42.0k L", countFormatted: "42.0k L" },
+                        { key: "temp", label: "Harorat", percentage: 56.0, color: "#00ffc8", sublabel: "Harorat: 2.8°C", countFormatted: "2.8°C" },
+                      ]}
+                    />
                   </div>
 
                   {/* Col 3: Regional Pricing Matrix Stepper */}
@@ -936,7 +756,7 @@ export default function DairyOverview() {
                         {[
                           { id: "ORD-941", farmer: "Oqdaryo Fayzli Dalalari", vol: "5,000 Litr", rate: "5,800 UZS/L", sum: "29,000,000 UZS", status: "Kafolatlangan (Eskrou)" },
                           { id: "ORD-940", farmer: "Zarafshon Agro Hamkor", vol: "3,200 Litr", rate: "5,800 UZS/L", sum: "18,560,000 UZS", status: "Yetkazilmoqda" },
-                          { id: "ORD-939", farmer: "Pastdargʻom Baraka", vol: "8,000 Litr", rate: "5,750 UZS/L", sum: "46,000,000 UZS", status: "Qabul Qilindi" },
+                          { id: "ORD-939", farmer: "Pastdarğom Baraka", vol: "8,000 Litr", rate: "5,750 UZS/L", sum: "46,000,000 UZS", status: "Qabul Qilindi" },
                         ].map((o) => (
                           <tr key={o.id} className="hover:bg-slate-50 dark:hover:bg-white/[0.02] transition">
                             <td className="py-3.5 px-3 font-bold">{o.id}</td>
@@ -967,28 +787,36 @@ export default function DairyOverview() {
                   isDark ? "bg-[#141b24] border-white/10" : "bg-white border-slate-200/80 shadow-xs"
                 }`}>
                   <h3 className="text-lg font-bold pb-2">Sovuq Zanjir Logistika Floti & IoT Telemetriya</h3>
-                  <p className="text-xs text-slate-500 mb-6">Zavod darvozasiga yetib kelayotgan barcha izotermik sut tashuvchi sisternalar</p>
+                  <p className="text-xs text-slate-500 mb-6">Zavod darvozasiga yetib kelayotgan barça izotermik sut taşuvçi sisternalar</p>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {data?.incomingShipments.map((s) => (
-                      <div key={s.id} className="p-4 rounded-2xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 space-y-2">
-                        <div className="flex justify-between items-center">
-                          <span className="font-bold text-sm">🚛 {s.route}</span>
-                          <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-teal-500 text-white">
-                            {s.etaOrStatus}
-                          </span>
+                  {data?.incomingShipments && data.incomingShipments.length > 0 ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {data.incomingShipments.map((s) => (
+                        <div key={s.id} className="p-4 rounded-2xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 space-y-2">
+                          <div className="flex justify-between items-center">
+                            <span className="font-bold text-sm">🚛 {s.route}</span>
+                            <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-teal-500 text-white">
+                              {s.etaOrStatus}
+                            </span>
+                          </div>
+                          <div className="flex justify-between text-xs font-mono text-slate-500">
+                            <span>Sisterna Harorati:</span>
+                            <span className="font-bold text-teal-600 dark:text-teal-400">{s.temp}</span>
+                          </div>
+                          <div className="flex justify-between text-xs font-mono text-slate-500">
+                            <span>Partiya Kodi:</span>
+                            <span className="font-bold">{s.batch}</span>
+                          </div>
                         </div>
-                        <div className="flex justify-between text-xs font-mono text-slate-500">
-                          <span>Sisterna Harorati:</span>
-                          <span className="font-bold text-teal-600 dark:text-teal-400">{s.temp}</span>
-                        </div>
-                        <div className="flex justify-between text-xs font-mono text-slate-500">
-                          <span>Partiya Kodi:</span>
-                          <span className="font-bold">{s.batch}</span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="py-12 text-center rounded-2xl border border-dashed border-slate-200 dark:border-white/10">
+                      <span className="text-3xl block mb-2">🚚</span>
+                      <p className="font-bold text-sm">Hozircha kiruvchi sut tashuvchi transportlar mavjud emas</p>
+                      <p className="text-xs text-slate-400 mt-1">Fermerlar bilan yangi şartnoma tuzilganda yoki yangi partiya jönatilganda bu yerda körinadi</p>
+                    </div>
+                  )}
                 </div>
               </div>
             )}
@@ -1002,11 +830,11 @@ export default function DairyOverview() {
                   isDark ? "bg-[#141b24] border-white/10" : "bg-white border-slate-200/80 shadow-xs"
                 }`}>
                   <h3 className="text-lg font-bold pb-2">AgroBank ATB Sanoat Eskrousi</h3>
-                  <p className="text-xs text-slate-500 mb-6">Qabul qilingan xomashyo uchun avtomatlashtirilgan toʻlov kafolatlari</p>
+                  <p className="text-xs text-slate-500 mb-6">Qabul qilingan xomaşyo uçun avtomatlaştirilgan tölov kafolatlari</p>
 
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div className="p-5 rounded-2xl bg-teal-50 dark:bg-teal-950/30 border border-teal-200 dark:border-teal-800">
-                      <span className="text-xs font-bold text-teal-700 dark:text-teal-400">Joriy Depozit Qoldigʻi</span>
+                      <span className="text-xs font-bold text-teal-700 dark:text-teal-400">Joriy Depozit Qoldiği</span>
                       <div className="text-2xl font-black font-mono text-teal-900 dark:text-teal-200 mt-1">48,500,000 UZS</div>
                     </div>
                     <div className="p-5 rounded-2xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10">
@@ -1031,14 +859,14 @@ export default function DairyOverview() {
                   isDark ? "bg-[#141b24] border-white/10" : "bg-white border-slate-200/80 shadow-xs"
                 }`}>
                   <h3 className="text-lg font-bold pb-2">Hududiy Bazaviy Xarid Narxlari Matritsasi</h3>
-                  <p className="text-xs text-slate-500 mb-6">Fermerlar uchun ommaviy kotirovka narxlari (3.4% yogʻlilik bazasida)</p>
+                  <p className="text-xs text-slate-500 mb-6">Fermerlar uçun ommaviy kotirovka narxlari (3.4% yoğlilik bazasida)</p>
 
                   <div className="space-y-3 max-w-xl">
                     {Object.entries(regionalPriceAdjustments).map(([reg, price]) => (
                       <div key={reg} className="p-4 rounded-2xl border border-slate-200 dark:border-white/10 flex items-center justify-between">
                         <div>
                           <div className="font-bold text-sm">{reg} Viloyati</div>
-                          <div className="text-xs text-slate-500">Standart 3.4% yogʻlik uchun stavka</div>
+                          <div className="text-xs text-slate-500">Standart 3.4% yoğlik uçun stavka</div>
                         </div>
                         <div className="flex items-center gap-2 font-mono">
                           <button
@@ -1074,19 +902,19 @@ export default function DairyOverview() {
                 <div className={`p-6 rounded-3xl border transition ${
                   isDark ? "bg-[#141b24] border-white/10" : "bg-white border-slate-200/80 shadow-xs"
                 }`}>
-                  <h3 className="text-lg font-bold pb-2">Zavod Ishlab Chiqarish & Xomashyo Oqimi</h3>
+                  <h3 className="text-lg font-bold pb-2">Zavod Işlab Çiqariş & Xomaşyo Oqimi</h3>
                   <p className="text-xs text-slate-500 mb-6">Oylik tahlil va taʻminotchilar ishonchlilik reytingi</p>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="p-5 rounded-2xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10">
-                      <span className="text-xs font-bold text-slate-500">Oʻrtacha Yogʻlilik Koʻrsatkichi</span>
+                      <span className="text-xs font-bold text-slate-500">Örtaça Yoğlilik Körsatkiçi</span>
                       <div className="text-2xl font-black font-mono text-teal-600 dark:text-teal-400 mt-1">4.08% Fat</div>
-                      <p className="text-[11px] text-slate-500 mt-2">Barcha qabul qilingan partiyalarning oʻrtacha oʻlchovi.</p>
+                      <p className="text-[11px] text-slate-500 mt-2">Barça qabul qilingan partiyalarning örtaça ölçovi.</p>
                     </div>
                     <div className="p-5 rounded-2xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10">
                       <span className="text-xs font-bold text-slate-500">Faol Fermer Hamkorlar</span>
                       <div className="text-2xl font-black font-mono text-blue-600 dark:text-blue-400 mt-1">84 ta Ferma</div>
-                      <p className="text-[11px] text-slate-500 mt-2">99.4% oʻz vaqtida yetkazib berish darajasi.</p>
+                      <p className="text-[11px] text-slate-500 mt-2">99.4% öz vaqtida yetkazib beriş darajasi.</p>
                     </div>
                   </div>
                 </div>
@@ -1094,52 +922,10 @@ export default function DairyOverview() {
             )}
 
             {/* =========================================================================
-                WINDOW 7: SETTINGS & ISO (In-place window)
+                WINDOW 7: SETTINGS & ISO (Role-Adaptive B2B Profile Window)
             ========================================================================= */}
             {activeWindow === "settings" && (
-              <div className="space-y-6">
-                <div className={`p-6 rounded-3xl border transition ${
-                  isDark ? "bg-[#141b24] border-white/10" : "bg-white border-slate-200/80 shadow-xs"
-                }`}>
-                  <h3 className="text-lg font-bold pb-2">Zavod Profili & ISO Standartlari</h3>
-                  <p className="text-xs text-slate-500 mb-6">Yuridik shaxs maʻlumotlari va gigiyena sertifikatlari</p>
-
-                  <div className="space-y-4 max-w-lg text-xs">
-                    <div>
-                      <label className="font-bold block mb-1">Kompaniya Nomi</label>
-                      <input
-                        type="text"
-                        defaultValue="Samarqand Sut Zavodi #4 MCHJ"
-                        className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-transparent font-medium"
-                      />
-                    </div>
-                    <div>
-                      <label className="font-bold block mb-1">STIR (TIN)</label>
-                      <input
-                        type="text"
-                        defaultValue="204918231"
-                        readOnly
-                        className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 font-mono"
-                      />
-                    </div>
-                    <div>
-                      <label className="font-bold block mb-1">ISO 22000 Sertifikati</label>
-                      <input
-                        type="text"
-                        defaultValue="ISO-22000-UZ-2026-CERT-991"
-                        readOnly
-                        className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 font-mono"
-                      />
-                    </div>
-                    <button
-                      type="button"
-                      className="px-5 py-2.5 rounded-full bg-teal-600 text-white font-bold hover:bg-teal-700 transition cursor-pointer"
-                    >
-                      Oʻzgarishlarni Saqlash
-                    </button>
-                  </div>
-                </div>
-              </div>
+              <B2BProfileWindow session={session} role="dairy" isDark={isDark} />
             )}
 
           </div>

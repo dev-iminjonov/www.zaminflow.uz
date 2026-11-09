@@ -105,7 +105,7 @@ export default function AuthUnifiedCard({ initialMode = "signin" }: AuthUnifiedC
       const targetDestination = sanitizeNextRedirect(nextParam, session.canonicalRole);
       router.push(targetDestination);
     } catch (err: any) {
-      setServerError(t.errors?.genericAuthFailed || "Telefon/email yoki parol noto'g'ri. Qayta urinib ko'ring.");
+      setServerError(t.errors?.genericAuthFailed || "Telefon/email yoki parol notöğri. Qayta urinib köring.");
     } finally {
       setIsLoading(false);
     }
@@ -118,7 +118,7 @@ export default function AuthUnifiedCard({ initialMode = "signin" }: AuthUnifiedC
     const errors: Record<string, string> = {};
 
     if (!signUpName.trim()) {
-      errors.signUpName = t.errors?.fullNameRequired || "To'liq ismingizni kiriting.";
+      errors.signUpName = t.errors?.fullNameRequired || "Töliq ismingizni kiriting.";
     }
     if (!signUpIdentifier.trim()) {
       errors.signUpIdentifier = t.errors?.phoneOrEmailRequired || "Telefon yoki email manzilingizni kiriting.";
@@ -126,7 +126,7 @@ export default function AuthUnifiedCard({ initialMode = "signin" }: AuthUnifiedC
     if (!signUpPassword) {
       errors.signUpPassword = t.errors?.passwordRequired || "Parol kiriting.";
     } else if (signUpPassword.length < 8) {
-      errors.signUpPassword = t.errors?.passwordTooShort || "Parol kamida 8 ta belgidan iborat bo'lishi kerak.";
+      errors.signUpPassword = t.errors?.passwordTooShort || "Parol kamida 8 ta belgidan iborat bölişi kerak.";
     }
     if (!agreeTerms) {
       errors.agreeTerms = t.errors?.termsRequired || "Foydalanish shartlariga rozilik bildirishingiz kerak.";
@@ -162,7 +162,7 @@ export default function AuthUnifiedCard({ initialMode = "signin" }: AuthUnifiedC
     e.preventDefault();
     setSmsError(null);
     if (!smsPhone || smsPhone.trim().length < 9) {
-      setSmsError("Iltimos, to'liq telefon raqamingizni kiriting.");
+      setSmsError("Iltimos, töliq telefon raqamingizni kiriting.");
       return;
     }
 
@@ -193,7 +193,7 @@ export default function AuthUnifiedCard({ initialMode = "signin" }: AuthUnifiedC
       const targetDestination = sanitizeNextRedirect(nextParam, session.canonicalRole);
       router.push(targetDestination);
     } catch (err: any) {
-      setSmsError("SMS kodi noto'g'ri yoki muddati o'tgan.");
+      setSmsError("SMS kodi notöğri yoki muddati ötgan.");
     } finally {
       setSmsLoading(false);
     }
@@ -467,7 +467,7 @@ export default function AuthUnifiedCard({ initialMode = "signin" }: AuthUnifiedC
                 {/* Full Name */}
                 <div>
                   <label className="text-xs font-bold text-white/80 mb-1.5 block">
-                    To'liq ism (F.I.SH)
+                    Töliq ism (F.I.Ş)
                   </label>
                   <input
                     type="text"
@@ -592,18 +592,18 @@ export default function AuthUnifiedCard({ initialMode = "signin" }: AuthUnifiedC
           <div className="pt-6 mt-6 border-t border-white/5 text-xs text-white/60 text-center">
             {!isSignUp ? (
               <>
-                ZaminFlow'da hali hisobingiz yo'qmi?{" "}
+                ZaminFlow'da hali hisobingiz yöqmi?{" "}
                 <button
                   type="button"
                   onClick={() => toggleMode("signup")}
                   className="font-black text-[#00ffc8] hover:underline cursor-pointer"
                 >
-                  Ro'yxatdan o'ting
+                  Röyxatdan öting
                 </button>
               </>
             ) : (
               <>
-                Allaqachon hisobingiz bormi?{" "}
+                Allaqaçon hisobingiz bormi?{" "}
                 <button
                   type="button"
                   onClick={() => toggleMode("signin")}
@@ -634,11 +634,11 @@ export default function AuthUnifiedCard({ initialMode = "signin" }: AuthUnifiedC
               Kafolatlangan B2B Sut Zanjiri
             </h3>
             <p className="text-xs text-white/65 mt-2 leading-relaxed">
-              450+ fermer xo'jaliklari va yirik sut korxonalari har kuni ZaminFlow orqali savdo qiladi.
+              450+ fermer xöjaliklari va yirik sut korxonalari har kuni ZaminFlow orqali savdo qiladi.
             </p>
           </div>
 
-          {/* Showcase Bento Badges */}
+          {/* Şowcase Bento Badges */}
           <div className="relative z-10 my-8 flex flex-col gap-3.5">
             {/* Bento Card 1: Cold Chain Telematics */}
             <div className="p-4 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-between">
@@ -664,7 +664,7 @@ export default function AuthUnifiedCard({ initialMode = "signin" }: AuthUnifiedC
                 </div>
                 <div>
                   <div className="text-[10px] text-white/50 font-bold uppercase">Bank Himoyasi</div>
-                  <div className="text-sm font-extrabold text-white">100% Eskrou To'lov</div>
+                  <div className="text-sm font-extrabold text-white">100% Eskrou Tölov</div>
                 </div>
               </div>
               <span className="px-2.5 py-1 rounded-full text-[10px] font-black bg-[#0099ff]/20 text-[#00c5e7] border border-[#0099ff]/30">
@@ -675,12 +675,12 @@ export default function AuthUnifiedCard({ initialMode = "signin" }: AuthUnifiedC
             {/* Bento Card 3: Live Market Price */}
             <div className="p-4 rounded-2xl bg-gradient-to-r from-[#00ffc8]/10 via-[#00d3e0]/10 to-[#0099ff]/10 border border-[#00d3e0]/30 flex items-center justify-between">
               <div>
-                <div className="text-[10px] text-white/60 font-bold uppercase">Jonli O'rtacha Narx</div>
+                <div className="text-[10px] text-white/60 font-bold uppercase">Jonli Örtaça Narx</div>
                 <div className="text-lg font-black text-white">
                   4,380 <span className="text-xs text-[#00ffc8]">UZS/L</span>
                 </div>
               </div>
-              <span className="text-xs font-bold text-[#00ffc8]">+12.4% o'sish</span>
+              <span className="text-xs font-bold text-[#00ffc8]">+12.4% ösiş</span>
             </div>
           </div>
 
@@ -775,10 +775,10 @@ export default function AuthUnifiedCard({ initialMode = "signin" }: AuthUnifiedC
                     onClick={() => setSmsStep("phone")}
                     className="hover:text-white underline"
                   >
-                    Raqamni o'zgartirish
+                    Raqamni özgartiriş
                   </button>
                   {smsCountdown > 0 ? (
-                    <span>Qayta yuborish: {smsCountdown}s</span>
+                    <span>Qayta yuboriş: {smsCountdown}s</span>
                   ) : (
                     <button
                       type="button"

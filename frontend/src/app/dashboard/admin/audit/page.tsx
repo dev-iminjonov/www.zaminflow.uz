@@ -111,17 +111,17 @@ export default function AdminAuditPage() {
         <div className="rounded-[24px] p-5 bg-white/[0.03] border border-white/10 flex flex-col justify-between">
           <span className="text-[11px] font-bold uppercase text-white/50">Shifrlash Protokoli</span>
           <div className="text-xl font-black font-mono text-white mt-1">RSA-4096 / SHA-256</div>
-          <span className="text-[10px] text-white/40 font-mono mt-1">Oʻzbekiston DSt standarti</span>
+          <span className="text-[10px] text-white/40 font-mono mt-1">Özbekiston DSt standarti</span>
         </div>
       </section>
 
       {/* TABLE */}
       <div className="bg-white/[0.03] rounded-[28px] p-6 border border-white/10">
         <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-white/10">
-          <h3 className="text-lg font-bold text-white">Soʻnggi Audit Voqealari</h3>
+          <h3 className="text-lg font-bold text-white">Sönggi Audit Voqealari</h3>
           <input
             type="text"
-            placeholder="Voqea yoki aktyor boʻyicha qidirish..."
+            placeholder="Voqea yoki aktyor böyiça qidiriş..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs text-white placeholder-white/40 focus:border-[#00d3e0] outline-none"

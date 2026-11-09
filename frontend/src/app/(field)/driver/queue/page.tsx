@@ -27,7 +27,7 @@ export default function DriverQueuePage() {
       distance: "4.2 km",
       eta: "09:05 (23 min)",
       phone: "+998901234567",
-      address: "Pastdarg'om district, Samarkand",
+      address: "Pastdarğom district, Samarkand",
     },
     {
       id: "STOP-02",
