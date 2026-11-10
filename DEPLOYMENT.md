@@ -47,7 +47,7 @@ Build command: pnpm run build:worker
 Deploy command: pnpm exec vinext-cloudflare deploy --skip-build
 ```
 
-Add these as **Worker runtime variables** (both are public browser configuration):
+Add these as **Build variables** so Vite embeds them in the browser bundle (both are public browser configuration):
 
 ```text
 NEXT_PUBLIC_SUPABASE_URL=https://swfjmikzmpkahvclgvaw.supabase.co
@@ -56,7 +56,9 @@ BACKEND_URL=https://<your-api-host>
 NEXT_PUBLIC_USE_MOCK_DATA=false
 ```
 
-Add the same Supabase URL and anon key as **build variables** too, since Vite inlines `NEXT_PUBLIC_*` values into browser bundles. Never add a `service_role` key. Deploy first and verify the `*.workers.dev` URL before attaching the custom hostname.
+Never add a `service_role` key. Deploy first and verify the `*.workers.dev` URL before attaching the custom hostname.
+
+Set `BACKEND_URL` separately under Worker **Runtime variables** after the FastAPI service has a public HTTPS hostname. Use only the origin (for example `https://api.example.com`); the route handler appends `/api/v1/...` itself.
 
 For a local Worker build/deploy, use `cd frontend`, `pnpm run build:worker`, and `pnpm run deploy:worker`. The `deploy:worker` command publishes to the currently authenticated Cloudflare account, so confirm the account and selected Worker before running it.
 
