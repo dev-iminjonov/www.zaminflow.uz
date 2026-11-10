@@ -27,6 +27,7 @@ services:
       - .env
     environment:
       PYTHONPATH: /app
+      PORT: 8000
       DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:?Set POSTGRES_USER in .env}:${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}@db:5432/${POSTGRES_DB:?Set POSTGRES_DB in .env}
     volumes:
       - ./backend:/app

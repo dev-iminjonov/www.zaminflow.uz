@@ -8,7 +8,7 @@ The Supabase project is in Mumbai; Auth URL settings are configured and the init
 
 The Worker is deployed and serves the latest commit from the connected production branch, `codex/cloudflare-supabase-deploy`, at <https://zaminflow.dev-iminjonov.workers.dev>. Cloudflare is still waiting for the registrar to propagate `nora.ns.cloudflare.com` and `stan.ns.cloudflare.com`; the `zaminflow.uz` zone is not active yet, so its custom hostnames and HTTPS settings are not available. The nameserver change has been saved in aHOST.
 
-The FastAPI service is not deployed. It needs a persistent Python/Docker host and a server-side `BACKEND_URL` on the Worker. The current deployment is therefore a public frontend preview; do not treat account creation or API-backed features as production-ready until the API is hosted and connected. Cloudflare's original DNS scan found no records; check with the owner before adding mail or other DNS services.
+The FastAPI service is not deployed. Google Cloud Run has been selected, but the signed-in Google Cloud project currently shows a pending free-trial prepayment and reports that the deployer cannot enable the Cloud Run Admin API. The service therefore cannot be created yet. The current deployment is a public frontend preview; do not treat account creation or API-backed features as production-ready until the API is hosted and connected. Cloudflare's original DNS scan found no records; check with the owner before adding mail or other DNS services.
 
 ## Deploy sequence
 
@@ -28,7 +28,17 @@ In Supabase Auth > URL Configuration, the Site URL is `https://zaminflow.uz`; re
 
 ### 2. Deploy the FastAPI service
 
-Deploy `backend/` as a persistent Python 3.12 Docker service on a container host or VM. No API host has been selected or configured for this project. Choose an always-on paid plan for production; free web-service plans commonly sleep or have data-retention limits. Provide these values as server-side secrets/configuration:
+Deploy `backend/` to Google Cloud Run in `asia-south1` (Mumbai), close to the Supabase database. The Docker image listens on Cloud Run's `PORT` and the startup bootstrap detects the already-applied 15-table Supabase schema, stamps the matching Alembic head, then applies any future revisions. Do not run the initial Alembic migrations against the live Supabase database without this baseline check: revision 0001 creates tables that already exist.
+
+After the Google Cloud project has active billing and the account has permission to enable Cloud Run APIs, deploy from the repo root:
+
+```powershell
+gcloud config set project YOUR_GOOGLE_CLOUD_PROJECT_ID
+gcloud services enable run.googleapis.com cloudbuild.googleapis.com artifactregistry.googleapis.com secretmanager.googleapis.com
+gcloud run deploy zaminflow-api --source backend --region asia-south1 --allow-unauthenticated --port 8080 --cpu 1 --memory 1Gi --min 0 --max 3 --set-env-vars SUPABASE_URL=https://swfjmikzmpkahvclgvaw.supabase.co,APP_BASE_URL=https://zaminflow.uz --set-secrets DATABASE_URL=zaminflow-database-url:latest,JWT_SECRET_KEY=zaminflow-jwt-secret:latest,CSRF_SECRET=zaminflow-csrf-secret:latest,QR_HMAC_SECRET=zaminflow-qr-secret:latest,BANK_WEBHOOK_HMAC_SECRET=zaminflow-bank-webhook-secret:latest
+```
+
+Create the referenced Secret Manager entries first. `DATABASE_URL` should be the Supabase session-pooler URI using the `postgresql+asyncpg://` scheme. Generate each signing secret independently with at least 32 random characters. Never put database credentials or signing secrets in Git, Cloudflare build variables, or frontend code. Cloud Run is pay-per-use with a monthly free tier, but usage/build/image storage can exceed it; the project currently requires prepayment before it permits enabling APIs. The minimum-instance setting is zero to reduce idle compute charges. The in-process nightly APScheduler task will not be reliable at zero minimum instances; move that task to Cloud Scheduler/Cloud Run Jobs or use a paid always-on instance before depending on it for real settlements.
 
 - `DATABASE_URL`: Supabase Postgres connection string, preferably the session pooler for a long-running service; use the SQLAlchemy `postgresql+asyncpg://` scheme.
 - `SUPABASE_URL=https://swfjmikzmpkahvclgvaw.supabase.co`
@@ -36,7 +46,7 @@ Deploy `backend/` as a persistent Python 3.12 Docker service on a container host
 - `APP_BASE_URL=https://zaminflow.uz`
 - SMTP credentials if email flows are enabled.
 
-Keep database credentials and signing keys server-side. Never put a Supabase `service_role` key in Cloudflare variables or frontend code. Configure the API host's health check to `/health` and allow HTTPS requests from the public app. The backend currently uses its database connection for application data and applies tenant/role checks in API code; Supabase RLS also protects direct client access.
+Keep database credentials and signing keys server-side. Never put a Supabase `service_role` key in Cloudflare variables or frontend code. Configure the service health check to `/health` and keep the Cloud Run endpoint public so the Worker can proxy API calls; user identity and role checks remain in FastAPI. The KYB API currently writes uploaded documents to local disk, so those files are not durable on Cloud Run and must be migrated to the existing private Supabase Storage bucket before accepting real documents.
 
 ### 3. Deploy the Worker from the repository
 
