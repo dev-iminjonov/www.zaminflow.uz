@@ -3,6 +3,7 @@
 import Link from "next/link";
 import React, { useState } from "react";
 import ZaminFlowLogo from "@/components/ZaminFlowLogo";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { ThemeToggleButton, useTheme } from "@/context/ThemeContext";
 
 export default function ForgotPasswordPage() {
@@ -61,6 +62,7 @@ export default function ForgotPasswordPage() {
           <ZaminFlowLogo mode={themeMode} size="md" />
         </Link>
         <div className="flex items-center gap-3">
+          <LanguageSwitcher isDark={isDark} />
           <ThemeToggleButton size="sm" />
           <Link
             href="/sign-in"

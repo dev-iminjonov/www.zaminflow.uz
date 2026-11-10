@@ -16,6 +16,7 @@ import {
 import { useLanguage } from "@/context/LanguageContext";
 import { useTheme, ThemeToggleButton } from "@/context/ThemeContext";
 import ZaminFlowLogo from "@/components/ZaminFlowLogo";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { resolveUserAvatar } from "@/lib/userAvatar";
 import UniversalSpotlightSearch from "@/components/search/UniversalSpotlightSearch";
 import B2BProfileWindow from "@/components/profile/B2BProfileWindow";
@@ -121,7 +122,7 @@ export default function BankOverview() {
   const [transferSuccess, setTransferSuccess] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState("");
 
-  const { locale, setLocale } = useLanguage();
+  const { locale, setLocale, dashT } = useLanguage();
   const { themeMode, isDark } = useTheme();
   const bt = BANK_I18N[locale] || BANK_I18N.uz;
 
@@ -541,24 +542,7 @@ export default function BankOverview() {
               />
 
               {/* Language Switcher */}
-              <div className={`flex items-center p-0.5 rounded-xl border text-[11px] font-bold ${
-                isDark ? "bg-white/5 border-white/10 text-white/60" : "bg-slate-100 border-slate-200 text-slate-600"
-              }`}>
-                {(["uz", "ru", "en"] as const).map((lang) => (
-                  <button
-                    key={lang}
-                    type="button"
-                    onClick={() => setLocale(lang)}
-                    className={`px-2 py-1 rounded-lg uppercase transition cursor-pointer ${
-                      locale === lang
-                        ? isDark ? "bg-white/20 text-white" : "bg-white text-slate-900 shadow-xs"
-                        : "hover:text-emerald-500"
-                    }`}
-                  >
-                    {lang}
-                  </button>
-                ))}
-              </div>
+              <LanguageSwitcher isDark={isDark} />
 
               {/* Single Theme Toggle Button */}
               <ThemeToggleButton />

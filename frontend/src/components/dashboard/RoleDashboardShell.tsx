@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import ZaminFlowLogo from "@/components/ZaminFlowLogo";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { useLanguage } from "@/context/LanguageContext";
 import { useTheme, ThemeToggleButton } from "@/context/ThemeContext";
 import { AuthSession, getStoredSession, signOut } from "@/lib/auth";
@@ -428,25 +429,7 @@ export default function RoleDashboardShell({
             />
 
             {/* Language Selector */}
-            <div className={`flex rounded-full p-1 border text-[11px] font-bold ${
-              isDark ? "border-white/10 bg-white/5" : "border-[#ade8f4] bg-[#f4fbfe]"
-            }`} role="group" aria-label="Language selector">
-              {(["uz", "ru", "en"] as const).map((loc) => (
-                <button
-                  key={loc}
-                  type="button"
-                  onClick={() => setLocale(loc)}
-                  aria-label={`Select language ${loc.toUpperCase()}`}
-                  className={`px-2.5 py-0.5 rounded-full uppercase transition cursor-pointer ${
-                    locale === loc
-                      ? "bg-gradient-to-r from-[#00ffc8] to-[#0099ff] text-[#070B14] font-black shadow-xs"
-                      : isDark ? "text-white/60 hover:text-white" : "text-slate-600 hover:text-slate-900"
-                  }`}
-                >
-                  {loc}
-                </button>
-              ))}
-            </div>
+            <LanguageSwitcher isDark={isDark} />
 
             {/* Theme Mode Toggle */}
             <ThemeToggleButton size="sm" />

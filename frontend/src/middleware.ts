@@ -42,10 +42,67 @@ export async function middleware(request: NextRequest) {
       return NextResponse.redirect(new URL(dashboard, request.url));
     }
   }
-  const legacy: Array<[string, string]> = [["/farmer", "/dashboard/farmer"], ["/industry", "/dashboard/dairy"], ["/driver", "/dashboard/driver"], ["/admin", "/dashboard/admin"], ["/bank", "/dashboard/bank"]];
-  const legacyMatch = legacy.find(([prefix]) => pathname.startsWith(prefix));
-  if (legacyMatch) return NextResponse.redirect(new URL(legacyMatch[1] + pathname.slice(legacyMatch[0].length) + search, request.url));
+
+  // Exact mappings for legacy portal/field routes to modern dashboard routes
+  const exactLegacyMap: Record<string, string> = {
+    "/gate-scanner": "/dashboard/dairy/receive-batch",
+    "/gate-scanner/account": "/dashboard/dairy/profile",
+    "/industry/gate-lab": "/dashboard/dairy/receive-batch",
+    "/industry/contracts": "/dashboard/dairy/orders",
+    "/industry/account": "/dashboard/dairy/profile",
+    "/industry/profile": "/dashboard/dairy/profile",
+    "/farmer/account": "/dashboard/farmer/profile",
+    "/farmer/profile": "/dashboard/farmer/profile",
+    "/farmer/qr-pickup": "/dashboard/farmer/deliveries",
+    "/driver/account": "/dashboard/driver/profile",
+    "/driver/profile": "/dashboard/driver/profile",
+    "/driver/scan": "/dashboard/driver/confirm-pickup",
+    "/driver/gate-handover": "/dashboard/driver/route",
+    "/admin/account": "/dashboard/admin/profile",
+    "/admin/profile": "/dashboard/admin/profile",
+    "/admin/kyb-review": "/dashboard/admin/verification",
+    "/admin/invitations": "/dashboard/admin/users",
+    "/bank/account": "/dashboard/bank/profile",
+    "/bank/profile": "/dashboard/bank/profile",
+  };
+
+  if (exactLegacyMap[pathname]) {
+    return NextResponse.redirect(new URL(exactLegacyMap[pathname] + search, request.url));
+  }
+
+  // Prefix fallback for legacy routes
+  const legacyPrefixes: Array<[string, string]> = [
+    ["/gate-scanner", "/dashboard/dairy/receive-batch"],
+    ["/farmer", "/dashboard/farmer"],
+    ["/industry", "/dashboard/dairy"],
+    ["/driver", "/dashboard/driver"],
+    ["/admin", "/dashboard/admin"],
+    ["/bank", "/dashboard/bank"],
+  ];
+  const legacyMatch = legacyPrefixes.find(([prefix]) => pathname.startsWith(prefix));
+  if (legacyMatch) {
+    return NextResponse.redirect(new URL(legacyMatch[1] + search, request.url));
+  }
+
   return response;
 }
 
-export const config = { matcher: ["/dashboard/:path*", "/signin", "/sign-in", "/signup", "/sign-up", "/auth/login", "/auth/register", "/auth/callback", "/farmer/:path*", "/industry/:path*", "/driver/:path*", "/admin/:path*", "/bank/:path*"] };
+export const config = {
+  matcher: [
+    "/dashboard/:path*",
+    "/signin",
+    "/sign-in",
+    "/signup",
+    "/sign-up",
+    "/auth/login",
+    "/auth/register",
+    "/auth/callback",
+    "/farmer/:path*",
+    "/industry/:path*",
+    "/driver/:path*",
+    "/admin/:path*",
+    "/bank/:path*",
+    "/gate-scanner/:path*",
+    "/gate-scanner",
+  ],
+};

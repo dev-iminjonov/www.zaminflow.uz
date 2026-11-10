@@ -19,7 +19,7 @@ const LanguageContext = createContext<LanguageContextType | undefined>(undefined
 const STORAGE_KEY = "zaminflow_locale";
 const COOKIE_NAME = "NEXT_LOCALE";
 
-function getInitialLocale(): Locale {
+export function getInitialLocale(): Locale {
   if (typeof window === "undefined") return "uz";
 
   try {
@@ -49,7 +49,7 @@ function getInitialLocale(): Locale {
 }
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
-  const [locale, setLocaleState] = useState<Locale>("uz");
+  const [locale, setLocaleState] = useState<Locale>(() => getInitialLocale());
   const [isInitialized, setIsInitialized] = useState(false);
 
   useEffect(() => {
@@ -57,6 +57,27 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     setLocaleState(initial);
     setIsInitialized(true);
     document.documentElement.lang = initial;
+
+    const handleLocaleEvent = (e: Event) => {
+      const customEvent = e as CustomEvent<Locale>;
+      if (customEvent.detail && (customEvent.detail === "uz" || customEvent.detail === "ru" || customEvent.detail === "en")) {
+        setLocaleState(customEvent.detail);
+        document.documentElement.lang = customEvent.detail;
+      }
+    };
+    const handleStorage = (e: StorageEvent) => {
+      if (e.key === STORAGE_KEY && (e.newValue === "uz" || e.newValue === "ru" || e.newValue === "en")) {
+        setLocaleState(e.newValue as Locale);
+        document.documentElement.lang = e.newValue;
+      }
+    };
+
+    window.addEventListener("zaminflow_locale_change", handleLocaleEvent);
+    window.addEventListener("storage", handleStorage);
+    return () => {
+      window.removeEventListener("zaminflow_locale_change", handleLocaleEvent);
+      window.removeEventListener("storage", handleStorage);
+    };
   }, []);
 
   const setLocale = (newLocale: Locale) => {
@@ -67,6 +88,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
       localStorage.setItem(STORAGE_KEY, newLocale);
       document.cookie = `${COOKIE_NAME}=${newLocale}; path=/; max-age=31536000; SameSite=Lax`;
       document.documentElement.lang = newLocale;
+      window.dispatchEvent(new CustomEvent("zaminflow_locale_change", { detail: newLocale }));
     } catch (e) {
       console.warn("Failed to persist locale:", e);
     }
@@ -101,13 +123,32 @@ const fallbackUzDash = deepTransformUzbek(dashboardTranslations.uz);
 export function useLanguage() {
   const context = useContext(LanguageContext);
   if (!context) {
-    // Resilient fallback if component rendered outside Provider during SSR or testing
+    const currentLocale = getInitialLocale();
+    const raw = translations[currentLocale] || translations.uz;
+    const t = currentLocale === "uz" ? deepTransformUzbek(raw) : raw;
+    const rawAuth = authTranslations[currentLocale] || authTranslations.uz;
+    const authT = currentLocale === "uz" ? deepTransformUzbek(rawAuth) : rawAuth;
+    const rawDash = dashboardTranslations[currentLocale] || dashboardTranslations.uz;
+    const dashT = currentLocale === "uz" ? deepTransformUzbek(rawDash) : rawDash;
+
     return {
-      locale: "uz" as Locale,
-      setLocale: () => {},
-      t: fallbackUzTranslations,
-      authT: fallbackUzAuth,
-      dashT: fallbackUzDash,
+      locale: currentLocale,
+      setLocale: (newLoc: Locale) => {
+        if (newLoc !== "uz" && newLoc !== "ru" && newLoc !== "en") return;
+        try {
+          if (typeof window !== "undefined") {
+            localStorage.setItem(STORAGE_KEY, newLoc);
+            document.cookie = `${COOKIE_NAME}=${newLoc}; path=/; max-age=31536000; SameSite=Lax`;
+            document.documentElement.lang = newLoc;
+            window.dispatchEvent(new CustomEvent("zaminflow_locale_change", { detail: newLoc }));
+          }
+        } catch (e) {
+          console.warn("Failed to persist locale:", e);
+        }
+      },
+      t,
+      authT,
+      dashT,
     };
   }
   return context;

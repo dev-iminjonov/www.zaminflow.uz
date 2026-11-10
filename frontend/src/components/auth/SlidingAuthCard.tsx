@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { signIn, signUp } from "@/lib/auth";
@@ -18,8 +18,52 @@ export default function SlidingAuthCard({ initialMode = "signin" }: SlidingAuthC
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const nextParam = searchParams.get("next");
-  const { locale, setLocale, authT: t } = useLanguage();
+  const { locale, setLocale, authT } = useLanguage();
   const { themeMode, isDark } = useTheme();
+
+  // Sliding translations with fallback
+  const s = authT.sliding || {
+    signInTitle: "Tizimga Kiriş",
+    signUpTitle: "Hisob Yaratiş",
+    orPhoneEmailSignIn: "yoki telefon / email orqali kiring",
+    signInButton: "KIRIŞ →",
+    signUpButton: "RÖYXATDAN ÖTIŞ →",
+    signingIn: "Kirilmoqda...",
+    creatingAccount: "Yaratilmoqda...",
+    fullNamePlaceholder: "Töliq ism (F.I.Ş)",
+    phoneOrEmailPlaceholder: "Telefon yoki Email",
+    passwordPlaceholder: "Parol",
+    passwordMinLengthPlaceholder: "Parol (kamida 8 ta belgi)",
+    rememberMe: "Eslab qoliş",
+    forgotPassword: "Parolni unutdingizmi?",
+    noAccountQuestion: "Hisobingiz yöqmi?",
+    haveAccountQuestion: "Hisobingiz bormi?",
+    signUpAction: "Röyxatdan ötiş",
+    signInAction: "Kiriş",
+    homeNav: "Boş sahifa",
+    footerRights: "Barcha huquqlar himoyalangan.",
+    toastConnecting: "orqali ulanmoqda...",
+    overlayWelcomeTitleTop: "Qaytganingiz",
+    overlayWelcomeTitleBottom: "Bilan!",
+    overlayWelcomeDesc: "ZaminFlow orqali sut savdosi, IoT logistika va bank eskrou operatsiyalarini davom ettiring.",
+    overlayWelcomeBtn: "KIRIŞ",
+    overlayJoinTitleTop: "ZaminFlow'ga",
+    overlayJoinTitleBottom: "Qöşiling!",
+    overlayJoinDesc: "450+ fermer va sut zavodlari bilan töğridan-töğri boğlaning va bepul röyxatdan öting.",
+    overlayJoinBtn: "RÖYXATDAN ÖTIŞ",
+    roleFarmer: "Fermer",
+    roleDairy: "Zavod",
+    roleDriver: "Haydovçi",
+    orgPlaceholderFarmer: "Ferma yoki Kooperativ nomi",
+    orgPlaceholderDairy: "Sut zavodi nomi",
+    orgPlaceholderDriver: "Tanker davlat raqami",
+    orgPlaceholderBank: "Bank bölimi litsenziyasi",
+    errorIdentifierRequired: "Email yoki telefon raqamingizni kiriting.",
+    errorPasswordRequired: "Parolingizni kiriting.",
+    errorGenericAuth: "Telefon/email yoki parol notöğri. Qayta urinib köring.",
+    errorNameRequired: "Töliq ismingizni kiriting.",
+    errorPasswordShort: "Kamida 8 ta belgi bölişi lozim.",
+  };
 
   // Mode state: false = Sign In (State A), true = Sign Up (State B / right-panel-active)
   const [isSignUp, setIsSignUp] = useState<boolean>(
@@ -67,7 +111,12 @@ export default function SlidingAuthCard({ initialMode = "signin" }: SlidingAuthC
   const [socialToast, setSocialToast] = useState<string | null>(null);
 
   const handleSocialClick = (provider: string) => {
-    setSocialToast(`${provider} orqali ulanmoqda...`);
+    const toastMsg = locale === "en"
+      ? `${s.toastConnecting} ${provider}...`
+      : locale === "ru"
+      ? `${s.toastConnecting} ${provider}...`
+      : `${provider} ${s.toastConnecting}`;
+    setSocialToast(toastMsg);
     setTimeout(() => setSocialToast(null), 2500);
   };
 
@@ -78,10 +127,10 @@ export default function SlidingAuthCard({ initialMode = "signin" }: SlidingAuthC
     const errors: Record<string, string> = {};
 
     if (!signInIdentifier.trim()) {
-      errors.signInIdentifier = "Email yoki telefon raqamingizni kiriting.";
+      errors.signInIdentifier = s.errorIdentifierRequired || "Email yoki telefon raqamingizni kiriting.";
     }
     if (!signInPassword) {
-      errors.signInPassword = "Parolingizni kiriting.";
+      errors.signInPassword = s.errorPasswordRequired || "Parolingizni kiriting.";
     }
 
     if (Object.keys(errors).length > 0) {
@@ -94,8 +143,8 @@ export default function SlidingAuthCard({ initialMode = "signin" }: SlidingAuthC
       const session = await signIn(signInIdentifier, signInPassword, keepSignedIn);
       const targetDestination = sanitizeNextRedirect(nextParam, session.canonicalRole);
       router.push(targetDestination);
-    } catch (err: any) {
-      setServerError("Telefon/email yoki parol notöğri. Qayta urinib köring.");
+    } catch {
+      setServerError(s.errorGenericAuth || "Telefon/email yoki parol noto'g'ri. Qayta urinib ko'ring.");
     } finally {
       setIsLoading(false);
     }
@@ -108,15 +157,15 @@ export default function SlidingAuthCard({ initialMode = "signin" }: SlidingAuthC
     const errors: Record<string, string> = {};
 
     if (!signUpName.trim()) {
-      errors.signUpName = "Töliq ismingizni kiriting.";
+      errors.signUpName = s.errorNameRequired || "To'liq ismingizni kiriting.";
     }
     if (!signUpIdentifier.trim()) {
-      errors.signUpIdentifier = "Email yoki telefon kiriting.";
+      errors.signUpIdentifier = s.errorIdentifierRequired || "Email yoki telefon kiriting.";
     }
     if (!signUpPassword) {
-      errors.signUpPassword = "Parol kiriting.";
+      errors.signUpPassword = s.errorPasswordRequired || "Parol kiriting.";
     } else if (signUpPassword.length < 8) {
-      errors.signUpPassword = "Kamida 8 ta belgi bölişi lozim.";
+      errors.signUpPassword = s.errorPasswordShort || "Kamida 8 ta belgi bo'lishi lozim.";
     }
 
     if (Object.keys(errors).length > 0) {
@@ -138,11 +187,39 @@ export default function SlidingAuthCard({ initialMode = "signin" }: SlidingAuthC
       const targetDestination = sanitizeNextRedirect(nextParam, session.canonicalRole);
       router.push(targetDestination);
     } catch (err: any) {
-      setServerError(err.message === "EMAIL_CONFIRMATION_REQUIRED"
-        ? "Account created. Check your email to confirm it, then sign in."
-        : "Ushbu ma'lumotlar bilan akkaunt allaqachon mavjud.");
+      setServerError(
+        err.message === "EMAIL_CONFIRMATION_REQUIRED"
+          ? (locale === "en" ? "Account created. Check your email to confirm it, then sign in." : locale === "ru" ? "Аккаунт создан. Проверьте почту для подтверждения и войдите." : "Hisob yaratildi. Elektron pochtangizni tasdiqlang va tizimga kiring.")
+          : (locale === "en" ? "An account with these details already exists." : locale === "ru" ? "Аккаунт с такими данными уже существует." : "Ushbu ma'lumotlar bilan akkaunt allaqachon mavjud.")
+      );
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const getOrgPlaceholder = () => {
+    switch (signUpRole) {
+      case "farmer":
+        return s.orgPlaceholderFarmer || "Ferma yoki Kooperativ nomi";
+      case "dairy":
+        return s.orgPlaceholderDairy || "Sut zavodi nomi";
+      case "driver":
+        return s.orgPlaceholderDriver || "Tanker davlat raqami";
+      default:
+        return s.orgPlaceholderBank || "Bank bo'limi";
+    }
+  };
+
+  const getRoleLabel = (roleKey: RoleKey) => {
+    switch (roleKey) {
+      case "farmer":
+        return s.roleFarmer || "Fermer";
+      case "dairy":
+        return s.roleDairy || "Zavod";
+      case "driver":
+        return s.roleDriver || "Haydovchi";
+      default:
+        return roleKey;
     }
   };
 
@@ -174,8 +251,8 @@ export default function SlidingAuthCard({ initialMode = "signin" }: SlidingAuthC
       <div
         className="absolute inset-0 opacity-15 pointer-events-none"
         style={{
-          backgroundImage: "radial-gradient(#00d3e0 1px, transparent 1px)",
-          backgroundSize: "28px 28px",
+          backgroundImage: `radial-gradient(${isDark ? "#ffffff" : "#0077b6"} 1px, transparent 1px)`,
+          backgroundSize: "32px 32px",
         }}
       />
 
@@ -186,7 +263,7 @@ export default function SlidingAuthCard({ initialMode = "signin" }: SlidingAuthC
         </Link>
 
         <div className="flex items-center gap-3 sm:gap-4">
-          {/* Language Switcher */}
+          {/* Multi-language Selector Pill */}
           <div className={`flex rounded-full p-1 border text-xs font-bold backdrop-blur-md ${
             isDark ? "bg-white/5 border-white/10" : "bg-white border-[#ade8f4] shadow-xs"
           }`}>
@@ -194,8 +271,12 @@ export default function SlidingAuthCard({ initialMode = "signin" }: SlidingAuthC
               <button
                 key={loc}
                 type="button"
-                onClick={() => setLocale(loc)}
-                className={`px-3 py-1 rounded-full uppercase transition-all ${
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setLocale(loc);
+                }}
+                className={`px-3 py-1 rounded-full uppercase transition-all cursor-pointer ${
                   locale === loc
                     ? "bg-gradient-to-r from-[#00ffc8] to-[#0099ff] text-[#070B14] font-black shadow-md"
                     : isDark ? "text-white/60 hover:text-white" : "text-[#0077b6] hover:text-[#03045e]"
@@ -218,7 +299,7 @@ export default function SlidingAuthCard({ initialMode = "signin" }: SlidingAuthC
             }`}
           >
             <span>←</span>
-            <span className="hidden sm:inline">Bosh sahifa</span>
+            <span className="hidden sm:inline">{s.homeNav || "Bosh sahifa"}</span>
           </Link>
         </div>
       </header>
@@ -254,7 +335,7 @@ export default function SlidingAuthCard({ initialMode = "signin" }: SlidingAuthC
         >
           <div className="w-full max-w-sm flex flex-col items-center">
             <h1 className={`text-3xl font-black tracking-tight mb-2 ${isDark ? "text-white" : "text-slate-900"}`}>
-              Tizimga Kirish
+              {s.signInTitle || "Tizimga Kirish"}
             </h1>
 
             {/* Social Icons (Google & Telegram only - exact official vector SVG icons) */}
@@ -262,7 +343,7 @@ export default function SlidingAuthCard({ initialMode = "signin" }: SlidingAuthC
               <button
                 type="button"
                 onClick={() => handleSocialClick("Google")}
-                title="Google orqali kirish"
+                title="Google"
                 className={`w-10 h-10 rounded-xl border flex items-center justify-center transition-all duration-200 hover:-translate-y-0.5 cursor-pointer ${
                   isDark
                     ? "border-white/10 bg-white/5 text-white hover:border-[#00d3e0] hover:shadow-[0_0_15px_rgba(0,211,224,0.3)]"
@@ -279,7 +360,7 @@ export default function SlidingAuthCard({ initialMode = "signin" }: SlidingAuthC
               <button
                 type="button"
                 onClick={() => handleSocialClick("Telegram")}
-                title="Telegram orqali kirish"
+                title="Telegram"
                 className={`w-10 h-10 rounded-xl border flex items-center justify-center transition-all duration-200 hover:-translate-y-0.5 cursor-pointer ${
                   isDark
                     ? "border-white/10 bg-white/5 text-[#00d3e0] hover:text-[#00ffc8] hover:border-[#00d3e0] hover:shadow-[0_0_15px_rgba(0,211,224,0.3)]"
@@ -293,7 +374,7 @@ export default function SlidingAuthCard({ initialMode = "signin" }: SlidingAuthC
             </div>
 
             <p className={`text-[11px] mb-5 font-medium ${isDark ? "text-white/50" : "text-slate-500"}`}>
-              yoki telefon / email orqali kiring
+              {s.orPhoneEmailSignIn || "yoki telefon / email orqali kiring"}
             </p>
 
             {serverError && !isSignUp && (
@@ -308,7 +389,7 @@ export default function SlidingAuthCard({ initialMode = "signin" }: SlidingAuthC
                   type="text"
                   value={signInIdentifier}
                   onChange={(e) => setSignInIdentifier(e.target.value)}
-                  placeholder="Telefon yoki Email"
+                  placeholder={s.phoneOrEmailPlaceholder || "Telefon yoki Email"}
                   className={`w-full h-11 px-4 rounded-xl border text-xs sm:text-sm font-medium outline-hidden transition-all ${
                     isDark
                       ? "bg-white/5 border-white/10 text-white placeholder:text-white/30 focus:border-[#00d3e0] focus:ring-2 focus:ring-[#00d3e0]/20"
@@ -327,7 +408,7 @@ export default function SlidingAuthCard({ initialMode = "signin" }: SlidingAuthC
                   type={showSignInPassword ? "text" : "password"}
                   value={signInPassword}
                   onChange={(e) => setSignInPassword(e.target.value)}
-                  placeholder="Parol"
+                  placeholder={s.passwordPlaceholder || "Parol"}
                   className={`w-full h-11 px-4 pr-10 rounded-xl border text-xs sm:text-sm font-medium outline-hidden transition-all ${
                     isDark
                       ? "bg-white/5 border-white/10 text-white placeholder:text-white/30 focus:border-[#00d3e0] focus:ring-2 focus:ring-[#00d3e0]/20"
@@ -356,13 +437,13 @@ export default function SlidingAuthCard({ initialMode = "signin" }: SlidingAuthC
                     onChange={(e) => setKeepSignedIn(e.target.checked)}
                     className="w-3.5 h-3.5 rounded-sm accent-emerald-500"
                   />
-                  <span>Eslab qolish</span>
+                  <span>{s.rememberMe || "Eslab qolish"}</span>
                 </label>
                 <Link
                   href="/forgot-password"
                   className={`font-semibold hover:underline ${isDark ? "text-[#00d3e0] hover:text-[#00ffc8]" : "text-emerald-700 hover:text-emerald-800"}`}
                 >
-                  Parolni unutdingizmi?
+                  {s.forgotPassword || "Parolni unutdingizmi?"}
                 </Link>
               </div>
 
@@ -372,19 +453,19 @@ export default function SlidingAuthCard({ initialMode = "signin" }: SlidingAuthC
                 disabled={isLoading}
                 className="w-full h-11 rounded-xl bg-gradient-to-r from-[#00ffc8] via-[#00d3e0] to-[#0099ff] hover:opacity-95 active:scale-98 text-[#070B14] font-black text-xs uppercase tracking-wider shadow-[0_10px_30px_rgba(0,211,224,0.35)] transition-all mt-2 cursor-pointer"
               >
-                {isLoading ? "Kirilmoqda..." : "KIRISH →"}
+                {isLoading ? (s.signingIn || "Kirilmoqda...") : (s.signInButton || "KIRISH →")}
               </button>
             </form>
 
             {/* Mobile Toggle Link */}
             <div className={`md:hidden mt-6 text-xs ${isDark ? "text-white/60" : "text-slate-600"}`}>
-              Hisobingiz yo'qmi?{" "}
+              {s.noAccountQuestion || "Hisobingiz yo'qmi?"}{" "}
               <button
                 type="button"
                 onClick={() => setPanelMode(true)}
                 className={`font-black underline ${isDark ? "text-[#00ffc8]" : "text-emerald-700"}`}
               >
-                Ro'yxatdan o'tish
+                {s.signUpAction || "Ro'yxatdan o'tish"}
               </button>
             </div>
           </div>
@@ -403,7 +484,7 @@ export default function SlidingAuthCard({ initialMode = "signin" }: SlidingAuthC
         >
           <div className="w-full max-w-sm flex flex-col items-center">
             <h2 className={`text-2xl sm:text-3xl font-black tracking-tight mb-2 ${isDark ? "text-white" : "text-slate-900"}`}>
-              Hisob Yaratish
+              {s.signUpTitle || "Hisob Yaratish"}
             </h2>
 
             {/* Role Selector Chips (Centered 3 equal items filling the pill with equal flex) */}
@@ -424,7 +505,7 @@ export default function SlidingAuthCard({ initialMode = "signin" }: SlidingAuthC
                         : isDark ? "text-white/60 hover:text-white" : "text-slate-600 hover:text-slate-900"
                     }`}
                   >
-                    {r === "farmer" ? "Fermer" : r === "dairy" ? "Zavod" : "Haydovchi"}
+                    {getRoleLabel(r)}
                   </button>
                 );
               })}
@@ -442,7 +523,7 @@ export default function SlidingAuthCard({ initialMode = "signin" }: SlidingAuthC
                   type="text"
                   value={signUpName}
                   onChange={(e) => setSignUpName(e.target.value)}
-                  placeholder="To'liq ism (F.I.SH)"
+                  placeholder={s.fullNamePlaceholder || "To'liq ism (F.I.SH)"}
                   className={`w-full h-10 px-3.5 rounded-xl border text-xs sm:text-sm font-medium outline-hidden transition-all ${
                     isDark
                       ? "bg-white/5 border-white/10 text-white placeholder:text-white/30 focus:border-[#00d3e0] focus:ring-2 focus:ring-[#00d3e0]/20"
@@ -461,15 +542,7 @@ export default function SlidingAuthCard({ initialMode = "signin" }: SlidingAuthC
                   type="text"
                   value={signUpOrgName}
                   onChange={(e) => setSignUpOrgName(e.target.value)}
-                  placeholder={
-                    signUpRole === "farmer"
-                      ? "Ferma yoki Kooperativ nomi"
-                      : signUpRole === "dairy"
-                      ? "Sut zavodi nomi"
-                      : signUpRole === "driver"
-                      ? "Tanker davlat raqami"
-                      : "Bank bo'limi"
-                  }
+                  placeholder={getOrgPlaceholder()}
                   className={`w-full h-10 px-3.5 rounded-xl border text-xs sm:text-sm font-medium outline-hidden transition-all ${
                     isDark
                       ? "bg-white/5 border-white/10 text-white placeholder:text-white/30 focus:border-[#00d3e0] focus:ring-2 focus:ring-[#00d3e0]/20"
@@ -483,7 +556,7 @@ export default function SlidingAuthCard({ initialMode = "signin" }: SlidingAuthC
                   type="text"
                   value={signUpIdentifier}
                   onChange={(e) => setSignUpIdentifier(e.target.value)}
-                  placeholder="Telefon yoki Email"
+                  placeholder={s.phoneOrEmailPlaceholder || "Telefon yoki Email"}
                   className={`w-full h-10 px-3.5 rounded-xl border text-xs sm:text-sm font-medium outline-hidden transition-all ${
                     isDark
                       ? "bg-white/5 border-white/10 text-white placeholder:text-white/30 focus:border-[#00d3e0] focus:ring-2 focus:ring-[#00d3e0]/20"
@@ -502,7 +575,7 @@ export default function SlidingAuthCard({ initialMode = "signin" }: SlidingAuthC
                   type={showSignUpPassword ? "text" : "password"}
                   value={signUpPassword}
                   onChange={(e) => setSignUpPassword(e.target.value)}
-                  placeholder="Parol (kamida 8 ta belgi)"
+                  placeholder={s.passwordMinLengthPlaceholder || "Parol (kamida 8 ta belgi)"}
                   className={`w-full h-10 px-3.5 pr-10 rounded-xl border text-xs sm:text-sm font-medium outline-hidden transition-all ${
                     isDark
                       ? "bg-white/5 border-white/10 text-white placeholder:text-white/30 focus:border-[#00d3e0] focus:ring-2 focus:ring-[#00d3e0]/20"
@@ -529,19 +602,19 @@ export default function SlidingAuthCard({ initialMode = "signin" }: SlidingAuthC
                 disabled={isLoading}
                 className="w-full h-11 rounded-xl bg-gradient-to-r from-[#00ffc8] via-[#00d3e0] to-[#0099ff] hover:opacity-95 active:scale-98 text-[#070B14] font-black text-xs uppercase tracking-wider shadow-[0_10px_30px_rgba(0,211,224,0.35)] transition-all mt-1 cursor-pointer"
               >
-                {isLoading ? "Yaratilmoqda..." : "RO'YXATDAN O'TISH →"}
+                {isLoading ? (s.creatingAccount || "Yaratilmoqda...") : (s.signUpButton || "RO'YXATDAN O'TISH →")}
               </button>
             </form>
 
             {/* Mobile Toggle Link */}
             <div className={`md:hidden mt-4 text-xs ${isDark ? "text-white/60" : "text-slate-600"}`}>
-              Hisobingiz bormi?{" "}
+              {s.haveAccountQuestion || "Hisobingiz bormi?"}{" "}
               <button
                 type="button"
                 onClick={() => setPanelMode(false)}
                 className={`font-black underline ${isDark ? "text-[#00ffc8]" : "text-emerald-700"}`}
               >
-                Kirish
+                {s.signInAction || "Kirish"}
               </button>
             </div>
           </div>
@@ -582,19 +655,19 @@ export default function SlidingAuthCard({ initialMode = "signin" }: SlidingAuthC
                 🥛
               </div>
               <h2 className="text-3xl font-black tracking-tight leading-tight mb-2">
-                Qaytganingiz
+                {s.overlayWelcomeTitleTop || "Qaytganingiz"}
                 <br />
-                Bilan!
+                {s.overlayWelcomeTitleBottom || "Bilan!"}
               </h2>
               <p className="text-xs text-[#070B14]/80 leading-relaxed font-semibold max-w-xs mb-8">
-                ZaminFlow orqali sut savdosi, IoT logistika va bank eskrou operatsiyalarini davom ettiring.
+                {s.overlayWelcomeDesc || "ZaminFlow orqali sut savdosi, IoT logistika va bank eskrou operatsiyalarini davom ettiring."}
               </p>
               <button
                 type="button"
                 onClick={() => setPanelMode(false)}
                 className="px-8 py-3 rounded-full border-2 border-[#070B14] bg-transparent hover:bg-[#070B14] hover:text-white active:scale-95 text-[#070B14] font-black text-xs uppercase tracking-wider transition-all duration-200 cursor-pointer shadow-lg"
               >
-                KIRISH
+                {s.overlayWelcomeBtn || "KIRISH"}
               </button>
             </div>
 
@@ -611,19 +684,19 @@ export default function SlidingAuthCard({ initialMode = "signin" }: SlidingAuthC
                 ⚡
               </div>
               <h2 className="text-3xl font-black tracking-tight leading-tight mb-2">
-                ZaminFlow'ga
+                {s.overlayJoinTitleTop || "ZaminFlow'ga"}
                 <br />
-                Qo'shiling!
+                {s.overlayJoinTitleBottom || "Qo'shiling!"}
               </h2>
               <p className="text-xs text-[#070B14]/80 leading-relaxed font-semibold max-w-xs mb-8">
-                450+ fermer va sut zavodlari bilan to'g'ridan-to'g'ri bog'laning va bepul ro'yxatdan o'ting.
+                {s.overlayJoinDesc || "450+ fermer va sut zavodlari bilan to'g'ridan-to'g'ri bog'laning va bepul ro'yxatdan o'ting."}
               </p>
               <button
                 type="button"
                 onClick={() => setPanelMode(true)}
                 className="px-8 py-3 rounded-full border-2 border-[#070B14] bg-transparent hover:bg-[#070B14] hover:text-white active:scale-95 text-[#070B14] font-black text-xs uppercase tracking-wider transition-all duration-200 cursor-pointer shadow-lg"
               >
-                RO'YXATDAN O'TISH
+                {s.overlayJoinBtn || "RO'YXATDAN O'TISH"}
               </button>
             </div>
 
@@ -634,7 +707,7 @@ export default function SlidingAuthCard({ initialMode = "signin" }: SlidingAuthC
 
       {/* 4. FOOTER NOTE */}
       <footer className="mt-8 text-xs text-white/40 text-center font-medium">
-        © {new Date().getFullYear()} ZaminFlow Technologies LLC. Barcha huquqlar himoyalangan.
+        © {new Date().getFullYear()} ZaminFlow Technologies LLC. {s.footerRights || "Barcha huquqlar himoyalangan."}
       </footer>
     </div>
   );

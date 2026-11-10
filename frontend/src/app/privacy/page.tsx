@@ -3,6 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import ZaminFlowLogo from "@/components/ZaminFlowLogo";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { ThemeToggleButton, useTheme } from "@/context/ThemeContext";
 
 export default function PrivacyPage() {
@@ -42,6 +43,7 @@ export default function PrivacyPage() {
             <ZaminFlowLogo size="md" mode={themeMode} />
           </Link>
           <div className="flex items-center gap-3">
+            <LanguageSwitcher isDark={isDark} />
             <ThemeToggleButton size="sm" />
             <Link
               href="/"

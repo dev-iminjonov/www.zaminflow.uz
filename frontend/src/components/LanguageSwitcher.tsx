@@ -10,7 +10,7 @@ interface LanguageSwitcherProps {
 }
 
 const LANGUAGES: { code: Locale; label: string; full: string }[] = [
-  { code: "uz", label: "UZ", full: "Özbekça" },
+  { code: "uz", label: "UZ", full: "Oʻzbekcha" },
   { code: "ru", label: "RU", full: "Русский" },
   { code: "en", label: "EN", full: "English" },
 ];
@@ -34,7 +34,11 @@ export default function LanguageSwitcher({ className = "", isDark }: LanguageSwi
           <button
             key={lang.code}
             type="button"
-            onClick={() => setLocale(lang.code)}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setLocale(lang.code);
+            }}
             aria-pressed={isActive}
             title={lang.full}
             className={`min-h-[32px] sm:min-h-[36px] min-w-[36px] sm:min-w-[40px] px-2.5 sm:px-3 py-1 rounded-full text-xs font-black tracking-wider uppercase transition-all duration-200 cursor-pointer ${
