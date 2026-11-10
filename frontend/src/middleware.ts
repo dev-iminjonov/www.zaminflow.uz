@@ -1,136 +1,51 @@
-import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
-import { sanitizeNextRedirect, RoleKey, mapBackendRoleToCanonicalRole } from "@/lib/roles";
+import { createServerClient } from "@supabase/ssr";
+import { NextResponse, type NextRequest } from "next/server";
+import { getDashboardPathForRole, mapBackendRoleToCanonicalRole, sanitizeNextRedirect, type RoleKey } from "@/lib/roles";
 
-function parseJwtPayload(token: string): { org_role?: string; sub_role?: string; exp?: number } | null {
-  try {
-    const parts = token.split(".");
-    if (parts.length !== 3) return null;
-    const base64 = parts[1].replace(/-/g, "+").replace(/_/g, "/");
-    const jsonStr = Buffer.from(base64, "base64").toString("utf8");
-    return JSON.parse(jsonStr);
-  } catch {
-    return null;
-  }
-}
-
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
+  let response = NextResponse.next({ request });
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll: () => request.cookies.getAll(),
+        setAll(cookies) {
+          cookies.forEach(({ name, value }) => request.cookies.set(name, value));
+          response = NextResponse.next({ request });
+          cookies.forEach(({ name, value, options }) => response.cookies.set(name, value, options));
+        },
+      },
+    }
+  );
+  const { data: claimsData } = await supabase.auth.getClaims();
+  const claims = claimsData?.claims;
+  const signedIn = !!claims?.sub;
+  const metadata = (claims?.app_metadata || {}) as Record<string, string>;
+  const role = mapBackendRoleToCanonicalRole(`${metadata.org_role || ""} ${metadata.sub_role || ""}`) as RoleKey;
+  const dashboard = getDashboardPathForRole(role);
   const { pathname, search } = request.nextUrl;
+  const authPaths = ["/signin", "/sign-in", "/signup", "/sign-up", "/auth/login", "/auth/register"];
 
-  const accessTokenCookie =
-    request.cookies.get("__Host-access_token")?.value ||
-    request.cookies.get("access_token")?.value;
-
-  let isAuthenticated = false;
-  let userRole: RoleKey = "farmer";
-
-  if (accessTokenCookie) {
-    const payload = parseJwtPayload(accessTokenCookie);
-    if (payload && (!payload.exp || payload.exp > Date.now() / 1000)) {
-      isAuthenticated = true;
-      const combined = `${payload.org_role || ""} ${payload.sub_role || ""}`;
-      userRole = mapBackendRoleToCanonicalRole(combined);
-    }
+  if (signedIn && authPaths.includes(pathname)) {
+    const target = sanitizeNextRedirect(request.nextUrl.searchParams.get("next"), role);
+    return NextResponse.redirect(new URL(target || dashboard, request.url));
   }
-
-  // Role dashboard mapping (All 5 canonical roles)
-  const roleDashboardMap: Record<RoleKey, string> = {
-    farmer: "/dashboard/farmer",
-    dairy: "/dashboard/dairy",
-    driver: "/dashboard/driver",
-    bank: "/dashboard/bank",
-    admin: "/dashboard/admin",
-  };
-  const myDashboard = roleDashboardMap[userRole] || "/dashboard/farmer";
-
-  // 1. Signed-in user opening /signin or /signup
-  if (
-    isAuthenticated &&
-    (pathname === "/signin" ||
-      pathname === "/sign-in" ||
-      pathname === "/signup" ||
-      pathname === "/sign-up" ||
-      pathname === "/auth/login" ||
-      pathname === "/auth/register")
-  ) {
-    const nextParam = request.nextUrl.searchParams.get("next");
-    if (nextParam) {
-      const safeDestination = sanitizeNextRedirect(nextParam, userRole);
-      return NextResponse.redirect(new URL(safeDestination, request.url));
-    }
-    return NextResponse.redirect(new URL(myDashboard, request.url));
-  }
-
-  // 2. Route guards for /dashboard/*
   if (pathname.startsWith("/dashboard")) {
-    // Unauthenticated users go to /signin?next=<path>
-    if (!isAuthenticated) {
-      const signInUrl = new URL("/signin", request.url);
-      signInUrl.searchParams.set("next", pathname + search);
-      return NextResponse.redirect(signInUrl);
+    if (!signedIn) {
+      const url = new URL("/signin", request.url);
+      url.searchParams.set("next", pathname + search);
+      return NextResponse.redirect(url);
     }
-
-    // Direct /dashboard root -> redirect to role's dashboard
-    if (pathname === "/dashboard" || pathname === "/dashboard/") {
-      return NextResponse.redirect(new URL(myDashboard, request.url));
-    }
-
-    // Role-specific dashboard route checking
-    if (userRole !== "admin") {
-      // User opening another role's dashboard is redirected to their own dashboard
-      if (
-        (pathname.startsWith("/dashboard/farmer") && userRole !== "farmer") ||
-        (pathname.startsWith("/dashboard/dairy") && userRole !== "dairy") ||
-        (pathname.startsWith("/dashboard/driver") && userRole !== "driver") ||
-        (pathname.startsWith("/dashboard/bank") && userRole !== "bank") ||
-        pathname.startsWith("/dashboard/admin")
-      ) {
-        return NextResponse.redirect(new URL(myDashboard, request.url));
-      }
+    if (pathname === "/dashboard" || pathname === "/dashboard/") return NextResponse.redirect(new URL(dashboard, request.url));
+    if (role !== "admin" && ((pathname.startsWith("/dashboard/farmer") && role !== "farmer") || (pathname.startsWith("/dashboard/dairy") && role !== "dairy") || (pathname.startsWith("/dashboard/driver") && role !== "driver") || (pathname.startsWith("/dashboard/bank") && role !== "bank") || pathname.startsWith("/dashboard/admin"))) {
+      return NextResponse.redirect(new URL(dashboard, request.url));
     }
   }
-
-  // 3. Legacy Route Consolidation -> Redirect to Canonical Dashboards
-  if (
-    pathname.startsWith("/farmer") ||
-    pathname.startsWith("/industry") ||
-    pathname.startsWith("/driver") ||
-    pathname.startsWith("/admin") ||
-    pathname.startsWith("/bank")
-  ) {
-    if (pathname.startsWith("/farmer")) {
-      return NextResponse.redirect(new URL("/dashboard/farmer", request.url));
-    }
-    if (pathname.startsWith("/industry")) {
-      return NextResponse.redirect(new URL("/dashboard/dairy", request.url));
-    }
-    if (pathname.startsWith("/driver")) {
-      return NextResponse.redirect(new URL("/dashboard/driver", request.url));
-    }
-    if (pathname.startsWith("/admin")) {
-      return NextResponse.redirect(new URL("/dashboard/admin", request.url));
-    }
-    if (pathname.startsWith("/bank")) {
-      return NextResponse.redirect(new URL("/dashboard/bank", request.url));
-    }
-  }
-
-  return NextResponse.next();
+  const legacy: Array<[string, string]> = [["/farmer", "/dashboard/farmer"], ["/industry", "/dashboard/dairy"], ["/driver", "/dashboard/driver"], ["/admin", "/dashboard/admin"], ["/bank", "/dashboard/bank"]];
+  const legacyMatch = legacy.find(([prefix]) => pathname.startsWith(prefix));
+  if (legacyMatch) return NextResponse.redirect(new URL(legacyMatch[1] + pathname.slice(legacyMatch[0].length) + search, request.url));
+  return response;
 }
 
-export const config = {
-  matcher: [
-    "/dashboard/:path*",
-    "/signin",
-    "/sign-in",
-    "/signup",
-    "/sign-up",
-    "/auth/login",
-    "/auth/register",
-    "/farmer/:path*",
-    "/industry/:path*",
-    "/driver/:path*",
-    "/admin/:path*",
-    "/bank/:path*",
-  ],
-};
+export const config = { matcher: ["/dashboard/:path*", "/signin", "/sign-in", "/signup", "/sign-up", "/auth/login", "/auth/register", "/auth/callback", "/farmer/:path*", "/industry/:path*", "/driver/:path*", "/admin/:path*", "/bank/:path*"] };

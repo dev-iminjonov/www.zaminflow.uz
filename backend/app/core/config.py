@@ -1,3 +1,4 @@
+from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -6,18 +7,17 @@ class Settings(BaseSettings):
     VERSION: str = "3.0.0"
     API_V1_STR: str = "/api/v1"
 
-    DATABASE_URL: str = (
-        "postgresql+asyncpg://dairy_user:dairy_secret_password@localhost:5432/dairy_platform"
-    )
+    DATABASE_URL: str
+    SUPABASE_URL: str = Field(min_length=1)
 
-    JWT_SECRET_KEY: str = "super-secret-jwt-key-change-in-production-32bytes"
+    JWT_SECRET_KEY: str = Field(min_length=32)
     JWT_ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 15  # 15 minutes access token as per SRS v3.0
     REFRESH_TOKEN_EXPIRE_DAYS: int = 7
 
-    CSRF_SECRET: str = "super-secret-csrf-token-key-change-in-production-32bytes"
-    QR_HMAC_SECRET: str = "super-secret-qr-hmac-signing-key-2026"
-    BANK_WEBHOOK_HMAC_SECRET: str = "partner-bank-webhook-hmac-secret-2026"
+    CSRF_SECRET: str = Field(min_length=32)
+    QR_HMAC_SECRET: str = Field(min_length=32)
+    BANK_WEBHOOK_HMAC_SECRET: str = Field(min_length=32)
 
     APP_BASE_URL: str = "http://localhost:3000"
     KYB_DOCS_DIR: str = "/tmp/kyb_docs"
@@ -37,7 +37,6 @@ class Settings(BaseSettings):
         "http://localhost:5173",
         "http://127.0.0.1:3000",
         "http://127.0.0.1:3001",
-        "*",
     ]
 
     model_config = SettingsConfigDict(

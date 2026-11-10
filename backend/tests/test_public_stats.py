@@ -7,10 +7,11 @@ import asyncpg
 import httpx
 import pytest
 
+from app.core.config import settings
 from app.modules.public_stats.service import PublicStatsResponse
 
 BASE_URL = os.environ.get("BACKEND_URL", "http://localhost:8000/api/v1")
-PG_DSN = "postgresql://dairy_user:dairy_secret_password@dairy_db:5432/dairy_platform"
+PG_DSN = settings.DATABASE_URL.replace("+asyncpg", "")
 
 
 def test_01_public_stats_schema_and_headers():

@@ -24,10 +24,12 @@ class FndSec001CookieCsrfTest(unittest.TestCase):
 
     def test_01_signin_sets_httponly_cookies_and_csrf(self):
         """Verify sign-in response returns HttpOnly access_token and csrf_token."""
+        if not os.environ.get("SEED_FARMER_PASSWORD"):
+            self.skipTest("Set SEED_FARMER_PASSWORD in the local environment.")
         url = f"{BACKEND_URL}/api/v1/auth/sign-in"
         payload = {
             "identifier": "farmer@zaminflow.uz",
-            "password": "ZaminFlowFarmer2026!",
+            "password": os.environ["SEED_FARMER_PASSWORD"],
         }
         req = urllib.request.Request(
             url,

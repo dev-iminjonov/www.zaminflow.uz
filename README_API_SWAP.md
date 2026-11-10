@@ -75,11 +75,9 @@ The service expects the following JSON endpoints on the FastAPI backend:
 
 ---
 
-## 4. Test Accounts Seeded in Database
+## 4. Local Test Accounts
 
-The following accounts are ready to sign in and view each role dashboard:
-
-- **Farmer**: `farmer@zaminflow.uz` / `ZaminFlowFarmer2026!` → `/dashboard/farmer`
-- **Dairy**: `dairy@zaminflow.uz` / `ZaminFlowDairy2026!` → `/dashboard/dairy`
-- **Driver**: `driver@zaminflow.uz` / `ZaminFlowDriver2026!` → `/dashboard/driver`
-- **Admin**: `admin@zaminflow.uz` / `ZaminFlowSuperAdmin2026!` → `/dashboard/admin`
+`backend/seed_four_roles.py` creates four local test users. Set the corresponding
+`SEED_FARMER_PASSWORD`, `SEED_DAIRY_PASSWORD`, `SEED_DRIVER_PASSWORD`, and
+`SEED_ADMIN_PASSWORD` environment variables before running the script. The script
+does not contain default passwords. Never seed these test users in production.

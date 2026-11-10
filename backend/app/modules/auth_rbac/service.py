@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta, timezone
+import asyncio
 from decimal import Decimal
 import json
 import logging
@@ -10,6 +11,7 @@ from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from pydantic import BaseModel, EmailStr, Field
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
+import jwt
 
 from app.core.config import settings
 from app.core.database import get_db
@@ -29,6 +31,29 @@ from app.core.security import (
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/auth", tags=["Authentication & RBAC"])
 security_bearer = HTTPBearer(auto_error=False)
+_supabase_jwks_client = None
+
+
+async def verify_supabase_access_token(token: str) -> dict[str, Any]:
+    """Verify Supabase's asymmetric Auth JWTs against the project's public JWKS."""
+    global _supabase_jwks_client
+    if not settings.SUPABASE_URL:
+        return decode_access_token(token)
+    try:
+        if _supabase_jwks_client is None:
+            _supabase_jwks_client = jwt.PyJWKClient(f"{settings.SUPABASE_URL.rstrip('/')}/auth/v1/.well-known/jwks.json")
+        signing_key = await asyncio.to_thread(_supabase_jwks_client.get_signing_key_from_jwt, token)
+        return jwt.decode(
+            token,
+            signing_key.key,
+            algorithms=[signing_key.algorithm_name],
+            audience="authenticated",
+            issuer=f"{settings.SUPABASE_URL.rstrip('/')}/auth/v1",
+            options={"require": ["exp", "sub", "iss", "aud"]},
+        )
+    except Exception as exc:
+        logger.info("Supabase access token verification failed: %s", type(exc).__name__)
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="UNAUTHENTICATED") from exc
 
 
 # -----------------------------------------------------------------------------
@@ -116,7 +141,7 @@ async def get_current_user(
             detail="UNAUTHENTICATED",
         )
 
-    payload = decode_access_token(token)
+    payload = await verify_supabase_access_token(token)
     user_id = payload.get("sub")
     if not user_id:
         raise HTTPException(
@@ -151,7 +176,7 @@ async def get_current_user(
                u.phone_number, o.legal_name, o.kyb_status, o.kyb_review_note
         FROM users u
         JOIN organizations o ON o.id = u.organization_id
-        WHERE u.id = :user_id AND u.is_active = TRUE
+        WHERE (u.auth_user_id = :user_id OR u.id = :user_id) AND u.is_active = TRUE
         """
     )
     res = await db.execute(stmt, {"user_id": user_id})

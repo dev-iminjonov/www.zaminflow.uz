@@ -129,7 +129,7 @@ export default function SlidingAuthCard({ initialMode = "signin" }: SlidingAuthC
       const session = await signUp({
         role: signUpRole,
         fullName: signUpName,
-        phone: signUpIdentifier.startsWith("+") ? signUpIdentifier : "+998 90 123 45 67",
+        phone: signUpIdentifier.startsWith("+") ? signUpIdentifier : "",
         email: signUpIdentifier.includes("@") ? signUpIdentifier : `${signUpName.toLowerCase().replace(/\s+/g, "")}@zaminflow.uz`,
         region: "tashkent",
         password: signUpPassword,
@@ -138,7 +138,9 @@ export default function SlidingAuthCard({ initialMode = "signin" }: SlidingAuthC
       const targetDestination = sanitizeNextRedirect(nextParam, session.canonicalRole);
       router.push(targetDestination);
     } catch (err: any) {
-      setServerError("Ushbu ma'lumotlar bilan akkaunt allaqachon mavjud.");
+      setServerError(err.message === "EMAIL_CONFIRMATION_REQUIRED"
+        ? "Account created. Check your email to confirm it, then sign in."
+        : "Ushbu ma'lumotlar bilan akkaunt allaqachon mavjud.");
     } finally {
       setIsLoading(false);
     }

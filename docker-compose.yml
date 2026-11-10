@@ -4,15 +4,15 @@ services:
     container_name: dairy_db
     restart: unless-stopped
     environment:
-      POSTGRES_USER: ${POSTGRES_USER:-dairy_user}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-dairy_secret_password}
-      POSTGRES_DB: ${POSTGRES_DB:-dairy_platform}
+      POSTGRES_USER: ${POSTGRES_USER:?Set POSTGRES_USER in .env}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+      POSTGRES_DB: ${POSTGRES_DB:?Set POSTGRES_DB in .env}
     ports:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-dairy_user} -d ${POSTGRES_DB:-dairy_platform}"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:?Set POSTGRES_USER in .env} -d ${POSTGRES_DB:?Set POSTGRES_DB in .env}"]
       interval: 5s
       timeout: 5s
       retries: 10
@@ -27,7 +27,7 @@ services:
       - .env
     environment:
       PYTHONPATH: /app
-      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-dairy_user}:${POSTGRES_PASSWORD:-dairy_secret_password}@db:5432/${POSTGRES_DB:-dairy_platform}
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:?Set POSTGRES_USER in .env}:${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}@db:5432/${POSTGRES_DB:?Set POSTGRES_DB in .env}
     volumes:
       - ./backend:/app
     depends_on:

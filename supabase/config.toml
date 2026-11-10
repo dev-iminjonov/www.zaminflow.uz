@@ -1,0 +1,23 @@
+project_id = "zaminflow"
+
+[api]
+enabled = true
+schemas = ["public", "graphql_public"]
+extra_search_path = ["public", "extensions"]
+max_rows = 1000
+
+[auth]
+enabled = true
+site_url = "https://zaminflow.uz"
+additional_redirect_urls = [
+  "https://zaminflow.uz/**",
+  "https://www.zaminflow.uz/**",
+  "https://*.workers.dev/**",
+  "http://localhost:3000/**",
+  "http://127.0.0.1:3000/**",
+]
+
+[storage.buckets.kyb-documents]
+public = false
+file_size_limit = "5MiB"
+allowed_mime_types = ["application/pdf", "image/jpeg", "image/png"]

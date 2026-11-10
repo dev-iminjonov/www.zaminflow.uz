@@ -1,13 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 
-// Upstream Backend base candidates (Docker internal network first)
+// In production the FastAPI service must be explicitly hosted and configured.
+// Local Docker candidates are available only for local development.
 const BACKEND_CANDIDATES = [
-  process.env.INTERNAL_BACKEND_URL,
   process.env.BACKEND_URL,
-  "http://backend:8000",
-  "http://dairy_backend:8000",
-  "http://127.0.0.1:8000",
-  "http://localhost:8000",
+  ...(process.env.NODE_ENV === "production" ? [] : [process.env.INTERNAL_BACKEND_URL, "http://backend:8000", "http://dairy_backend:8000", "http://127.0.0.1:8000", "http://localhost:8000"]),
 ].filter(Boolean) as string[];
 
 // Edge IP Rate Limiter for Sensitive Auth Endpoints (e.g. sign-in brute-force protection)
@@ -39,6 +36,9 @@ function checkRateLimit(ip: string, pathStr: string): boolean {
  * headers, Set-Cookie headers, and bodies. Never creates local fallback accounts or sessions.
  */
 async function proxyRequest(req: NextRequest, pathStr: string, bodyText?: string) {
+  if (BACKEND_CANDIDATES.length === 0) {
+    return NextResponse.json({ detail: "Backend service is not configured." }, { status: 503 });
+  }
   const search = req.nextUrl.search;
   let lastError: any = null;
 
@@ -104,7 +104,6 @@ async function proxyRequest(req: NextRequest, pathStr: string, bodyText?: string
   return NextResponse.json(
     {
       detail: "Backend service unavailable. Please try again later.",
-      upstream_error: lastError ? String(lastError) : undefined,
     },
     { status: 503 }
   );
@@ -158,13 +157,5 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ p
 }
 
 export async function OPTIONS() {
-  return new NextResponse(null, {
-    status: 204,
-    headers: {
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, PATCH, OPTIONS",
-      "Access-Control-Allow-Headers": "Content-Type, Authorization, X-CSRF-Token",
-      "Access-Control-Allow-Credentials": "true",
-    },
-  });
+  return new NextResponse(null, { status: 204 });
 }

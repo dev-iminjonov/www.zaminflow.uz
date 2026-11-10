@@ -161,6 +161,8 @@ export default function SignUpCard() {
         emailRef.current?.focus();
       } else if (err.message === "SIGN_UP_FAILED" || !err.message) {
         setServerError(t.errors.genericAuthFailed);
+      } else if (err.message === "EMAIL_CONFIRMATION_REQUIRED") {
+        setServerError("Account created. Check your email to confirm it, then sign in.");
       } else {
         setServerError(err.message);
       }

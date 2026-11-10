@@ -1,8 +1,8 @@
 ID,Area,Requirement/Design Ref,Preconditions,Steps,Expected Result,Priority,Automated
-TC-AUTH-001,Auth,SRS Sec 2.1 Sign In,Seed farmer provisioned,1. Navigate to /signin. 2. Enter farmer@zaminflow.uz and ZaminFlowFarmer2026!. 3. Click Sign in.,Redirects to /dashboard/farmer with active session and cookies,P0,Y
-TC-AUTH-002,Auth,SRS Sec 2.1 Sign In,Seed dairy provisioned,1. Navigate to /signin. 2. Enter dairy@zaminflow.uz and ZaminFlowDairy2026!. 3. Click Sign in.,Redirects to /dashboard/dairy with active session,P0,Y
-TC-AUTH-003,Auth,SRS Sec 2.1 Sign In,Seed driver provisioned,1. Navigate to /signin. 2. Enter driver@zaminflow.uz and ZaminFlowDriver2026!. 3. Click Sign in.,Redirects to /dashboard/driver with active session,P0,Y
-TC-AUTH-004,Auth,SRS Sec 2.1 Sign In,Seed admin provisioned,1. Navigate to /signin. 2. Enter admin@zaminflow.uz and ZaminFlowSuperAdmin2026!. 3. Click Sign in.,Redirects to /dashboard/admin with active session,P0,Y
+TC-AUTH-001,Auth,SRS Sec 2.1 Sign In,Seed farmer provisioned,1. Navigate to /signin. 2. Enter farmer@zaminflow.uz and the local SEED_FARMER_PASSWORD. 3. Click Sign in.,Redirects to /dashboard/farmer with active session and cookies,P0,Y
+TC-AUTH-002,Auth,SRS Sec 2.1 Sign In,Seed dairy provisioned,1. Navigate to /signin. 2. Enter dairy@zaminflow.uz and the local SEED_DAIRY_PASSWORD. 3. Click Sign in.,Redirects to /dashboard/dairy with active session,P0,Y
+TC-AUTH-003,Auth,SRS Sec 2.1 Sign In,Seed driver provisioned,1. Navigate to /signin. 2. Enter driver@zaminflow.uz and the local SEED_DRIVER_PASSWORD. 3. Click Sign in.,Redirects to /dashboard/driver with active session,P0,Y
+TC-AUTH-004,Auth,SRS Sec 2.1 Sign In,Seed admin provisioned,1. Navigate to /signin. 2. Enter admin@zaminflow.uz and the local SEED_ADMIN_PASSWORD. 3. Click Sign in.,Redirects to /dashboard/admin with active session,P0,Y
 TC-AUTH-005,Auth,SRS Sec 2.3 Sign Up,Unauthenticated,1. Navigate to /signup. 2. Select Farmer. 3. Fill valid details. 4. Submit.,Creates account with FARMER role and immediately redirects to /dashboard/farmer,P0,Y
 TC-AUTH-006,Auth,SRS Sec 2.3 Sign Up,Unauthenticated,1. Navigate to /signup. 2. Select Dairy Industry. 3. Fill details. 4. Submit.,Creates account with INDUSTRY role and redirects to /dashboard/dairy,P0,Y
 TC-AUTH-007,Auth,SRS Sec 2.3 Sign Up,Unauthenticated,1. Navigate to /signup. 2. Select Driver. 3. Fill details with plate number. 4. Submit.,Creates account with DRIVER sub-role and redirects to /dashboard/driver,P0,Y

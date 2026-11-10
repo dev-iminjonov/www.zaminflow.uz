@@ -151,7 +151,9 @@ export default function AuthUnifiedCard({ initialMode = "signin" }: AuthUnifiedC
       const targetDestination = sanitizeNextRedirect(nextParam, session.canonicalRole);
       router.push(targetDestination);
     } catch (err: any) {
-      setServerError(t.errors?.alreadyRegistered || "Ushbu ma'lumotlar bilan akkaunt allaqachon mavjud.");
+      setServerError(err.message === "EMAIL_CONFIRMATION_REQUIRED"
+        ? "Account created. Check your email to confirm it, then sign in."
+        : t.errors?.alreadyRegistered || "Ushbu ma'lumotlar bilan akkaunt allaqachon mavjud.");
     } finally {
       setIsLoading(false);
     }

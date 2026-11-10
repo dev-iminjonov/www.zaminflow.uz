@@ -56,12 +56,12 @@ Testing effort is allocated according to financial, security, and operational fa
 
 ### 4. Test Accounts & Role Baseline Matrix
 
-| Role Key | Canonical Role | Test Login ID | Password | Destination Dashboard |
+| Role Key | Canonical Role | Test Login ID | Password environment variable | Destination Dashboard |
 | :--- | :--- | :--- | :--- | :--- |
-| `farmer` | FARMER / OWNER | `farmer@zaminflow.uz` | `ZaminFlowFarmer2026!` | `/dashboard/farmer` |
-| `dairy` | INDUSTRY / OWNER | `dairy@zaminflow.uz` | `ZaminFlowDairy2026!` | `/dashboard/dairy` |
-| `driver` | INDUSTRY / DRIVER | `driver@zaminflow.uz` | `ZaminFlowDriver2026!` | `/dashboard/driver` |
-| `admin` | ADMIN / SUPERADMIN | `admin@zaminflow.uz` | `ZaminFlowSuperAdmin2026!` | `/dashboard/admin` |
+| `farmer` | FARMER / OWNER | `farmer@zaminflow.uz` | `SEED_FARMER_PASSWORD` | `/dashboard/farmer` |
+| `dairy` | INDUSTRY / OWNER | `dairy@zaminflow.uz` | `SEED_DAIRY_PASSWORD` | `/dashboard/dairy` |
+| `driver` | INDUSTRY / DRIVER | `driver@zaminflow.uz` | `SEED_DRIVER_PASSWORD` | `/dashboard/driver` |
+| `admin` | ADMIN / SUPERADMIN | `admin@zaminflow.uz` | `SEED_ADMIN_PASSWORD` | `/dashboard/admin` |
 
 ---
 

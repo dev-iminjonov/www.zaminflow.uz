@@ -132,7 +132,7 @@ def verify_csrf_token(user_id: str, csrf_token: Optional[str]) -> bool:
 
 def verify_bank_webhook_hmac(raw_body: bytes, received_signature: str) -> bool:
     """Verifies bank partner HMAC-SHA256 signature on inbound webhooks."""
-    secret = (getattr(settings, "BANK_WEBHOOK_SECRET", None) or settings.CSRF_SECRET).encode("utf-8")
+    secret = settings.BANK_WEBHOOK_HMAC_SECRET.encode("utf-8")
     expected = hmac.new(secret, raw_body, hashlib.sha256).hexdigest()
     if not hmac.compare_digest(expected, received_signature):
         raise HTTPException(status_code=401, detail="INVALID_BANK_SIGNATURE")

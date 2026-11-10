@@ -114,7 +114,7 @@ In [`frontend/src/lib/roles.ts`](file:///c:/Users/Muhammad%20Aziz/Downloads/www.
 
 #### 4. How QA Should Verify (Step by Step)
 1. Open browser to `http://localhost:3000/signin?next=https://attacker-controlled.site`.
-2. Sign in as Admin (`admin@zaminflow.uz` / `ZaminFlowSuperAdmin2026!`).
+2. Sign in as Admin (`admin@zaminflow.uz`) using local `SEED_ADMIN_PASSWORD`.
 3. Verify the browser lands on `http://localhost:3000/dashboard/admin` and does not leave the domain.
 4. Open `http://localhost:3000/signin?next=/dashboard/admin/disputes`, sign in as Admin, and verify you land directly on `/dashboard/admin/disputes`.
 

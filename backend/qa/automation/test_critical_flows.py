@@ -33,7 +33,9 @@ class ZaminFlowCriticalPathsTest(unittest.TestCase):
 
     def test_01_farmer_sign_in(self):
         """TC-AUTH-001: Verify Farmer credential authentication and canonical role mapping."""
-        payload = {"identifier": "farmer@zaminflow.uz", "password": "ZaminFlowFarmer2026!"}
+        if not os.environ.get("SEED_FARMER_PASSWORD"):
+            self.skipTest("Set SEED_FARMER_PASSWORD in the local environment.")
+        payload = {"identifier": "farmer@zaminflow.uz", "password": os.environ["SEED_FARMER_PASSWORD"]}
         resp = self.post_json("/api/v1/auth/sign-in", payload)
         self.assertEqual(resp.status, 200)
         data = json.loads(resp.read().decode())
@@ -42,7 +44,9 @@ class ZaminFlowCriticalPathsTest(unittest.TestCase):
 
     def test_02_dairy_sign_in(self):
         """TC-AUTH-002: Verify Dairy Industry authentication and canonical role mapping."""
-        payload = {"identifier": "dairy@zaminflow.uz", "password": "ZaminFlowDairy2026!"}
+        if not os.environ.get("SEED_DAIRY_PASSWORD"):
+            self.skipTest("Set SEED_DAIRY_PASSWORD in the local environment.")
+        payload = {"identifier": "dairy@zaminflow.uz", "password": os.environ["SEED_DAIRY_PASSWORD"]}
         resp = self.post_json("/api/v1/auth/sign-in", payload)
         self.assertEqual(resp.status, 200)
         data = json.loads(resp.read().decode())
@@ -51,7 +55,9 @@ class ZaminFlowCriticalPathsTest(unittest.TestCase):
 
     def test_03_driver_sign_in(self):
         """TC-AUTH-003: Verify Driver authentication and canonical role mapping."""
-        payload = {"identifier": "driver@zaminflow.uz", "password": "ZaminFlowDriver2026!"}
+        if not os.environ.get("SEED_DRIVER_PASSWORD"):
+            self.skipTest("Set SEED_DRIVER_PASSWORD in the local environment.")
+        payload = {"identifier": "driver@zaminflow.uz", "password": os.environ["SEED_DRIVER_PASSWORD"]}
         resp = self.post_json("/api/v1/auth/sign-in", payload)
         self.assertEqual(resp.status, 200)
         data = json.loads(resp.read().decode())
@@ -60,7 +66,9 @@ class ZaminFlowCriticalPathsTest(unittest.TestCase):
 
     def test_04_admin_sign_in(self):
         """TC-AUTH-004: Verify SuperAdmin authentication and canonical role mapping."""
-        payload = {"identifier": "admin@zaminflow.uz", "password": "ZaminFlowSuperAdmin2026!"}
+        if not os.environ.get("SEED_ADMIN_PASSWORD"):
+            self.skipTest("Set SEED_ADMIN_PASSWORD in the local environment.")
+        payload = {"identifier": "admin@zaminflow.uz", "password": os.environ["SEED_ADMIN_PASSWORD"]}
         resp = self.post_json("/api/v1/auth/sign-in", payload)
         self.assertEqual(resp.status, 200)
         data = json.loads(resp.read().decode())

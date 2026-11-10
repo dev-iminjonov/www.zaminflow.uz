@@ -1,5 +1,6 @@
 import asyncio
 import logging
+import os
 from uuid import uuid4
 from sqlalchemy import text
 from app.core.database import AsyncSessionLocal
@@ -17,7 +18,7 @@ SEED_ACCOUNTS = [
         "phone_number": "+998 90 111 22 33",
         "full_name": "Rustam Oripov",
         "sub_role": "OWNER",
-        "password": "ZaminFlowFarmer2026!",
+        "password_env": "SEED_FARMER_PASSWORD",
         "truck_plate": None,
         "kyb_status": "VERIFIED",
         "tax_id": "301112233",
@@ -34,7 +35,7 @@ SEED_ACCOUNTS = [
         "phone_number": "+998 90 222 33 44",
         "full_name": "Dilshod Rahimov",
         "sub_role": "OWNER",
-        "password": "ZaminFlowDairy2026!",
+        "password_env": "SEED_DAIRY_PASSWORD",
         "truck_plate": None,
         "kyb_status": "VERIFIED",
         "tax_id": "302223344",
@@ -51,7 +52,7 @@ SEED_ACCOUNTS = [
         "phone_number": "+998 90 333 44 55",
         "full_name": "Sanjar Karimov",
         "sub_role": "DRIVER",
-        "password": "ZaminFlowDriver2026!",
+        "password_env": "SEED_DRIVER_PASSWORD",
         "truck_plate": "01 A 777 AA",
         "kyb_status": "VERIFIED",
         "tax_id": "303334455",
@@ -68,7 +69,7 @@ SEED_ACCOUNTS = [
         "phone_number": "+998 90 444 55 66",
         "full_name": "Platform Operator",
         "sub_role": "SUPERADMIN",
-        "password": "ZaminFlowSuperAdmin2026!",
+        "password_env": "SEED_ADMIN_PASSWORD",
         "truck_plate": None,
         "kyb_status": "VERIFIED",
         "tax_id": "304445566",
@@ -83,7 +84,12 @@ async def seed_users():
     async with AsyncSessionLocal() as db:
         for acc in SEED_ACCOUNTS:
             email = acc["email"].lower()
-            password_hash = get_password_hash(acc["password"])
+            password = os.environ.get(acc["password_env"])
+            if not password:
+                raise RuntimeError(
+                    f"{acc['password_env']} must be configured in the environment"
+                )
+            password_hash = get_password_hash(password)
 
             res = await db.execute(
                 text("SELECT id, organization_id FROM users WHERE lower(email) = :email"),
