@@ -4,27 +4,31 @@
 
 The application is a Next.js App Router project with server rendering and API routes, plus a FastAPI service backed by PostgreSQL/PostGIS. The frontend can run on Cloudflare Workers using the Cloudflare-recommended `vinext` adapter. Supabase provides Auth, Postgres, and private document storage. The API remains a separate Python service: it uses async SQLAlchemy, which is not supported by the Cloudflare Python Workers/Hyperdrive path in this repository.
 
-The Cloudflare zone and Supabase project have been created. Supabase Auth URLs are configured. The SQL migration is committed locally but has **not** been applied. There is no deployed Worker or API service yet. Cloudflare's DNS scan found no records, and aHOST showed DNS hosting disabled and no email/hosting service. Recheck at aHOST before changing nameservers if any mail or other DNS service was added since that scan.
+The Supabase project is in Mumbai; Auth URL settings are configured and the initial migration has been applied. The 15 public application tables have RLS enabled, and the private `kyb-documents` bucket exists. The migration version is recorded in `supabase_migrations.schema_migrations` so a later CLI push will not reapply it.
+
+The Worker is deployed and serves the latest commit from the connected production branch, `codex/cloudflare-supabase-deploy`, at <https://zaminflow.dev-iminjonov.workers.dev>. Cloudflare is still waiting for the registrar to propagate `nora.ns.cloudflare.com` and `stan.ns.cloudflare.com`; the `zaminflow.uz` zone is not active yet, so its custom hostnames and HTTPS settings are not available. The nameserver change has been saved in aHOST.
+
+The FastAPI service is not deployed. It needs a persistent Python/Docker host and a server-side `BACKEND_URL` on the Worker. The current deployment is therefore a public frontend preview; do not treat account creation or API-backed features as production-ready until the API is hosted and connected. Cloudflare's original DNS scan found no records; check with the owner before adding mail or other DNS services.
 
 ## Deploy sequence
 
-### 1. Apply the Supabase schema
+### 1. Supabase schema and future migrations
 
 From the repository root, in a terminal where you have installed Node.js 22 and pnpm:
 
 ```powershell
 pnpm dlx supabase login
 pnpm dlx supabase link --project-ref swfjmikzmpkahvclgvaw
-pnpm dlx supabase db push --yes
+pnpm dlx supabase migration list --linked
 ```
 
-Run `supabase login` locally and do not paste its access token into chat or commit it. The linked project uses the Mumbai region. The migration enables RLS on the application tables, provisions a public profile and organization when a permitted Supabase Auth account signs up, and creates the private `kyb-documents` bucket. Review the SQL in `supabase/migrations` before applying it to any database with existing data.
+The first migration was applied in Supabase SQL Editor because the local CLI did not have a login token. Its version is recorded as applied. The linked project uses the Mumbai region. For future migrations, run `supabase login` locally and keep the access token in the terminal; do not paste it into chat or commit it. Check `migration list` before `db push --yes`. The migration enables RLS on the application tables, provisions a public profile and organization when a permitted Supabase Auth account signs up, and creates the private `kyb-documents` bucket.
 
 In Supabase Auth > URL Configuration, the Site URL is `https://zaminflow.uz`; redirect patterns for apex, `www`, workers.dev and local development are configured. Keep email confirmation enabled for public signup. Configure an SMTP provider before relying on production email verification or password reset; Supabase's default mail delivery is for testing and has tight limits.
 
 ### 2. Deploy the FastAPI service
 
-Deploy `backend/` as a persistent Python 3.12 Docker service on a container host or VM. No API host has been purchased or configured for this project. Provide these values as server-side secrets/configuration:
+Deploy `backend/` as a persistent Python 3.12 Docker service on a container host or VM. No API host has been selected or configured for this project. Choose an always-on paid plan for production; free web-service plans commonly sleep or have data-retention limits. Provide these values as server-side secrets/configuration:
 
 - `DATABASE_URL`: Supabase Postgres connection string, preferably the session pooler for a long-running service; use the SQLAlchemy `postgresql+asyncpg://` scheme.
 - `SUPABASE_URL=https://swfjmikzmpkahvclgvaw.supabase.co`
@@ -36,7 +40,7 @@ Keep database credentials and signing keys server-side. Never put a Supabase `se
 
 ### 3. Deploy the Worker from the repository
 
-In Cloudflare Workers & Pages, connect the GitHub repository `dev-iminjonov/www.zaminflow.uz` and select the production branch. Limit the GitHub app to this repository if the permission screen offers that choice. The existing Cloudflare connect button did not complete; GitHub is not yet connected.
+The GitHub repository is connected to Cloudflare Workers & Pages. The current production branch is `codex/cloudflare-supabase-deploy`; change it to `main` only after merging the deployed commits there.
 
 Create a Worker using `frontend/` as the root directory. Use Node.js 22.12 or newer and pnpm. Configure the build/deploy commands as:
 
@@ -52,13 +56,12 @@ Add these as **Build variables** so Vite embeds them in the browser bundle (both
 ```text
 NEXT_PUBLIC_SUPABASE_URL=https://swfjmikzmpkahvclgvaw.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=<Supabase publishable/anon key>
-BACKEND_URL=https://<your-api-host>
 NEXT_PUBLIC_USE_MOCK_DATA=false
 ```
 
 Never add a `service_role` key. Deploy first and verify the `*.workers.dev` URL before attaching the custom hostname.
 
-Set `BACKEND_URL` separately under Worker **Runtime variables** after the FastAPI service has a public HTTPS hostname. Use only the origin (for example `https://api.example.com`); the route handler appends `/api/v1/...` itself.
+Set `BACKEND_URL` under Worker **Runtime variables** after the FastAPI service has a public HTTPS hostname. Use only the origin (for example `https://api.example.com`); the route handler appends `/api/...` itself. Never place database credentials or signing keys in Worker variables.
 
 For a local Worker build/deploy, use `cd frontend`, `pnpm run build:worker`, and `pnpm run deploy:worker`. The `deploy:worker` command publishes to the currently authenticated Cloudflare account, so confirm the account and selected Worker before running it.
 
@@ -71,7 +74,7 @@ nora.ns.cloudflare.com
 stan.ns.cloudflare.com
 ```
 
-At aHOST: Client Area > Domains > `zaminflow.uz` > Nameservers > select custom nameservers > enter both names above > save. Disable DNSSEC at the registrar first if it is enabled. Do not use Cloudflare's “I updated my nameservers” button until the registrar change is saved. Wait for Cloudflare to report the zone Active.
+The aHOST nameserver change is saved. Wait for Cloudflare to report the zone Active. If it remains pending for more than 24 hours, check at aHOST that only the two assigned Cloudflare nameservers are present and DNSSEC is off.
 
 Once active, add both `zaminflow.uz` and `www.zaminflow.uz` as Worker custom domains. Set `www` to redirect permanently (301) to `https://zaminflow.uz`. In Cloudflare SSL/TLS, select **Full (strict)**, enable **Always Use HTTPS** and **Automatic HTTPS Rewrites**. Never use Flexible SSL.
 
